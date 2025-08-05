@@ -57,6 +57,8 @@ function RoutineSelector({ onSelect }) {
         <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#787878] pointer-events-none" />
       </div>
       {error && <p className="text-red-400 text-sm mt-1">{error}</p>}
+
+
     </div>
   );
 
