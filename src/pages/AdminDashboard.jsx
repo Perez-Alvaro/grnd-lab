@@ -25,10 +25,10 @@ function AdminDashboard() {
   const [editingTemplate, setEditingTemplate] = useState(null);
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: Eye },
-    { id: 'templates', label: 'Templates', icon: FileText },
-    { id: 'users', label: 'Users', icon: Users },
-    { id: 'sales', label: 'Sales', icon: CreditCard }
+    { id: 'overview', label: 'Resumen', icon: Eye },
+    { id: 'templates', label: 'Plantillas', icon: FileText },
+    { id: 'users', label: 'Usuarios', icon: Users },
+    { id: 'sales', label: 'Ventas', icon: CreditCard }
   ];
 
   const stats = {
@@ -58,7 +58,7 @@ function AdminDashboard() {
   };
 
   const handleDeleteTemplate = (templateId) => {
-    if (window.confirm('Are you sure you want to delete this template?')) {
+    if (window.confirm('¿Estás seguro de que deseas eliminar esta plantilla?')) {
       dispatch({ type: 'DELETE_TEMPLATE', payload: templateId });
     }
   };
@@ -75,8 +75,8 @@ function AdminDashboard() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Admin Dashboard</h1>
-        <p className="text-[#787878]">Manage templates, users, and track sales</p>
+        <h1 className="text-4xl font-bold mb-2">Panel de Administración</h1>
+        <p className="text-[#787878]">Gestiona plantillas, usuarios y seguimiento de ventas</p>
       </div>
 
       {/* Stats Overview */}
@@ -84,7 +84,7 @@ function AdminDashboard() {
         <div className="bg-[#2D2D2D] rounded-xl p-6 border border-[#787878]/20">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[#787878] text-sm">Total Users</p>
+              <p className="text-[#787878] text-sm">Usuarios Totales</p>
               <p className="text-2xl font-bold text-[#CBFF00]">{stats.totalUsers}</p>
             </div>
             <Users className="h-8 w-8 text-[#787878]" />
@@ -94,7 +94,7 @@ function AdminDashboard() {
         <div className="bg-[#2D2D2D] rounded-xl p-6 border border-[#787878]/20">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[#787878] text-sm">Total Revenue</p>
+              <p className="text-[#787878] text-sm">Ingresos Totales</p>
               <p className="text-2xl font-bold text-[#CBFF00]">${stats.totalSales.toFixed(2)}</p>
             </div>
             <DollarSign className="h-8 w-8 text-[#787878]" />
@@ -104,7 +104,7 @@ function AdminDashboard() {
         <div className="bg-[#2D2D2D] rounded-xl p-6 border border-[#787878]/20">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[#787878] text-sm">Templates</p>
+              <p className="text-[#787878] text-sm">Plantillas</p>
               <p className="text-2xl font-bold text-[#CBFF00]">{stats.totalTemplates}</p>
             </div>
             <FileText className="h-8 w-8 text-[#787878]" />
@@ -114,7 +114,7 @@ function AdminDashboard() {
         <div className="bg-[#2D2D2D] rounded-xl p-6 border border-[#787878]/20">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[#787878] text-sm">Basic Plans</p>
+              <p className="text-[#787878] text-sm">Planes Básicos</p>
               <p className="text-2xl font-bold text-[#DBFE52]">{stats.basicPlans}</p>
             </div>
             <Target className="h-8 w-8 text-[#787878]" />
@@ -124,7 +124,7 @@ function AdminDashboard() {
         <div className="bg-[#2D2D2D] rounded-xl p-6 border border-[#787878]/20">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[#787878] text-sm">Premium Plans</p>
+              <p className="text-[#787878] text-sm">Planes Premium</p>
               <p className="text-2xl font-bold text-[#F8FE9F]">{stats.premiumPlans}</p>
             </div>
             <Calendar className="h-8 w-8 text-[#787878]" />
@@ -183,12 +183,15 @@ function AdminDashboard() {
 function OverviewTab({ state }) {
   const recentUsers = state.users.slice(-5);
   const recentSales = state.sales.slice(-5);
+  const genderLabel = { male: 'masculino', female: 'femenino' };
+  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
+  const planLabel = { basic: 'básico', premium: 'premium' };
 
   return (
     <div className="space-y-8">
       <div className="grid md:grid-cols-2 gap-8">
         <div>
-          <h3 className="text-xl font-semibold mb-4">Recent Users</h3>
+          <h3 className="text-xl font-semibold mb-4">Usuarios Recientes</h3>
           <div className="space-y-3">
             {recentUsers.map((user) => (
               <div key={user.id} className="bg-[#202020] rounded-lg p-4 border border-[#787878]/20">
@@ -196,7 +199,7 @@ function OverviewTab({ state }) {
                   <div>
                     <p className="font-medium">{user.email}</p>
                     <p className="text-sm text-[#787878]">
-                      {user.gender} • {user.frequency}x/week • {user.objective.replace('_', ' ')}
+                      {genderLabel[user.gender]} • {user.frequency}x/semana • {objectiveLabel[user.objective]}
                     </p>
                   </div>
                   <span className={`px-2 py-1 rounded text-xs font-medium ${
@@ -213,7 +216,7 @@ function OverviewTab({ state }) {
         </div>
 
         <div>
-          <h3 className="text-xl font-semibold mb-4">Recent Sales</h3>
+          <h3 className="text-xl font-semibold mb-4">Ventas Recientes</h3>
           <div className="space-y-3">
             {recentSales.map((sale) => (
               <div key={sale.id} className="bg-[#202020] rounded-lg p-4 border border-[#787878]/20">
@@ -224,7 +227,7 @@ function OverviewTab({ state }) {
                   </div>
                   <div className="text-right">
                     <p className="font-bold text-[#CBFF00]">${sale.amount}</p>
-                    <p className="text-xs text-[#787878] capitalize">{sale.plan}</p>
+                    <p className="text-xs text-[#787878] capitalize">{planLabel[sale.plan]}</p>
                   </div>
                 </div>
               </div>
@@ -237,16 +240,18 @@ function OverviewTab({ state }) {
 }
 
 function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplate, onDownloadPDF }) {
+  const genderLabel = { male: 'masculino', female: 'femenino' };
+  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-xl font-semibold">Workout Templates</h3>
+        <h3 className="text-xl font-semibold">Plantillas de Entrenamiento</h3>
         <button 
           onClick={onCreateTemplate}
           className="bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
         >
           <Plus className="h-4 w-4" />
-          <span>Add Template</span>
+          <span>Agregar Plantilla</span>
         </button>
       </div>
 
@@ -258,13 +263,13 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
                 <h4 className="text-lg font-semibold mb-2">{template.name}</h4>
                 <div className="flex space-x-3 text-sm">
                   <span className="bg-[#787878]/20 px-2 py-1 rounded capitalize">
-                    {template.gender}
+                    {genderLabel[template.gender]}
                   </span>
                   <span className="bg-[#787878]/20 px-2 py-1 rounded">
-                    {template.frequency}x/week
+                    {template.frequency}x/semana
                   </span>
                   <span className="bg-[#787878]/20 px-2 py-1 rounded capitalize">
-                    {template.objective.replace('_', ' ')}
+                    {objectiveLabel[template.objective]}
                   </span>
                 </div>
               </div>
@@ -273,14 +278,14 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
                   <button
                     onClick={() => onDownloadPDF(template, 'mobile')}
                     className="p-2 hover:bg-[#CBFF00]/20 text-[#CBFF00] rounded-lg transition-colors group"
-                    title="Download Mobile PDF"
+                    title="Descargar PDF móvil"
                   >
                     <Smartphone className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => onDownloadPDF(template, 'desktop')}
                     className="p-2 hover:bg-[#DBFE52]/20 text-[#DBFE52] rounded-lg transition-colors group"
-                    title="Download Desktop PDF"
+                    title="Descargar PDF de escritorio"
                   >
                     <Monitor className="h-4 w-4" />
                   </button>
@@ -304,7 +309,7 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
               <p className="text-[#787878] text-sm">{template.notes}</p>
               <div className="grid md:grid-cols-2 gap-4 mt-4">
                 <div>
-                  <h5 className="font-medium text-[#CBFF00] mb-2">Exercises:</h5>
+                  <h5 className="font-medium text-[#CBFF00] mb-2">Ejercicios:</h5>
                   <ul className="text-sm text-[#787878] space-y-1">
                     {template.exercises.slice(0, 3).map((exercise, index) => (
                       <li key={index}>
@@ -312,26 +317,26 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
                       </li>
                     ))}
                     {template.exercises.length > 3 && (
-                      <li>... and {template.exercises.length - 3} more</li>
+                      <li>... y {template.exercises.length - 3} más</li>
                     )}
                   </ul>
                 </div>
                 <div>
-                  <h5 className="font-medium text-[#CBFF00] mb-2">Actions:</h5>
+                  <h5 className="font-medium text-[#CBFF00] mb-2">Acciones:</h5>
                   <div className="flex flex-col space-y-2">
                     <button
                       onClick={() => onDownloadPDF(template, 'mobile')}
                       className="flex items-center space-x-2 text-sm bg-[#CBFF00]/20 hover:bg-[#CBFF00]/30 text-[#CBFF00] px-3 py-1 rounded transition-colors"
                     >
                       <Smartphone className="h-3 w-3" />
-                      <span>Mobile PDF</span>
+                      <span>PDF Móvil</span>
                     </button>
                     <button
                       onClick={() => onDownloadPDF(template, 'desktop')}
                       className="flex items-center space-x-2 text-sm bg-[#DBFE52]/20 hover:bg-[#DBFE52]/30 text-[#DBFE52] px-3 py-1 rounded transition-colors"
                     >
                       <Monitor className="h-3 w-3" />
-                      <span>Desktop PDF</span>
+                      <span>PDF de Escritorio</span>
                     </button>
                     {template.youtubeLink && (
                       <a
@@ -355,36 +360,39 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
 }
 
 function UsersTab({ state }) {
+  const genderLabel = { male: 'masculino', female: 'femenino' };
+  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
+  const planLabel = { basic: 'básico', premium: 'premium' };
   return (
     <div>
-      <h3 className="text-xl font-semibold mb-6">User Management</h3>
-      
+      <h3 className="text-xl font-semibold mb-6">Gestión de Usuarios</h3>
+
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="border-b border-[#787878]/20">
               <th className="text-left py-3 px-4 font-medium text-[#787878]">Email</th>
-              <th className="text-left py-3 px-4 font-medium text-[#787878]">Gender</th>
-              <th className="text-left py-3 px-4 font-medium text-[#787878]">Frequency</th>
-              <th className="text-left py-3 px-4 font-medium text-[#787878]">Objective</th>
+              <th className="text-left py-3 px-4 font-medium text-[#787878]">Género</th>
+              <th className="text-left py-3 px-4 font-medium text-[#787878]">Frecuencia</th>
+              <th className="text-left py-3 px-4 font-medium text-[#787878]">Objetivo</th>
               <th className="text-left py-3 px-4 font-medium text-[#787878]">Plan</th>
-              <th className="text-left py-3 px-4 font-medium text-[#787878]">Date</th>
+              <th className="text-left py-3 px-4 font-medium text-[#787878]">Fecha</th>
             </tr>
           </thead>
           <tbody>
             {state.users.map((user) => (
               <tr key={user.id} className="border-b border-[#787878]/10 hover:bg-[#787878]/5">
                 <td className="py-3 px-4">{user.email}</td>
-                <td className="py-3 px-4 capitalize">{user.gender}</td>
-                <td className="py-3 px-4">{user.frequency}x/week</td>
-                <td className="py-3 px-4 capitalize">{user.objective?.replace('_', ' ')}</td>
+                <td className="py-3 px-4 capitalize">{genderLabel[user.gender]}</td>
+                <td className="py-3 px-4">{user.frequency}x/semana</td>
+                <td className="py-3 px-4 capitalize">{objectiveLabel[user.objective]}</td>
                 <td className="py-3 px-4">
                   <span className={`px-2 py-1 rounded text-xs font-medium ${
-                    user.plan === 'premium' 
-                      ? 'bg-[#CBFF00]/20 text-[#CBFF00]' 
+                    user.plan === 'premium'
+                      ? 'bg-[#CBFF00]/20 text-[#CBFF00]'
                       : 'bg-[#787878]/20 text-[#787878]'
                   }`}>
-                    {user.plan}
+                    {planLabel[user.plan]}
                   </span>
                 </td>
                 <td className="py-3 px-4 text-[#787878]">{user.createdAt}</td>
@@ -399,39 +407,41 @@ function UsersTab({ state }) {
 
 function SalesTab({ state }) {
   const totalRevenue = state.sales.reduce((sum, sale) => sum + sale.amount, 0);
+  const planLabel = { basic: 'básico', premium: 'premium' };
+  const statusLabel = { completed: 'completado' };
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-xl font-semibold">Sales History</h3>
+        <h3 className="text-xl font-semibold">Historial de Ventas</h3>
         <div className="bg-[#CBFF00]/10 border border-[#CBFF00]/20 rounded-lg px-4 py-2">
           <span className="text-[#CBFF00] font-semibold">
-            Total Revenue: ${totalRevenue.toFixed(2)}
+            Ingresos Totales: ${totalRevenue.toFixed(2)}
           </span>
         </div>
       </div>
-      
+
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="border-b border-[#787878]/20">
               <th className="text-left py-3 px-4 font-medium text-[#787878]">Email</th>
               <th className="text-left py-3 px-4 font-medium text-[#787878]">Plan</th>
-              <th className="text-left py-3 px-4 font-medium text-[#787878]">Amount</th>
-              <th className="text-left py-3 px-4 font-medium text-[#787878]">Date</th>
-              <th className="text-left py-3 px-4 font-medium text-[#787878]">Status</th>
+              <th className="text-left py-3 px-4 font-medium text-[#787878]">Monto</th>
+              <th className="text-left py-3 px-4 font-medium text-[#787878]">Fecha</th>
+              <th className="text-left py-3 px-4 font-medium text-[#787878]">Estado</th>
             </tr>
           </thead>
           <tbody>
             {state.sales.map((sale) => (
               <tr key={sale.id} className="border-b border-[#787878]/10 hover:bg-[#787878]/5">
                 <td className="py-3 px-4">{sale.userEmail}</td>
-                <td className="py-3 px-4 capitalize">{sale.plan}</td>
+                <td className="py-3 px-4 capitalize">{planLabel[sale.plan]}</td>
                 <td className="py-3 px-4 font-semibold text-[#CBFF00]">${sale.amount}</td>
                 <td className="py-3 px-4 text-[#787878]">{sale.date}</td>
                 <td className="py-3 px-4">
                   <span className="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs font-medium">
-                    {sale.status}
+                    {statusLabel[sale.status]}
                   </span>
                 </td>
               </tr>

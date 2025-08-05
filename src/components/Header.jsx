@@ -25,7 +25,7 @@ function Header() {
                 className="flex items-center space-x-2 px-4 py-2 bg-[#787878]/20 hover:bg-[#787878]/30 rounded-lg transition-colors"
               >
                 <Shield className="h-4 w-4" />
-                <span>Admin</span>
+                <span>Administrador</span>
               </Link>
             )}
           </nav>
