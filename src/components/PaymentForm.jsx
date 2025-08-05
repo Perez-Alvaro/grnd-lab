@@ -58,36 +58,36 @@ function PaymentForm({ routine, plan, onBack }) {
       <section className="max-w-2xl mx-auto text-center">
         <div className="bg-[#2D2D2D] rounded-2xl p-8 border border-[#CBFF00]/30">
           <CheckCircle className="h-16 w-16 text-[#CBFF00] mx-auto mb-6" />
-          <h2 className="text-3xl font-bold mb-4">Payment Successful!</h2>
+          <h2 className="text-3xl font-bold mb-4">¡Pago exitoso!</h2>
           <p className="text-[#787878] mb-6">
-            Your {plan.name} has been activated and your personalized routine is being prepared.
+            Tu {plan.name} ha sido activado y tu rutina personalizada se está preparando.
           </p>
           
           <div className="bg-[#F8FE9F]/10 border border-[#F8FE9F]/20 rounded-xl p-6 mb-6">
-            <h3 className="font-semibold text-[#F8FE9F] mb-3">What happens next?</h3>
+            <h3 className="font-semibold text-[#F8FE9F] mb-3">¿Qué sigue?</h3>
             <ul className="text-left space-y-2 text-[#787878]">
-              <li>• Your routine PDF will be sent to {formData.email} within 5 minutes</li>
-              <li>• You'll receive YouTube links with exercise demonstrations</li>
+              <li>• El PDF de tu rutina se enviará a {formData.email} en menos de 5 minutos</li>
+              <li>• Recibirás enlaces de YouTube con demostraciones de ejercicios</li>
               {plan.id === 'premium' && (
-                <li>• Matías will contact you within 24 hours for personalized guidance</li>
+                <li>• Matías se comunicará contigo en 24 horas para una guía personalizada</li>
               )}
-              <li>• Check your spam folder if you don't see the email</li>
+              <li>• Revisa tu carpeta de spam si no ves el correo</li>
             </ul>
           </div>
 
           {plan.id === 'premium' && (
             <div className="bg-[#CBFF00]/10 border border-[#CBFF00]/20 rounded-xl p-4 mb-6">
               <p className="text-[#CBFF00] font-semibold">
-                Premium Support: Contact Matías directly at +1 (555) 123-4567
+                Soporte Premium: Contacta a Matías directamente al +1 (555) 123-4567
               </p>
-            </div>
+          </div>
           )}
 
           <button
             onClick={() => window.location.href = '/'}
             className="bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] font-semibold py-3 px-8 rounded-xl transition-colors"
           >
-            Back to Home
+            Volver al inicio
           </button>
         </div>
       </section>
@@ -101,12 +101,12 @@ function PaymentForm({ routine, plan, onBack }) {
         className="flex items-center space-x-2 text-[#787878] hover:text-[#CBFF00] mb-8 transition-colors"
       >
         <ArrowLeft className="h-5 w-5" />
-        <span>Back to plan selection</span>
+        <span>Volver a la selección de plan</span>
       </button>
 
       <div className="text-center mb-8">
         <h2 className="text-4xl font-bold mb-4">
-          Complete Your Order
+          Completa tu pedido
         </h2>
         <div className="bg-[#2D2D2D] rounded-xl p-4 inline-block border border-[#787878]/20">
           <span className="text-[#787878]">{plan.name} - </span>
@@ -118,7 +118,7 @@ function PaymentForm({ routine, plan, onBack }) {
         <div className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-[#787878] mb-2">
-              Email Address
+              Correo electrónico
             </label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#787878]" />
@@ -128,7 +128,7 @@ function PaymentForm({ routine, plan, onBack }) {
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl pl-12 pr-4 py-4 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                placeholder="your@email.com"
+                placeholder="tu@correo.com"
               />
             </div>
           </div>
@@ -136,7 +136,7 @@ function PaymentForm({ routine, plan, onBack }) {
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-[#787878] mb-2">
-                First Name
+                Nombre
               </label>
               <input
                 type="text"
@@ -144,13 +144,13 @@ function PaymentForm({ routine, plan, onBack }) {
                 value={formData.firstName}
                 onChange={(e) => handleInputChange('firstName', e.target.value)}
                 className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-4 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                placeholder="John"
+                placeholder="Juan"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-[#787878] mb-2">
-                Last Name
+                Apellido
               </label>
               <input
                 type="text"
@@ -158,7 +158,7 @@ function PaymentForm({ routine, plan, onBack }) {
                 value={formData.lastName}
                 onChange={(e) => handleInputChange('lastName', e.target.value)}
                 className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-4 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                placeholder="Doe"
+                placeholder="Pérez"
               />
             </div>
           </div>
@@ -166,11 +166,11 @@ function PaymentForm({ routine, plan, onBack }) {
           <div className="bg-[#787878]/10 border border-[#787878]/20 rounded-xl p-6">
             <div className="flex items-center space-x-3 mb-4">
               <CreditCard className="h-6 w-6 text-[#CBFF00]" />
-              <h3 className="font-semibold">Payment Information</h3>
+              <h3 className="font-semibold">Información de pago</h3>
             </div>
             <div className="bg-[#CBFF00]/10 border border-[#CBFF00]/20 rounded-lg p-4">
               <p className="text-[#CBFF00] text-sm font-medium">
-                🔄 This is a demo version. In production, Stripe payment integration would be implemented here.
+                🔄 Esta es una versión demo. En producción se implementaría la integración de pago con Stripe.
               </p>
             </div>
           </div>
@@ -178,12 +178,12 @@ function PaymentForm({ routine, plan, onBack }) {
           <div className="bg-[#F8FE9F]/10 border border-[#F8FE9F]/20 rounded-xl p-4">
             <div className="flex items-center space-x-2 mb-2">
               <Shield className="h-5 w-5 text-[#F8FE9F]" />
-              <span className="font-semibold text-[#F8FE9F]">Secure & Automated</span>
+              <span className="font-semibold text-[#F8FE9F]">Seguro y Automático</span>
             </div>
             <ul className="text-sm text-[#787878] space-y-1">
-              <li>• SSL encrypted payment processing</li>
-              <li>• Instant email delivery after payment</li>
-              <li>• 30-day money-back guarantee</li>
+              <li>• Procesamiento de pago cifrado SSL</li>
+              <li>• Envío de email inmediato después del pago</li>
+              <li>• Garantía de reembolso de 30 días</li>
             </ul>
           </div>
 
@@ -195,10 +195,10 @@ function PaymentForm({ routine, plan, onBack }) {
             {processing ? (
               <div className="flex items-center justify-center space-x-3">
                 <div className="animate-spin rounded-full h-5 w-5 border-2 border-[#2D2D2D] border-t-transparent"></div>
-                <span>Processing Payment...</span>
-              </div>
-            ) : (
-              `Complete Order - $${plan.price}`
+                <span>Procesando pago...</span>
+            </div>
+          ) : (
+              `Completar pedido - $${plan.price}`
             )}
           </button>
         </div>

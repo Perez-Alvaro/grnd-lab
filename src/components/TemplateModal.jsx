@@ -56,7 +56,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
       <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
         <div className="bg-[#2D2D2D] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
           <div className="p-6 border-b border-[#787878]/20 flex justify-between items-center">
-            <h3 className="text-2xl font-bold">Template Preview</h3>
+            <h3 className="text-2xl font-bold">Vista previa de la plantilla</h3>
             <div className="flex space-x-2">
               <button
                 onClick={() => setShowPreview(false)}
@@ -85,7 +85,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
       <div className="bg-[#2D2D2D] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6 border-b border-[#787878]/20 flex justify-between items-center">
           <h3 className="text-2xl font-bold">
-            {template ? 'Edit Template' : 'Create New Template'}
+            {template ? 'Editar Plantilla' : 'Crear Nueva Plantilla'}
           </h3>
           <div className="flex space-x-2">
             <button
@@ -107,7 +107,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-[#787878] mb-2">
-                Template Name
+                Nombre de la plantilla
               </label>
               <input
                 type="text"
@@ -115,13 +115,13 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
                 className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                placeholder="e.g., Male Volume 3x/week"
+                placeholder="ej., Masculino Volumen 3x/semana"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-[#787878] mb-2">
-                YouTube Link
+                Enlace de YouTube
               </label>
               <input
                 type="url"
@@ -136,7 +136,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
           <div className="grid md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-[#787878] mb-2">
-                Gender
+                Género
               </label>
               <select
                 required
@@ -144,15 +144,15 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                 onChange={(e) => handleInputChange('gender', e.target.value)}
                 className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
               >
-                <option value="">Select Gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
+                <option value="">Selecciona género</option>
+                <option value="male">Masculino</option>
+                <option value="female">Femenino</option>
               </select>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-[#787878] mb-2">
-                Frequency (days/week)
+                Frecuencia (días/semana)
               </label>
               <select
                 required
@@ -160,16 +160,16 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                 onChange={(e) => handleInputChange('frequency', e.target.value)}
                 className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
               >
-                <option value="">Select Frequency</option>
-                <option value="2">2 days/week</option>
-                <option value="3">3 days/week</option>
-                <option value="5">5 days/week</option>
+                <option value="">Selecciona frecuencia</option>
+                <option value="2">2 días/semana</option>
+                <option value="3">3 días/semana</option>
+                <option value="5">5 días/semana</option>
               </select>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-[#787878] mb-2">
-                Objective
+                Objetivo
               </label>
               <select
                 required
@@ -177,30 +177,30 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                 onChange={(e) => handleInputChange('objective', e.target.value)}
                 className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
               >
-                <option value="">Select Objective</option>
-                <option value="volume">Volume (Muscle Building)</option>
-                <option value="fat_loss">Fat Loss</option>
+                <option value="">Selecciona objetivo</option>
+                <option value="volume">Volumen (Ganancia Muscular)</option>
+                <option value="fat_loss">Pérdida de Grasa</option>
               </select>
             </div>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-[#787878] mb-2">
-              Notes & Instructions
+              Notas e instrucciones
             </label>
             <textarea
               value={formData.notes}
               onChange={(e) => handleInputChange('notes', e.target.value)}
               rows={3}
               className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors resize-none"
-              placeholder="Add training notes, rest periods, progression tips..."
+              placeholder="Agrega notas de entrenamiento, tiempos de descanso, consejos de progresión..."
             />
           </div>
 
           <div>
             <div className="flex justify-between items-center mb-4">
               <label className="text-sm font-medium text-[#787878]">
-                Exercises
+                Ejercicios
               </label>
               <button
                 type="button"
@@ -208,7 +208,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                 className="bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
               >
                 <Plus className="h-4 w-4" />
-                <span>Add Exercise</span>
+                <span>Agregar ejercicio</span>
               </button>
             </div>
 
@@ -216,7 +216,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
               {formData.exercises.map((exercise, index) => (
                 <div key={index} className="bg-[#202020] rounded-xl p-4 border border-[#787878]/20">
                   <div className="flex justify-between items-start mb-3">
-                    <span className="text-[#CBFF00] font-medium">Exercise {index + 1}</span>
+                    <span className="text-[#CBFF00] font-medium">Ejercicio {index + 1}</span>
                     {formData.exercises.length > 1 && (
                       <button
                         type="button"
@@ -236,7 +236,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                         value={exercise.name}
                         onChange={(e) => handleExerciseChange(index, 'name', e.target.value)}
                         className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                        placeholder="Exercise name"
+                        placeholder="Nombre del ejercicio"
                       />
                     </div>
                     <div>
@@ -246,7 +246,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                         value={exercise.sets}
                         onChange={(e) => handleExerciseChange(index, 'sets', e.target.value)}
                         className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                        placeholder="Sets"
+                        placeholder="Series"
                       />
                     </div>
                     <div>
@@ -256,7 +256,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                         value={exercise.reps}
                         onChange={(e) => handleExerciseChange(index, 'reps', e.target.value)}
                         className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                        placeholder="Reps"
+                        placeholder="Repeticiones"
                       />
                     </div>
                   </div>
@@ -267,7 +267,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                       value={exercise.notes}
                       onChange={(e) => handleExerciseChange(index, 'notes', e.target.value)}
                       className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                      placeholder="Exercise notes (optional)"
+                      placeholder="Notas del ejercicio (opcional)"
                     />
                   </div>
                 </div>
@@ -281,14 +281,14 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
               onClick={onClose}
               className="px-6 py-3 bg-[#787878]/20 hover:bg-[#787878]/30 rounded-xl font-medium transition-colors"
             >
-              Cancel
+              Cancelar
             </button>
             <button
               type="submit"
               className="px-6 py-3 bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] rounded-xl font-medium flex items-center space-x-2 transition-colors"
             >
               <Save className="h-4 w-4" />
-              <span>{template ? 'Update Template' : 'Create Template'}</span>
+              <span>{template ? 'Actualizar Plantilla' : 'Crear Plantilla'}</span>
             </button>
           </div>
         </form>
@@ -298,32 +298,34 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
 }
 
 function TemplatePreview({ template }) {
+  const genderLabel = { male: 'masculino', female: 'femenino' };
+  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
   return (
     <div className="bg-[#202020] rounded-xl p-6 border border-[#787878]/20">
       <div className="text-center mb-6">
         <h2 className="text-3xl font-bold text-[#CBFF00] mb-2">{template.name}</h2>
         <div className="flex justify-center space-x-4 text-sm">
           <span className="bg-[#787878]/20 px-3 py-1 rounded-full capitalize">
-            {template.gender}
+            {genderLabel[template.gender]}
           </span>
           <span className="bg-[#787878]/20 px-3 py-1 rounded-full">
-            {template.frequency} days/week
+            {template.frequency} días/semana
           </span>
           <span className="bg-[#787878]/20 px-3 py-1 rounded-full capitalize">
-            {template.objective?.replace('_', ' ')}
+            {objectiveLabel[template.objective]}
           </span>
         </div>
       </div>
 
       {template.notes && (
         <div className="mb-6 p-4 bg-[#CBFF00]/10 border border-[#CBFF00]/20 rounded-lg">
-          <h3 className="font-semibold text-[#CBFF00] mb-2">Training Notes</h3>
+          <h3 className="font-semibold text-[#CBFF00] mb-2">Notas de Entrenamiento</h3>
           <p className="text-[#787878]">{template.notes}</p>
         </div>
       )}
 
       <div className="mb-6">
-        <h3 className="font-semibold text-[#CBFF00] mb-4">Exercise Program</h3>
+        <h3 className="font-semibold text-[#CBFF00] mb-4">Programa de Ejercicios</h3>
         <div className="space-y-3">
           {template.exercises.map((exercise, index) => (
             <div key={index} className="bg-[#2D2D2D] rounded-lg p-4 border border-[#787878]/20">
@@ -349,7 +351,7 @@ function TemplatePreview({ template }) {
             rel="noopener noreferrer"
             className="inline-flex items-center space-x-2 bg-[#DBFE52]/20 hover:bg-[#DBFE52]/30 text-[#DBFE52] px-4 py-2 rounded-lg transition-colors"
           >
-            <span>📹 Watch Exercise Videos</span>
+            <span>📹 Ver videos de ejercicios</span>
           </a>
         </div>
       )}

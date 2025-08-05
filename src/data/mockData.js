@@ -4,14 +4,14 @@ export const mockTemplates = [
     gender: 'male',
     frequency: 3,
     objective: 'volume',
-    name: 'Male Volume 3x/week',
+    name: 'Masculino Volumen 3x/semana',
     exercises: [
       { name: 'Bench Press', sets: 4, reps: '8-10' },
       { name: 'Squats', sets: 4, reps: '8-10' },
       { name: 'Deadlift', sets: 3, reps: '6-8' },
       { name: 'Pull-ups', sets: 3, reps: '8-12' }
     ],
-    notes: 'Focus on progressive overload. Rest 2-3 minutes between sets.',
+    notes: 'Enfócate en la sobrecarga progresiva. Descansa 2-3 minutos entre series.',
     youtubeLink: 'https://youtube.com/watch?v=example1'
   },
   {
@@ -19,14 +19,14 @@ export const mockTemplates = [
     gender: 'female',
     frequency: 3,
     objective: 'fat_loss',
-    name: 'Female Fat Loss 3x/week',
+    name: 'Femenino Pérdida de Grasa 3x/semana',
     exercises: [
       { name: 'Goblet Squats', sets: 3, reps: '12-15' },
       { name: 'Push-ups', sets: 3, reps: '8-12' },
       { name: 'Plank', sets: 3, reps: '30-60sec' },
       { name: 'Mountain Climbers', sets: 3, reps: '20-30' }
     ],
-    notes: 'Keep rest periods short (60-90 seconds). Focus on form and control.',
+    notes: 'Mantén descansos cortos (60-90 segundos). Enfócate en la técnica y el control.',
     youtubeLink: 'https://youtube.com/watch?v=example2'
   },
   {
@@ -34,14 +34,14 @@ export const mockTemplates = [
     gender: 'male',
     frequency: 5,
     objective: 'volume',
-    name: 'Male Volume 5x/week',
+    name: 'Masculino Volumen 5x/semana',
     exercises: [
       { name: 'Bench Press', sets: 5, reps: '6-8' },
       { name: 'Incline DB Press', sets: 4, reps: '8-10' },
       { name: 'Barbell Rows', sets: 4, reps: '8-10' },
       { name: 'Overhead Press', sets: 4, reps: '8-10' }
     ],
-    notes: 'Advanced split routine. Ensure adequate recovery between sessions.',
+    notes: 'Rutina dividida avanzada. Asegura una recuperación adecuada entre sesiones.',
     youtubeLink: 'https://youtube.com/watch?v=example3'
   }
 ];
