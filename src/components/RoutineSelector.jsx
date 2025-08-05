@@ -19,9 +19,9 @@ function RoutineSelector({ onSelect }) {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.objective) newErrors.objective = 'Please select your fitness objective';
-    if (!formData.gender) newErrors.gender = 'Please select your gender';
-    if (!formData.frequency) newErrors.frequency = 'Please select your weekly frequency';
+    if (!formData.objective) newErrors.objective = 'Por favor selecciona tu objetivo de entrenamiento';
+    if (!formData.gender) newErrors.gender = 'Por favor selecciona tu género';
+    if (!formData.frequency) newErrors.frequency = 'Por favor selecciona tu frecuencia semanal';
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -61,30 +61,30 @@ function RoutineSelector({ onSelect }) {
   );
 
   const objectiveOptions = [
-    { value: 'volume', label: 'Muscle Building (Volume)' },
-    { value: 'fat_loss', label: 'Fat Loss & Toning' }
+    { value: 'volume', label: 'Aumento muscular (Volumen)' },
+    { value: 'fat_loss', label: 'Pérdida de grasa y tonificación' }
   ];
 
   const genderOptions = [
-    { value: 'male', label: 'Male' },
-    { value: 'female', label: 'Female' }
+    { value: 'male', label: 'Masculino' },
+    { value: 'female', label: 'Femenino' }
   ];
 
   const frequencyOptions = [
-    { value: '2', label: '2 days per week' },
-    { value: '3', label: '3 days per week' },
-    { value: '5', label: '5 days per week' }
+    { value: '2', label: '2 días por semana' },
+    { value: '3', label: '3 días por semana' },
+    { value: '5', label: '5 días por semana' }
   ];
 
   return (
     <section className="max-w-2xl mx-auto">
       <div className="text-center mb-12">
         <h2 className="text-4xl font-bold mb-4">
-          Let's Build Your
-          <span className="block text-[#CBFF00]">Perfect Routine</span>
+          Construyamos tu
+          <span className="block text-[#CBFF00]">Rutina Perfecta</span>
         </h2>
         <p className="text-[#787878] text-lg">
-          Answer a few questions to get a personalized fitness plan tailored to your goals
+          Responde algunas preguntas para obtener un plan de entrenamiento personalizado adaptado a tus objetivos
         </p>
       </div>
 
@@ -92,39 +92,39 @@ function RoutineSelector({ onSelect }) {
         <div className="space-y-8">
           <CustomSelect
             icon={Target}
-            label="What's your primary fitness objective?"
+            label="¿Cuál es tu objetivo principal de entrenamiento?"
             value={formData.objective}
             options={objectiveOptions}
             onChange={(value) => handleInputChange('objective', value)}
             error={errors.objective}
-            placeholder="Select your goal"
+            placeholder="Selecciona tu objetivo"
           />
 
           <CustomSelect
             icon={User}
-            label="Gender"
+            label="Género"
             value={formData.gender}
             options={genderOptions}
             onChange={(value) => handleInputChange('gender', value)}
             error={errors.gender}
-            placeholder="Select your gender"
+            placeholder="Selecciona tu género"
           />
 
           <CustomSelect
             icon={Calendar}
-            label="How many days per week can you train?"
+            label="¿Cuántos días por semana puedes entrenar?"
             value={formData.frequency}
             options={frequencyOptions}
             onChange={(value) => handleInputChange('frequency', value)}
             error={errors.frequency}
-            placeholder="Select your frequency"
+            placeholder="Selecciona tu frecuencia"
           />
 
           <button
             type="submit"
             className="w-full bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#CBFF00]/30"
           >
-            Find My Perfect Routine
+            Encontrar mi rutina perfecta
           </button>
         </div>
       </form>

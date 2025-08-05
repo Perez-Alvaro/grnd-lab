@@ -5,50 +5,53 @@ function PlanSelector({ routine, onSelect, onBack }) {
   const plans = [
     {
       id: 'basic',
-      name: 'Basic Plan',
+      name: 'Plan Básico',
       price: 29.99,
-      description: 'Perfect for getting started with your fitness journey',
+      description: 'Perfecto para comenzar tu camino fitness',
       features: [
-        'Personalized workout routine',
-        'Exercise instructions & form tips',
-        'PDF download with full routine',
-        'YouTube video demonstrations',
-        'Email delivery within minutes'
+        'Rutina de entrenamiento personalizada',
+        'Instrucciones de ejercicios y consejos de técnica',
+        'Descarga en PDF con la rutina completa',
+        'Demostraciones en video de YouTube',
+        'Entrega por email en minutos'
       ],
       popular: false,
-      buttonText: 'Get Basic Plan',
+      buttonText: 'Obtener Plan Básico',
       buttonClass: 'bg-[#787878] hover:bg-[#787878]/80'
     },
     {
       id: 'premium',
-      name: 'Premium Plan',
+      name: 'Plan Premium',
       price: 79.99,
-      description: 'Complete fitness transformation with personal guidance',
+      description: 'Transformación completa con guía personal',
       features: [
-        'Everything in Basic Plan',
-        'Custom routine modifications',
-        'Direct contact with Matías',
-        'WhatsApp support & guidance',
-        'Weekly progress check-ins',
-        'Nutrition recommendations',
-        'Priority email support'
+        'Todo en el Plan Básico',
+        'Modificaciones personalizadas de la rutina',
+        'Contacto directo con Matías',
+        'Soporte y guía por WhatsApp',
+        'Seguimiento semanal de progreso',
+        'Recomendaciones de nutrición',
+        'Soporte prioritario por email'
       ],
       popular: true,
-      buttonText: 'Get Premium Plan',
+      buttonText: 'Obtener Plan Premium',
       buttonClass: 'bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D]'
     }
   ];
 
   const routinePreview = {
     male: {
-      volume: { title: 'Muscle Building Program', focus: 'Strength & Mass' },
-      fat_loss: { title: 'Male Fat Loss Program', focus: 'Lean & Strong' }
+      volume: { title: 'Programa de Ganancia Muscular', focus: 'Fuerza y Masa' },
+      fat_loss: { title: 'Programa Masculino de Pérdida de Grasa', focus: 'Definido y Fuerte' }
     },
     female: {
-      volume: { title: 'Female Toning Program', focus: 'Curves & Strength' },
-      fat_loss: { title: 'Female Fat Loss Program', focus: 'Lean & Sculpted' }
+      volume: { title: 'Programa Femenino de Tonificación', focus: 'Curvas y Fuerza' },
+      fat_loss: { title: 'Programa Femenino de Pérdida de Grasa', focus: 'Delgada y Esculpida' }
     }
   };
+
+  const genderLabel = { male: 'masculino', female: 'femenino' };
+  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
 
   const preview = routinePreview[routine.gender][routine.objective];
 
@@ -59,25 +62,25 @@ function PlanSelector({ routine, onSelect, onBack }) {
         className="flex items-center space-x-2 text-[#787878] hover:text-[#CBFF00] mb-8 transition-colors"
       >
         <ArrowLeft className="h-5 w-5" />
-        <span>Back to routine selection</span>
+        <span>Volver a la selección de rutina</span>
       </button>
 
       <div className="text-center mb-12">
         <h2 className="text-4xl font-bold mb-4">
-          Your Routine is Ready!
+          ¡Tu rutina está lista!
         </h2>
         <div className="bg-[#2D2D2D] rounded-xl p-6 max-w-md mx-auto border border-[#CBFF00]/30">
           <h3 className="text-xl font-semibold text-[#CBFF00] mb-2">{preview.title}</h3>
           <p className="text-[#787878] mb-2">{preview.focus}</p>
           <div className="flex justify-center space-x-4 text-sm">
             <span className="bg-[#787878]/20 px-3 py-1 rounded-full">
-              {routine.frequency} days/week
+              {routine.frequency} días/semana
             </span>
             <span className="bg-[#787878]/20 px-3 py-1 rounded-full capitalize">
-              {routine.gender}
+              {genderLabel[routine.gender]}
             </span>
             <span className="bg-[#787878]/20 px-3 py-1 rounded-full capitalize">
-              {routine.objective.replace('_', ' ')}
+              {objectiveLabel[routine.objective]}
             </span>
           </div>
         </div>
@@ -97,7 +100,7 @@ function PlanSelector({ routine, onSelect, onBack }) {
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                 <div className="bg-[#CBFF00] text-[#2D2D2D] px-4 py-2 rounded-full text-sm font-semibold flex items-center space-x-1">
                   <Crown className="h-4 w-4" />
-                  <span>Most Popular</span>
+                  <span>Más Popular</span>
                 </div>
               </div>
             )}
@@ -133,7 +136,7 @@ function PlanSelector({ routine, onSelect, onBack }) {
             {plan.id === 'premium' && (
               <div className="mt-4 flex items-center justify-center space-x-2 text-sm text-[#787878]">
                 <MessageCircle className="h-4 w-4" />
-                <span>Includes WhatsApp support</span>
+                <span>Incluye soporte por WhatsApp</span>
               </div>
             )}
           </div>
