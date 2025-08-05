@@ -184,7 +184,7 @@ function OverviewTab({ state }) {
   const recentUsers = state.users.slice(-5);
   const recentSales = state.sales.slice(-5);
   const genderLabel = { male: 'masculino', female: 'femenino' };
-  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
+  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa', maintenance: 'mantenimiento corporal' };
   const planLabel = { basic: 'básico', premium: 'premium' };
 
   return (
@@ -241,7 +241,7 @@ function OverviewTab({ state }) {
 
 function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplate, onDownloadPDF }) {
   const genderLabel = { male: 'masculino', female: 'femenino' };
-  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
+  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa', maintenance: 'mantenimiento corporal' };
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -338,16 +338,6 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
                       <Monitor className="h-3 w-3" />
                       <span>PDF de Escritorio</span>
                     </button>
-                    {template.youtubeLink && (
-                      <a
-                        href={template.youtubeLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center space-x-2 text-sm text-[#F8FE9F] hover:text-[#CBFF00] transition-colors"
-                      >
-                        <span>📹 Videos</span>
-                      </a>
-                    )}
                   </div>
                 </div>
               </div>
@@ -361,7 +351,7 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
 
 function UsersTab({ state }) {
   const genderLabel = { male: 'masculino', female: 'femenino' };
-  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
+  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa', maintenance: 'mantenimiento corporal' };
   const planLabel = { basic: 'básico', premium: 'premium' };
   return (
     <div>

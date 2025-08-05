@@ -8,8 +8,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
     frequency: template?.frequency || '',
     objective: template?.objective || '',
     notes: template?.notes || '',
-    youtubeLink: template?.youtubeLink || '',
-    exercises: template?.exercises || [{ name: '', sets: '', reps: '', notes: '' }]
+    exercises: template?.exercises || [{ name: '', sets: '', reps: '', rest: '', cadence: '', rir: '', youtubeLink: '', notes: '' }]
   });
 
   const [showPreview, setShowPreview] = useState(false);
@@ -29,7 +28,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
   const addExercise = () => {
     setFormData(prev => ({
       ...prev,
-      exercises: [...prev.exercises, { name: '', sets: '', reps: '', notes: '' }]
+      exercises: [...prev.exercises, { name: '', sets: '', reps: '', rest: '', cadence: '', rir: '', youtubeLink: '', notes: '' }]
     }));
   };
 
@@ -54,7 +53,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
   if (showPreview) {
     return (
       <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-        <div className="bg-[#2D2D2D] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="bg-[#2D2D2D] rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
           <div className="p-6 border-b border-[#787878]/20 flex justify-between items-center">
             <h3 className="text-2xl font-bold">Vista previa de la plantilla</h3>
             <div className="flex space-x-2">
@@ -82,7 +81,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-      <div className="bg-[#2D2D2D] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-[#2D2D2D] rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6 border-b border-[#787878]/20 flex justify-between items-center">
           <h3 className="text-2xl font-bold">
             {template ? 'Editar Plantilla' : 'Crear Nueva Plantilla'}
@@ -118,19 +117,6 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                 placeholder="ej., Masculino Volumen 3x/semana"
               />
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-[#787878] mb-2">
-                Enlace de YouTube
-              </label>
-              <input
-                type="url"
-                value={formData.youtubeLink}
-                onChange={(e) => handleInputChange('youtubeLink', e.target.value)}
-                className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                placeholder="https://youtube.com/watch?v=..."
-              />
-            </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-4">
@@ -163,6 +149,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                 <option value="">Selecciona frecuencia</option>
                 <option value="2">2 días/semana</option>
                 <option value="3">3 días/semana</option>
+                <option value="4">4 días/semana</option>
                 <option value="5">5 días/semana</option>
               </select>
             </div>
@@ -180,6 +167,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                 <option value="">Selecciona objetivo</option>
                 <option value="volume">Volumen (Ganancia Muscular)</option>
                 <option value="fat_loss">Pérdida de Grasa</option>
+                <option value="maintenance">Mantenimiento Corporal</option>
               </select>
             </div>
           </div>
@@ -212,7 +200,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
               </button>
             </div>
 
-            <div className="space-y-4 max-h-64 overflow-y-auto">
+            <div className="space-y-4 max-h-96 overflow-y-auto">
               {formData.exercises.map((exercise, index) => (
                 <div key={index} className="bg-[#202020] rounded-xl p-4 border border-[#787878]/20">
                   <div className="flex justify-between items-start mb-3">
@@ -228,7 +216,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                     )}
                   </div>
                   
-                  <div className="grid md:grid-cols-4 gap-3">
+                  <div className="grid md:grid-cols-7 gap-3">
                     <div className="md:col-span-2">
                       <input
                         type="text"
@@ -259,9 +247,43 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                         placeholder="Repeticiones"
                       />
                     </div>
+                    <div>
+                      <input
+                        type="text"
+                        value={exercise.rest}
+                        onChange={(e) => handleExerciseChange(index, 'rest', e.target.value)}
+                        className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+                        placeholder="Descanso"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        value={exercise.cadence}
+                        onChange={(e) => handleExerciseChange(index, 'cadence', e.target.value)}
+                        className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+                        placeholder="Cadencia"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        value={exercise.rir}
+                        onChange={(e) => handleExerciseChange(index, 'rir', e.target.value)}
+                        className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+                        placeholder="RIR"
+                      />
+                    </div>
                   </div>
-                  
-                  <div className="mt-3">
+
+                  <div className="mt-3 grid md:grid-cols-2 gap-3">
+                    <input
+                      type="url"
+                      value={exercise.youtubeLink}
+                      onChange={(e) => handleExerciseChange(index, 'youtubeLink', e.target.value)}
+                      className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+                      placeholder="Enlace de YouTube"
+                    />
                     <input
                       type="text"
                       value={exercise.notes}
@@ -299,7 +321,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
 
 function TemplatePreview({ template }) {
   const genderLabel = { male: 'masculino', female: 'femenino' };
-  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
+  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa', maintenance: 'mantenimiento corporal' };
   return (
     <div className="bg-[#202020] rounded-xl p-6 border border-[#787878]/20">
       <div className="text-center mb-6">
@@ -335,6 +357,16 @@ function TemplatePreview({ template }) {
                   {exercise.sets} × {exercise.reps}
                 </span>
               </div>
+              <div className="grid grid-cols-3 gap-2 text-sm text-[#787878] mb-2">
+                {exercise.rest && <span><span className="text-white">Descanso:</span> {exercise.rest}</span>}
+                {exercise.cadence && <span><span className="text-white">Cadencia:</span> {exercise.cadence}</span>}
+                {exercise.rir && <span><span className="text-white">RIR:</span> {exercise.rir}</span>}
+              </div>
+              {exercise.youtubeLink && (
+                <p className="mb-2 text-sm">
+                  <a href={exercise.youtubeLink} target="_blank" rel="noopener noreferrer" className="text-[#DBFE52] hover:text-[#CBFF00]">Ver video</a>
+                </p>
+              )}
               {exercise.notes && (
                 <p className="text-sm text-[#787878]">{exercise.notes}</p>
               )}
@@ -342,19 +374,6 @@ function TemplatePreview({ template }) {
           ))}
         </div>
       </div>
-
-      {template.youtubeLink && (
-        <div className="text-center">
-          <a
-            href={template.youtubeLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center space-x-2 bg-[#DBFE52]/20 hover:bg-[#DBFE52]/30 text-[#DBFE52] px-4 py-2 rounded-lg transition-colors"
-          >
-            <span>📹 Ver videos de ejercicios</span>
-          </a>
-        </div>
-      )}
     </div>
   );
 }
