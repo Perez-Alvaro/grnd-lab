@@ -12,7 +12,7 @@ export const generateMobilePDF = (template, userInfo = null) => {
   const darkColor = [45, 45, 45]; // #2D2D2D
   const grayColor = [120, 120, 120]; // #787878
     const genderLabel = { male: 'MASCULINO', female: 'FEMENINO' };
-    const objectiveLabel = { volume: 'VOLUMEN', fat_loss: 'PÉRDIDA DE GRASA' };
+    const objectiveLabel = { volume: 'VOLUMEN', fat_loss: 'PÉRDIDA DE GRASA', maintenance: 'MANTENIMIENTO CORPORAL' };
 
   // Mobile-optimized layout
   const margin = 15;
@@ -125,20 +125,36 @@ export const generateMobilePDF = (template, userInfo = null) => {
     pdf.setFont('helvetica', 'bold');
     pdf.text(`${exercise.sets} × ${exercise.reps}`, pageWidth - margin - 30, yPosition + 3);
 
-    // Exercise notes
+    // Exercise details
+    pdf.setTextColor(...grayColor);
+    pdf.setFontSize(9);
+    pdf.setFont('helvetica', 'normal');
+    let detailY = yPosition + 10;
+    if (exercise.rest) {
+      pdf.text(`Descanso: ${exercise.rest}`, margin + 20, detailY);
+      detailY += 4;
+    }
+    if (exercise.cadence) {
+      pdf.text(`Cadencia: ${exercise.cadence}`, margin + 20, detailY);
+      detailY += 4;
+    }
+    if (exercise.rir) {
+      pdf.text(`RIR: ${exercise.rir}`, margin + 20, detailY);
+      detailY += 4;
+    }
+    if (exercise.youtubeLink) {
+      pdf.text(`Video: ${exercise.youtubeLink}`, margin + 20, detailY);
+      detailY += 4;
+    }
     if (exercise.notes) {
-      pdf.setTextColor(...grayColor);
-      pdf.setFontSize(9);
-      pdf.setFont('helvetica', 'normal');
       const exerciseNotesLines = pdf.splitTextToSize(exercise.notes, contentWidth - 25);
-      let noteY = yPosition + 10;
       exerciseNotesLines.forEach(line => {
-        pdf.text(line, margin + 20, noteY);
-        noteY += 4;
+        pdf.text(line, margin + 20, detailY);
+        detailY += 4;
       });
     }
 
-    yPosition += 25;
+    yPosition = detailY + 5;
   });
 
   // Footer
@@ -157,10 +173,6 @@ export const generateMobilePDF = (template, userInfo = null) => {
   pdf.text('Generado por FitPlan Selector', margin, yPosition + 8);
   pdf.text(new Date().toLocaleDateString(), pageWidth - margin - 30, yPosition + 8);
 
-  if (template.youtubeLink) {
-    pdf.text('Video: ' + template.youtubeLink, margin, yPosition + 13);
-  }
-
   return pdf;
 };
 
@@ -176,7 +188,7 @@ export const generateDesktopPDF = (template, userInfo = null) => {
   const darkColor = [45, 45, 45]; // #2D2D2D
   const grayColor = [120, 120, 120]; // #787878
   const genderLabel = { male: 'MASCULINO', female: 'FEMENINO' };
-  const objectiveLabel = { volume: 'VOLUMEN', fat_loss: 'PÉRDIDA DE GRASA' };
+  const objectiveLabel = { volume: 'VOLUMEN', fat_loss: 'PÉRDIDA DE GRASA', maintenance: 'MANTENIMIENTO CORPORAL' };
 
   // Desktop layout with more space
   const margin = 20;
@@ -272,6 +284,23 @@ export const generateDesktopPDF = (template, userInfo = null) => {
 
     yPosition += 12;
 
+    // Exercise details
+    const detailParts = [];
+    if (exercise.rest) detailParts.push(`Descanso: ${exercise.rest}`);
+    if (exercise.cadence) detailParts.push(`Cadencia: ${exercise.cadence}`);
+    if (exercise.rir) detailParts.push(`RIR: ${exercise.rir}`);
+    if (exercise.youtubeLink) detailParts.push(`Video: ${exercise.youtubeLink}`);
+    if (detailParts.length) {
+      pdf.setTextColor(...grayColor);
+      pdf.setFontSize(8);
+      pdf.setFont('helvetica', 'normal');
+      const detailLines = pdf.splitTextToSize(detailParts.join(' • '), leftColumnWidth - 20);
+      detailLines.forEach(line => {
+        pdf.text(line, margin + 15, yPosition);
+        yPosition += 4;
+      });
+    }
+
     // Exercise notes (if any)
     if (exercise.notes) {
       pdf.setTextColor(...grayColor);
@@ -282,8 +311,9 @@ export const generateDesktopPDF = (template, userInfo = null) => {
         pdf.text(line, margin + 15, yPosition);
         yPosition += 4;
       });
-      yPosition += 4;
     }
+
+    yPosition += 4;
   });
 
   // Right Column - Additional Info
@@ -334,28 +364,6 @@ export const generateDesktopPDF = (template, userInfo = null) => {
       rightY += 5;
     });
     rightY += 10;
-  }
-
-  // QR Code placeholder for YouTube link
-  if (template.youtubeLink) {
-    pdf.setFillColor(240, 240, 240);
-    pdf.rect(rightColumnX, rightY, rightColumnWidth, 30, 'F');
-    
-    pdf.setTextColor(...grayColor);
-    pdf.setFontSize(10);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text('VIDEOS DE EJERCICIOS', rightColumnX + 5, rightY + 8);
-    
-    pdf.setFontSize(8);
-    pdf.setFont('helvetica', 'normal');
-    pdf.text('Escanea el código QR o visita:', rightColumnX + 5, rightY + 15);
-    pdf.text(template.youtubeLink, rightColumnX + 5, rightY + 22);
-    
-    // QR code placeholder
-    pdf.setFillColor(200, 200, 200);
-    pdf.rect(rightColumnX + rightColumnWidth - 25, rightY + 5, 20, 20, 'F');
-    pdf.setTextColor(100, 100, 100);
-    pdf.text('QR', rightColumnX + rightColumnWidth - 17, rightY + 17);
   }
 
   // Footer
