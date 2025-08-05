@@ -34,14 +34,15 @@ function RoutineSelector({ onSelect }) {
     }
   };
 
-  const CustomSelect = ({ icon: Icon, label, value, options, onChange, error, placeholder }) => (
+  const CustomSelect = ({ id, icon: Icon, label, value, options, onChange, error, placeholder }) => (
     <div className="space-y-2">
-      <label className="flex items-center space-x-2 text-sm font-medium text-[#787878]">
+      <label htmlFor={id} className="flex items-center space-x-2 text-sm font-medium text-[#787878]">
         <Icon className="h-4 w-4" />
         <span>{label}</span>
       </label>
       <div className="relative">
         <select
+          id={id}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className={`w-full bg-[#2D2D2D] border ${error ? 'border-red-500' : 'border-[#787878]/30'} rounded-xl px-4 py-4 text-white appearance-none cursor-pointer hover:border-[#CBFF00]/50 focus:border-[#CBFF00] focus:outline-none transition-colors`}
@@ -56,7 +57,8 @@ function RoutineSelector({ onSelect }) {
         <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#787878] pointer-events-none" />
       </div>
       {error && <p className="text-red-400 text-sm mt-1">{error}</p>}
-      
+
+
     </div>
   );
 
@@ -91,6 +93,7 @@ function RoutineSelector({ onSelect }) {
       <form onSubmit={handleSubmit} className="bg-[#2D2D2D] rounded-2xl p-8 border border-[#787878]/20">
         <div className="space-y-8">
           <CustomSelect
+            id="objective"
             icon={Target}
             label="¿Cuál es tu objetivo principal de entrenamiento?"
             value={formData.objective}
@@ -101,6 +104,7 @@ function RoutineSelector({ onSelect }) {
           />
 
           <CustomSelect
+            id="gender"
             icon={User}
             label="Género"
             value={formData.gender}
@@ -111,6 +115,7 @@ function RoutineSelector({ onSelect }) {
           />
 
           <CustomSelect
+            id="frequency"
             icon={Calendar}
             label="¿Cuántos días por semana puedes entrenar?"
             value={formData.frequency}
