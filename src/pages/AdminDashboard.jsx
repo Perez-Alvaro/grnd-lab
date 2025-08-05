@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../context/AppContext.jsx';
+import TemplateModal from '../components/TemplateModal.jsx';
+import { generateMobilePDF, generateDesktopPDF } from '../components/PDFGenerator.jsx';
 import { 
   Users, 
   CreditCard, 
@@ -10,12 +12,17 @@ import {
   Eye,
   DollarSign,
   Calendar,
-  Target
+  Target,
+  Download,
+  Smartphone,
+  Monitor
 } from 'lucide-react';
 
 function AdminDashboard() {
-  const { state } = useAppContext();
+  const { state, dispatch } = useAppContext();
   const [activeTab, setActiveTab] = useState('overview');
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [editingTemplate, setEditingTemplate] = useState(null);
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: Eye },
@@ -30,6 +37,39 @@ function AdminDashboard() {
     totalTemplates: state.templates.length,
     basicPlans: state.users.filter(u => u.plan === 'basic').length,
     premiumPlans: state.users.filter(u => u.plan === 'premium').length
+  };
+
+  const handleCreateTemplate = () => {
+    setEditingTemplate(null);
+    setShowTemplateModal(true);
+  };
+
+  const handleEditTemplate = (template) => {
+    setEditingTemplate(template);
+    setShowTemplateModal(true);
+  };
+
+  const handleSaveTemplate = (templateData) => {
+    if (editingTemplate) {
+      dispatch({ type: 'UPDATE_TEMPLATE', payload: templateData });
+    } else {
+      dispatch({ type: 'ADD_TEMPLATE', payload: templateData });
+    }
+  };
+
+  const handleDeleteTemplate = (templateId) => {
+    if (window.confirm('Are you sure you want to delete this template?')) {
+      dispatch({ type: 'DELETE_TEMPLATE', payload: templateId });
+    }
+  };
+
+  const handleDownloadPDF = (template, format) => {
+    const pdf = format === 'mobile' 
+      ? generateMobilePDF(template)
+      : generateDesktopPDF(template);
+    
+    const fileName = `${template.name.replace(/\s+/g, '_')}_${format}.pdf`;
+    pdf.save(fileName);
   };
 
   return (
@@ -116,11 +156,26 @@ function AdminDashboard() {
 
         <div className="p-6">
           {activeTab === 'overview' && <OverviewTab state={state} />}
-          {activeTab === 'templates' && <TemplatesTab state={state} />}
+          {activeTab === 'templates' && (
+            <TemplatesTab 
+              state={state} 
+              onCreateTemplate={handleCreateTemplate}
+              onEditTemplate={handleEditTemplate}
+              onDeleteTemplate={handleDeleteTemplate}
+              onDownloadPDF={handleDownloadPDF}
+            />
+          )}
           {activeTab === 'users' && <UsersTab state={state} />}
           {activeTab === 'sales' && <SalesTab state={state} />}
         </div>
       </div>
+
+      <TemplateModal
+        isOpen={showTemplateModal}
+        onClose={() => setShowTemplateModal(false)}
+        template={editingTemplate}
+        onSave={handleSaveTemplate}
+      />
     </div>
   );
 }
@@ -181,12 +236,15 @@ function OverviewTab({ state }) {
   );
 }
 
-function TemplatesTab({ state }) {
+function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplate, onDownloadPDF }) {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl font-semibold">Workout Templates</h3>
-        <button className="bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors">
+        <button 
+          onClick={onCreateTemplate}
+          className="bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
+        >
           <Plus className="h-4 w-4" />
           <span>Add Template</span>
         </button>
@@ -211,10 +269,32 @@ function TemplatesTab({ state }) {
                 </div>
               </div>
               <div className="flex space-x-2">
-                <button className="p-2 hover:bg-[#787878]/20 rounded-lg transition-colors">
+                <div className="flex space-x-1">
+                  <button
+                    onClick={() => onDownloadPDF(template, 'mobile')}
+                    className="p-2 hover:bg-[#CBFF00]/20 text-[#CBFF00] rounded-lg transition-colors group"
+                    title="Download Mobile PDF"
+                  >
+                    <Smartphone className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => onDownloadPDF(template, 'desktop')}
+                    className="p-2 hover:bg-[#DBFE52]/20 text-[#DBFE52] rounded-lg transition-colors group"
+                    title="Download Desktop PDF"
+                  >
+                    <Monitor className="h-4 w-4" />
+                  </button>
+                </div>
+                <button 
+                  onClick={() => onEditTemplate(template)}
+                  className="p-2 hover:bg-[#787878]/20 rounded-lg transition-colors"
+                >
                   <Edit className="h-4 w-4" />
                 </button>
-                <button className="p-2 hover:bg-red-500/20 text-red-400 rounded-lg transition-colors">
+                <button 
+                  onClick={() => onDeleteTemplate(template.id)}
+                  className="p-2 hover:bg-red-500/20 text-red-400 rounded-lg transition-colors"
+                >
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
@@ -237,15 +317,33 @@ function TemplatesTab({ state }) {
                   </ul>
                 </div>
                 <div>
-                  <h5 className="font-medium text-[#CBFF00] mb-2">YouTube Link:</h5>
-                  <a
-                    href={template.youtubeLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-[#DBFE52] hover:text-[#CBFF00] transition-colors"
-                  >
-                    View Exercise Videos
-                  </a>
+                  <h5 className="font-medium text-[#CBFF00] mb-2">Actions:</h5>
+                  <div className="flex flex-col space-y-2">
+                    <button
+                      onClick={() => onDownloadPDF(template, 'mobile')}
+                      className="flex items-center space-x-2 text-sm bg-[#CBFF00]/20 hover:bg-[#CBFF00]/30 text-[#CBFF00] px-3 py-1 rounded transition-colors"
+                    >
+                      <Smartphone className="h-3 w-3" />
+                      <span>Mobile PDF</span>
+                    </button>
+                    <button
+                      onClick={() => onDownloadPDF(template, 'desktop')}
+                      className="flex items-center space-x-2 text-sm bg-[#DBFE52]/20 hover:bg-[#DBFE52]/30 text-[#DBFE52] px-3 py-1 rounded transition-colors"
+                    >
+                      <Monitor className="h-3 w-3" />
+                      <span>Desktop PDF</span>
+                    </button>
+                    {template.youtubeLink && (
+                      <a
+                        href={template.youtubeLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center space-x-2 text-sm text-[#F8FE9F] hover:text-[#CBFF00] transition-colors"
+                      >
+                        <span>📹 Videos</span>
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
