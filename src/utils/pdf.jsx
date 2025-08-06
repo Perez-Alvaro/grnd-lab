@@ -45,11 +45,17 @@ const createStyles = (format = 'mobile') => {
       marginTop: 2
 
     },
+    dayTitle: {
+      fontSize: headerFont - 1,
+      fontWeight: 'bold',
+      marginBottom: 8,
+      marginTop: 16
+    },
     sectionTitle: {
       fontSize: headerFont - 2,
       fontWeight: 'bold',
       marginBottom: 8,
-      marginTop: 16
+      marginTop: 8
     },
     table: {
       display: 'table',
@@ -180,19 +186,26 @@ function RoutineDocument({ template, userInfo, orientation, format }) {
           </View>
         )}
 
-        {template.warmup && template.warmup.length > 0 && (
-          <View>
-            <Text style={styles.sectionTitle}>Entrada en calor</Text>
-            {renderTable(template.warmup, styles)}
-          </View>
-        )}
+        {template.days &&
+          template.days.map((day, idx) => (
+            <View key={idx}>
+              <Text style={styles.dayTitle}>{day.title || `Día ${idx + 1}`}</Text>
 
-        {template.exercises && template.exercises.length > 0 && (
-          <View>
-            <Text style={styles.sectionTitle}>Entrenamiento</Text>
-            {renderTable(template.exercises, styles)}
-          </View>
-        )}
+              {day.warmup && day.warmup.length > 0 && (
+                <View>
+                  <Text style={styles.sectionTitle}>Entrada en Calor</Text>
+                  {renderTable(day.warmup, styles)}
+                </View>
+              )}
+
+              {day.exercises && day.exercises.length > 0 && (
+                <View>
+                  <Text style={styles.sectionTitle}>Entrenamiento</Text>
+                  {renderTable(day.exercises, styles)}
+                </View>
+              )}
+            </View>
+          ))}
 
 
         <Text style={styles.footer}>
