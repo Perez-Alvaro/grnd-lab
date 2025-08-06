@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, CreditCard, Mail, Shield, CheckCircle } from 'lucide-react';
 import { useAppContext } from '../context/AppContext.jsx';
+import { mockProcessPayment } from '../utils/mockApi.js';
 
 function PaymentForm({ routine, plan, onBack }) {
   const { dispatch } = useAppContext();
@@ -20,37 +21,11 @@ function PaymentForm({ routine, plan, onBack }) {
     e.preventDefault();
     setProcessing(true);
 
-    // Simulate payment processing
-    setTimeout(() => {
-      // Add user to context
-      const newUser = {
-        id: Date.now(),
-        email: formData.email,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        gender: routine.gender,
-        frequency: parseInt(routine.frequency),
-        objective: routine.objective,
-        plan: plan.id,
-        createdAt: new Date().toISOString().split('T')[0]
-      };
-
-      // Add sale to context
-      const newSale = {
-        id: Date.now(),
-        userEmail: formData.email,
-        plan: plan.id,
-        amount: plan.price,
-        date: new Date().toISOString().split('T')[0],
-        status: 'completed'
-      };
-
-      dispatch({ type: 'ADD_USER', payload: newUser });
-      dispatch({ type: 'ADD_SALE', payload: newSale });
-
-      setProcessing(false);
-      setSuccess(true);
-    }, 3000);
+    const { user, sale } = await mockProcessPayment(formData, routine, plan);
+    dispatch({ type: 'ADD_USER', payload: user });
+    dispatch({ type: 'ADD_SALE', payload: sale });
+    setProcessing(false);
+    setSuccess(true);
   };
 
   if (success) {

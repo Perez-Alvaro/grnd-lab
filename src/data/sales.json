@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "userEmail": "john@example.com",
+    "plan": "basic",
+    "amount": 29.99,
+    "date": "2024-01-15",
+    "status": "completed"
+  },
+  {
+    "id": 2,
+    "userEmail": "jane@example.com",
+    "plan": "premium",
+    "amount": 79.99,
+    "date": "2024-01-14",
+    "status": "completed"
+  },
+  {
+    "id": 3,
+    "userEmail": "marce@ejemplo.com",
+    "plan": "basic",
+    "amount": 29.99,
+    "date": "2024-02-10",
+    "status": "completed"
+  },
+  {
+    "id": 4,
+    "userEmail": "luli@ejemplo.com",
+    "plan": "premium",
+    "amount": 79.99,
+    "date": "2024-02-12",
+    "status": "completed"
+  },
+  {
+    "id": 5,
+    "userEmail": "pablo.cba@correo.com",
+    "plan": "basic",
+    "amount": 29.99,
+    "date": "2024-02-18",
+    "status": "completed"
+  },
+  {
+    "id": 6,
+    "userEmail": "rochi@correo.com",
+    "plan": "premium",
+    "amount": 79.99,
+    "date": "2024-02-20",
+    "status": "completed"
+  }
+]

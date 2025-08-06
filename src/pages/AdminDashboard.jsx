@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../context/AppContext.jsx';
 import TemplateModal from '../components/TemplateModal.jsx';
-import { generateMobilePDF, generateDesktopPDF } from '../components/PDFGenerator.jsx';
-import { 
-  Users, 
-  CreditCard, 
-  FileText, 
-  Plus, 
-  Edit, 
+import { downloadRoutinePDF } from '../utils/pdf.jsx';
+import {
+  Users,
+  CreditCard,
+  FileText,
+  Plus,
+  Edit,
   Trash2, 
   Eye,
   DollarSign,
@@ -18,6 +18,8 @@ import {
   Monitor,
   MessageCircle
 } from 'lucide-react';
+
+const planLabel = { basic: 'básico', premium: 'premium' };
 
 function AdminDashboard() {
   const { state, dispatch } = useAppContext();
@@ -65,12 +67,8 @@ function AdminDashboard() {
   };
 
   const handleDownloadPDF = (template, format) => {
-    const pdf = format === 'mobile'
-      ? generateMobilePDF(template)
-      : generateDesktopPDF(template);
-
-    const fileName = `${template.name.replace(/\s+/g, '_')}_${format}.pdf`;
-    pdf.save(fileName);
+    const orientation = format === 'mobile' ? 'portrait' : 'landscape';
+    downloadRoutinePDF(template, null, orientation);
   };
 
   const handleSendWhatsApp = (user) => {
@@ -192,7 +190,6 @@ function OverviewTab({ state }) {
   const recentSales = state.sales.slice(-5);
   const genderLabel = { male: 'masculino', female: 'femenino' };
   const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa', maintenance: 'mantenimiento corporal' };
-  const planLabel = { basic: 'básico', premium: 'premium' };
 
   return (
     <div className="space-y-8">
@@ -418,7 +415,6 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
 function UsersTab({ state, onSendWhatsApp }) {
   const genderLabel = { male: 'masculino', female: 'femenino' };
   const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa', maintenance: 'mantenimiento corporal' };
-  const planLabel = { basic: 'básico', premium: 'premium' };
   const [planFilter, setPlanFilter] = useState('');
   const filteredUsers = planFilter
     ? state.users.filter((user) => user.plan === planFilter)
@@ -495,7 +491,6 @@ function UsersTab({ state, onSendWhatsApp }) {
 function SalesTab({ state }) {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const planLabel = { basic: 'básico', premium: 'premium' };
   const statusLabel = { completed: 'completado' };
 
   const filteredSales = state.sales.filter((sale) => {

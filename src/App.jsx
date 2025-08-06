@@ -5,7 +5,6 @@ import Header from './components/Header.jsx';
 import Home from './pages/Home.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import PaymentSuccess from './pages/PaymentSuccess.jsx';
-import './index.css';
 
 function App() {
   return (
