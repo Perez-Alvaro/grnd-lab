@@ -3,7 +3,7 @@ import { Target, Users, Calendar, Zap } from 'lucide-react';
 
 function Hero() {
   return (
-    <section className="bg-gradient-to-br from-[#202020] via-[#2D2D2D] to-[#202020] py-20">
+    <section className="relative py-20 overflow-hidden bg-[#202020] bg-[radial-gradient(circle_at_top_left,rgba(203,255,0,0.07)_0%,transparent_50%),radial-gradient(circle_at_bottom_right,rgba(203,255,0,0.07)_0%,transparent_50%)] bg-no-repeat bg-cover">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h1 className="text-5xl md:text-7xl font-bold mb-6">
@@ -24,10 +24,10 @@ function Hero() {
             <div className="bg-[#2D2D2D] p-6 rounded-2xl border border-[#787878]/20 hover:border-[#CBFF00]/50 transition-all duration-300 group-hover:transform group-hover:scale-105">
               <Target className="h-12 w-12 text-[#CBFF00] mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">Objetivos Claros</h3>
-              <p className="text-[#787878]">Aumento de volumen, mantenimiento corporal y pérdida de grasa: te tenemos cubierto</p>
+              <p className="text-[#787878]">Ganar masa, bajar de peso: te tenemos cubierto</p>
             </div>
           </div>
-          
+
           <div className="text-center group">
             <div className="bg-[#2D2D2D] p-6 rounded-2xl border border-[#787878]/20 hover:border-[#CBFF00]/50 transition-all duration-300 group-hover:transform group-hover:scale-105">
               <Users className="h-12 w-12 text-[#DBFE52] mx-auto mb-4" />
@@ -35,7 +35,7 @@ function Hero() {
               <p className="text-[#787878]">Rutinas adaptadas a tu estilo de vida, género y nivel</p>
             </div>
           </div>
-          
+
           <div className="text-center group">
             <div className="bg-[#2D2D2D] p-6 rounded-2xl border border-[#787878]/20 hover:border-[#CBFF00]/50 transition-all duration-300 group-hover:transform group-hover:scale-105">
               <Calendar className="h-12 w-12 text-[#F8FE9F] mx-auto mb-4" />
@@ -43,7 +43,7 @@ function Hero() {
               <p className="text-[#787878]">2, 3, 4 o 5 días por semana: está en vos entrenar.</p>
             </div>
           </div>
-          
+
           <div className="text-center group">
             <div className="bg-[#2D2D2D] p-6 rounded-2xl border border-[#787878]/20 hover:border-[#CBFF00]/50 transition-all duration-300 group-hover:transform group-hover:scale-105">
               <Zap className="h-12 w-12 text-[#CBFF00] mx-auto mb-4" />

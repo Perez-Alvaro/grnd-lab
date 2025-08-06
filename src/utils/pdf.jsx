@@ -1,10 +1,13 @@
 import { Document, Page, Text, View, StyleSheet, pdf } from '@react-pdf/renderer';
 
 const palette = {
+
   white: '#FFFFFF',
   grayLight: '#F8F9FA',
   gray: '#DEE2E6',
   grayDark: '#343A40'
+
+
 };
 
 const createStyles = (format = 'mobile') => {
@@ -12,11 +15,13 @@ const createStyles = (format = 'mobile') => {
   const baseFont = isMobile ? 13 : 10;
   const headerFont = isMobile ? 16 : 14;
 
+
   return StyleSheet.create({
     page: {
       padding: 24,
       fontFamily: 'Helvetica',
       fontSize: baseFont,
+
       color: palette.grayDark,
       backgroundColor: palette.white
     },
@@ -26,16 +31,19 @@ const createStyles = (format = 'mobile') => {
       textAlign: 'center',
       borderRadius: 6,
       marginBottom: 12
+
     },
     headerTitle: {
       fontSize: headerFont,
       fontWeight: 'bold',
+
       color: palette.grayDark
     },
     headerSub: {
       fontSize: baseFont - 1,
       color: palette.grayDark,
       marginTop: 2
+
     },
     sectionTitle: {
       fontSize: headerFont - 2,
@@ -49,7 +57,9 @@ const createStyles = (format = 'mobile') => {
       borderStyle: 'solid',
       borderWidth: 1,
       borderColor: palette.gray,
+
       borderRadius: 6
+
     },
     tableRow: {
       flexDirection: 'row'
@@ -61,12 +71,16 @@ const createStyles = (format = 'mobile') => {
       backgroundColor: palette.grayLight
     },
     tableCol: {
+
+
+
       borderStyle: 'solid',
       borderWidth: 1,
       borderColor: palette.gray
     },
     tableCellHeader: {
       margin: 4,
+
       fontSize: baseFont - 1,
       fontWeight: 'bold',
       color: palette.grayDark
@@ -75,6 +89,7 @@ const createStyles = (format = 'mobile') => {
       margin: 4,
       fontSize: baseFont - 2,
       color: palette.grayDark
+
     },
     footer: {
       position: 'absolute',
@@ -82,6 +97,7 @@ const createStyles = (format = 'mobile') => {
       left: 24,
       right: 24,
       textAlign: 'center',
+
       fontSize: baseFont - 3,
       color: palette.grayDark
     }
@@ -143,6 +159,7 @@ function renderTable(exercises, styles) {
   );
 }
 
+
 function RoutineDocument({ template, userInfo, orientation, format }) {
   const styles = createStyles(format);
 
@@ -152,12 +169,14 @@ function RoutineDocument({ template, userInfo, orientation, format }) {
         <View style={styles.header}>
           <Text style={styles.headerTitle}>{template.name}</Text>
           <Text style={styles.headerSub}>{`${template.frequency} días/semana • ${template.objective}`}</Text>
+
         </View>
 
         {template.notes && (
           <View>
             <Text style={styles.sectionTitle}>Notas de entrenamiento</Text>
             <Text style={styles.tableCell}>{template.notes}</Text>
+
           </View>
         )}
 
@@ -174,6 +193,7 @@ function RoutineDocument({ template, userInfo, orientation, format }) {
             {renderTable(template.exercises, styles)}
           </View>
         )}
+
 
         <Text style={styles.footer}>
           {`Generado con FitPlan Selector`}
