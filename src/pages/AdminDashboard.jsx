@@ -317,7 +317,9 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
       </div>
 
       <div className="grid gap-4">
-        {filteredTemplates.map((template) => (
+        {filteredTemplates.map((template) => {
+          const previewExercises = template.days ? (template.days[0]?.exercises || []) : (template.exercises || []);
+          return (
           <div key={template.id} className="bg-[#202020] rounded-xl p-6 border border-[#787878]/20">
             <div className="flex justify-between items-start mb-4">
               <div>
@@ -379,13 +381,13 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
                 <div>
                   <h5 className="font-medium text-[#CBFF00] mb-2">Ejercicios:</h5>
                   <ul className="text-sm text-[#787878] space-y-1">
-                    {template.exercises.slice(0, 3).map((exercise, index) => (
+                    {previewExercises.slice(0, 3).map((exercise, index) => (
                       <li key={index}>
                         {exercise.name} - {exercise.sets}x{exercise.reps}
                       </li>
                     ))}
-                    {template.exercises.length > 3 && (
-                      <li>... y {template.exercises.length - 3} más</li>
+                    {previewExercises.length > 3 && (
+                      <li>... y {previewExercises.length - 3} más</li>
                     )}
                   </ul>
                 </div>
@@ -411,7 +413,7 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
               </div>
             </div>
           </div>
-        ))}
+        );})}
       </div>
     </div>
   );
