@@ -9,6 +9,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
     objective: template?.objective || '',
     tags: template?.tags?.join(', ') || '',
     notes: template?.notes || '',
+    warmup: template?.warmup || [{ name: '', sets: '', reps: '', rest: '', cadence: '', rir: '', youtubeLink: '', notes: '' }],
     exercises: template?.exercises || [{ name: '', sets: '', reps: '', rest: '', cadence: '', rir: '', youtubeLink: '', notes: '' }]
   });
 
@@ -18,6 +19,26 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleWarmupChange = (index, field, value) => {
+    const newWarmup = [...formData.warmup];
+    newWarmup[index] = { ...newWarmup[index], [field]: value };
+    setFormData(prev => ({ ...prev, warmup: newWarmup }));
+  };
+
+  const addWarmup = () => {
+    setFormData(prev => ({
+      ...prev,
+      warmup: [...prev.warmup, { name: '', sets: '', reps: '', rest: '', cadence: '', rir: '', youtubeLink: '', notes: '' }]
+    }));
+  };
+
+  const removeWarmup = (index) => {
+    if (formData.warmup.length > 1) {
+      const newWarmup = formData.warmup.filter((_, i) => i !== index);
+      setFormData(prev => ({ ...prev, warmup: newWarmup }));
+    }
   };
 
   const handleExerciseChange = (index, field, value) => {
@@ -206,6 +227,118 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
           <div>
             <div className="flex justify-between items-center mb-4">
               <label className="text-sm font-medium text-[#787878]">
+                Entrada en calor
+              </label>
+              <button
+                type="button"
+                onClick={addWarmup}
+                className="bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Agregar ejercicio</span>
+              </button>
+            </div>
+
+            <div className="space-y-4 max-h-96 overflow-y-auto">
+              {formData.warmup.map((exercise, index) => (
+                <div key={index} className="bg-[#202020] rounded-xl p-4 border border-[#787878]/20">
+                  <div className="flex justify-between items-start mb-3">
+                    <span className="text-[#CBFF00] font-medium">Ejercicio {index + 1}</span>
+                    {formData.warmup.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeWarmup(index)}
+                        className="text-red-400 hover:text-red-300 p-1 transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="grid md:grid-cols-7 gap-3">
+                    <div className="md:col-span-2">
+                      <input
+                        type="text"
+                        required
+                        value={exercise.name}
+                        onChange={(e) => handleWarmupChange(index, 'name', e.target.value)}
+                        className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+                        placeholder="Nombre del ejercicio"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        required
+                        value={exercise.sets}
+                        onChange={(e) => handleWarmupChange(index, 'sets', e.target.value)}
+                        className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+                        placeholder="Series"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        required
+                        value={exercise.reps}
+                        onChange={(e) => handleWarmupChange(index, 'reps', e.target.value)}
+                        className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+                        placeholder="Repeticiones"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        value={exercise.rest}
+                        onChange={(e) => handleWarmupChange(index, 'rest', e.target.value)}
+                        className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+                        placeholder="Descanso"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        value={exercise.cadence}
+                        onChange={(e) => handleWarmupChange(index, 'cadence', e.target.value)}
+                        className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+                        placeholder="Cadencia"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        value={exercise.rir}
+                        onChange={(e) => handleWarmupChange(index, 'rir', e.target.value)}
+                        className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+                        placeholder="RIR"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-3 grid md:grid-cols-2 gap-3">
+                    <input
+                      type="url"
+                      value={exercise.youtubeLink}
+                      onChange={(e) => handleWarmupChange(index, 'youtubeLink', e.target.value)}
+                      className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+                      placeholder="Enlace de YouTube"
+                    />
+                    <input
+                      type="text"
+                      value={exercise.notes}
+                      onChange={(e) => handleWarmupChange(index, 'notes', e.target.value)}
+                      className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+                      placeholder="Notas del ejercicio (opcional)"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <label className="text-sm font-medium text-[#787878]">
                 Ejercicios
               </label>
               <button
@@ -376,34 +509,67 @@ function TemplatePreview({ template }) {
         </div>
       )}
 
-      <div className="mb-6">
-        <h3 className="font-semibold text-[#CBFF00] mb-4">Programa de Ejercicios</h3>
-        <div className="space-y-3">
-          {template.exercises.map((exercise, index) => (
-            <div key={index} className="bg-[#2D2D2D] rounded-lg p-4 border border-[#787878]/20">
-              <div className="flex justify-between items-start mb-2">
-                <h4 className="font-medium text-white">{exercise.name}</h4>
-                <span className="text-[#CBFF00] font-bold">
-                  {exercise.sets} × {exercise.reps}
-                </span>
+      {template.warmup && template.warmup.length > 0 && (
+        <div className="mb-6">
+          <h3 className="font-semibold text-[#CBFF00] mb-4">Entrada en calor</h3>
+          <div className="space-y-3">
+            {template.warmup.map((exercise, index) => (
+              <div key={index} className="bg-[#2D2D2D] rounded-lg p-4 border border-[#787878]/20">
+                <div className="flex justify-between items-start mb-2">
+                  <h4 className="font-medium text-white">{exercise.name}</h4>
+                  <span className="text-[#CBFF00] font-bold">
+                    {exercise.sets} × {exercise.reps}
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-sm text-[#787878] mb-2">
+                  {exercise.rest && <span><span className="text-white">Descanso:</span> {exercise.rest}</span>}
+                  {exercise.cadence && <span><span className="text-white">Cadencia:</span> {exercise.cadence}</span>}
+                  {exercise.rir && <span><span className="text-white">RIR:</span> {exercise.rir}</span>}
+                </div>
+                {exercise.youtubeLink && (
+                  <p className="mb-2 text-sm">
+                    <a href={exercise.youtubeLink} target="_blank" rel="noopener noreferrer" className="text-[#DBFE52] hover:text-[#CBFF00]">Ver video</a>
+                  </p>
+                )}
+                {exercise.notes && (
+                  <p className="text-sm text-[#787878]">{exercise.notes}</p>
+                )}
               </div>
-              <div className="grid grid-cols-3 gap-2 text-sm text-[#787878] mb-2">
-                {exercise.rest && <span><span className="text-white">Descanso:</span> {exercise.rest}</span>}
-                {exercise.cadence && <span><span className="text-white">Cadencia:</span> {exercise.cadence}</span>}
-                {exercise.rir && <span><span className="text-white">RIR:</span> {exercise.rir}</span>}
-              </div>
-              {exercise.youtubeLink && (
-                <p className="mb-2 text-sm">
-                  <a href={exercise.youtubeLink} target="_blank" rel="noopener noreferrer" className="text-[#DBFE52] hover:text-[#CBFF00]">Ver video</a>
-                </p>
-              )}
-              {exercise.notes && (
-                <p className="text-sm text-[#787878]">{exercise.notes}</p>
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {template.exercises && template.exercises.length > 0 && (
+        <div className="mb-6">
+          <h3 className="font-semibold text-[#CBFF00] mb-4">Programa de Ejercicios</h3>
+          <div className="space-y-3">
+            {template.exercises.map((exercise, index) => (
+              <div key={index} className="bg-[#2D2D2D] rounded-lg p-4 border border-[#787878]/20">
+                <div className="flex justify-between items-start mb-2">
+                  <h4 className="font-medium text-white">{exercise.name}</h4>
+                  <span className="text-[#CBFF00] font-bold">
+                    {exercise.sets} × {exercise.reps}
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-sm text-[#787878] mb-2">
+                  {exercise.rest && <span><span className="text-white">Descanso:</span> {exercise.rest}</span>}
+                  {exercise.cadence && <span><span className="text-white">Cadencia:</span> {exercise.cadence}</span>}
+                  {exercise.rir && <span><span className="text-white">RIR:</span> {exercise.rir}</span>}
+                </div>
+                {exercise.youtubeLink && (
+                  <p className="mb-2 text-sm">
+                    <a href={exercise.youtubeLink} target="_blank" rel="noopener noreferrer" className="text-[#DBFE52] hover:text-[#CBFF00]">Ver video</a>
+                  </p>
+                )}
+                {exercise.notes && (
+                  <p className="text-sm text-[#787878]">{exercise.notes}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

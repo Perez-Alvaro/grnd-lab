@@ -1,40 +1,48 @@
 import { Document, Page, Text, View, StyleSheet, pdf } from '@react-pdf/renderer';
 
 const palette = {
-  jet: '#2D2D2D',
-  lime: '#CBFF00',
-  chartreuse: '#DBFE52',
-  gray: '#787878'
+
+  white: '#FFFFFF',
+  grayLight: '#F8F9FA',
+  gray: '#DEE2E6',
+  grayDark: '#343A40'
+
 };
 
 const createStyles = (format = 'mobile') => {
   const isMobile = format === 'mobile';
-  const baseFont = isMobile ? 12 : 10;
-  const headerFont = isMobile ? 18 : 16;
+  const baseFont = isMobile ? 13 : 10;
+  const headerFont = isMobile ? 16 : 14;
+
 
   return StyleSheet.create({
     page: {
       padding: 24,
       fontFamily: 'Helvetica',
       fontSize: baseFont,
-      color: palette.jet
+
+      color: palette.grayDark,
+      backgroundColor: palette.white
     },
     header: {
-      backgroundColor: palette.jet,
-      padding: 12,
+      backgroundColor: palette.grayLight,
+      padding: 8,
       textAlign: 'center',
-      borderRadius: 4,
-      marginBottom: 16
+      borderRadius: 6,
+      marginBottom: 12
+
     },
     headerTitle: {
       fontSize: headerFont,
       fontWeight: 'bold',
-      color: palette.lime
+
+      color: palette.grayDark
     },
     headerSub: {
-      fontSize: baseFont,
-      color: palette.chartreuse,
-      marginTop: 4
+      fontSize: baseFont - 1,
+      color: palette.grayDark,
+      marginTop: 2
+
     },
     sectionTitle: {
       fontSize: headerFont - 2,
@@ -48,34 +56,37 @@ const createStyles = (format = 'mobile') => {
       borderStyle: 'solid',
       borderWidth: 1,
       borderColor: palette.gray,
-      borderRadius: 4
+
+      borderRadius: 6
+
     },
     tableRow: {
       flexDirection: 'row'
     },
     tableColHeader: {
-      width: '25%',
-      backgroundColor: palette.jet,
       borderStyle: 'solid',
       borderWidth: 1,
-      borderColor: palette.gray
+      borderColor: palette.gray,
+      backgroundColor: palette.grayLight
     },
     tableCol: {
-      width: '25%',
+
       borderStyle: 'solid',
       borderWidth: 1,
       borderColor: palette.gray
     },
     tableCellHeader: {
       margin: 4,
-      fontSize: baseFont,
+
+      fontSize: baseFont - 1,
       fontWeight: 'bold',
-      color: palette.lime
+      color: palette.grayDark
     },
     tableCell: {
       margin: 4,
-      fontSize: baseFont - 1,
-      color: '#555'
+      fontSize: baseFont - 2,
+      color: palette.grayDark
+
     },
     footer: {
       position: 'absolute',
@@ -83,11 +94,68 @@ const createStyles = (format = 'mobile') => {
       left: 24,
       right: 24,
       textAlign: 'center',
-      fontSize: baseFont - 2,
-      color: '#555'
+
+      fontSize: baseFont - 3,
+      color: palette.grayDark
     }
   });
 };
+
+function renderTable(exercises, styles) {
+  return (
+    <View style={styles.table}>
+      <View style={styles.tableRow}>
+        <View style={[styles.tableColHeader, { width: '25%' }]}>
+          <Text style={styles.tableCellHeader}>Ejercicio</Text>
+        </View>
+        <View style={[styles.tableColHeader, { width: '10%' }]}>
+          <Text style={styles.tableCellHeader}>Series</Text>
+        </View>
+        <View style={[styles.tableColHeader, { width: '10%' }]}>
+          <Text style={styles.tableCellHeader}>Reps</Text>
+        </View>
+        <View style={[styles.tableColHeader, { width: '15%' }]}>
+          <Text style={styles.tableCellHeader}>Descanso</Text>
+        </View>
+        <View style={[styles.tableColHeader, { width: '15%' }]}>
+          <Text style={styles.tableCellHeader}>Cadencia</Text>
+        </View>
+        <View style={[styles.tableColHeader, { width: '10%' }]}>
+          <Text style={styles.tableCellHeader}>RIR</Text>
+        </View>
+        <View style={[styles.tableColHeader, { width: '15%' }]}>
+          <Text style={styles.tableCellHeader}>Notas</Text>
+        </View>
+      </View>
+      {exercises.map((ex, idx) => (
+        <View key={idx} style={styles.tableRow}>
+          <View style={[styles.tableCol, { width: '25%' }]}>
+            <Text style={styles.tableCell}>{ex.name}</Text>
+          </View>
+          <View style={[styles.tableCol, { width: '10%' }]}>
+            <Text style={styles.tableCell}>{ex.sets}</Text>
+          </View>
+          <View style={[styles.tableCol, { width: '10%' }]}>
+            <Text style={styles.tableCell}>{ex.reps}</Text>
+          </View>
+          <View style={[styles.tableCol, { width: '15%' }]}>
+            <Text style={styles.tableCell}>{ex.rest || '-'}</Text>
+          </View>
+          <View style={[styles.tableCol, { width: '15%' }]}>
+            <Text style={styles.tableCell}>{ex.cadence || '-'}</Text>
+          </View>
+          <View style={[styles.tableCol, { width: '10%' }]}>
+            <Text style={styles.tableCell}>{ex.rir || '-'}</Text>
+          </View>
+          <View style={[styles.tableCol, { width: '15%' }]}>
+            <Text style={styles.tableCell}>{ex.notes || ''}</Text>
+          </View>
+        </View>
+      ))}
+    </View>
+  );
+}
+
 
 function RoutineDocument({ template, userInfo, orientation, format }) {
   const styles = createStyles(format);
@@ -98,10 +166,7 @@ function RoutineDocument({ template, userInfo, orientation, format }) {
         <View style={styles.header}>
           <Text style={styles.headerTitle}>{template.name}</Text>
           <Text style={styles.headerSub}>{`${template.frequency} días/semana • ${template.objective}`}</Text>
-          <Text style={styles.headerSub}>{new Date().toLocaleDateString()}</Text>
-          {userInfo && (
-            <Text style={styles.headerSub}>{`Para: ${userInfo.firstName} ${userInfo.lastName}`}</Text>
-          )}
+
         </View>
 
         {template.notes && (
@@ -111,48 +176,23 @@ function RoutineDocument({ template, userInfo, orientation, format }) {
           </View>
         )}
 
-        <View>
-          <Text style={styles.sectionTitle}>Ejercicios</Text>
-          <View style={styles.table}>
-            <View style={styles.tableRow}>
-              <View style={[styles.tableColHeader, { width: '40%' }]}>
-                <Text style={styles.tableCellHeader}>Ejercicio</Text>
-              </View>
-              <View style={[styles.tableColHeader, { width: '20%' }]}>
-                <Text style={styles.tableCellHeader}>Series x Reps</Text>
-              </View>
-              <View style={[styles.tableColHeader, { width: '20%' }]}>
-                <Text style={styles.tableCellHeader}>Descanso</Text>
-              </View>
-              <View style={[styles.tableColHeader, { width: '20%' }]}>
-                <Text style={styles.tableCellHeader}>Notas</Text>
-              </View>
-            </View>
-            {template.exercises.map((ex, idx) => (
-              <View key={idx} style={styles.tableRow}>
-                <View style={[styles.tableCol, { width: '40%' }]}>
-                  <Text style={styles.tableCell}>{ex.name}</Text>
-                </View>
-                <View style={[styles.tableCol, { width: '20%' }]}>
-                  <Text style={styles.tableCell}>{`${ex.sets}x${ex.reps}`}</Text>
-                </View>
-                <View style={[styles.tableCol, { width: '20%' }]}>
-                  <Text style={styles.tableCell}>{ex.rest || '-'}</Text>
-                </View>
-                <View style={[styles.tableCol, { width: '20%' }]}>
-                  <Text style={styles.tableCell}>
-                    {[ex.cadence && `Cadencia: ${ex.cadence}`, ex.rir && `RIR: ${ex.rir}`, ex.notes]
-                      .filter(Boolean)
-                      .join(' | ')}
-                  </Text>
-                </View>
-              </View>
-            ))}
+        {template.warmup && template.warmup.length > 0 && (
+          <View>
+            <Text style={styles.sectionTitle}>Entrada en calor</Text>
+            {renderTable(template.warmup, styles)}
           </View>
-        </View>
+        )}
+
+        {template.exercises && template.exercises.length > 0 && (
+          <View>
+            <Text style={styles.sectionTitle}>Entrenamiento</Text>
+            {renderTable(template.exercises, styles)}
+          </View>
+        )}
+
 
         <Text style={styles.footer}>
-          {`Generado para ${userInfo ? userInfo.firstName : 'usuario'} con FitPlan Selector`}
+          {`Generado con FitPlan Selector`}
         </Text>
       </Page>
     </Document>

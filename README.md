@@ -31,7 +31,8 @@ src/
 Para conectar con un backend real, reemplazá las funciones de `mockApi.js` por llamadas a los métodos definidos en `api.js`.
 
 ## 📄 Generación de PDF
-El PDF ahora usa una tabla al estilo Bootstrap para listar ejercicios, un encabezado con colores de la paleta del sitio y tamaño de tipografía adaptable para móvil o escritorio.
+
+El PDF utiliza tablas suaves con bordes redondeados y una paleta en gris y blanco. Permite separar una sección de entrada en calor del entrenamiento principal, mostrando cada ejercicio en columnas individuales (series, repeticiones, descanso, cadencia, RIR y notas). El tamaño de tipografía se adapta según sea móvil o escritorio.
 
 ## 💡 Notas
 Este repositorio está listo para ser mostrado como prototipo funcional y para escalar a una integración completa con backend.
