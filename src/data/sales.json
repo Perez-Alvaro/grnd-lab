@@ -5,7 +5,8 @@
     "plan": "basic",
     "amount": 20000,
     "date": "2024-01-15",
-    "status": "completed"
+    "status": "completed",
+    "templateId": 1
   },
   {
     "id": 2,
@@ -13,7 +14,8 @@
     "plan": "premium",
     "amount": 25000,
     "date": "2024-01-14",
-    "status": "completed"
+    "status": "completed",
+    "templateId": 2
   },
   {
     "id": 3,
@@ -21,7 +23,8 @@
     "plan": "basic",
     "amount": 20000,
     "date": "2024-02-10",
-    "status": "completed"
+    "status": "completed",
+    "templateId": 1
   },
   {
     "id": 4,
@@ -29,7 +32,8 @@
     "plan": "premium",
     "amount": 25000,
     "date": "2024-02-12",
-    "status": "completed"
+    "status": "completed",
+    "templateId": 3
   },
   {
     "id": 5,
@@ -37,7 +41,8 @@
     "plan": "basic",
     "amount": 20000,
     "date": "2024-02-18",
-    "status": "completed"
+    "status": "completed",
+    "templateId": 1
   },
   {
     "id": 6,
@@ -45,6 +50,7 @@
     "plan": "premium",
     "amount": 25000,
     "date": "2024-02-20",
-    "status": "completed"
+    "status": "completed",
+    "templateId": 2
   }
 ]
