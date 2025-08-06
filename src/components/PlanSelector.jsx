@@ -6,8 +6,8 @@ function PlanSelector({ routine, onSelect, onBack }) {
     {
       id: 'basic',
       name: 'Plan Básico',
-      price: 29.99,
-      description: 'Perfecto para comenzar tu camino fitness',
+      price: 20000,
+      description: 'Ideal para iniciar tu cambio físico',
       features: [
         'Rutina de entrenamiento personalizada',
         'Instrucciones de ejercicios y consejos de técnica',
@@ -22,16 +22,15 @@ function PlanSelector({ routine, onSelect, onBack }) {
     {
       id: 'premium',
       name: 'Plan Premium',
-      price: 79.99,
-      description: 'Transformación completa con guía personal',
+      price: 25000,
+      description: 'Rutina a medida con soporte personalizado',
       features: [
         'Todo en el Plan Básico',
         'Modificaciones personalizadas de la rutina',
         'Contacto directo con Matías',
-        'Soporte y guía por WhatsApp',
-        'Seguimiento semanal de progreso',
+        'Soporte y guía por grupo de WhatsApp',
         'Recomendaciones de nutrición',
-        'Soporte prioritario por email'
+        
       ],
       popular: true,
       buttonText: 'Obtener Plan Premium',
@@ -69,7 +68,7 @@ function PlanSelector({ routine, onSelect, onBack }) {
 
       <div className="text-center mb-12">
         <h2 className="text-4xl font-bold mb-4">
-          ¡Tu rutina está lista!
+          ¡Tu rutina ya casi es tuya!
         </h2>
         <div className="bg-[#2D2D2D] rounded-xl p-6 max-w-md mx-auto border border-[#CBFF00]/30">
           <h3 className="text-xl font-semibold text-[#CBFF00] mb-2">{preview.title}</h3>
@@ -115,7 +114,7 @@ function PlanSelector({ routine, onSelect, onBack }) {
               <p className="text-[#787878] mb-4">{plan.description}</p>
               <div className="text-4xl font-bold text-[#CBFF00]">
                 ${plan.price}
-                <span className="text-lg text-[#787878] font-normal"> USD</span>
+                <span className="text-lg text-[#787878] font-normal"> ARS</span>
               </div>
             </div>
 
