@@ -84,11 +84,11 @@ function RoutineSelector({ onSelect }) {
     <section className="max-w-2xl mx-auto">
       <div className="text-center mb-12">
         <h2 className="text-4xl font-bold mb-4">
-          Construyamos tu
+          Armemos tu
           <span className="block text-[#CBFF00]">Rutina Perfecta</span>
         </h2>
         <p className="text-[#787878] text-lg">
-          Responde algunas preguntas para obtener un plan de entrenamiento personalizado adaptado a tus objetivos
+          Respondé algunas preguntas para obtener un plan de entrenamiento personalizado adaptado a tus objetivos
         </p>
       </div>
 
@@ -102,7 +102,7 @@ function RoutineSelector({ onSelect }) {
             options={objectiveOptions}
             onChange={(value) => handleInputChange('objective', value)}
             error={errors.objective}
-            placeholder="Selecciona tu objetivo"
+            placeholder="Seleccioná tu objetivo"
           />
 
           <CustomSelect
@@ -113,25 +113,25 @@ function RoutineSelector({ onSelect }) {
             options={genderOptions}
             onChange={(value) => handleInputChange('gender', value)}
             error={errors.gender}
-            placeholder="Selecciona tu género"
+            placeholder="Seleccioná tu género"
           />
 
           <CustomSelect
             id="frequency"
             icon={Calendar}
-            label="¿Cuántos días por semana puedes entrenar?"
+            label="¿Cuántos días por semana podés entrenar?"
             value={formData.frequency}
             options={frequencyOptions}
             onChange={(value) => handleInputChange('frequency', value)}
             error={errors.frequency}
-            placeholder="Selecciona tu frecuencia"
+            placeholder="Seleccioná tu frecuencia"
           />
 
           <button
             type="submit"
             className="w-full bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#CBFF00]/30"
           >
-            Encontrar mi rutina perfecta
+            Crear mi plan ahora
           </button>
         </div>
       </form>

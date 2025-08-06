@@ -7,15 +7,15 @@ function Hero() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h1 className="text-5xl md:text-7xl font-bold mb-6">
-            Tu
-            <span className="block text-[#CBFF00]">Rutina Fitness Perfecta</span>
+            Empezá a entrenar con 
+            <span className="block text-[#CBFF00]">tu Rutina ideal.</span>
             <span className="block text-3xl md:text-4xl text-[#787878] font-normal mt-4">
-              Diseñada solo para ti
+              Sin vueltas.
             </span>
           </h1>
           <p className="text-xl text-[#787878] max-w-3xl mx-auto leading-relaxed">
-            Obtén rutinas de entrenamiento personalizadas diseñadas por expertos.
-            Elige tus objetivos, frecuencia y déjanos crear el plan perfecto para tu viaje fitness.
+            Diseñado por un profesional, entregado en segundos. 
+            Completá 3 preguntas y accedé a tu rutina optimizada según tus metas reales, sin asesorías innecesarias ni demoras.
           </p>
         </div>
 
@@ -24,7 +24,7 @@ function Hero() {
             <div className="bg-[#2D2D2D] p-6 rounded-2xl border border-[#787878]/20 hover:border-[#CBFF00]/50 transition-all duration-300 group-hover:transform group-hover:scale-105">
               <Target className="h-12 w-12 text-[#CBFF00] mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">Objetivos Claros</h3>
-              <p className="text-[#787878]">Aumento de volumen o pérdida de grasa: te tenemos cubierto</p>
+              <p className="text-[#787878]">Aumento de volumen, mantenimiento corporal y pérdida de grasa: te tenemos cubierto</p>
             </div>
           </div>
           
@@ -32,7 +32,7 @@ function Hero() {
             <div className="bg-[#2D2D2D] p-6 rounded-2xl border border-[#787878]/20 hover:border-[#CBFF00]/50 transition-all duration-300 group-hover:transform group-hover:scale-105">
               <Users className="h-12 w-12 text-[#DBFE52] mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">Personalizado</h3>
-              <p className="text-[#787878]">Rutinas adaptadas a tu género y nivel</p>
+              <p className="text-[#787878]">Rutinas adaptadas a tu estilo de vida, género y nivel</p>
             </div>
           </div>
           
@@ -40,7 +40,7 @@ function Hero() {
             <div className="bg-[#2D2D2D] p-6 rounded-2xl border border-[#787878]/20 hover:border-[#CBFF00]/50 transition-all duration-300 group-hover:transform group-hover:scale-105">
               <Calendar className="h-12 w-12 text-[#F8FE9F] mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">Horario Flexible</h3>
-              <p className="text-[#787878]">2, 3 o 5 días por semana: tú eliges</p>
+              <p className="text-[#787878]">2, 3, 4 o 5 días por semana: está en vos entrenar.</p>
             </div>
           </div>
           
@@ -48,7 +48,7 @@ function Hero() {
             <div className="bg-[#2D2D2D] p-6 rounded-2xl border border-[#787878]/20 hover:border-[#CBFF00]/50 transition-all duration-300 group-hover:transform group-hover:scale-105">
               <Zap className="h-12 w-12 text-[#CBFF00] mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">Entrega Instantánea</h3>
-              <p className="text-[#787878]">Recibe tu rutina inmediatamente después del pago</p>
+              <p className="text-[#787878]">Recibí tu rutina inmediatamente después del pago</p>
             </div>
           </div>
         </div>
@@ -56,7 +56,7 @@ function Hero() {
         <div className="text-center">
           <div className="inline-flex items-center space-x-2 bg-[#F8FE9F]/10 px-6 py-3 rounded-full border border-[#F8FE9F]/20">
             <div className="w-2 h-2 bg-[#CBFF00] rounded-full animate-pulse"></div>
-            <span className="text-[#F8FE9F] font-medium">¿Listo para transformar tu camino fitness?</span>
+            <span className="text-[#F8FE9F] font-medium">🔥 Entrená con un plan hecho para vos</span>
           </div>
         </div>
       </div>

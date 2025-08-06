@@ -69,7 +69,7 @@ function PaymentForm({ routine, plan, onBack }) {
               <li>• El PDF de tu rutina se enviará a {formData.email} en menos de 5 minutos</li>
               <li>• Recibirás enlaces de YouTube con demostraciones de ejercicios</li>
               {plan.id === 'premium' && (
-                <li>• Matías se comunicará contigo en 24 horas para una guía personalizada</li>
+                <li>• Matías se comunicará contigo en 24 horas para darte una bienvenida al equipo MZ</li>
               )}
               <li>• Revisa tu carpeta de spam si no ves el correo</li>
             </ul>
@@ -78,7 +78,7 @@ function PaymentForm({ routine, plan, onBack }) {
           {plan.id === 'premium' && (
             <div className="bg-[#CBFF00]/10 border border-[#CBFF00]/20 rounded-xl p-4 mb-6">
               <p className="text-[#CBFF00] font-semibold">
-                Soporte Premium: Contacta a Matías directamente al +1 (555) 123-4567
+                Soporte Premium: Contacta a Matías directamente al +54 9 3512 80-0414
               </p>
           </div>
           )}
