@@ -31,6 +31,7 @@ src/
 Para conectar con un backend real, reemplazá las funciones de `mockApi.js` por llamadas a los métodos definidos en `api.js`.
 
 ## 📄 Generación de PDF
+
 El PDF utiliza tablas suaves con bordes redondeados y una paleta en gris y blanco. Permite separar una sección de entrada en calor del entrenamiento principal, mostrando cada ejercicio en columnas individuales (series, repeticiones, descanso, cadencia, RIR y notas). El tamaño de tipografía se adapta según sea móvil o escritorio.
 
 ## 💡 Notas

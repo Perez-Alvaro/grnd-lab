@@ -103,7 +103,7 @@ function PaymentForm({ routine, plan, onBack }) {
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl pl-12 pr-4 py-4 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                placeholder="tu@correo.com"
+                placeholder="Enviaremos tu rutina a este mail"
               />
             </div>
           </div>
@@ -119,7 +119,7 @@ function PaymentForm({ routine, plan, onBack }) {
                 value={formData.firstName}
                 onChange={(e) => handleInputChange('firstName', e.target.value)}
                 className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-4 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                placeholder="Juan"
+                placeholder="Manuel"
               />
             </div>
 
@@ -133,7 +133,7 @@ function PaymentForm({ routine, plan, onBack }) {
                 value={formData.lastName}
                 onChange={(e) => handleInputChange('lastName', e.target.value)}
                 className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-4 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                placeholder="Pérez"
+                placeholder="Gonzalez"
               />
             </div>
           </div>
@@ -145,7 +145,7 @@ function PaymentForm({ routine, plan, onBack }) {
             </div>
             <div className="bg-[#CBFF00]/10 border border-[#CBFF00]/20 rounded-lg p-4">
               <p className="text-[#CBFF00] text-sm font-medium">
-                🔄 Esta es una versión demo. En producción se implementaría la integración de pago con Stripe.
+                🔄 Esta es una versión demo. En producción se implementaría la integración de pago con MercadoPago.
               </p>
             </div>
           </div>
@@ -158,7 +158,7 @@ function PaymentForm({ routine, plan, onBack }) {
             <ul className="text-sm text-[#787878] space-y-1">
               <li>• Procesamiento de pago cifrado SSL</li>
               <li>• Envío de email inmediato después del pago</li>
-              <li>• Garantía de reembolso de 30 días</li>
+              <li>• Si te equivocas, podes solicitar otro tipo de rutina</li>
             </ul>
           </div>
 
