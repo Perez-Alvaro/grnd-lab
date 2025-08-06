@@ -15,7 +15,8 @@ import {
   Target,
   Download,
   Smartphone,
-  Monitor
+  Monitor,
+  MessageCircle
 } from 'lucide-react';
 
 function AdminDashboard() {
@@ -64,12 +65,18 @@ function AdminDashboard() {
   };
 
   const handleDownloadPDF = (template, format) => {
-    const pdf = format === 'mobile' 
+    const pdf = format === 'mobile'
       ? generateMobilePDF(template)
       : generateDesktopPDF(template);
-    
+
     const fileName = `${template.name.replace(/\s+/g, '_')}_${format}.pdf`;
     pdf.save(fileName);
+  };
+
+  const handleSendWhatsApp = (user) => {
+    const message = `Hola ${user.email}! Gracias por sumarte al plan premium. Acá tenés el grupo con atención personalizada: https://chat.whatsapp.com/tu-enlace`;
+    const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
   };
 
   return (
@@ -157,15 +164,15 @@ function AdminDashboard() {
         <div className="p-6">
           {activeTab === 'overview' && <OverviewTab state={state} />}
           {activeTab === 'templates' && (
-            <TemplatesTab 
-              state={state} 
+            <TemplatesTab
+              state={state}
               onCreateTemplate={handleCreateTemplate}
               onEditTemplate={handleEditTemplate}
               onDeleteTemplate={handleDeleteTemplate}
               onDownloadPDF={handleDownloadPDF}
             />
           )}
-          {activeTab === 'users' && <UsersTab state={state} />}
+          {activeTab === 'users' && <UsersTab state={state} onSendWhatsApp={handleSendWhatsApp} />}
           {activeTab === 'sales' && <SalesTab state={state} />}
         </div>
       </div>
@@ -242,11 +249,24 @@ function OverviewTab({ state }) {
 function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplate, onDownloadPDF }) {
   const genderLabel = { male: 'masculino', female: 'femenino' };
   const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa', maintenance: 'mantenimiento corporal' };
+  const [filters, setFilters] = useState({ tag: '', gender: '', frequency: '', objective: '' });
+
+  const handleFilterChange = (field, value) => {
+    setFilters(prev => ({ ...prev, [field]: value }));
+  };
+
+  const filteredTemplates = state.templates.filter((template) => {
+    if (filters.tag && !(template.tags || []).some(t => t.includes(filters.tag.toLowerCase()))) return false;
+    if (filters.gender && template.gender !== filters.gender) return false;
+    if (filters.frequency && template.frequency !== parseInt(filters.frequency)) return false;
+    if (filters.objective && template.objective !== filters.objective) return false;
+    return true;
+  });
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl font-semibold">Plantillas de Entrenamiento</h3>
-        <button 
+        <button
           onClick={onCreateTemplate}
           className="bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
         >
@@ -254,9 +274,48 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
           <span>Agregar Plantilla</span>
         </button>
       </div>
+      <div className="grid md:grid-cols-4 gap-4 mb-6">
+        <input
+          type="text"
+          value={filters.tag}
+          onChange={(e) => handleFilterChange('tag', e.target.value.toLowerCase())}
+          placeholder="Tag"
+          className="bg-[#202020] border border-[#787878]/30 rounded-xl px-3 py-2 text-white"
+        />
+        <select
+          value={filters.gender}
+          onChange={(e) => handleFilterChange('gender', e.target.value)}
+          className="bg-[#202020] border border-[#787878]/30 rounded-xl px-3 py-2 text-white"
+        >
+          <option value="">Género</option>
+          <option value="male">Masculino</option>
+          <option value="female">Femenino</option>
+        </select>
+        <select
+          value={filters.frequency}
+          onChange={(e) => handleFilterChange('frequency', e.target.value)}
+          className="bg-[#202020] border border-[#787878]/30 rounded-xl px-3 py-2 text-white"
+        >
+          <option value="">Frecuencia</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+        <select
+          value={filters.objective}
+          onChange={(e) => handleFilterChange('objective', e.target.value)}
+          className="bg-[#202020] border border-[#787878]/30 rounded-xl px-3 py-2 text-white"
+        >
+          <option value="">Objetivo</option>
+          <option value="volume">Volumen</option>
+          <option value="fat_loss">Pérdida de Grasa</option>
+          <option value="maintenance">Mantenimiento</option>
+        </select>
+      </div>
 
       <div className="grid gap-4">
-        {state.templates.map((template) => (
+        {filteredTemplates.map((template) => (
           <div key={template.id} className="bg-[#202020] rounded-xl p-6 border border-[#787878]/20">
             <div className="flex justify-between items-start mb-4">
               <div>
@@ -272,6 +331,13 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
                     {objectiveLabel[template.objective]}
                   </span>
                 </div>
+                {template.tags && (
+                  <div className="flex flex-wrap gap-2 mt-2 text-xs">
+                    {template.tags.map((tag) => (
+                      <span key={tag} className="bg-[#787878]/20 px-2 py-1 rounded">#{tag}</span>
+                    ))}
+                  </div>
+                )}
               </div>
               <div className="flex space-x-2">
                 <div className="flex space-x-1">
@@ -290,13 +356,13 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
                     <Monitor className="h-4 w-4" />
                   </button>
                 </div>
-                <button 
+                <button
                   onClick={() => onEditTemplate(template)}
                   className="p-2 hover:bg-[#787878]/20 rounded-lg transition-colors"
                 >
                   <Edit className="h-4 w-4" />
                 </button>
-                <button 
+                <button
                   onClick={() => onDeleteTemplate(template.id)}
                   className="p-2 hover:bg-red-500/20 text-red-400 rounded-lg transition-colors"
                 >
@@ -349,13 +415,31 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
   );
 }
 
-function UsersTab({ state }) {
+function UsersTab({ state, onSendWhatsApp }) {
   const genderLabel = { male: 'masculino', female: 'femenino' };
   const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa', maintenance: 'mantenimiento corporal' };
   const planLabel = { basic: 'básico', premium: 'premium' };
+  const [planFilter, setPlanFilter] = useState('');
+  const filteredUsers = planFilter
+    ? state.users.filter((user) => user.plan === planFilter)
+    : state.users;
+
   return (
     <div>
       <h3 className="text-xl font-semibold mb-6">Gestión de Usuarios</h3>
+
+      <div className="mb-4">
+        <label className="text-sm text-[#787878] mr-2">Filtrar por plan:</label>
+        <select
+          value={planFilter}
+          onChange={(e) => setPlanFilter(e.target.value)}
+          className="bg-[#202020] border border-[#787878]/30 rounded px-3 py-2 text-white"
+        >
+          <option value="">Todos</option>
+          <option value="basic">Básico</option>
+          <option value="premium">Premium</option>
+        </select>
+      </div>
 
       <div className="overflow-x-auto">
         <table className="w-full">
@@ -367,25 +451,38 @@ function UsersTab({ state }) {
               <th className="text-left py-3 px-4 font-medium text-[#787878]">Objetivo</th>
               <th className="text-left py-3 px-4 font-medium text-[#787878]">Plan</th>
               <th className="text-left py-3 px-4 font-medium text-[#787878]">Fecha</th>
+              <th className="text-left py-3 px-4 font-medium text-[#787878]">Contacto</th>
             </tr>
           </thead>
           <tbody>
-            {state.users.map((user) => (
+            {filteredUsers.map((user) => (
               <tr key={user.id} className="border-b border-[#787878]/10 hover:bg-[#787878]/5">
                 <td className="py-3 px-4">{user.email}</td>
                 <td className="py-3 px-4 capitalize">{genderLabel[user.gender]}</td>
                 <td className="py-3 px-4">{user.frequency}x/semana</td>
                 <td className="py-3 px-4 capitalize">{objectiveLabel[user.objective]}</td>
                 <td className="py-3 px-4">
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${
-                    user.plan === 'premium'
-                      ? 'bg-[#CBFF00]/20 text-[#CBFF00]'
-                      : 'bg-[#787878]/20 text-[#787878]'
-                  }`}>
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-medium ${
+                      user.plan === 'premium'
+                        ? 'bg-[#CBFF00]/20 text-[#CBFF00]'
+                        : 'bg-[#787878]/20 text-[#787878]'
+                    }`}
+                  >
                     {planLabel[user.plan]}
                   </span>
                 </td>
                 <td className="py-3 px-4 text-[#787878]">{user.createdAt}</td>
+                <td className="py-3 px-4">
+                  {user.plan === 'premium' && (
+                    <button
+                      onClick={() => onSendWhatsApp(user)}
+                      className="p-2 hover:bg-[#CBFF00]/20 text-[#CBFF00] rounded-lg transition-colors"
+                    >
+                      <MessageCircle className="h-4 w-4" />
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -396,18 +493,60 @@ function UsersTab({ state }) {
 }
 
 function SalesTab({ state }) {
-  const totalRevenue = state.sales.reduce((sum, sale) => sum + sale.amount, 0);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const planLabel = { basic: 'básico', premium: 'premium' };
   const statusLabel = { completed: 'completado' };
+
+  const filteredSales = state.sales.filter((sale) => {
+    const date = new Date(sale.date);
+    const afterStart = startDate ? date >= new Date(startDate) : true;
+    const beforeEnd = endDate ? date <= new Date(endDate) : true;
+    return afterStart && beforeEnd;
+  });
+
+  const totalRevenue = filteredSales.reduce((sum, sale) => sum + sale.amount, 0);
+  const totalCount = filteredSales.length;
+  const basicCount = filteredSales.filter(s => s.plan === 'basic').length;
+  const premiumCount = filteredSales.filter(s => s.plan === 'premium').length;
+  const basicPercent = totalCount ? Math.round((basicCount / totalCount) * 100) : 0;
+  const premiumPercent = totalCount ? Math.round((premiumCount / totalCount) * 100) : 0;
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl font-semibold">Historial de Ventas</h3>
-        <div className="bg-[#CBFF00]/10 border border-[#CBFF00]/20 rounded-lg px-4 py-2">
-          <span className="text-[#CBFF00] font-semibold">
-            Ingresos Totales: ${totalRevenue.toFixed(2)}
-          </span>
+        <div className="flex items-center space-x-4">
+          <div className="bg-[#CBFF00]/10 border border-[#CBFF00]/20 rounded-lg px-4 py-2">
+            <span className="text-[#CBFF00] font-semibold">
+              Ingresos Totales: ${totalRevenue.toFixed(2)}
+            </span>
+          </div>
+          <div className="text-sm text-[#787878] space-x-2">
+            <span>Básico: {basicPercent}%</span>
+            <span>Premium: {premiumPercent}%</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-4 mb-6">
+        <div>
+          <label className="block text-sm text-[#787878] mb-1">Desde</label>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="bg-[#202020] border border-[#787878]/30 rounded px-3 py-2 text-white"
+          />
+        </div>
+        <div>
+          <label className="block text-sm text-[#787878] mb-1">Hasta</label>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="bg-[#202020] border border-[#787878]/30 rounded px-3 py-2 text-white"
+          />
         </div>
       </div>
 
@@ -423,7 +562,7 @@ function SalesTab({ state }) {
             </tr>
           </thead>
           <tbody>
-            {state.sales.map((sale) => (
+            {filteredSales.map((sale) => (
               <tr key={sale.id} className="border-b border-[#787878]/10 hover:bg-[#787878]/5">
                 <td className="py-3 px-4">{sale.userEmail}</td>
                 <td className="py-3 px-4 capitalize">{planLabel[sale.plan]}</td>
