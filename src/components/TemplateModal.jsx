@@ -7,6 +7,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
     gender: template?.gender || '',
     frequency: template?.frequency || '',
     objective: template?.objective || '',
+    tags: template?.tags?.join(', ') || '',
     notes: template?.notes || '',
     exercises: template?.exercises || [{ name: '', sets: '', reps: '', rest: '', cadence: '', rir: '', youtubeLink: '', notes: '' }]
   });
@@ -44,7 +45,11 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
     const templateData = {
       ...formData,
       id: template?.id || Date.now(),
-      frequency: parseInt(formData.frequency)
+      frequency: parseInt(formData.frequency),
+      tags: formData.tags
+        .split(',')
+        .map(t => t.trim().toLowerCase())
+        .filter(Boolean)
     };
     onSave(templateData);
     onClose();
@@ -170,6 +175,19 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                 <option value="maintenance">Mantenimiento Corporal</option>
               </select>
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#787878] mb-2">
+              Tags (separados por coma)
+            </label>
+            <input
+              type="text"
+              value={formData.tags}
+              onChange={(e) => handleInputChange('tags', e.target.value)}
+              className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+              placeholder="ej., fuerza, piernas, torso"
+            />
           </div>
 
           <div>
@@ -337,6 +355,18 @@ function TemplatePreview({ template }) {
             {objectiveLabel[template.objective]}
           </span>
         </div>
+        {template.tags && template.tags.length > 0 && (
+          <div className="flex justify-center flex-wrap gap-2 mt-3 text-xs">
+            {template.tags.map((tag, index) => (
+              <span
+                key={index}
+                className="bg-[#787878]/20 px-2 py-1 rounded-full"
+              >
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {template.notes && (
