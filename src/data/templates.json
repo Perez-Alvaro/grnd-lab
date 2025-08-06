@@ -10,6 +10,17 @@
       "piernas",
       "fuerza"
     ],
+    "warmup": [
+      {
+        "name": "Jumping Jacks",
+        "sets": 2,
+        "reps": "30",
+        "rest": "30s",
+        "cadence": "rápido",
+        "rir": "",
+        "youtubeLink": ""
+      }
+    ],
     "exercises": [
       {
         "name": "Bench Press",

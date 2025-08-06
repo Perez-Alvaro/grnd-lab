@@ -68,7 +68,7 @@ function AdminDashboard() {
 
   const handleDownloadPDF = (template, format) => {
     const orientation = format === 'mobile' ? 'portrait' : 'landscape';
-    downloadRoutinePDF(template, null, orientation);
+    downloadRoutinePDF(template, null, orientation, format);
   };
 
   const handleSendWhatsApp = (user) => {
