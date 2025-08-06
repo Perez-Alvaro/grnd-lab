@@ -26,12 +26,12 @@ src/
 ## 🔧 Mocks y futura integración
 - `src/utils/mockApi.js` contiene funciones que simulan pago y envío de rutinas.
 - `src/utils/api.js` define funciones vacías para futuras llamadas a `/api/pagar`, `/api/generarRutina` y `/api/enviarRutina`.
-- `src/utils/pdf.jsx` genera PDFs responsivos usando `@react-pdf/renderer`.
+- `src/utils/pdf.jsx` genera PDFs responsivos usando `@react-pdf/renderer` con tablas y cabecera personalizada.
 
 Para conectar con un backend real, reemplazá las funciones de `mockApi.js` por llamadas a los métodos definidos en `api.js`.
 
 ## 📄 Generación de PDF
-El PDF es responsive (márgenes amplios, tipografía legible y bloques en columna) y añade encabezado, fecha y pie con nombre de usuario o plan.
+El PDF ahora usa una tabla al estilo Bootstrap para listar ejercicios, un encabezado con colores de la paleta del sitio y tamaño de tipografía adaptable para móvil o escritorio.
 
 ## 💡 Notas
 Este repositorio está listo para ser mostrado como prototipo funcional y para escalar a una integración completa con backend.
