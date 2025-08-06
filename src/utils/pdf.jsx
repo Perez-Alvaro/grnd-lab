@@ -7,6 +7,7 @@ const palette = {
   gray: '#DEE2E6',
   grayDark: '#343A40'
 
+
 };
 
 const createStyles = (format = 'mobile') => {
@@ -70,6 +71,8 @@ const createStyles = (format = 'mobile') => {
       backgroundColor: palette.grayLight
     },
     tableCol: {
+
+
 
       borderStyle: 'solid',
       borderWidth: 1,
@@ -173,6 +176,7 @@ function RoutineDocument({ template, userInfo, orientation, format }) {
           <View>
             <Text style={styles.sectionTitle}>Notas de entrenamiento</Text>
             <Text style={styles.tableCell}>{template.notes}</Text>
+
           </View>
         )}
 

@@ -34,9 +34,13 @@ function AdminDashboard() {
     { id: 'sales', label: 'Ventas', icon: CreditCard }
   ];
 
+  const currentMonth = new Date().toISOString().slice(0, 7);
   const stats = {
     totalUsers: state.users.length,
     totalSales: state.sales.reduce((sum, sale) => sum + sale.amount, 0),
+    monthlySales: state.sales
+      .filter(sale => sale.date.startsWith(currentMonth))
+      .reduce((sum, sale) => sum + sale.amount, 0),
     totalTemplates: state.templates.length,
     basicPlans: state.users.filter(u => u.plan === 'basic').length,
     premiumPlans: state.users.filter(u => u.plan === 'premium').length
@@ -101,6 +105,7 @@ function AdminDashboard() {
             <div>
               <p className="text-[#787878] text-sm">Ingresos Totales</p>
               <p className="text-2xl font-bold text-[#CBFF00]">${stats.totalSales.toFixed(2)}</p>
+              <p className="text-sm text-[#787878]">Este mes: ${stats.monthlySales.toFixed(2)}</p>
             </div>
             <DollarSign className="h-8 w-8 text-[#787878]" />
           </div>
@@ -493,19 +498,21 @@ function SalesTab({ state }) {
   const [endDate, setEndDate] = useState('');
   const statusLabel = { completed: 'completado' };
 
+  const monthlyTotals = state.sales.reduce((acc, sale) => {
+    const month = sale.date.slice(0, 7);
+    acc[month] = (acc[month] || 0) + sale.amount;
+    return acc;
+  }, {});
+  const overallRevenue = Object.values(monthlyTotals).reduce((sum, val) => sum + val, 0);
+  const currentMonth = new Date().toISOString().slice(0, 7);
+  const currentMonthRevenue = monthlyTotals[currentMonth] || 0;
+
   const filteredSales = state.sales.filter((sale) => {
     const date = new Date(sale.date);
     const afterStart = startDate ? date >= new Date(startDate) : true;
     const beforeEnd = endDate ? date <= new Date(endDate) : true;
     return afterStart && beforeEnd;
   });
-
-  const totalRevenue = filteredSales.reduce((sum, sale) => sum + sale.amount, 0);
-  const totalCount = filteredSales.length;
-  const basicCount = filteredSales.filter(s => s.plan === 'basic').length;
-  const premiumCount = filteredSales.filter(s => s.plan === 'premium').length;
-  const basicPercent = totalCount ? Math.round((basicCount / totalCount) * 100) : 0;
-  const premiumPercent = totalCount ? Math.round((premiumCount / totalCount) * 100) : 0;
 
   return (
     <div>
@@ -514,13 +521,34 @@ function SalesTab({ state }) {
         <div className="flex items-center space-x-4">
           <div className="bg-[#CBFF00]/10 border border-[#CBFF00]/20 rounded-lg px-4 py-2">
             <span className="text-[#CBFF00] font-semibold">
-              Ingresos Totales: ${totalRevenue.toFixed(2)}
+              Total Histórico: ${overallRevenue.toFixed(2)}
             </span>
           </div>
-          <div className="text-sm text-[#787878] space-x-2">
-            <span>Básico: {basicPercent}%</span>
-            <span>Premium: {premiumPercent}%</span>
+          <div className="bg-[#DBFE52]/10 border border-[#DBFE52]/20 rounded-lg px-4 py-2">
+            <span className="text-[#DBFE52] font-semibold">
+              Total Mensual: ${currentMonthRevenue.toFixed(2)}
+            </span>
           </div>
+        </div>
+      </div>
+
+      <div className="mb-6">
+        <h4 className="text-lg font-semibold mb-2">Totales por Mes</h4>
+        <div className="grid md:grid-cols-2 gap-2">
+          {Object.entries(monthlyTotals).sort().map(([month, amount]) => (
+            <div
+              key={month}
+              className="flex justify-between bg-[#202020] border border-[#787878]/20 rounded-lg px-4 py-2"
+            >
+              <span>
+                {new Date(month + '-01').toLocaleString('es-AR', {
+                  month: 'long',
+                  year: 'numeric'
+                })}
+              </span>
+              <span className="font-medium text-[#CBFF00]">${amount.toFixed(2)}</span>
+            </div>
+          ))}
         </div>
       </div>
 
