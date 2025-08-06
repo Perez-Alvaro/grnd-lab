@@ -380,7 +380,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                         <div className="md:col-span-2">
                           <input
                             type="text"
-                            required
+
                             value={exercise.name}
                             onChange={(e) => handleWarmupChange(dayIndex, index, 'name', e.target.value)}
                             className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
@@ -390,7 +390,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                         <div>
                           <input
                             type="text"
-                            required
+
                             value={exercise.sets}
                             onChange={(e) => handleWarmupChange(dayIndex, index, 'sets', e.target.value)}
                             className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
@@ -400,7 +400,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                         <div>
                           <input
                             type="text"
-                            required
+
                             value={exercise.reps}
                             onChange={(e) => handleWarmupChange(dayIndex, index, 'reps', e.target.value)}
                             className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
@@ -499,7 +499,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                         <div className="md:col-span-2">
                           <input
                             type="text"
-                            required
+
                             value={exercise.name}
                             onChange={(e) => handleExerciseChange(dayIndex, index, 'name', e.target.value)}
                             className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
@@ -509,7 +509,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                         <div>
                           <input
                             type="text"
-                            required
+
                             value={exercise.sets}
                             onChange={(e) => handleExerciseChange(dayIndex, index, 'sets', e.target.value)}
                             className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
@@ -519,7 +519,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                         <div>
                           <input
                             type="text"
-                            required
+
                             value={exercise.reps}
                             onChange={(e) => handleExerciseChange(dayIndex, index, 'reps', e.target.value)}
                             className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"

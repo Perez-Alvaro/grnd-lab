@@ -196,6 +196,20 @@ function OverviewTab({ state }) {
   const genderLabel = { male: 'masculino', female: 'femenino' };
   const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa', maintenance: 'mantenimiento corporal' };
 
+  const templateCounts = state.sales.reduce((acc, sale) => {
+    if (sale.templateId) {
+      acc[sale.templateId] = (acc[sale.templateId] || 0) + 1;
+    }
+    return acc;
+  }, {});
+  const topTemplates = Object.entries(templateCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 2)
+    .map(([id, count]) => {
+      const template = state.templates.find((t) => t.id === Number(id));
+      return { name: template ? template.name : `Plantilla ${id}`, count };
+    });
+
   return (
     <div className="space-y-8">
       <div className="grid md:grid-cols-2 gap-8">
@@ -244,6 +258,23 @@ function OverviewTab({ state }) {
           </div>
         </div>
       </div>
+
+      {topTemplates.length > 0 && (
+        <div>
+          <h3 className="text-xl font-semibold mb-4">Rutinas más solicitadas</h3>
+          <div className="space-y-3">
+            {topTemplates.map((tpl) => (
+              <div
+                key={tpl.name}
+                className="flex justify-between bg-[#202020] rounded-lg p-4 border border-[#787878]/20"
+              >
+                <span className="font-medium">{tpl.name}</span>
+                <span className="text-[#CBFF00] font-semibold">{tpl.count}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -500,14 +531,11 @@ function SalesTab({ state }) {
   const [endDate, setEndDate] = useState('');
   const statusLabel = { completed: 'completado' };
 
-  const monthlyTotals = state.sales.reduce((acc, sale) => {
-    const month = sale.date.slice(0, 7);
-    acc[month] = (acc[month] || 0) + sale.amount;
-    return acc;
-  }, {});
-  const overallRevenue = Object.values(monthlyTotals).reduce((sum, val) => sum + val, 0);
+  const overallRevenue = state.sales.reduce((sum, sale) => sum + sale.amount, 0);
   const currentMonth = new Date().toISOString().slice(0, 7);
-  const currentMonthRevenue = monthlyTotals[currentMonth] || 0;
+  const currentMonthRevenue = state.sales
+    .filter((sale) => sale.date.startsWith(currentMonth))
+    .reduce((sum, sale) => sum + sale.amount, 0);
 
   const filteredSales = state.sales.filter((sale) => {
     const date = new Date(sale.date);
@@ -531,26 +559,6 @@ function SalesTab({ state }) {
               Total Mensual: ${currentMonthRevenue.toFixed(2)}
             </span>
           </div>
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <h4 className="text-lg font-semibold mb-2">Totales por Mes</h4>
-        <div className="grid md:grid-cols-2 gap-2">
-          {Object.entries(monthlyTotals).sort().map(([month, amount]) => (
-            <div
-              key={month}
-              className="flex justify-between bg-[#202020] border border-[#787878]/20 rounded-lg px-4 py-2"
-            >
-              <span>
-                {new Date(month + '-01').toLocaleString('es-AR', {
-                  month: 'long',
-                  year: 'numeric'
-                })}
-              </span>
-              <span className="font-medium text-[#CBFF00]">${amount.toFixed(2)}</span>
-            </div>
-          ))}
         </div>
       </div>
 
