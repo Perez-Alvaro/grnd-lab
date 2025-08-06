@@ -1,12 +1,14 @@
 import React, { createContext, useContext, useReducer } from 'react';
-import { mockTemplates, mockUsers, mockSales } from '../data/mockData';
+import templates from '../data/templates.json';
+import users from '../data/users.json';
+import sales from '../data/sales.json';
 
 const AppContext = createContext();
 
 const initialState = {
-  templates: mockTemplates,
-  users: mockUsers,
-  sales: mockSales,
+  templates,
+  users,
+  sales,
   selectedPlan: null,
   loading: false,
   error: null

@@ -1,30 +1,37 @@
-mz-plan-selector
 # 🏋️‍♂️ FitPlan Selector
 
-**FitPlan Selector** es una app web creada para automatizar la entrega de rutinas de entrenamiento según los objetivos del usuario (volumen o definición), su género y frecuencia semanal. 
+**FitPlan Selector** es un prototipo frontend hecho con React + TailwindCSS para generar y entregar rutinas de entrenamiento. Todo el sistema está mocked: los pagos, el envío de emails y la generación de PDF se simulan en el cliente.
 
-El proyecto fue generado con [Bolt](https://bolt.new) usando **React + JavaScript + TailwindCSS**, y está optimizado para ser responsive, moderno y fácil de mantener.
-
----
-
-## 🎯 Funcionalidad actual
-
-- Formulario de selección de rutina (objetivo, género, frecuencia)
-- Estética minimalista con paleta flúor y fondo oscuro
-- Flujo base: selección → descarga de rutina (simulado)
-- Componentes base listos para conectar:
-  - Generador de PDF / Excel
-  - Integración de pagos
-  - Envío de email automático
-  - Dashboard para administración de rutinas
-
----
-
-## 🚀 Instalación y ejecución local
-
-### 1. Cloná el repositorio
+## 🚀 Ejecutar el proyecto
 
 ```bash
-git clone https://github.com/tuusuario/fitplan-selector.git
-cd fitplan-selector
-npm run dev 
+npm install
+npm run dev
+```
+
+El sitio se abrirá en `http://localhost:5173`.
+
+## 🗂️ Estructura
+
+```
+src/
+├── components/      # Componentes reutilizables (Header, Hero, etc.)
+├── pages/           # Páginas completas (Home, AdminDashboard, ...)
+├── data/            # JSON con plantillas, usuarios y ventas mockeadas
+├── utils/           # Funciones auxiliares y mocks (pagos, PDF, etc.)
+├── styles/          # Estilos globales de Tailwind
+└── context/         # Contexto global de la app
+```
+
+## 🔧 Mocks y futura integración
+- `src/utils/mockApi.js` contiene funciones que simulan pago y envío de rutinas.
+- `src/utils/api.js` define funciones vacías para futuras llamadas a `/api/pagar`, `/api/generarRutina` y `/api/enviarRutina`.
+- `src/utils/pdf.jsx` genera PDFs responsivos usando `@react-pdf/renderer`.
+
+Para conectar con un backend real, reemplazá las funciones de `mockApi.js` por llamadas a los métodos definidos en `api.js`.
+
+## 📄 Generación de PDF
+El PDF es responsive (márgenes amplios, tipografía legible y bloques en columna) y añade encabezado, fecha y pie con nombre de usuario o plan.
+
+## 💡 Notas
+Este repositorio está listo para ser mostrado como prototipo funcional y para escalar a una integración completa con backend.
