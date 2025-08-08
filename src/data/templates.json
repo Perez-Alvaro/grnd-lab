@@ -5,62 +5,25 @@
     "frequency": 3,
     "objective": "volume",
     "name": "Masculino Volumen 3x/semana",
-    "tags": ["pecho", "piernas", "fuerza"],
+    "tags": ["general"],
     "days": [
       {
         "title": "Día 1",
-        "warmup": [
-          {
-            "name": "Jumping Jacks",
-            "sets": 2,
-            "reps": "30",
-            "rest": "30s",
-            "cadence": "rápido",
-            "rir": "",
-            "youtubeLink": ""
-          }
-        ],
+        "warmup": [],
         "exercises": [
           {
-            "name": "Bench Press",
-            "sets": 4,
-            "reps": "8-10",
-            "rest": "90s",
-            "cadence": "2-0-2",
-            "rir": "1-2",
-            "youtubeLink": "https://youtube.com/watch?v=example1"
-          },
-          {
-            "name": "Squats",
-            "sets": 4,
-            "reps": "8-10",
-            "rest": "120s",
-            "cadence": "2-0-2",
-            "rir": "1-2",
-            "youtubeLink": "https://youtube.com/watch?v=example1"
-          },
-          {
-            "name": "Deadlift",
+            "name": "Sentadillas",
             "sets": 3,
-            "reps": "6-8",
-            "rest": "180s",
-            "cadence": "2-1-2",
-            "rir": "1",
-            "youtubeLink": "https://youtube.com/watch?v=example1"
-          },
-          {
-            "name": "Pull-ups",
-            "sets": 3,
-            "reps": "8-12",
-            "rest": "90s",
+            "reps": "10",
+            "rest": "60s",
             "cadence": "2-0-2",
             "rir": "2",
-            "youtubeLink": "https://youtube.com/watch?v=example1"
+            "youtubeLink": ""
           }
         ]
       }
     ],
-    "notes": "Enfócate en la sobrecarga progresiva. Descansa 2-3 minutos entre series."
+    "notes": "Rutina de ejemplo."
   },
   {
     "id": 2,
@@ -68,52 +31,25 @@
     "frequency": 3,
     "objective": "fat_loss",
     "name": "Femenino Pérdida de Grasa 3x/semana",
-    "tags": ["cardio", "core", "full body"],
+    "tags": ["cardio"],
     "days": [
       {
         "title": "Día 1",
         "warmup": [],
         "exercises": [
           {
-            "name": "Goblet Squats",
-            "sets": 3,
-            "reps": "12-15",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": "2",
-            "youtubeLink": "https://youtube.com/watch?v=example2"
-          },
-          {
-            "name": "Push-ups",
-            "sets": 3,
-            "reps": "8-12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": "2",
-            "youtubeLink": "https://youtube.com/watch?v=example2"
-          },
-          {
-            "name": "Plank",
-            "sets": 3,
-            "reps": "30-60sec",
-            "rest": "45s",
-            "cadence": "isometría",
-            "rir": "2",
-            "youtubeLink": "https://youtube.com/watch?v=example2"
-          },
-          {
             "name": "Mountain Climbers",
             "sets": 3,
-            "reps": "20-30",
+            "reps": "20",
             "rest": "45s",
             "cadence": "rápido",
             "rir": "2",
-            "youtubeLink": "https://youtube.com/watch?v=example2"
+            "youtubeLink": ""
           }
         ]
       }
     ],
-    "notes": "Mantén descansos cortos (60-90 segundos). Enfócate en la técnica y el control."
+    "notes": "Rutina de ejemplo."
   },
   {
     "id": 3,
@@ -121,140 +57,258 @@
     "frequency": 5,
     "objective": "volume",
     "name": "Masculino Volumen 5x/semana",
-    "tags": ["torso", "volumen"],
+    "tags": ["fuerza"],
     "days": [
       {
         "title": "Día 1",
         "warmup": [],
         "exercises": [
           {
-            "name": "Bench Press",
-            "sets": 5,
-            "reps": "6-8",
-            "rest": "180s",
-            "cadence": "2-1-2",
-            "rir": "1",
-            "youtubeLink": "https://youtube.com/watch?v=example3"
-          },
-          {
-            "name": "Incline DB Press",
+            "name": "Press Banca",
             "sets": 4,
-            "reps": "8-10",
+            "reps": "8",
             "rest": "90s",
             "cadence": "2-0-2",
-            "rir": "1-2",
-            "youtubeLink": "https://youtube.com/watch?v=example3"
-          },
-          {
-            "name": "Barbell Rows",
-            "sets": 4,
-            "reps": "8-10",
-            "rest": "120s",
-            "cadence": "2-0-2",
-            "rir": "1-2",
-            "youtubeLink": "https://youtube.com/watch?v=example3"
-          },
-          {
-            "name": "Overhead Press",
-            "sets": 4,
-            "reps": "8-10",
-            "rest": "90s",
-            "cadence": "2-0-2",
-            "rir": "1-2",
-            "youtubeLink": "https://youtube.com/watch?v=example3"
+            "rir": "2",
+            "youtubeLink": ""
           }
         ]
       }
     ],
-    "notes": "Rutina dividida avanzada. Asegura una recuperación adecuada entre sesiones."
+    "notes": "Rutina de ejemplo."
   },
   {
     "id": 4,
     "gender": "female",
     "frequency": 4,
     "objective": "volume",
-    "name": "Femenino Glúteos y Piernas 4x/semana",
-    "tags": ["gluteos", "piernas", "hipertrofia"],
+    "name": "Femenino Volumen 4x/semana",
+    "tags": ["gluteos"],
     "days": [
       {
         "title": "Día 1",
         "warmup": [],
         "exercises": [
           {
-            "name": "Sentadillas búlgaras",
+            "name": "Hip Thrust",
             "sets": 4,
-            "reps": "10-12",
-            "rest": "90s",
-            "cadence": "2-0-2",
-            "rir": "1-2",
-            "youtubeLink": "https://youtube.com/watch?v=example4"
-          },
-          {
-            "name": "Peso muerto rumano",
-            "sets": 4,
-            "reps": "8-10",
-            "rest": "120s",
-            "cadence": "2-1-2",
-            "rir": "1",
-            "youtubeLink": "https://youtube.com/watch?v=example4"
-          },
-          {
-            "name": "Hip thrust con barra",
-            "sets": 4,
-            "reps": "10-12",
+            "reps": "12",
             "rest": "90s",
             "cadence": "1-0-1",
-            "rir": "1-2",
-            "youtubeLink": "https://youtube.com/watch?v=example4"
+            "rir": "2",
+            "youtubeLink": ""
           }
         ]
       }
     ],
-    "notes": "Metéle con ganas y no te olvides de elongar al final."
+    "notes": "Rutina de ejemplo."
   },
   {
     "id": 5,
     "gender": "male",
     "frequency": 4,
-    "objective": "maintenance",
-    "name": "Masculino Torso-Pierna 4x/semana",
-    "tags": ["fuerza", "torso-pierna", "simple"],
+    "objective": "fat_loss",
+    "name": "Masculino Pérdida de Grasa 4x/semana",
+    "tags": ["cardio"],
     "days": [
       {
         "title": "Día 1",
         "warmup": [],
         "exercises": [
           {
-            "name": "Press militar",
-            "sets": 4,
-            "reps": "6-8",
-            "rest": "120s",
-            "cadence": "2-1-2",
-            "rir": "1",
-            "youtubeLink": "https://youtube.com/watch?v=example5"
-          },
-          {
-            "name": "Dominadas",
-            "sets": 4,
-            "reps": "8-10",
-            "rest": "90s",
-            "cadence": "2-0-2",
-            "rir": "1-2",
-            "youtubeLink": "https://youtube.com/watch?v=example5"
-          },
-          {
-            "name": "Zancadas caminando",
+            "name": "Burpees",
             "sets": 3,
-            "reps": "20 pasos",
+            "reps": "15",
             "rest": "60s",
-            "cadence": "controlado",
+            "cadence": "rápido",
             "rir": "2",
-            "youtubeLink": "https://youtube.com/watch?v=example5"
+            "youtubeLink": ""
           }
         ]
       }
     ],
-    "notes": "Rutina tranqui para mantenerte en forma sin quemarte la cabeza."
+    "notes": "Rutina de ejemplo."
+  },
+  {
+    "id": 6,
+    "gender": "male",
+    "frequency": 4,
+    "objective": "volume",
+    "name": "Masculino Volumen 4x/semana",
+    "tags": ["fuerza"],
+    "days": [
+      {
+        "title": "Día 1",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Dominadas",
+            "sets": 3,
+            "reps": "8",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": "2",
+            "youtubeLink": ""
+          }
+        ]
+      }
+    ],
+    "notes": "Rutina de ejemplo."
+  },
+  {
+    "id": 7,
+    "gender": "female",
+    "frequency": 4,
+    "objective": "fat_loss",
+    "name": "Femenino Pérdida de Grasa 4x/semana",
+    "tags": ["cardio"],
+    "days": [
+      {
+        "title": "Día 1",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Jumping Jacks",
+            "sets": 3,
+            "reps": "30",
+            "rest": "30s",
+            "cadence": "rápido",
+            "rir": "2",
+            "youtubeLink": ""
+          }
+        ]
+      }
+    ],
+    "notes": "Rutina de ejemplo."
+  },
+  {
+    "id": 8,
+    "gender": "female",
+    "frequency": 3,
+    "objective": "volume",
+    "name": "Femenino Volumen 3x/semana",
+    "tags": ["gluteos"],
+    "days": [
+      {
+        "title": "Día 1",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Peso Muerto Rumano",
+            "sets": 3,
+            "reps": "12",
+            "rest": "90s",
+            "cadence": "2-1-2",
+            "rir": "2",
+            "youtubeLink": ""
+          }
+        ]
+      }
+    ],
+    "notes": "Rutina de ejemplo."
+  },
+  {
+    "id": 9,
+    "gender": "male",
+    "frequency": 3,
+    "objective": "fat_loss",
+    "name": "Masculino Pérdida de Grasa 3x/semana",
+    "tags": ["cardio"],
+    "days": [
+      {
+        "title": "Día 1",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Cuerda",
+            "sets": 3,
+            "reps": "1min",
+            "rest": "30s",
+            "cadence": "rápido",
+            "rir": "2",
+            "youtubeLink": ""
+          }
+        ]
+      }
+    ],
+    "notes": "Rutina de ejemplo."
+  },
+  {
+    "id": 10,
+    "gender": "female",
+    "frequency": 5,
+    "objective": "volume",
+    "name": "Femenino Volumen 5x/semana",
+    "tags": ["fuerza"],
+    "days": [
+      {
+        "title": "Día 1",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Press de Pecho con Mancuernas",
+            "sets": 4,
+            "reps": "10",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": "2",
+            "youtubeLink": ""
+          }
+        ]
+      }
+    ],
+    "notes": "Rutina de ejemplo."
+  },
+  {
+    "id": 11,
+    "gender": "male",
+    "frequency": 5,
+    "objective": "fat_loss",
+    "name": "Masculino Pérdida de Grasa 5x/semana",
+    "tags": ["cardio"],
+    "days": [
+      {
+        "title": "Día 1",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Remo con Barra",
+            "sets": 3,
+            "reps": "12",
+            "rest": "60s",
+            "cadence": "2-0-2",
+            "rir": "2",
+            "youtubeLink": ""
+          }
+        ]
+      }
+    ],
+    "notes": "Rutina de ejemplo."
+  },
+  {
+    "id": 12,
+    "gender": "female",
+    "frequency": 5,
+    "objective": "fat_loss",
+    "name": "Femenino Pérdida de Grasa 5x/semana",
+    "tags": ["cardio"],
+    "days": [
+      {
+        "title": "Día 1",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Saltos en Caja",
+            "sets": 3,
+            "reps": "12",
+            "rest": "60s",
+            "cadence": "rápido",
+            "rir": "2",
+            "youtubeLink": ""
+          }
+        ]
+      }
+    ],
+    "notes": "Rutina de ejemplo."
   }
 ]
-

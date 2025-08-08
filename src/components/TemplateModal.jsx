@@ -257,7 +257,6 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                 className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
               >
                 <option value="">Selecciona frecuencia</option>
-                <option value="2">2 días/semana</option>
                 <option value="3">3 días/semana</option>
                 <option value="4">4 días/semana</option>
                 <option value="5">5 días/semana</option>
@@ -277,7 +276,6 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                 <option value="">Selecciona objetivo</option>
                 <option value="volume">Volumen (Ganancia Muscular)</option>
                 <option value="fat_loss">Pérdida de Grasa</option>
-                <option value="maintenance">Mantenimiento Corporal</option>
               </select>
             </div>
           </div>
@@ -613,7 +611,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
 
 function TemplatePreview({ template }) {
   const genderLabel = { male: 'masculino', female: 'femenino' };
-  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa', maintenance: 'mantenimiento corporal' };
+const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
   return (
     <div className="bg-[#202020] rounded-xl p-6 border border-[#787878]/20">
       <div className="text-center mb-6">
