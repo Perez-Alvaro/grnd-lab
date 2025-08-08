@@ -1,239 +1,211 @@
-import { Document, Page, Text, View, StyleSheet, pdf } from '@react-pdf/renderer';
+import { Document, Page, View, Text, StyleSheet, Image, pdf } from '@react-pdf/renderer';
 
 const palette = {
-
-  white: '#FFFFFF',
-  grayLight: '#F8F9FA',
-  gray: '#DEE2E6',
-  grayDark: '#343A40'
-
-
+  background: '#202020',
+  card: '#2D2D2D',
+  neutral: '#787878',
+  accent: '#CBFF00',
+  secondary: '#DBFE52',
+  success: '#F8FE9F',
+  text: '#FFFFFF',
 };
 
 const createStyles = (format = 'mobile') => {
   const isMobile = format === 'mobile';
-  const baseFont = isMobile ? 13 : 10;
-  const headerFont = isMobile ? 16 : 14;
-
-
   return StyleSheet.create({
     page: {
-      padding: 24,
+      padding: isMobile ? 24 : 36,
+      backgroundColor: palette.background,
       fontFamily: 'Helvetica',
-      fontSize: baseFont,
-
-      color: palette.grayDark,
-      backgroundColor: palette.white
+      fontSize: 14,
+      color: palette.text,
     },
     header: {
-      backgroundColor: palette.grayLight,
-      padding: 8,
-      textAlign: 'center',
-      borderRadius: 6,
-      marginBottom: 12
-
+      marginBottom: 16,
     },
     headerTitle: {
-      fontSize: headerFont,
-      fontWeight: 'bold',
-
-      color: palette.grayDark
+      fontSize: 20,
+      fontWeight: 600,
+      color: palette.text,
     },
     headerSub: {
-      fontSize: baseFont - 1,
-      color: palette.grayDark,
-      marginTop: 2
-
+      fontSize: 12,
+      color: palette.neutral,
+      marginTop: 4,
+    },
+    separator: {
+      height: 1,
+      backgroundColor: '#2D2D2D',
+      marginTop: 4,
+      marginBottom: 16,
     },
     dayTitle: {
-      fontSize: headerFont - 1,
-      fontWeight: 'bold',
-      marginBottom: 8,
-      marginTop: 16
+      fontSize: isMobile ? 20 : 22,
+      fontWeight: 600,
+      color: palette.success,
+      marginBottom: 12,
     },
     sectionTitle: {
-      fontSize: headerFont - 2,
-      fontWeight: 'bold',
+      fontSize: 16,
+      fontWeight: 600,
+      color: palette.text,
       marginBottom: 8,
-      marginTop: 8
+      marginTop: 8,
     },
-    table: {
-      display: 'table',
-      width: 'auto',
-      borderStyle: 'solid',
+    card: {
+      backgroundColor: palette.card,
+      borderRadius: 16,
       borderWidth: 1,
-      borderColor: palette.gray,
-
-      borderRadius: 6
-
+      borderColor: 'rgba(120,120,120,0.2)',
+      padding: isMobile ? 16 : 20,
+      marginBottom: 16,
     },
-    tableRow: {
-      flexDirection: 'row'
+    topRow: {
+      flexDirection: isMobile ? 'column' : 'row',
+      gap: 12,
     },
-    tableColHeader: {
-      borderStyle: 'solid',
-      borderWidth: 1,
-      borderColor: palette.gray,
-      backgroundColor: palette.grayLight
+    thumbnail: {
+      width: 84,
+      height: 56,
+      borderRadius: 8,
+      backgroundColor: '#202020',
     },
-    tableCol: {
-
-
-
-      borderStyle: 'solid',
-      borderWidth: 1,
-      borderColor: palette.gray
+    title: {
+      fontSize: isMobile ? 18 : 20,
+      fontWeight: 600,
+      color: palette.text,
+      flexGrow: 1,
+      marginTop: isMobile ? 8 : 0,
     },
-    tableCellHeader: {
-      margin: 4,
-
-      fontSize: baseFont - 1,
-      fontWeight: 'bold',
-      color: palette.grayDark
+    metricsRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+      marginTop: 12,
     },
-    tableCell: {
-      margin: 4,
-      fontSize: baseFont - 2,
-      color: palette.grayDark
-
+    metricItem: {
+      width: isMobile ? '48%' : '18%',
+      marginBottom: 8,
     },
-    footer: {
-      position: 'absolute',
-      bottom: 24,
-      left: 24,
-      right: 24,
-      textAlign: 'center',
-
-      fontSize: baseFont - 3,
-      color: palette.grayDark
-    }
+    metricLabel: {
+      fontSize: isMobile ? 12 : 13,
+      color: '#A0A0A0',
+    },
+    metricValue: {
+      fontSize: 16,
+      color: '#F0F0F0',
+    },
+    notes: {
+      fontSize: isMobile ? 13 : 14,
+      color: '#CFCFCF',
+      marginTop: 8,
+    },
+    divider: {
+      height: 1,
+      backgroundColor: 'rgba(120,120,120,0.2)',
+      marginVertical: 8,
+    },
   });
 };
 
-function renderTable(exercises, styles) {
-  return (
-    <View style={styles.table}>
-      <View style={styles.tableRow}>
-        <View style={[styles.tableColHeader, { width: '25%' }]}>
-          <Text style={styles.tableCellHeader}>Ejercicio</Text>
-        </View>
-        <View style={[styles.tableColHeader, { width: '10%' }]}>
-          <Text style={styles.tableCellHeader}>Series</Text>
-        </View>
-        <View style={[styles.tableColHeader, { width: '10%' }]}>
-          <Text style={styles.tableCellHeader}>Reps</Text>
-        </View>
-        <View style={[styles.tableColHeader, { width: '15%' }]}>
-          <Text style={styles.tableCellHeader}>Descanso</Text>
-        </View>
-        <View style={[styles.tableColHeader, { width: '15%' }]}>
-          <Text style={styles.tableCellHeader}>Cadencia</Text>
-        </View>
-        <View style={[styles.tableColHeader, { width: '10%' }]}>
-          <Text style={styles.tableCellHeader}>RIR</Text>
-        </View>
-        <View style={[styles.tableColHeader, { width: '15%' }]}>
-          <Text style={styles.tableCellHeader}>Notas</Text>
-        </View>
-      </View>
-      {exercises.map((ex, idx) => (
-        <View key={idx} style={styles.tableRow}>
-          <View style={[styles.tableCol, { width: '25%' }]}>
-            <Text style={styles.tableCell}>{ex.name}</Text>
-          </View>
-          <View style={[styles.tableCol, { width: '10%' }]}>
-            <Text style={styles.tableCell}>{ex.sets}</Text>
-          </View>
-          <View style={[styles.tableCol, { width: '10%' }]}>
-            <Text style={styles.tableCell}>{ex.reps}</Text>
-          </View>
-          <View style={[styles.tableCol, { width: '15%' }]}>
-            <Text style={styles.tableCell}>{ex.rest || '-'}</Text>
-          </View>
-          <View style={[styles.tableCol, { width: '15%' }]}>
-            <Text style={styles.tableCell}>{ex.cadence || '-'}</Text>
-          </View>
-          <View style={[styles.tableCol, { width: '10%' }]}>
-            <Text style={styles.tableCell}>{ex.rir || '-'}</Text>
-          </View>
-          <View style={[styles.tableCol, { width: '15%' }]}>
-            <Text style={styles.tableCell}>{ex.notes || ''}</Text>
-          </View>
-        </View>
-      ))}
+const Metric = ({ label, value, styles }) => (
+  <View style={styles.metricItem}>
+    <Text style={styles.metricLabel}>{label}</Text>
+    <Text style={styles.metricValue}>{value || '-'}</Text>
+  </View>
+);
+
+const ExerciseCard = ({ exercise, format, styles }) => (
+  <View style={styles.card}>
+    <View style={styles.topRow}>
+      {exercise.thumbnailUrl ? (
+        <Image src={exercise.thumbnailUrl} style={styles.thumbnail} />
+      ) : (
+        <View style={styles.thumbnail} />
+      )}
+      <Text style={styles.title}>{exercise.title}</Text>
     </View>
-  );
-}
+    {exercise.variants && exercise.variants.length > 0 ? (
+      exercise.variants.map((variant, idx) => (
+        <View key={idx}>
+          {idx > 0 && <View style={styles.divider} />}
+          <View style={styles.metricsRow}>
+            <Metric label="Series" value={variant.series} styles={styles} />
+            <Metric label="Rep." value={variant.reps} styles={styles} />
+            <Metric label="Desc." value={variant.descanso} styles={styles} />
+            <Metric label="Cadencia" value={variant.cadencia} styles={styles} />
+            <Metric label="RIR" value={variant.rir} styles={styles} />
+          </View>
+          {variant.notas ? <Text style={styles.notes}>{variant.notas}</Text> : null}
+        </View>
+      ))
+    ) : (
+      <>
+        <View style={styles.metricsRow}>
+          <Metric label="Series" value={exercise.series} styles={styles} />
+          <Metric label="Rep." value={exercise.reps} styles={styles} />
+          <Metric label="Desc." value={exercise.descanso} styles={styles} />
+          <Metric label="Cadencia" value={exercise.cadencia} styles={styles} />
+          <Metric label="RIR" value={exercise.rir} styles={styles} />
+        </View>
+        {exercise.notas ? <Text style={styles.notes}>{exercise.notas}</Text> : null}
+      </>
+    )}
+  </View>
+);
 
+const DaySection = ({ dia, format, styles }) => (
+  <View style={{ marginBottom: 24 }}>
+    <Text style={styles.dayTitle}>{dia.titulo}</Text>
+    {dia.entradaEnCalor && dia.entradaEnCalor.length > 0 && (
+      <View>
+        <Text style={styles.sectionTitle}>Entrada en calor</Text>
+        {dia.entradaEnCalor.map((ex, idx) => (
+          <ExerciseCard key={`w-${idx}`} exercise={ex} format={format} styles={styles} />
+        ))}
+      </View>
+    )}
+    {dia.entrenamiento && dia.entrenamiento.length > 0 && (
+      <View>
+        <Text style={styles.sectionTitle}>Entrenamiento</Text>
+        {dia.entrenamiento.map((ex, idx) => (
+          <ExerciseCard key={`e-${idx}`} exercise={ex} format={format} styles={styles} />
+        ))}
+      </View>
+    )}
+  </View>
+);
 
-function RoutineDocument({ template, userInfo, orientation, format }) {
+const PdfDocument = ({ data, format = 'mobile' }) => {
   const styles = createStyles(format);
-
   return (
     <Document>
-      <Page size="A4" orientation={orientation} style={styles.page}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>{template.name}</Text>
-          <Text style={styles.headerSub}>{`${template.frequency} días/semana • ${template.objective}`}</Text>
-
-        </View>
-
-        {template.notes && (
-          <View>
-            <Text style={styles.sectionTitle}>Notas de entrenamiento</Text>
-            <Text style={styles.tableCell}>{template.notes}</Text>
-
+      <Page size="A4" style={styles.page}>
+        {data.planName && (
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Rutina – {data.planName}</Text>
+            {(data.clientName || data.objective || data.frecuencia) && (
+              <Text style={styles.headerSub}>
+                {[data.clientName, data.objective, data.frecuencia].filter(Boolean).join(' • ')}
+              </Text>
+            )}
+            <View style={styles.separator} />
           </View>
         )}
-
-        {template.days &&
-          template.days.map((day, idx) => (
-            <View key={idx}>
-              <Text style={styles.dayTitle}>{day.title || `Día ${idx + 1}`}</Text>
-
-              {day.warmup && day.warmup.length > 0 && (
-                <View>
-                  <Text style={styles.sectionTitle}>Entrada en Calor</Text>
-                  {renderTable(day.warmup, styles)}
-                </View>
-              )}
-
-              {day.exercises && day.exercises.length > 0 && (
-                <View>
-                  <Text style={styles.sectionTitle}>Entrenamiento</Text>
-                  {renderTable(day.exercises, styles)}
-                </View>
-              )}
-            </View>
-          ))}
-
-
-        <Text style={styles.footer}>
-          {`Generado con FitPlan Selector`}
-        </Text>
+        {data.dias.map((dia, idx) => (
+          <DaySection key={idx} dia={dia} format={format} styles={styles} />
+        ))}
       </Page>
     </Document>
   );
-}
+};
 
-export async function downloadRoutinePDF(
-  template,
-  userInfo = null,
-  orientation = 'portrait',
-  format = 'mobile'
-) {
-  const blob = await pdf(
-    <RoutineDocument
-      template={template}
-      userInfo={userInfo}
-      orientation={orientation}
-      format={format}
-    />
-  ).toBlob();
+export async function generateRoutinePdf(data, format = 'mobile') {
+  const blob = await pdf(<PdfDocument data={data} format={format} />).toBlob();
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = `${template.name.replace(/\s+/g, '_')}.pdf`;
+  link.download = `${(data.planName || 'rutina').replace(/\s+/g, '_')}.pdf`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

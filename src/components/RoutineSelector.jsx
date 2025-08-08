@@ -64,8 +64,7 @@ function RoutineSelector({ onSelect }) {
 
   const objectiveOptions = [
     { value: 'volume', label: 'Aumento muscular (Volumen)' },
-    { value: 'fat_loss', label: 'Pérdida de grasa y tonificación' },
-    { value: 'maintenance', label: 'Mantenimiento corporal' }
+    { value: 'fat_loss', label: 'Pérdida de grasa y tonificación' }
   ];
 
   const genderOptions = [
@@ -74,7 +73,6 @@ function RoutineSelector({ onSelect }) {
   ];
 
   const frequencyOptions = [
-    { value: '2', label: '2 días por semana' },
     { value: '3', label: '3 días por semana' },
     { value: '4', label: '4 días por semana' },
     { value: '5', label: '5 días por semana' }

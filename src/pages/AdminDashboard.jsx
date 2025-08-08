@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../context/AppContext.jsx';
 import TemplateModal from '../components/TemplateModal.jsx';
-import { downloadRoutinePDF } from '../utils/pdf.jsx';
+import { generateRoutinePdf } from '../utils/pdf.jsx';
 import {
   Users,
   CreditCard,
   FileText,
   Plus,
   Edit,
-  Trash2, 
+  Trash2,
   Eye,
   DollarSign,
-  Calendar,
-  Target,
-  Download,
+  PieChart,
   Smartphone,
   Monitor,
   MessageCircle
@@ -42,8 +40,16 @@ function AdminDashboard() {
       .filter(sale => sale.date.startsWith(currentMonth))
       .reduce((sum, sale) => sum + sale.amount, 0),
     totalTemplates: state.templates.length,
-    basicPlans: state.users.filter(u => u.plan === 'basic').length,
-    premiumPlans: state.users.filter(u => u.plan === 'premium').length
+  };
+
+  const salesByPlan = state.sales.reduce((acc, sale) => {
+    acc[sale.plan] = (acc[sale.plan] || 0) + 1;
+    return acc;
+  }, {});
+  const totalSalesCount = Object.values(salesByPlan).reduce((a, b) => a + b, 0);
+  const salesPercentages = {
+    basic: totalSalesCount ? ((salesByPlan.basic || 0) / totalSalesCount) * 100 : 0,
+    premium: totalSalesCount ? ((salesByPlan.premium || 0) / totalSalesCount) * 100 : 0,
   };
 
   const handleCreateTemplate = () => {
@@ -71,8 +77,28 @@ function AdminDashboard() {
   };
 
   const handleDownloadPDF = (template, format) => {
-    const orientation = format === 'mobile' ? 'portrait' : 'landscape';
-    downloadRoutinePDF(template, null, orientation, format);
+    const mapExercise = ex => ({
+      title: ex.name,
+      series: ex.sets,
+      reps: ex.reps,
+      descanso: ex.rest || '-',
+      cadencia: ex.cadence || '-',
+      rir: ex.rir || '-',
+      notas: ex.notes || '',
+    });
+
+    const data = {
+      planName: template.name,
+      objective: template.objective,
+      frecuencia: `${template.frequency} días/semana`,
+      dias: template.days.map((day, idx) => ({
+        titulo: day.title || `Día ${idx + 1}`,
+        entradaEnCalor: (day.warmup || []).map(mapExercise),
+        entrenamiento: (day.exercises || []).map(mapExercise),
+      })),
+    };
+
+    generateRoutinePdf(data, format);
   };
 
   const handleSendWhatsApp = (user) => {
@@ -89,7 +115,7 @@ function AdminDashboard() {
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div className="bg-[#2D2D2D] rounded-xl p-6 border border-[#787878]/20">
           <div className="flex items-center justify-between">
             <div>
@@ -124,20 +150,12 @@ function AdminDashboard() {
         <div className="bg-[#2D2D2D] rounded-xl p-6 border border-[#787878]/20">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[#787878] text-sm">Planes Básicos</p>
-              <p className="text-2xl font-bold text-[#DBFE52]">{stats.basicPlans}</p>
+              <p className="text-[#787878] text-sm">Distribución de Planes</p>
+              <p className="text-lg font-bold text-[#CBFF00]">
+                Básico {salesPercentages.basic.toFixed(0)}% • Premium {salesPercentages.premium.toFixed(0)}%
+              </p>
             </div>
-            <Target className="h-8 w-8 text-[#787878]" />
-          </div>
-        </div>
-
-        <div className="bg-[#2D2D2D] rounded-xl p-6 border border-[#787878]/20">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[#787878] text-sm">Planes Premium</p>
-              <p className="text-2xl font-bold text-[#F8FE9F]">{stats.premiumPlans}</p>
-            </div>
-            <Calendar className="h-8 w-8 text-[#787878]" />
+            <PieChart className="h-8 w-8 text-[#787878]" />
           </div>
         </div>
       </div>
@@ -191,11 +209,6 @@ function AdminDashboard() {
 }
 
 function OverviewTab({ state }) {
-  const recentUsers = state.users.slice(-5);
-  const recentSales = state.sales.slice(-5);
-  const genderLabel = { male: 'masculino', female: 'femenino' };
-  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa', maintenance: 'mantenimiento corporal' };
-
   const templateCounts = state.sales.reduce((acc, sale) => {
     if (sale.templateId) {
       acc[sale.templateId] = (acc[sale.templateId] || 0) + 1;
@@ -212,53 +225,6 @@ function OverviewTab({ state }) {
 
   return (
     <div className="space-y-8">
-      <div className="grid md:grid-cols-2 gap-8">
-        <div>
-          <h3 className="text-xl font-semibold mb-4">Usuarios Recientes</h3>
-          <div className="space-y-3">
-            {recentUsers.map((user) => (
-              <div key={user.id} className="bg-[#202020] rounded-lg p-4 border border-[#787878]/20">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="font-medium">{user.email}</p>
-                    <p className="text-sm text-[#787878]">
-                      {genderLabel[user.gender]} • {user.frequency}x/semana • {objectiveLabel[user.objective]}
-                    </p>
-                  </div>
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${
-                    user.plan === 'premium' 
-                      ? 'bg-[#CBFF00]/20 text-[#CBFF00]' 
-                      : 'bg-[#787878]/20 text-[#787878]'
-                  }`}>
-                    {user.plan}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <h3 className="text-xl font-semibold mb-4">Ventas Recientes</h3>
-          <div className="space-y-3">
-            {recentSales.map((sale) => (
-              <div key={sale.id} className="bg-[#202020] rounded-lg p-4 border border-[#787878]/20">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="font-medium">{sale.userEmail}</p>
-                    <p className="text-sm text-[#787878]">{sale.date}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-[#CBFF00]">${sale.amount}</p>
-                    <p className="text-xs text-[#787878] capitalize">{planLabel[sale.plan]}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {topTemplates.length > 0 && (
         <div>
           <h3 className="text-xl font-semibold mb-4">Rutinas más solicitadas</h3>
@@ -281,7 +247,7 @@ function OverviewTab({ state }) {
 
 function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplate, onDownloadPDF }) {
   const genderLabel = { male: 'masculino', female: 'femenino' };
-  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa', maintenance: 'mantenimiento corporal' };
+  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
   const [filters, setFilters] = useState({ tag: '', gender: '', frequency: '', objective: '' });
 
   const handleFilterChange = (field, value) => {
@@ -330,7 +296,6 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
           className="bg-[#202020] border border-[#787878]/30 rounded-xl px-3 py-2 text-white"
         >
           <option value="">Frecuencia</option>
-          <option value="2">2</option>
           <option value="3">3</option>
           <option value="4">4</option>
           <option value="5">5</option>
@@ -343,7 +308,6 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
           <option value="">Objetivo</option>
           <option value="volume">Volumen</option>
           <option value="fat_loss">Pérdida de Grasa</option>
-          <option value="maintenance">Mantenimiento</option>
         </select>
       </div>
 
@@ -452,7 +416,7 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
 
 function UsersTab({ state, onSendWhatsApp }) {
   const genderLabel = { male: 'masculino', female: 'femenino' };
-  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa', maintenance: 'mantenimiento corporal' };
+  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
   const [planFilter, setPlanFilter] = useState('');
   const filteredUsers = planFilter
     ? state.users.filter((user) => user.plan === planFilter)

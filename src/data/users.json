@@ -22,7 +22,7 @@
     "email": "marce@ejemplo.com",
     "gender": "male",
     "frequency": 4,
-    "objective": "maintenance",
+    "objective": "fat_loss",
     "plan": "basic",
     "createdAt": "2024-02-10"
   },
@@ -48,7 +48,7 @@
     "id": 6,
     "email": "rochi@correo.com",
     "gender": "female",
-    "frequency": 2,
+    "frequency": 3,
     "objective": "fat_loss",
     "plan": "premium",
     "createdAt": "2024-02-20"
