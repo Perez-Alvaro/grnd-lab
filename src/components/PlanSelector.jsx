@@ -41,18 +41,16 @@ function PlanSelector({ routine, onSelect, onBack }) {
   const routinePreview = {
     male: {
       volume: { title: 'Programa de Ganancia Muscular', focus: 'Fuerza y Masa' },
-      fat_loss: { title: 'Programa Masculino de Pérdida de Grasa', focus: 'Definido y Fuerte' },
-      maintenance: { title: 'Programa Masculino de Mantenimiento', focus: 'Mantén tu estado físico' }
+      fat_loss: { title: 'Programa Masculino de Pérdida de Grasa', focus: 'Definido y Fuerte' }
     },
     female: {
       volume: { title: 'Programa Femenino de Tonificación', focus: 'Curvas y Fuerza' },
-      fat_loss: { title: 'Programa Femenino de Pérdida de Grasa', focus: 'Delgada y Esculpida' },
-      maintenance: { title: 'Programa Femenino de Mantenimiento', focus: 'Mantén tu forma' }
+      fat_loss: { title: 'Programa Femenino de Pérdida de Grasa', focus: 'Delgada y Esculpida' }
     }
   };
 
   const genderLabel = { male: 'masculino', female: 'femenino' };
-  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa', maintenance: 'mantenimiento corporal' };
+  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
 
   const preview = routinePreview[routine.gender][routine.objective];
 
