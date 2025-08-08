@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../context/AppContext.jsx';
 import TemplateModal from '../components/TemplateModal.jsx';
-import { downloadRoutinePDF } from '../utils/pdf.jsx';
+import { generateRoutinePdf } from '../utils/pdf.jsx';
 import {
   Users,
   CreditCard,
@@ -77,8 +77,28 @@ function AdminDashboard() {
   };
 
   const handleDownloadPDF = (template, format) => {
-    const orientation = format === 'mobile' ? 'portrait' : 'landscape';
-    downloadRoutinePDF(template, null, orientation, format);
+    const mapExercise = ex => ({
+      title: ex.name,
+      series: ex.sets,
+      reps: ex.reps,
+      descanso: ex.rest || '-',
+      cadencia: ex.cadence || '-',
+      rir: ex.rir || '-',
+      notas: ex.notes || '',
+    });
+
+    const data = {
+      planName: template.name,
+      objective: template.objective,
+      frecuencia: `${template.frequency} días/semana`,
+      dias: template.days.map((day, idx) => ({
+        titulo: day.title || `Día ${idx + 1}`,
+        entradaEnCalor: (day.warmup || []).map(mapExercise),
+        entrenamiento: (day.exercises || []).map(mapExercise),
+      })),
+    };
+
+    generateRoutinePdf(data, format);
   };
 
   const handleSendWhatsApp = (user) => {
