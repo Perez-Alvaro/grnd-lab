@@ -12,7 +12,6 @@ import {
   Eye,
   DollarSign,
   PieChart,
-  Smartphone,
   Monitor,
   MessageCircle
 } from 'lucide-react';
@@ -40,6 +39,8 @@ function AdminDashboard() {
       .filter(sale => sale.date.startsWith(currentMonth))
       .reduce((sum, sale) => sum + sale.amount, 0),
     totalTemplates: state.templates.length,
+    salesCount: state.sales.length,
+    activeRoutines: state.users.filter(u => u.plan === 'premium').length,
   };
 
   const salesByPlan = state.sales.reduce((acc, sale) => {
@@ -76,7 +77,7 @@ function AdminDashboard() {
     }
   };
 
-  const handleDownloadPDF = (template, format) => {
+  const handleDownloadPDF = (template) => {
     const mapExercise = ex => ({
       title: ex.name,
       series: ex.sets,
@@ -98,7 +99,7 @@ function AdminDashboard() {
       })),
     };
 
-    generateRoutinePdf(data, format);
+    generateRoutinePdf(data);
   };
 
   const handleSendWhatsApp = (user) => {
@@ -132,6 +133,7 @@ function AdminDashboard() {
               <p className="text-[#787878] text-sm">Ingresos Totales</p>
               <p className="text-2xl font-bold text-[#CBFF00]">${stats.totalSales.toFixed(2)}</p>
               <p className="text-sm text-[#787878]">Este mes: ${stats.monthlySales.toFixed(2)}</p>
+              <p className="text-sm text-[#787878]">Ventas: {stats.salesCount}</p>
             </div>
             <DollarSign className="h-8 w-8 text-[#787878]" />
           </div>
@@ -142,6 +144,7 @@ function AdminDashboard() {
             <div>
               <p className="text-[#787878] text-sm">Plantillas</p>
               <p className="text-2xl font-bold text-[#CBFF00]">{stats.totalTemplates}</p>
+              <p className="text-sm text-[#787878]">Rutinas activas: {stats.activeRoutines}</p>
             </div>
             <FileText className="h-8 w-8 text-[#787878]" />
           </div>
@@ -339,16 +342,9 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
                 )}
               </div>
               <div className="flex space-x-2">
-                <div className="flex space-x-1">
+                <div className="flex">
                   <button
-                    onClick={() => onDownloadPDF(template, 'mobile')}
-                    className="p-2 hover:bg-[#CBFF00]/20 text-[#CBFF00] rounded-lg transition-colors group"
-                    title="Descargar PDF móvil"
-                  >
-                    <Smartphone className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => onDownloadPDF(template, 'desktop')}
+                    onClick={() => onDownloadPDF(template)}
                     className="p-2 hover:bg-[#DBFE52]/20 text-[#DBFE52] rounded-lg transition-colors group"
                     title="Descargar PDF de escritorio"
                   >
@@ -390,14 +386,7 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
                   <h5 className="font-medium text-[#CBFF00] mb-2">Acciones:</h5>
                   <div className="flex flex-col space-y-2">
                     <button
-                      onClick={() => onDownloadPDF(template, 'mobile')}
-                      className="flex items-center space-x-2 text-sm bg-[#CBFF00]/20 hover:bg-[#CBFF00]/30 text-[#CBFF00] px-3 py-1 rounded transition-colors"
-                    >
-                      <Smartphone className="h-3 w-3" />
-                      <span>PDF Móvil</span>
-                    </button>
-                    <button
-                      onClick={() => onDownloadPDF(template, 'desktop')}
+                      onClick={() => onDownloadPDF(template)}
                       className="flex items-center space-x-2 text-sm bg-[#DBFE52]/20 hover:bg-[#DBFE52]/30 text-[#DBFE52] px-3 py-1 rounded transition-colors"
                     >
                       <Monitor className="h-3 w-3" />
