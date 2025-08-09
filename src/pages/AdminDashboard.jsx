@@ -14,8 +14,8 @@ import {
   PieChart,
   Monitor,
   MessageCircle,
-  ShoppingCart,
-  UserPlus,
+
+
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
@@ -249,8 +249,7 @@ function OverviewTab({ state }) {
   const incomeVar =
     prevIncome !== 0 ? ((monthlyIncome - prevIncome) / prevIncome) * 100 : null;
 
-  const visits = state.visits || 0;
-  const conversionRate = visits ? (state.sales.length / visits) * 100 : 0;
+
 
   const objectiveLabel = {
     volume: 'Volumen',
@@ -325,22 +324,7 @@ function OverviewTab({ state }) {
     .sort((a, b) => b.total - a.total)
     .slice(0, 5);
 
-  const activities = [
-    ...state.sales.map((s) => ({
-      id: `sale-${s.id}`,
-      date: s.date,
-      text: `Compra de plan ${planLabel[s.plan]} por ${s.userEmail}`,
-      icon: ShoppingCart,
-    })),
-    ...state.users.map((u) => ({
-      id: `user-${u.id}`,
-      date: u.createdAt,
-      text: `Alta de usuario ${u.email}`,
-      icon: UserPlus,
-    })),
-  ]
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 5);
+
 
   const variationClass = (v) =>
     v === null ? 'text-[#787878]' : v >= 0 ? 'text-[#CBFF00]' : 'text-[#FF6B6B]';
@@ -467,12 +451,7 @@ function OverviewTab({ state }) {
               </p>
             </div>
             <div className="bg-[#202020] rounded-lg p-4 border border-[#787878]/20">
-              <p className="text-[#787878] text-sm">Tasa de conversión</p>
-              <p className="text-xl font-bold text-[#CBFF00]">
-                {conversionRate.toFixed(0)}%
-              </p>
-            </div>
-            <div className="bg-[#202020] rounded-lg p-4 border border-[#787878]/20">
+
               <p className="text-[#787878] text-sm">Ingresos del mes actual</p>
               <p className="text-xl font-bold text-[#CBFF00]">
                 ${monthlyIncome.toFixed(2)}
@@ -484,25 +463,7 @@ function OverviewTab({ state }) {
           </div>
         </div>
 
-        <div>
-          <h3 className="text-lg font-semibold mb-4 border-b-2 border-[#CBFF00]">
-            Actividades recientes
-          </h3>
-          <ul className="space-y-4">
-            {activities.map((act) => {
-              const Icon = act.icon;
-              return (
-                <li key={act.id} className="flex items-center space-x-3">
-                  <Icon className="h-5 w-5 text-[#CBFF00]" />
-                  <div>
-                    <p className="text-sm">{act.text}</p>
-                    <p className="text-xs text-[#787878]">{act.date}</p>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+
       </div>
     </div>
   );
