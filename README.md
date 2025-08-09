@@ -36,3 +36,6 @@ El PDF muestra cada ejercicio como una card oscura con miniatura, métricas en g
 
 ## 💡 Notas
 Este repositorio está listo para ser mostrado como prototipo funcional y para escalar a una integración completa con backend.
+PARA BORRAR LA ULTIMA VERSION Y HACER ROLLBACK 
+git reset --hard HEAD~1
+git push origin main --force
