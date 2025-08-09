@@ -13,7 +13,11 @@ import {
   DollarSign,
   PieChart,
   Monitor,
-  MessageCircle
+  MessageCircle,
+  ShoppingCart,
+  UserPlus,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 const planLabel = { basic: 'básico', premium: 'premium' };
@@ -212,38 +216,294 @@ function AdminDashboard() {
 }
 
 function OverviewTab({ state }) {
-  const templateCounts = state.sales.reduce((acc, sale) => {
+  const currentMonth = new Date().toISOString().slice(0, 7);
+  const prevDate = new Date();
+  prevDate.setMonth(prevDate.getMonth() - 1);
+  const prevMonth = prevDate.toISOString().slice(0, 7);
+
+  const countByMonth = (items, field) =>
+    items.filter((item) => item[field]?.startsWith(currentMonth)).length;
+  const countPrevByMonth = (items, field) =>
+    items.filter((item) => item[field]?.startsWith(prevMonth)).length;
+
+  const currentNewUsers = countByMonth(state.users, 'createdAt');
+  const prevNewUsers = countPrevByMonth(state.users, 'createdAt');
+  const userVar =
+    prevNewUsers !== 0
+      ? ((currentNewUsers - prevNewUsers) / prevNewUsers) * 100
+      : null;
+
+  const currentTemplates = countByMonth(state.templates, 'createdAt');
+  const prevTemplates = countPrevByMonth(state.templates, 'createdAt');
+  const templateVar =
+    prevTemplates !== 0
+      ? ((currentTemplates - prevTemplates) / prevTemplates) * 100
+      : null;
+
+  const monthlyIncome = state.sales
+    .filter((s) => s.date.startsWith(currentMonth))
+    .reduce((sum, s) => sum + s.amount, 0);
+  const prevIncome = state.sales
+    .filter((s) => s.date.startsWith(prevMonth))
+    .reduce((sum, s) => sum + s.amount, 0);
+  const incomeVar =
+    prevIncome !== 0 ? ((monthlyIncome - prevIncome) / prevIncome) * 100 : null;
+
+  const visits = state.visits || 0;
+  const conversionRate = visits ? (state.sales.length / visits) * 100 : 0;
+
+  const objectiveLabel = {
+    volume: 'Volumen',
+    fat_loss: 'Pérdida de grasa',
+    definition: 'Definición',
+  };
+
+  const templateStats = state.sales.reduce((acc, sale) => {
     if (sale.templateId) {
-      acc[sale.templateId] = (acc[sale.templateId] || 0) + 1;
+      const stat = acc[sale.templateId] || { count: 0, lastDate: '', plan: sale.plan };
+      stat.count += 1;
+      stat.plan = sale.plan;
+      if (!stat.lastDate || stat.lastDate < sale.date) stat.lastDate = sale.date;
+      acc[sale.templateId] = stat;
     }
     return acc;
   }, {});
-  const topTemplates = Object.entries(templateCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 2)
-    .map(([id, count]) => {
-      const template = state.templates.find((t) => t.id === Number(id));
-      return { name: template ? template.name : `Plantilla ${id}`, count };
-    });
+
+  const templateRows = Object.entries(templateStats).map(([id, data]) => {
+    const template = state.templates.find((t) => t.id === Number(id));
+    return {
+      id: Number(id),
+      name: template ? template.name : `Plantilla ${id}`,
+      objective: template ? template.objective : '-',
+      plan: data.plan,
+      count: data.count,
+      lastDate: data.lastDate,
+    };
+  });
+
+  const [sortField, setSortField] = useState('count');
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [page, setPage] = useState(0);
+  const pageSize = 5;
+
+  const sortedTemplates = [...templateRows].sort((a, b) => {
+    const dir = sortOrder === 'asc' ? 1 : -1;
+    if (a[sortField] < b[sortField]) return -1 * dir;
+    if (a[sortField] > b[sortField]) return 1 * dir;
+    return 0;
+  });
+  const pageCount = Math.ceil(sortedTemplates.length / pageSize);
+  const displayedTemplates = sortedTemplates.slice(
+    page * pageSize,
+    (page + 1) * pageSize
+  );
+
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
+  };
+
+  const clientStats = state.sales.reduce((acc, sale) => {
+    const stat = acc[sale.userEmail] || { count: 0, total: 0, plan: sale.plan };
+    stat.count += 1;
+    stat.total += sale.amount;
+    stat.plan = sale.plan;
+    acc[sale.userEmail] = stat;
+    return acc;
+  }, {});
+  const topClients = Object.entries(clientStats)
+    .map(([email, data]) => ({
+      email,
+      plan: data.plan,
+      routines: data.count,
+      total: data.total,
+    }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 5);
+
+  const activities = [
+    ...state.sales.map((s) => ({
+      id: `sale-${s.id}`,
+      date: s.date,
+      text: `Compra de plan ${planLabel[s.plan]} por ${s.userEmail}`,
+      icon: ShoppingCart,
+    })),
+    ...state.users.map((u) => ({
+      id: `user-${u.id}`,
+      date: u.createdAt,
+      text: `Alta de usuario ${u.email}`,
+      icon: UserPlus,
+    })),
+  ]
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 5);
+
+  const variationClass = (v) =>
+    v === null ? 'text-[#787878]' : v >= 0 ? 'text-[#CBFF00]' : 'text-[#FF6B6B]';
+
+  const formatVar = (v) =>
+    v === null ? 'N/A' : `${v >= 0 ? '+' : ''}${v.toFixed(0)}%`;
 
   return (
-    <div className="space-y-8">
-      {topTemplates.length > 0 && (
+    <div className="grid md:grid-cols-2 gap-6">
+      <div className="space-y-6">
         <div>
-          <h3 className="text-xl font-semibold mb-4">Rutinas más solicitadas</h3>
-          <div className="space-y-3">
-            {topTemplates.map((tpl) => (
-              <div
-                key={tpl.name}
-                className="flex justify-between bg-[#202020] rounded-lg p-4 border border-[#787878]/20"
+          <h3 className="text-lg font-semibold mb-4 border-b-2 border-[#CBFF00]">
+            Rutinas más solicitadas
+          </h3>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-[#787878]">
+                <th className="py-2 px-2 cursor-pointer" onClick={() => handleSort('name')}>
+                  Nombre
+                </th>
+                <th className="py-2 px-2">Objetivo</th>
+                <th className="py-2 px-2">Plan</th>
+                <th
+                  className="py-2 px-2 cursor-pointer"
+                  onClick={() => handleSort('count')}
+                >
+                  Descargas
+                </th>
+                <th className="py-2 px-2">Última descarga</th>
+              </tr>
+            </thead>
+            <tbody>
+              {displayedTemplates.map((tpl) => (
+                <tr key={tpl.id} className="hover:bg-[#2A2A2A]">
+                  <td className="py-2 px-2">{tpl.name}</td>
+                  <td className="py-2 px-2 capitalize">
+                    {objectiveLabel[tpl.objective] || '-'}
+                  </td>
+                  <td className="py-2 px-2 capitalize">
+                    {planLabel[tpl.plan] || '-'}
+                  </td>
+                  <td className="py-2 px-2 text-[#CBFF00] font-semibold">
+                    {tpl.count}
+                  </td>
+                  <td className="py-2 px-2">{tpl.lastDate}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {pageCount > 1 && (
+            <div className="flex justify-end items-center space-x-2 mt-2">
+              <button
+                onClick={() => setPage(Math.max(page - 1, 0))}
+                className="p-1 rounded hover:bg-[#2A2A2A]"
               >
-                <span className="font-medium">{tpl.name}</span>
-                <span className="text-[#CBFF00] font-semibold">{tpl.count}</span>
-              </div>
-            ))}
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <span className="text-xs text-[#787878]">
+                {page + 1}/{pageCount}
+              </span>
+              <button
+                onClick={() => setPage(Math.min(page + 1, pageCount - 1))}
+                className="p-1 rounded hover:bg-[#2A2A2A]"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div>
+          <h3 className="text-lg font-semibold mb-4 border-b-2 border-[#CBFF00]">
+            Top clientes
+          </h3>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-[#787878]">
+                <th className="py-2 px-2">Cliente</th>
+                <th className="py-2 px-2">Plan</th>
+                <th className="py-2 px-2">Rutinas</th>
+                <th className="py-2 px-2">Total gastado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {topClients.map((c) => (
+                <tr key={c.email} className="hover:bg-[#2A2A2A]">
+                  <td className="py-2 px-2">{c.email}</td>
+                  <td className="py-2 px-2 capitalize">
+                    {planLabel[c.plan] || '-'}
+                  </td>
+                  <td className="py-2 px-2">{c.routines}</td>
+                  <td className="py-2 px-2 text-[#CBFF00] font-semibold">
+                    ${c.total.toFixed(2)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="space-y-6">
+        <div>
+          <h3 className="text-lg font-semibold mb-4 border-b-2 border-[#CBFF00]">
+            Métricas clave
+          </h3>
+          <div className="grid gap-4">
+            <div className="bg-[#202020] rounded-lg p-4 border border-[#787878]/20">
+              <p className="text-[#787878] text-sm">Clientes nuevos este mes</p>
+              <p className="text-xl font-bold text-[#CBFF00]">
+                {currentNewUsers}
+              </p>
+              <p className={`text-sm ${variationClass(userVar)}`}>
+                {formatVar(userVar)}
+              </p>
+            </div>
+            <div className="bg-[#202020] rounded-lg p-4 border border-[#787878]/20">
+              <p className="text-[#787878] text-sm">Rutinas creadas este mes</p>
+              <p className="text-xl font-bold text-[#CBFF00]">
+                {currentTemplates}
+              </p>
+              <p className={`text-sm ${variationClass(templateVar)}`}>
+                {formatVar(templateVar)}
+              </p>
+            </div>
+            <div className="bg-[#202020] rounded-lg p-4 border border-[#787878]/20">
+              <p className="text-[#787878] text-sm">Tasa de conversión</p>
+              <p className="text-xl font-bold text-[#CBFF00]">
+                {conversionRate.toFixed(0)}%
+              </p>
+            </div>
+            <div className="bg-[#202020] rounded-lg p-4 border border-[#787878]/20">
+              <p className="text-[#787878] text-sm">Ingresos del mes actual</p>
+              <p className="text-xl font-bold text-[#CBFF00]">
+                ${monthlyIncome.toFixed(2)}
+              </p>
+              <p className={`text-sm ${variationClass(incomeVar)}`}>
+                {formatVar(incomeVar)}
+              </p>
+            </div>
           </div>
         </div>
-      )}
+
+        <div>
+          <h3 className="text-lg font-semibold mb-4 border-b-2 border-[#CBFF00]">
+            Actividades recientes
+          </h3>
+          <ul className="space-y-4">
+            {activities.map((act) => {
+              const Icon = act.icon;
+              return (
+                <li key={act.id} className="flex items-center space-x-3">
+                  <Icon className="h-5 w-5 text-[#CBFF00]" />
+                  <div>
+                    <p className="text-sm">{act.text}</p>
+                    <p className="text-xs text-[#787878]">{act.date}</p>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
