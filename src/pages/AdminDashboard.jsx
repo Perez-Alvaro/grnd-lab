@@ -14,6 +14,8 @@ import {
   PieChart,
   Monitor,
   MessageCircle,
+
+
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
@@ -248,6 +250,7 @@ function OverviewTab({ state }) {
     prevIncome !== 0 ? ((monthlyIncome - prevIncome) / prevIncome) * 100 : null;
 
 
+
   const objectiveLabel = {
     volume: 'Volumen',
     fat_loss: 'Pérdida de grasa',
@@ -320,6 +323,7 @@ function OverviewTab({ state }) {
     }))
     .sort((a, b) => b.total - a.total)
     .slice(0, 5);
+
 
 
   const variationClass = (v) =>
@@ -447,6 +451,7 @@ function OverviewTab({ state }) {
               </p>
             </div>
             <div className="bg-[#202020] rounded-lg p-4 border border-[#787878]/20">
+
               <p className="text-[#787878] text-sm">Ingresos del mes actual</p>
               <p className="text-xl font-bold text-[#CBFF00]">
                 ${monthlyIncome.toFixed(2)}
@@ -457,6 +462,7 @@ function OverviewTab({ state }) {
             </div>
           </div>
         </div>
+
 
       </div>
     </div>
