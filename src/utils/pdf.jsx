@@ -10,7 +10,7 @@ const palette = {
   text: '#FFFFFF',
 };
 
-const createStyles = (format = 'mobile') => {
+const createStyles = (format = 'desktop') => {
   const isMobile = format === 'mobile';
   return StyleSheet.create({
     page: {
@@ -176,7 +176,7 @@ const DaySection = ({ dia, format, styles }) => (
   </View>
 );
 
-const PdfDocument = ({ data, format = 'mobile' }) => {
+const PdfDocument = ({ data, format = 'desktop' }) => {
   const styles = createStyles(format);
   return (
     <Document>
@@ -200,7 +200,7 @@ const PdfDocument = ({ data, format = 'mobile' }) => {
   );
 };
 
-export async function generateRoutinePdf(data, format = 'mobile') {
+export async function generateRoutinePdf(data, format = 'desktop') {
   const blob = await pdf(<PdfDocument data={data} format={format} />).toBlob();
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
