@@ -6,7 +6,6 @@ const palette = {
   neutral: '#787878',
   accent: '#CBFF00',
   secondary: '#DBFE52',
-  success: '#F8FE9F',
   text: '#FFFFFF',
 };
 
@@ -42,7 +41,7 @@ const createStyles = (format = 'desktop') => {
     dayTitle: {
       fontSize: isMobile ? 20 : 22,
       fontWeight: 600,
-      color: palette.success,
+      color: palette.accent,
       marginBottom: 12,
     },
     sectionTitle: {
