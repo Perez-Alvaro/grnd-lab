@@ -90,6 +90,7 @@ function AdminDashboard() {
       cadencia: ex.cadence || '-',
       rir: ex.rir || '-',
       notas: ex.notes || '',
+      videoUrl: ex.youtubeLink || '',
     });
 
     const data = {

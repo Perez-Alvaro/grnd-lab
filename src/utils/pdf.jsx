@@ -1,4 +1,4 @@
-import { Document, Page, View, Text, StyleSheet, Image, pdf } from '@react-pdf/renderer';
+import { Document, Page, View, Text, StyleSheet, Link, pdf } from '@react-pdf/renderer';
 
 const palette = {
   background: '#202020',
@@ -62,12 +62,7 @@ const createStyles = (format = 'desktop') => {
     topRow: {
       flexDirection: isMobile ? 'column' : 'row',
       gap: 12,
-    },
-    thumbnail: {
-      width: 84,
-      height: 56,
-      borderRadius: 8,
-      backgroundColor: '#202020',
+      alignItems: 'center',
     },
     title: {
       fontSize: isMobile ? 18 : 20,
@@ -75,6 +70,15 @@ const createStyles = (format = 'desktop') => {
       color: palette.text,
       flexGrow: 1,
       marginTop: isMobile ? 8 : 0,
+    },
+    videoButton: {
+      backgroundColor: palette.accent,
+      color: palette.background,
+      paddingVertical: isMobile ? 4 : 6,
+      paddingHorizontal: isMobile ? 6 : 8,
+      borderRadius: 6,
+      fontSize: isMobile ? 12 : 13,
+      textDecoration: 'none',
     },
     metricsRow: {
       flexDirection: 'row',
@@ -117,12 +121,12 @@ const Metric = ({ label, value, styles }) => (
 const ExerciseCard = ({ exercise, format, styles }) => (
   <View style={styles.card}>
     <View style={styles.topRow}>
-      {exercise.thumbnailUrl ? (
-        <Image src={exercise.thumbnailUrl} style={styles.thumbnail} />
-      ) : (
-        <View style={styles.thumbnail} />
-      )}
       <Text style={styles.title}>{exercise.title}</Text>
+      {exercise.videoUrl ? (
+        <Link src={exercise.videoUrl} style={styles.videoButton}>
+          Ver video
+        </Link>
+      ) : null}
     </View>
     {exercise.variants && exercise.variants.length > 0 ? (
       exercise.variants.map((variant, idx) => (
