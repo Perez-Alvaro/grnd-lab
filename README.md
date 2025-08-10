@@ -1,6 +1,6 @@
-# 🏋️‍♂️ FitPlan Selector
+# 🏋️‍♂️ Fitter
 
-**FitPlan Selector** es un prototipo frontend hecho con React + TailwindCSS para generar y entregar rutinas de entrenamiento. Todo el sistema está mocked: los pagos, el envío de emails y la generación de PDF se simulan en el cliente.
+**Fitter** es un prototipo frontend hecho con React + TailwindCSS para generar y entregar rutinas de entrenamiento. Todo el sistema está mocked: los pagos, el envío de emails y la generación de PDF se simulan en el cliente.
 
 ## 🚀 Ejecutar el proyecto
 

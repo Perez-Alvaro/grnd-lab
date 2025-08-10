@@ -14,7 +14,7 @@ function Header() {
               <Dumbbell className="h-6 w-6 text-[#2D2D2D]" />
             </div>
             <h1 className="text-2xl font-bold text-white">
-              Fit<span className="text-[#CBFF00]">Plan</span>Selector
+              Fit<span className="text-[#CBFF00]">ter</span>
             </h1>
           </Link>
           
