@@ -2,10 +2,11 @@
   {
     "id": 1,
     "gender": "male",
-    "frequency": 3,
+    "frequency": 4,
     "objective": "volume",
-    "name": "Masculino Volumen 3x/semana",
-    "tags": ["general"],
+    "plan": "premium",
+    "name": "Masculino Volumen 4x/semana",
+    "tags": [],
     "days": [
       {
         "title": "Día 1",
@@ -13,103 +14,421 @@
         "exercises": [
           {
             "name": "Sentadillas",
-            "sets": 3,
-            "reps": "10",
-            "rest": "60s",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
             "cadence": "2-0-2",
-            "rir": "2",
-            "youtubeLink": ""
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Banca",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Peso Muerto",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Militar",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Dominadas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 2",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Remo con Barra",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Fondos",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Curl Bíceps",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Extensiones Tríceps",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Inclinado",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 3",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Sentadillas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Banca",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Peso Muerto",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Militar",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Dominadas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 4",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Remo con Barra",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Fondos",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Curl Bíceps",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Extensiones Tríceps",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Inclinado",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
           }
         ]
       }
     ],
-    "notes": "Rutina de ejemplo."
+    "notes": "",
+    "createdAt": "2025-03-05",
+    "totalDescargas": 5,
+    "ultimaDescarga": "2025-03-25"
   },
   {
     "id": 2,
     "gender": "female",
     "frequency": 3,
-    "objective": "fat_loss",
-    "name": "Femenino Pérdida de Grasa 3x/semana",
-    "tags": ["cardio"],
+    "objective": "volume",
+    "plan": "basic",
+    "name": "Femenino Volumen 3x/semana",
+    "tags": [],
     "days": [
       {
         "title": "Día 1",
         "warmup": [],
         "exercises": [
           {
-            "name": "Mountain Climbers",
-            "sets": 3,
-            "reps": "20",
-            "rest": "45s",
-            "cadence": "rápido",
-            "rir": "2",
-            "youtubeLink": ""
+            "name": "Sentadillas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Banca",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Peso Muerto",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Militar",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Dominadas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 2",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Remo con Barra",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Fondos",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Curl Bíceps",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Extensiones Tríceps",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Inclinado",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 3",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Sentadillas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Banca",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Peso Muerto",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Militar",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Dominadas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
           }
         ]
       }
     ],
-    "notes": "Rutina de ejemplo."
+    "notes": "",
+    "createdAt": "2025-03-12",
+    "totalDescargas": 5,
+    "ultimaDescarga": "2025-04-26"
   },
   {
     "id": 3,
     "gender": "male",
     "frequency": 5,
-    "objective": "volume",
-    "name": "Masculino Volumen 5x/semana",
-    "tags": ["fuerza"],
-    "days": [
-      {
-        "title": "Día 1",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Press Banca",
-            "sets": 4,
-            "reps": "8",
-            "rest": "90s",
-            "cadence": "2-0-2",
-            "rir": "2",
-            "youtubeLink": ""
-          }
-        ]
-      }
-    ],
-    "notes": "Rutina de ejemplo."
-  },
-  {
-    "id": 4,
-    "gender": "female",
-    "frequency": 4,
-    "objective": "volume",
-    "name": "Femenino Volumen 4x/semana",
-    "tags": ["gluteos"],
-    "days": [
-      {
-        "title": "Día 1",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Hip Thrust",
-            "sets": 4,
-            "reps": "12",
-            "rest": "90s",
-            "cadence": "1-0-1",
-            "rir": "2",
-            "youtubeLink": ""
-          }
-        ]
-      }
-    ],
-    "notes": "Rutina de ejemplo."
-  },
-  {
-    "id": 5,
-    "gender": "male",
-    "frequency": 4,
     "objective": "fat_loss",
-    "name": "Masculino Pérdida de Grasa 4x/semana",
-    "tags": ["cardio"],
+    "plan": "basic",
+    "name": "Masculino Pérdida de Grasa 5x/semana",
+    "tags": [],
     "days": [
       {
         "title": "Día 1",
@@ -117,155 +436,533 @@
         "exercises": [
           {
             "name": "Burpees",
-            "sets": 3,
-            "reps": "15",
-            "rest": "60s",
-            "cadence": "rápido",
-            "rir": "2",
-            "youtubeLink": ""
-          }
-        ]
-      }
-    ],
-    "notes": "Rutina de ejemplo."
-  },
-  {
-    "id": 6,
-    "gender": "male",
-    "frequency": 4,
-    "objective": "volume",
-    "name": "Masculino Volumen 4x/semana",
-    "tags": ["fuerza"],
-    "days": [
-      {
-        "title": "Día 1",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Dominadas",
-            "sets": 3,
-            "reps": "8",
+            "sets": 4,
+            "reps": "8-12",
             "rest": "90s",
             "cadence": "2-0-2",
-            "rir": "2",
-            "youtubeLink": ""
-          }
-        ]
-      }
-    ],
-    "notes": "Rutina de ejemplo."
-  },
-  {
-    "id": 7,
-    "gender": "female",
-    "frequency": 4,
-    "objective": "fat_loss",
-    "name": "Femenino Pérdida de Grasa 4x/semana",
-    "tags": ["cardio"],
-    "days": [
-      {
-        "title": "Día 1",
-        "warmup": [],
-        "exercises": [
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Mountain Climbers",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
           {
             "name": "Jumping Jacks",
-            "sets": 3,
-            "reps": "30",
-            "rest": "30s",
-            "cadence": "rápido",
-            "rir": "2",
-            "youtubeLink": ""
-          }
-        ]
-      }
-    ],
-    "notes": "Rutina de ejemplo."
-  },
-  {
-    "id": 8,
-    "gender": "female",
-    "frequency": 3,
-    "objective": "volume",
-    "name": "Femenino Volumen 3x/semana",
-    "tags": ["gluteos"],
-    "days": [
-      {
-        "title": "Día 1",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Peso Muerto Rumano",
-            "sets": 3,
-            "reps": "12",
-            "rest": "90s",
-            "cadence": "2-1-2",
-            "rir": "2",
-            "youtubeLink": ""
-          }
-        ]
-      }
-    ],
-    "notes": "Rutina de ejemplo."
-  },
-  {
-    "id": 9,
-    "gender": "male",
-    "frequency": 3,
-    "objective": "fat_loss",
-    "name": "Masculino Pérdida de Grasa 3x/semana",
-    "tags": ["cardio"],
-    "days": [
-      {
-        "title": "Día 1",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Cuerda",
-            "sets": 3,
-            "reps": "1min",
-            "rest": "30s",
-            "cadence": "rápido",
-            "rir": "2",
-            "youtubeLink": ""
-          }
-        ]
-      }
-    ],
-    "notes": "Rutina de ejemplo."
-  },
-  {
-    "id": 10,
-    "gender": "female",
-    "frequency": 5,
-    "objective": "volume",
-    "name": "Femenino Volumen 5x/semana",
-    "tags": ["fuerza"],
-    "days": [
-      {
-        "title": "Día 1",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Press de Pecho con Mancuernas",
             "sets": 4,
-            "reps": "10",
+            "reps": "8-12",
             "rest": "90s",
             "cadence": "2-0-2",
-            "rir": "2",
-            "youtubeLink": ""
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Cuerda",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Sprints",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 2",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Box Jump",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Battle Rope",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Kettlebell Swing",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Lunges",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "High Knees",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 3",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Burpees",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Mountain Climbers",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Jumping Jacks",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Cuerda",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Sprints",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 4",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Box Jump",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Battle Rope",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Kettlebell Swing",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Lunges",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "High Knees",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 5",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Burpees",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Mountain Climbers",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Jumping Jacks",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Cuerda",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Sprints",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
           }
         ]
       }
     ],
-    "notes": "Rutina de ejemplo."
+    "notes": "",
+    "createdAt": "2025-04-01",
+    "totalDescargas": 4,
+    "ultimaDescarga": "2025-05-27"
   },
   {
-    "id": 11,
+    "id": 4,
+    "gender": "female",
+    "frequency": 4,
+    "objective": "definition",
+    "plan": "premium",
+    "name": "Femenino Definición 4x/semana",
+    "tags": [],
+    "days": [
+      {
+        "title": "Día 1",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Press Banca Ligero",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Sentadilla Frontal",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Peso Muerto Rumano",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Hombro Mancuernas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Remo Unilateral",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 2",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Elevaciones Laterales",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Curl Martillo",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Tríceps en Polea",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Abdominales",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Plancha",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 3",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Press Banca Ligero",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Sentadilla Frontal",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Peso Muerto Rumano",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Hombro Mancuernas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Remo Unilateral",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 4",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Elevaciones Laterales",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Curl Martillo",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Tríceps en Polea",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Abdominales",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Plancha",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      }
+    ],
+    "notes": "",
+    "createdAt": "2025-04-10",
+    "totalDescargas": 4,
+    "ultimaDescarga": "2025-06-28"
+  },
+  {
+    "id": 5,
     "gender": "male",
-    "frequency": 5,
-    "objective": "fat_loss",
-    "name": "Masculino Pérdida de Grasa 5x/semana",
-    "tags": ["cardio"],
+    "frequency": 3,
+    "objective": "endurance",
+    "plan": "basic",
+    "name": "Masculino Resistencia 3x/semana",
+    "tags": [],
     "days": [
       {
         "title": "Día 1",
@@ -273,42 +970,1901 @@
         "exercises": [
           {
             "name": "Remo con Barra",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
             "cadence": "2-0-2",
-            "rir": "2",
-            "youtubeLink": ""
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Ciclismo Estático",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Natación",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Correr",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Remos con Mancuerna",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 2",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Plancha",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Flexiones",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Zancadas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Saltos de Tijera",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Burpees Lentos",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 3",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Remo con Barra",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Ciclismo Estático",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Natación",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Correr",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Remos con Mancuerna",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
           }
         ]
       }
     ],
-    "notes": "Rutina de ejemplo."
+    "notes": "",
+    "createdAt": "2025-04-20",
+    "totalDescargas": 4,
+    "ultimaDescarga": "2025-07-17"
   },
   {
-    "id": 12,
+    "id": 6,
     "gender": "female",
     "frequency": 5,
     "objective": "fat_loss",
+    "plan": "premium",
     "name": "Femenino Pérdida de Grasa 5x/semana",
-    "tags": ["cardio"],
+    "tags": [],
     "days": [
       {
         "title": "Día 1",
         "warmup": [],
         "exercises": [
           {
-            "name": "Saltos en Caja",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "rápido",
-            "rir": "2",
-            "youtubeLink": ""
+            "name": "Burpees",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Mountain Climbers",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Jumping Jacks",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Cuerda",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Sprints",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 2",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Box Jump",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Battle Rope",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Kettlebell Swing",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Lunges",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "High Knees",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 3",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Burpees",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Mountain Climbers",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Jumping Jacks",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Cuerda",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Sprints",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 4",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Box Jump",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Battle Rope",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Kettlebell Swing",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Lunges",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "High Knees",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 5",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Burpees",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Mountain Climbers",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Jumping Jacks",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Cuerda",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Sprints",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
           }
         ]
       }
     ],
-    "notes": "Rutina de ejemplo."
+    "notes": "",
+    "createdAt": "2025-05-05",
+    "totalDescargas": 4,
+    "ultimaDescarga": "2025-08-18"
+  },
+  {
+    "id": 7,
+    "gender": "male",
+    "frequency": 3,
+    "objective": "definition",
+    "plan": "basic",
+    "name": "Masculino Definición 3x/semana",
+    "tags": [],
+    "days": [
+      {
+        "title": "Día 1",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Press Banca Ligero",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Sentadilla Frontal",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Peso Muerto Rumano",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Hombro Mancuernas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Remo Unilateral",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 2",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Elevaciones Laterales",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Curl Martillo",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Tríceps en Polea",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Abdominales",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Plancha",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 3",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Press Banca Ligero",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Sentadilla Frontal",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Peso Muerto Rumano",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Hombro Mancuernas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Remo Unilateral",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      }
+    ],
+    "notes": "",
+    "createdAt": "2025-05-15",
+    "totalDescargas": 4,
+    "ultimaDescarga": "2025-03-19"
+  },
+  {
+    "id": 8,
+    "gender": "female",
+    "frequency": 4,
+    "objective": "endurance",
+    "plan": "premium",
+    "name": "Femenino Resistencia 4x/semana",
+    "tags": [],
+    "days": [
+      {
+        "title": "Día 1",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Remo con Barra",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Ciclismo Estático",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Natación",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Correr",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Remos con Mancuerna",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 2",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Plancha",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Flexiones",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Zancadas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Saltos de Tijera",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Burpees Lentos",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 3",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Remo con Barra",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Ciclismo Estático",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Natación",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Correr",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Remos con Mancuerna",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 4",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Plancha",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Flexiones",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Zancadas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Saltos de Tijera",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Burpees Lentos",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      }
+    ],
+    "notes": "",
+    "createdAt": "2025-05-25",
+    "totalDescargas": 4,
+    "ultimaDescarga": "2025-04-20"
+  },
+  {
+    "id": 9,
+    "gender": "male",
+    "frequency": 4,
+    "objective": "fat_loss",
+    "plan": "premium",
+    "name": "Masculino Pérdida de Grasa 4x/semana",
+    "tags": [],
+    "days": [
+      {
+        "title": "Día 1",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Burpees",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Mountain Climbers",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Jumping Jacks",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Cuerda",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Sprints",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 2",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Box Jump",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Battle Rope",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Kettlebell Swing",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Lunges",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "High Knees",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 3",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Burpees",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Mountain Climbers",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Jumping Jacks",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Cuerda",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Sprints",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 4",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Box Jump",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Battle Rope",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Kettlebell Swing",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Lunges",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "High Knees",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      }
+    ],
+    "notes": "",
+    "createdAt": "2025-06-05",
+    "totalDescargas": 4,
+    "ultimaDescarga": "2025-05-21"
+  },
+  {
+    "id": 10,
+    "gender": "female",
+    "frequency": 5,
+    "objective": "volume",
+    "plan": "premium",
+    "name": "Femenino Volumen 5x/semana",
+    "tags": [],
+    "days": [
+      {
+        "title": "Día 1",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Sentadillas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Banca",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Peso Muerto",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Militar",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Dominadas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 2",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Remo con Barra",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Fondos",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Curl Bíceps",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Extensiones Tríceps",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Inclinado",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 3",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Sentadillas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Banca",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Peso Muerto",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Militar",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Dominadas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 4",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Remo con Barra",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Fondos",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Curl Bíceps",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Extensiones Tríceps",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Inclinado",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 5",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Sentadillas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Banca",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Peso Muerto",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Militar",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Dominadas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      }
+    ],
+    "notes": "",
+    "createdAt": "2025-06-15",
+    "totalDescargas": 4,
+    "ultimaDescarga": "2025-06-22"
+  },
+  {
+    "id": 11,
+    "gender": "male",
+    "frequency": 5,
+    "objective": "definition",
+    "plan": "premium",
+    "name": "Masculino Definición 5x/semana",
+    "tags": [],
+    "days": [
+      {
+        "title": "Día 1",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Press Banca Ligero",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Sentadilla Frontal",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Peso Muerto Rumano",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Hombro Mancuernas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Remo Unilateral",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 2",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Elevaciones Laterales",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Curl Martillo",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Tríceps en Polea",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Abdominales",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Plancha",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 3",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Press Banca Ligero",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Sentadilla Frontal",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Peso Muerto Rumano",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Hombro Mancuernas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Remo Unilateral",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 4",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Elevaciones Laterales",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Curl Martillo",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Tríceps en Polea",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Abdominales",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Plancha",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 5",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Press Banca Ligero",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Sentadilla Frontal",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Peso Muerto Rumano",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Press Hombro Mancuernas",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Remo Unilateral",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      }
+    ],
+    "notes": "",
+    "createdAt": "2025-07-01",
+    "totalDescargas": 4,
+    "ultimaDescarga": "2025-07-23"
+  },
+  {
+    "id": 12,
+    "gender": "female",
+    "frequency": 3,
+    "objective": "fat_loss",
+    "plan": "basic",
+    "name": "Femenino Pérdida de Grasa 3x/semana",
+    "tags": [],
+    "days": [
+      {
+        "title": "Día 1",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Burpees",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Mountain Climbers",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Jumping Jacks",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Cuerda",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Sprints",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 2",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Box Jump",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Battle Rope",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Kettlebell Swing",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Lunges",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "High Knees",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      },
+      {
+        "title": "Día 3",
+        "warmup": [],
+        "exercises": [
+          {
+            "name": "Burpees",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Mountain Climbers",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Jumping Jacks",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Cuerda",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          },
+          {
+            "name": "Sprints",
+            "sets": 4,
+            "reps": "8-12",
+            "rest": "90s",
+            "cadence": "2-0-2",
+            "rir": 2,
+            "notes": "",
+            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+          }
+        ]
+      }
+    ],
+    "notes": "",
+    "createdAt": "2025-07-10",
+    "totalDescargas": 4,
+    "ultimaDescarga": "2025-08-24"
   }
 ]

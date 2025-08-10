@@ -10,7 +10,8 @@ export function mockProcessPayment(formData, routine, plan) {
         frequency: parseInt(routine.frequency, 10),
         objective: routine.objective,
         plan: plan.id,
-        createdAt: new Date().toISOString().split('T')[0]
+        createdAt: new Date().toISOString().split('T')[0],
+        routines: [routine.id]
       };
 
       const newSale = {
@@ -19,7 +20,8 @@ export function mockProcessPayment(formData, routine, plan) {
         plan: plan.id,
         amount: plan.price,
         date: new Date().toISOString().split('T')[0],
-        status: 'completed'
+        status: 'completed',
+        templateId: routine.id
       };
 
       resolve({ user: newUser, sale: newSale });
