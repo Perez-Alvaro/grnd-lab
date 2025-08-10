@@ -58,6 +58,9 @@ const createStyles = (format = 'desktop') => {
       borderColor: 'rgba(120,120,120,0.2)',
       padding: isMobile ? 16 : 20,
       marginBottom: 16,
+      // Prevent exercise blocks from being split across pages
+      pageBreakInside: 'avoid',
+      breakInside: 'avoid',
     },
     topRow: {
       flexDirection: isMobile ? 'column' : 'row',
@@ -119,7 +122,8 @@ const Metric = ({ label, value, styles }) => (
 );
 
 const ExerciseCard = ({ exercise, format, styles }) => (
-  <View style={styles.card}>
+  // wrap={false} ensures the card moves entirely to the next page if it doesn't fit
+  <View style={styles.card} wrap={false}>
     <View style={styles.topRow}>
       <Text style={styles.title}>{exercise.title}</Text>
       {exercise.videoUrl ? (
