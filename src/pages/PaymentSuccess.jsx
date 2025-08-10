@@ -10,7 +10,7 @@ function PaymentSuccess() {
           <CheckCircle className="h-20 w-20 text-[#CBFF00] mx-auto mb-6" />
           
           <h1 className="text-4xl font-bold mb-4">
-            ¡Bienvenido a FitPlan!
+            ¡Bienvenido a Fitter!
           </h1>
 
           <p className="text-[#787878] text-lg mb-8">
