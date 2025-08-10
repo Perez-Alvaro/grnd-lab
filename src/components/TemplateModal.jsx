@@ -161,6 +161,14 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
   };
 
   if (showPreview) {
+    const previewData = {
+      ...formData,
+      tags: formData.tags
+        .split(',')
+        .map(t => t.trim().toLowerCase())
+        .filter(Boolean)
+    };
+
     return (
       <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
         <div className="bg-[#2D2D2D] rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
@@ -182,7 +190,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
             </div>
           </div>
           <div className="p-6">
-            <TemplatePreview template={formData} />
+            <TemplatePreview template={previewData} />
           </div>
         </div>
       </div>
