@@ -1,43 +1,80 @@
 import React, { useState } from 'react';
 import { X, Plus, Trash2, Save, Eye, Copy } from 'lucide-react';
 
-function TemplateModal({ isOpen, onClose, template = null, onSave }) {
-  const emptyExercise = {
-    name: '',
-    sets: '',
-    reps: '',
-    rest: '',
-    cadence: '',
-    rir: '',
-    youtubeLink: '',
-    notes: ''
-  };
+const emptyVariant = {
+  series: '',
+  reps: '',
+  descanso: '',
+  cadencia: '',
+  rir: '',
+  notas: ''
+};
 
-  const initializeDays = () => {
-    if (template?.days) {
-      return template.days.map((d, i) => ({
-        title: d.title || `Día ${i + 1}`,
-        warmup: d.warmup && d.warmup.length ? d.warmup : [{ ...emptyExercise }],
-        exercises: d.exercises && d.exercises.length ? d.exercises : [{ ...emptyExercise }]
-      }));
-    }
-    return [
+const emptyExercise = {
+  ejercicio: '',
+  variantes: [{ ...emptyVariant }],
+  videoUrl: '',
+  notas: ''
+};
+
+const emptyBlock = {
+  titulo: 'Entrenamiento',
+  tipo: 'normal',
+  color: '',
+  items: [{ ...emptyExercise }]
+};
+
+function migrateLegacyTemplate(tmpl) {
+  if (!tmpl) {
+    return { days: [{ title: 'Día 1', bloques: [{ ...emptyBlock }] }] };
+  }
+  if (tmpl.days && tmpl.days.every(d => d.bloques)) {
+    return tmpl;
+  }
+
+  const convert = ex => ({
+    ejercicio: ex.name || ex.ejercicio || '',
+    variantes: [
       {
-        title: 'Día 1',
-        warmup: template?.warmup && template.warmup.length ? template.warmup : [{ ...emptyExercise }],
-        exercises: template?.exercises && template.exercises.length ? template.exercises : [{ ...emptyExercise }]
+        series: ex.sets != null ? String(ex.sets) : ex.series || '',
+        reps: ex.reps || '',
+        descanso: ex.rest || ex.descanso || '',
+        cadencia: ex.cadence || ex.cadencia || 'S/D',
+        rir: ex.rir != null ? String(ex.rir) : ex.rir || 'S/D',
+        notas: ex.notes || ex.notas || ''
       }
-    ];
-  };
+    ],
+    videoUrl: ex.youtubeLink || ex.videoUrl || '',
+    notas: ex.notes || ex.notas || ''
+  });
+
+  const days = (tmpl.days || [{ title: 'Día 1', warmup: tmpl.warmup || [], exercises: tmpl.exercises || [] }]).map(
+    (day, i) => {
+      if (day.bloques) return day;
+      const items = [];
+      if (day.warmup) items.push(...day.warmup.map(convert));
+      if (day.exercises) items.push(...day.exercises.map(convert));
+      return {
+        title: day.title || `Día ${i + 1}`,
+        bloques: [{ ...emptyBlock, items: items.length ? items : [{ ...emptyExercise }] }]
+      };
+    }
+  );
+
+  return { ...tmpl, days };
+}
+
+function TemplateModal({ isOpen, onClose, template = null, onSave }) {
+  const migrated = migrateLegacyTemplate(template);
 
   const [formData, setFormData] = useState({
-    name: template?.name || '',
-    gender: template?.gender || '',
-    frequency: template?.frequency || '',
-    objective: template?.objective || '',
-    tags: template?.tags?.join(', ') || '',
-    notes: template?.notes || '',
-    days: initializeDays()
+    name: migrated?.name || '',
+    gender: migrated?.gender || '',
+    frequency: migrated?.frequency || '',
+    objective: migrated?.objective || '',
+    tags: migrated?.tags?.join(', ') || '',
+    notes: migrated?.notes || '',
+    days: migrated?.days || [{ title: 'Día 1', bloques: [{ ...emptyBlock }] }]
   });
 
   const [showPreview, setShowPreview] = useState(false);
@@ -57,100 +94,126 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
   const addDay = () => {
     setFormData(prev => ({
       ...prev,
-      days: [
-        ...prev.days,
-        {
-          title: `Día ${prev.days.length + 1}`,
-          warmup: [{ ...emptyExercise }],
-          exercises: [{ ...emptyExercise }]
-        }
-      ]
+      days: [...prev.days, { title: `Día ${prev.days.length + 1}`, bloques: [{ ...emptyBlock }] }]
     }));
   };
 
-  const duplicateDay = (index) => {
+  const duplicateDay = index => {
     const day = formData.days[index];
-    const copy = {
-      title: `${day.title} (copia)`,
-      warmup: day.warmup.map(ex => ({ ...ex })),
-      exercises: day.exercises.map(ex => ({ ...ex }))
-    };
+    const copy = JSON.parse(JSON.stringify(day));
+    copy.title = `${day.title} (copia)`;
     const newDays = [...formData.days];
     newDays.splice(index + 1, 0, copy);
     setFormData(prev => ({ ...prev, days: newDays }));
   };
 
-  const removeDay = (index) => {
+  const removeDay = index => {
     if (formData.days.length > 1) {
-      const newDays = formData.days.filter((_, i) => i !== index);
+      setFormData(prev => ({ ...prev, days: prev.days.filter((_, i) => i !== index) }));
+    }
+  };
+
+  const handleBlockChange = (dayIndex, blockIndex, field, value) => {
+    const newDays = [...formData.days];
+    const blocks = [...newDays[dayIndex].bloques];
+    blocks[blockIndex] = { ...blocks[blockIndex], [field]: value };
+    newDays[dayIndex] = { ...newDays[dayIndex], bloques: blocks };
+    setFormData(prev => ({ ...prev, days: newDays }));
+  };
+
+  const addBlock = dayIndex => {
+    const newDays = [...formData.days];
+    newDays[dayIndex].bloques.push(JSON.parse(JSON.stringify(emptyBlock)));
+    setFormData(prev => ({ ...prev, days: newDays }));
+  };
+
+  const duplicateBlock = (dayIndex, blockIndex) => {
+    const newDays = [...formData.days];
+    const block = JSON.parse(JSON.stringify(newDays[dayIndex].bloques[blockIndex]));
+    newDays[dayIndex].bloques.splice(blockIndex + 1, 0, block);
+    setFormData(prev => ({ ...prev, days: newDays }));
+  };
+
+  const removeBlock = (dayIndex, blockIndex) => {
+    const newDays = [...formData.days];
+    if (newDays[dayIndex].bloques.length > 1) {
+      newDays[dayIndex].bloques.splice(blockIndex, 1);
       setFormData(prev => ({ ...prev, days: newDays }));
     }
   };
 
-  const handleWarmupChange = (dayIndex, exIndex, field, value) => {
+  const handleItemChange = (dayIndex, blockIndex, itemIndex, field, value) => {
     const newDays = [...formData.days];
-    const newWarmup = [...newDays[dayIndex].warmup];
-    newWarmup[exIndex] = { ...newWarmup[exIndex], [field]: value };
-    newDays[dayIndex] = { ...newDays[dayIndex], warmup: newWarmup };
+    const blocks = [...newDays[dayIndex].bloques];
+    const items = [...blocks[blockIndex].items];
+    items[itemIndex] = { ...items[itemIndex], [field]: value };
+    blocks[blockIndex] = { ...blocks[blockIndex], items };
+    newDays[dayIndex] = { ...newDays[dayIndex], bloques: blocks };
     setFormData(prev => ({ ...prev, days: newDays }));
   };
 
-  const addWarmup = (dayIndex) => {
+  const addItem = (dayIndex, blockIndex) => {
     const newDays = [...formData.days];
-    newDays[dayIndex].warmup.push({ ...emptyExercise });
+    newDays[dayIndex].bloques[blockIndex].items.push(JSON.parse(JSON.stringify(emptyExercise)));
     setFormData(prev => ({ ...prev, days: newDays }));
   };
 
-  const duplicateWarmup = (dayIndex, exIndex) => {
+  const duplicateItem = (dayIndex, blockIndex, itemIndex) => {
     const newDays = [...formData.days];
-    const ex = { ...newDays[dayIndex].warmup[exIndex] };
-    newDays[dayIndex].warmup.splice(exIndex + 1, 0, ex);
+    const ex = JSON.parse(JSON.stringify(newDays[dayIndex].bloques[blockIndex].items[itemIndex]));
+    newDays[dayIndex].bloques[blockIndex].items.splice(itemIndex + 1, 0, ex);
     setFormData(prev => ({ ...prev, days: newDays }));
   };
 
-  const removeWarmup = (dayIndex, exIndex) => {
+  const removeItem = (dayIndex, blockIndex, itemIndex) => {
     const newDays = [...formData.days];
-    if (newDays[dayIndex].warmup.length > 1) {
-      newDays[dayIndex].warmup = newDays[dayIndex].warmup.filter((_, i) => i !== exIndex);
+    const block = newDays[dayIndex].bloques[blockIndex];
+    if (block.items.length > 1) {
+      block.items.splice(itemIndex, 1);
       setFormData(prev => ({ ...prev, days: newDays }));
     }
   };
 
-  const handleExerciseChange = (dayIndex, exIndex, field, value) => {
+  const handleVariantChange = (dayIndex, blockIndex, itemIndex, variantIndex, field, value) => {
     const newDays = [...formData.days];
-    const newExercises = [...newDays[dayIndex].exercises];
-    newExercises[exIndex] = { ...newExercises[exIndex], [field]: value };
-    newDays[dayIndex] = { ...newDays[dayIndex], exercises: newExercises };
+    const block = newDays[dayIndex].bloques[blockIndex];
+    const items = [...block.items];
+    const variants = [...items[itemIndex].variantes];
+    variants[variantIndex] = { ...variants[variantIndex], [field]: value };
+    items[itemIndex] = { ...items[itemIndex], variantes: variants };
+    block.items = items;
     setFormData(prev => ({ ...prev, days: newDays }));
   };
 
-  const addExercise = (dayIndex) => {
+  const addVariant = (dayIndex, blockIndex, itemIndex) => {
     const newDays = [...formData.days];
-    newDays[dayIndex].exercises.push({ ...emptyExercise });
+    newDays[dayIndex].bloques[blockIndex].items[itemIndex].variantes.push({ ...emptyVariant });
     setFormData(prev => ({ ...prev, days: newDays }));
   };
 
-  const duplicateExercise = (dayIndex, exIndex) => {
+  const duplicateVariant = (dayIndex, blockIndex, itemIndex, variantIndex) => {
     const newDays = [...formData.days];
-    const ex = { ...newDays[dayIndex].exercises[exIndex] };
-    newDays[dayIndex].exercises.splice(exIndex + 1, 0, ex);
+    const variants = newDays[dayIndex].bloques[blockIndex].items[itemIndex].variantes;
+    const v = { ...variants[variantIndex] };
+    variants.splice(variantIndex + 1, 0, v);
     setFormData(prev => ({ ...prev, days: newDays }));
   };
 
-  const removeExercise = (dayIndex, exIndex) => {
+  const removeVariant = (dayIndex, blockIndex, itemIndex, variantIndex) => {
     const newDays = [...formData.days];
-    if (newDays[dayIndex].exercises.length > 1) {
-      newDays[dayIndex].exercises = newDays[dayIndex].exercises.filter((_, i) => i !== exIndex);
+    const variants = newDays[dayIndex].bloques[blockIndex].items[itemIndex].variantes;
+    if (variants.length > 1) {
+      variants.splice(variantIndex, 1);
       setFormData(prev => ({ ...prev, days: newDays }));
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     const templateData = {
       ...formData,
       id: template?.id || Date.now(),
-      frequency: parseInt(formData.frequency),
+      frequency: parseInt(formData.frequency, 10),
       tags: formData.tags
         .split(',')
         .map(t => t.trim().toLowerCase())
@@ -230,7 +293,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                 type="text"
                 required
                 value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
+                onChange={e => handleInputChange('name', e.target.value)}
                 className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
                 placeholder="ej., Masculino Volumen 3x/semana"
               />
@@ -245,7 +308,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
               <select
                 required
                 value={formData.gender}
-                onChange={(e) => handleInputChange('gender', e.target.value)}
+                onChange={e => handleInputChange('gender', e.target.value)}
                 className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
               >
                 <option value="">Selecciona género</option>
@@ -261,7 +324,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
               <select
                 required
                 value={formData.frequency}
-                onChange={(e) => handleInputChange('frequency', e.target.value)}
+                onChange={e => handleInputChange('frequency', e.target.value)}
                 className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
               >
                 <option value="">Selecciona frecuencia</option>
@@ -278,11 +341,11 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
               <select
                 required
                 value={formData.objective}
-                onChange={(e) => handleInputChange('objective', e.target.value)}
+                onChange={e => handleInputChange('objective', e.target.value)}
                 className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
               >
                 <option value="">Selecciona objetivo</option>
-                <option value="volume">Volumen (Ganancia Muscular)</option>
+                <option value="volume">Volumen</option>
                 <option value="fat_loss">Pérdida de Grasa</option>
               </select>
             </div>
@@ -295,7 +358,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
             <input
               type="text"
               value={formData.tags}
-              onChange={(e) => handleInputChange('tags', e.target.value)}
+              onChange={e => handleInputChange('tags', e.target.value)}
               className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
               placeholder="ej., fuerza, piernas, torso"
             />
@@ -307,7 +370,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
             </label>
             <textarea
               value={formData.notes}
-              onChange={(e) => handleInputChange('notes', e.target.value)}
+              onChange={e => handleInputChange('notes', e.target.value)}
               rows={3}
               className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors resize-none"
               placeholder="Agrega notas de entrenamiento, tiempos de descanso, consejos de progresión..."
@@ -320,7 +383,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                 <input
                   type="text"
                   value={day.title}
-                  onChange={(e) => handleDayChange(dayIndex, 'title', e.target.value)}
+                  onChange={e => handleDayChange(dayIndex, 'title', e.target.value)}
                   className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors mr-2"
                   placeholder={`Día ${dayIndex + 1} - título`}
                 />
@@ -344,247 +407,214 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                 </div>
               </div>
 
-              <div>
-                <div className="flex justify-between items-center mb-4">
-                  <label className="text-sm font-medium text-[#787878]">Entrada en calor</label>
+              {day.bloques.map((bloque, blockIndex) => (
+                <div key={blockIndex} className="mb-6 bg-[#2D2D2D] rounded-lg p-4 border border-[#787878]/20">
+                  <div className="flex justify-between items-center mb-4">
+                    <input
+                      type="text"
+                      value={bloque.titulo}
+                      onChange={e => handleBlockChange(dayIndex, blockIndex, 'titulo', e.target.value)}
+                      className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors mr-2"
+                      placeholder="Título del bloque"
+                    />
+                    <select
+                      value={bloque.tipo}
+                      onChange={e => handleBlockChange(dayIndex, blockIndex, 'tipo', e.target.value)}
+                      className="bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors mr-2"
+                    >
+                      <option value="normal">normal</option>
+                      <option value="superset">superset</option>
+                      <option value="biserie">biserie</option>
+                      <option value="circuito">circuito</option>
+                      <option value="amrap">amrap</option>
+                      <option value="emom">emom</option>
+                    </select>
+                    <div className="flex space-x-1">
+                      <button
+                        type="button"
+                        onClick={() => duplicateBlock(dayIndex, blockIndex)}
+                        className="text-[#CBFF00] hover:text-[#DBFE52] p-2 rounded-lg transition-colors"
+                      >
+                        <Copy className="h-4 w-4" />
+                      </button>
+                      {day.bloques.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeBlock(dayIndex, blockIndex)}
+                          className="text-red-400 hover:text-red-300 p-2 rounded-lg transition-colors"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 max-h-96 overflow-y-auto">
+                    {bloque.items.map((item, itemIndex) => (
+                      <div key={itemIndex} className="bg-[#202020] rounded-xl p-4 border border-[#787878]/20">
+                        <div className="flex justify-between items-start mb-3">
+                          <span className="text-[#CBFF00] font-medium">Ejercicio {itemIndex + 1}</span>
+                          <div className="flex space-x-1">
+                            <button
+                              type="button"
+                              onClick={() => duplicateItem(dayIndex, blockIndex, itemIndex)}
+                              className="text-[#CBFF00] hover:text-[#DBFE52] p-1 transition-colors"
+                            >
+                              <Copy className="h-4 w-4" />
+                            </button>
+                            {bloque.items.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => removeItem(dayIndex, blockIndex, itemIndex)}
+                                className="text-red-400 hover:text-red-300 p-1 transition-colors"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="grid md:grid-cols-3 gap-3 mb-3">
+                          <input
+                            type="text"
+                            value={item.ejercicio}
+                            onChange={e => handleItemChange(dayIndex, blockIndex, itemIndex, 'ejercicio', e.target.value)}
+                            className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+                            placeholder="Nombre del ejercicio"
+                          />
+                          <input
+                            type="text"
+                            value={item.videoUrl}
+                            onChange={e => handleItemChange(dayIndex, blockIndex, itemIndex, 'videoUrl', e.target.value)}
+                            className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+                            placeholder="Link de video (YouTube)"
+                          />
+                          <input
+                            type="text"
+                            value={item.notas}
+                            onChange={e => handleItemChange(dayIndex, blockIndex, itemIndex, 'notas', e.target.value)}
+                            className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+                            placeholder="Notas (opcional)"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          {item.variantes.map((variant, variantIndex) => (
+                            <div key={variantIndex} className="grid md:grid-cols-6 gap-2 items-start">
+                              <input
+                                type="text"
+                                value={variant.series}
+                                onChange={e =>
+                                  handleVariantChange(dayIndex, blockIndex, itemIndex, variantIndex, 'series', e.target.value)
+                                }
+                                placeholder="Series"
+                                className="bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-2 py-1 text-white"
+                              />
+                              <input
+                                type="text"
+                                value={variant.reps}
+                                onChange={e =>
+                                  handleVariantChange(dayIndex, blockIndex, itemIndex, variantIndex, 'reps', e.target.value)
+                                }
+                                placeholder="Reps"
+                                className="bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-2 py-1 text-white"
+                              />
+                              <input
+                                type="text"
+                                value={variant.descanso}
+                                onChange={e =>
+                                  handleVariantChange(dayIndex, blockIndex, itemIndex, variantIndex, 'descanso', e.target.value)
+                                }
+                                placeholder="Desc."
+                                className="bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-2 py-1 text-white"
+                              />
+                              <input
+                                type="text"
+                                value={variant.cadencia}
+                                onChange={e =>
+                                  handleVariantChange(dayIndex, blockIndex, itemIndex, variantIndex, 'cadencia', e.target.value)
+                                }
+                                placeholder="Cad."
+                                className="bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-2 py-1 text-white"
+                              />
+                              <input
+                                type="text"
+                                value={variant.rir}
+                                onChange={e =>
+                                  handleVariantChange(dayIndex, blockIndex, itemIndex, variantIndex, 'rir', e.target.value)
+                                }
+                                placeholder="RIR"
+                                className="bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-2 py-1 text-white"
+                              />
+                              <div className="flex space-x-1">
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    duplicateVariant(dayIndex, blockIndex, itemIndex, variantIndex)
+                                  }
+                                  className="text-[#CBFF00] hover:text-[#DBFE52] p-1 rounded transition-colors"
+                                >
+                                  <Copy className="h-4 w-4" />
+                                </button>
+                                {item.variantes.length > 1 && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      removeVariant(dayIndex, blockIndex, itemIndex, variantIndex)
+                                    }
+                                    className="text-red-400 hover:text-red-300 p-1 rounded transition-colors"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
+                                )}
+                              </div>
+                              <input
+                                type="text"
+                                value={variant.notas}
+                                onChange={e =>
+                                  handleVariantChange(dayIndex, blockIndex, itemIndex, variantIndex, 'notas', e.target.value)
+                                }
+                                placeholder="Notas"
+                                className="md:col-span-6 bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-2 py-1 text-white"
+                              />
+                            </div>
+                          ))}
+                          <button
+                            type="button"
+                            onClick={() => addVariant(dayIndex, blockIndex, itemIndex)}
+                            className="mt-2 bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-2 py-1 rounded-lg text-sm flex items-center space-x-1 transition-colors"
+                          >
+                            <Plus className="h-4 w-4" />
+                            <span>Agregar variante</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
                   <button
                     type="button"
-                    onClick={() => addWarmup(dayIndex)}
-                    className="bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
+                    onClick={() => addItem(dayIndex, blockIndex)}
+                    className="mt-4 bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
                   >
                     <Plus className="h-4 w-4" />
                     <span>Agregar ejercicio</span>
                   </button>
                 </div>
+              ))}
 
-                <div className="space-y-4 max-h-96 overflow-y-auto">
-                  {day.warmup.map((exercise, index) => (
-                    <div key={index} className="bg-[#2D2D2D] rounded-xl p-4 border border-[#787878]/20">
-                      <div className="flex justify-between items-start mb-3">
-                        <span className="text-[#CBFF00] font-medium">Ejercicio {index + 1}</span>
-                        <div className="flex space-x-1">
-                          <button
-                            type="button"
-                            onClick={() => duplicateWarmup(dayIndex, index)}
-                            className="text-[#CBFF00] hover:text-[#DBFE52] p-1 transition-colors"
-                          >
-                            <Copy className="h-4 w-4" />
-                          </button>
-                          {day.warmup.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => removeWarmup(dayIndex, index)}
-                              className="text-red-400 hover:text-red-300 p-1 transition-colors"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="grid md:grid-cols-7 gap-3">
-                        <div className="md:col-span-2">
-                          <input
-                            type="text"
-
-                            value={exercise.name}
-                            onChange={(e) => handleWarmupChange(dayIndex, index, 'name', e.target.value)}
-                            className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                            placeholder="Nombre del ejercicio"
-                          />
-                        </div>
-                        <div>
-                          <input
-                            type="text"
-
-                            value={exercise.sets}
-                            onChange={(e) => handleWarmupChange(dayIndex, index, 'sets', e.target.value)}
-                            className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                            placeholder="Series"
-                          />
-                        </div>
-                        <div>
-                          <input
-                            type="text"
-
-                            value={exercise.reps}
-                            onChange={(e) => handleWarmupChange(dayIndex, index, 'reps', e.target.value)}
-                            className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                            placeholder="Repeticiones"
-                          />
-                        </div>
-                        <div>
-                          <input
-                            type="text"
-                            value={exercise.rest}
-                            onChange={(e) => handleWarmupChange(dayIndex, index, 'rest', e.target.value)}
-                            className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                            placeholder="Descanso"
-                          />
-                        </div>
-                        <div>
-                          <input
-                            type="text"
-                            value={exercise.cadence}
-                            onChange={(e) => handleWarmupChange(dayIndex, index, 'cadence', e.target.value)}
-                            className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                            placeholder="Cadencia"
-                          />
-                        </div>
-                        <div>
-                          <input
-                            type="text"
-                            value={exercise.rir}
-                            onChange={(e) => handleWarmupChange(dayIndex, index, 'rir', e.target.value)}
-                            className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                            placeholder="RIR"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="mt-3 grid md:grid-cols-2 gap-3">
-                        <input
-                          type="url"
-                          value={exercise.youtubeLink}
-                          onChange={(e) => handleWarmupChange(dayIndex, index, 'youtubeLink', e.target.value)}
-                          className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                          placeholder="Enlace de YouTube"
-                        />
-                        <input
-                          type="text"
-                          value={exercise.notes}
-                          onChange={(e) => handleWarmupChange(dayIndex, index, 'notes', e.target.value)}
-                          className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                          placeholder="Notas del ejercicio (opcional)"
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <div className="flex justify-between items-center mb-4">
-                  <label className="text-sm font-medium text-[#787878]">Ejercicios</label>
-                  <button
-                    type="button"
-                    onClick={() => addExercise(dayIndex)}
-                    className="bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
-                  >
-                    <Plus className="h-4 w-4" />
-                    <span>Agregar ejercicio</span>
-                  </button>
-                </div>
-
-                <div className="space-y-4 max-h-96 overflow-y-auto">
-                  {day.exercises.map((exercise, index) => (
-                    <div key={index} className="bg-[#2D2D2D] rounded-xl p-4 border border-[#787878]/20">
-                      <div className="flex justify-between items-start mb-3">
-                        <span className="text-[#CBFF00] font-medium">Ejercicio {index + 1}</span>
-                        <div className="flex space-x-1">
-                          <button
-                            type="button"
-                            onClick={() => duplicateExercise(dayIndex, index)}
-                            className="text-[#CBFF00] hover:text-[#DBFE52] p-1 transition-colors"
-                          >
-                            <Copy className="h-4 w-4" />
-                          </button>
-                          {day.exercises.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => removeExercise(dayIndex, index)}
-                              className="text-red-400 hover:text-red-300 p-1 transition-colors"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="grid md:grid-cols-7 gap-3">
-                        <div className="md:col-span-2">
-                          <input
-                            type="text"
-
-                            value={exercise.name}
-                            onChange={(e) => handleExerciseChange(dayIndex, index, 'name', e.target.value)}
-                            className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                            placeholder="Nombre del ejercicio"
-                          />
-                        </div>
-                        <div>
-                          <input
-                            type="text"
-
-                            value={exercise.sets}
-                            onChange={(e) => handleExerciseChange(dayIndex, index, 'sets', e.target.value)}
-                            className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                            placeholder="Series"
-                          />
-                        </div>
-                        <div>
-                          <input
-                            type="text"
-
-                            value={exercise.reps}
-                            onChange={(e) => handleExerciseChange(dayIndex, index, 'reps', e.target.value)}
-                            className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                            placeholder="Repeticiones"
-                          />
-                        </div>
-                        <div>
-                          <input
-                            type="text"
-                            value={exercise.rest}
-                            onChange={(e) => handleExerciseChange(dayIndex, index, 'rest', e.target.value)}
-                            className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                            placeholder="Descanso"
-                          />
-                        </div>
-                        <div>
-                          <input
-                            type="text"
-                            value={exercise.cadence}
-                            onChange={(e) => handleExerciseChange(dayIndex, index, 'cadence', e.target.value)}
-                            className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                            placeholder="Cadencia"
-                          />
-                        </div>
-                        <div>
-                          <input
-                            type="text"
-                            value={exercise.rir}
-                            onChange={(e) => handleExerciseChange(dayIndex, index, 'rir', e.target.value)}
-                            className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                            placeholder="RIR"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="mt-3 grid md:grid-cols-2 gap-3">
-                        <input
-                          type="url"
-                          value={exercise.youtubeLink}
-                          onChange={(e) => handleExerciseChange(dayIndex, index, 'youtubeLink', e.target.value)}
-                          className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                          placeholder="Enlace de YouTube"
-                        />
-                        <input
-                          type="text"
-                          value={exercise.notes}
-                          onChange={(e) => handleExerciseChange(dayIndex, index, 'notes', e.target.value)}
-                          className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-                          placeholder="Notas del ejercicio (opcional)"
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <button
+                type="button"
+                onClick={() => addBlock(dayIndex)}
+                className="bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Agregar bloque</span>
+              </button>
             </div>
           ))}
 
-          <div className="mb-6">
+          <div className="flex justify-between">
             <button
               type="button"
               onClick={addDay}
@@ -593,22 +623,12 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
               <Plus className="h-4 w-4" />
               <span>Agregar día</span>
             </button>
-          </div>
-
-          <div className="flex justify-end space-x-4 pt-6 border-t border-[#787878]/20">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-6 py-3 bg-[#787878]/20 hover:bg-[#787878]/30 rounded-xl font-medium transition-colors"
-            >
-              Cancelar
-            </button>
             <button
               type="submit"
-              className="px-6 py-3 bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] rounded-xl font-medium flex items-center space-x-2 transition-colors"
+              className="bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-6 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
             >
               <Save className="h-4 w-4" />
-              <span>{template ? 'Actualizar Plantilla' : 'Crear Plantilla'}</span>
+              <span>Guardar plantilla</span>
             </button>
           </div>
         </form>
@@ -619,7 +639,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
 
 function TemplatePreview({ template }) {
   const genderLabel = { male: 'masculino', female: 'femenino' };
-const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
+  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
   return (
     <div className="bg-[#202020] rounded-xl p-6 border border-[#787878]/20">
       <div className="text-center mb-6">
@@ -663,81 +683,52 @@ const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
               {day.title || `Día ${idx + 1}`}
             </h3>
 
-            {day.warmup && day.warmup.length > 0 && (
-              <div className="mb-4">
-                <h4 className="font-medium text-white mb-2">Entrada en calor</h4>
+            {day.bloques.map((bloque, bIdx) => (
+              <div key={bIdx} className="mb-4">
+                {bloque.titulo && (
+                  <h4 className="font-medium text-white mb-2">{bloque.titulo}</h4>
+                )}
                 <div className="space-y-3">
-                  {day.warmup.map((exercise, index) => (
-                    <div key={index} className="bg-[#2D2D2D] rounded-lg p-4 border border-[#787878]/20">
+                  {bloque.items.map((exercise, eIdx) => (
+                    <div
+                      key={eIdx}
+                      className="bg-[#2D2D2D] rounded-lg p-4 border border-[#787878]/20"
+                    >
                       <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-medium text-white">{exercise.name}</h4>
-                        <span className="text-[#CBFF00] font-bold">
-                          {exercise.sets} × {exercise.reps}
-                        </span>
+                        <h4 className="font-medium text-white">
+                          {exercise.ejercicio}
+                        </h4>
                       </div>
-                      <div className="grid grid-cols-3 gap-2 text-sm text-[#787878] mb-2">
-                        {exercise.rest && <span><span className="text-white">Descanso:</span> {exercise.rest}</span>}
-                        {exercise.cadence && <span><span className="text-white">Cadencia:</span> {exercise.cadence}</span>}
-                        {exercise.rir && <span><span className="text-white">RIR:</span> {exercise.rir}</span>}
-                      </div>
-                      {exercise.youtubeLink && (
-                        <p className="mb-2 text-sm">
-                          <a
-                            href={exercise.youtubeLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#DBFE52] hover:text-[#CBFF00]"
-                          >
-                            Ver video
-                          </a>
-                        </p>
-                      )}
-                      {exercise.notes && (
-                        <p className="text-sm text-[#787878]">{exercise.notes}</p>
+                      {exercise.variantes.map((v, vIdx) => (
+                        <div
+                          key={vIdx}
+                          className="grid grid-cols-5 gap-2 text-sm text-[#787878] mb-1"
+                        >
+                          <span>
+                            <span className="text-white">Series:</span> {v.series || '-'}
+                          </span>
+                          <span>
+                            <span className="text-white">Reps:</span> {v.reps || '-'}
+                          </span>
+                          <span>
+                            <span className="text-white">Desc.:</span> {v.descanso || '-'}
+                          </span>
+                          <span>
+                            <span className="text-white">Cad.:</span> {v.cadencia || '-'}
+                          </span>
+                          <span>
+                            <span className="text-white">RIR:</span> {v.rir || '-'}
+                          </span>
+                        </div>
+                      ))}
+                      {exercise.notas && (
+                        <p className="text-sm text-[#787878]">{exercise.notas}</p>
                       )}
                     </div>
                   ))}
                 </div>
               </div>
-            )}
-
-            {day.exercises && day.exercises.length > 0 && (
-              <div className="mb-4">
-                <h4 className="font-medium text-white mb-2">Entrenamiento</h4>
-                <div className="space-y-3">
-                  {day.exercises.map((exercise, index) => (
-                    <div key={index} className="bg-[#2D2D2D] rounded-lg p-4 border border-[#787878]/20">
-                      <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-medium text-white">{exercise.name}</h4>
-                        <span className="text-[#CBFF00] font-bold">
-                          {exercise.sets} × {exercise.reps}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-3 gap-2 text-sm text-[#787878] mb-2">
-                        {exercise.rest && <span><span className="text-white">Descanso:</span> {exercise.rest}</span>}
-                        {exercise.cadence && <span><span className="text-white">Cadencia:</span> {exercise.cadence}</span>}
-                        {exercise.rir && <span><span className="text-white">RIR:</span> {exercise.rir}</span>}
-                      </div>
-                      {exercise.youtubeLink && (
-                        <p className="mb-2 text-sm">
-                          <a
-                            href={exercise.youtubeLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[#DBFE52] hover:text-[#CBFF00]"
-                          >
-                            Ver video
-                          </a>
-                        </p>
-                      )}
-                      {exercise.notes && (
-                        <p className="text-sm text-[#787878]">{exercise.notes}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            ))}
           </div>
         ))}
     </div>
@@ -745,3 +736,4 @@ const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
 }
 
 export default TemplateModal;
+
