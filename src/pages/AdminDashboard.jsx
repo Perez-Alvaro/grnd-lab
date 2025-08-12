@@ -82,26 +82,41 @@ function AdminDashboard() {
   };
 
   const handleDownloadPDF = (template) => {
-    const mapExercise = ex => ({
-      title: ex.name,
-      series: ex.sets,
-      reps: ex.reps,
-      descanso: ex.rest || '-',
-      cadencia: ex.cadence || '-',
-      rir: ex.rir || '-',
-      notas: ex.notes || '',
-      videoUrl: ex.youtubeLink || '',
-    });
+    const migrate = (tmpl) => {
+      if (tmpl.days && tmpl.days.every(d => d.bloques)) return tmpl;
+      const convert = ex => ({
+        ejercicio: ex.name || '',
+        variantes: [{
+          series: ex.sets != null ? String(ex.sets) : '',
+          reps: ex.reps || '',
+          descanso: ex.rest || '',
+          cadencia: ex.cadence || 'S/D',
+          rir: ex.rir != null ? String(ex.rir) : 'S/D',
+          notas: ex.notes || ''
+        }],
+        videoUrl: ex.youtubeLink || '',
+        notas: ex.notes || ''
+      });
+      const days = tmpl.days.map((day, i) => {
+        if (day.bloques) return day;
+        const items = [];
+        if (day.warmup) items.push(...day.warmup.map(convert));
+        if (day.exercises) items.push(...day.exercises.map(convert));
+        return {
+          title: day.title || `Día ${i + 1}`,
+          bloques: [{ titulo: 'Entrenamiento', tipo: 'normal', items }]
+        };
+      });
+      return { ...tmpl, days };
+    };
+
+    const migrated = migrate(template);
 
     const data = {
-      planName: template.name,
-      objective: template.objective,
-      frecuencia: `${template.frequency} días/semana`,
-      dias: template.days.map((day, idx) => ({
-        titulo: day.title || `Día ${idx + 1}`,
-        entradaEnCalor: (day.warmup || []).map(mapExercise),
-        entrenamiento: (day.exercises || []).map(mapExercise),
-      })),
+      planName: migrated.name,
+      objective: migrated.objective,
+      frecuencia: `${migrated.frequency} días/semana`,
+      dias: migrated.days,
     };
 
     generateRoutinePdf(data);
@@ -538,7 +553,7 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
 
       <div className="grid gap-4">
         {filteredTemplates.map((template) => {
-          const previewExercises = template.days ? (template.days[0]?.exercises || []) : (template.exercises || []);
+          const previewExercises = template.days ? (template.days[0]?.bloques?.flatMap(b => b.items) || []) : [];
           return (
           <div key={template.id} className="bg-[#202020] rounded-xl p-6 border border-[#787878]/20">
             <div className="flex justify-between items-start mb-4">
@@ -596,7 +611,7 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
                   <ul className="text-sm text-[#787878] space-y-1">
                     {previewExercises.slice(0, 3).map((exercise, index) => (
                       <li key={index}>
-                        {exercise.name} - {exercise.sets}x{exercise.reps}
+                        {exercise.ejercicio} - {exercise.variantes?.[0]?.series || '-'}x{exercise.variantes?.[0]?.reps || '-'}
                       </li>
                     ))}
                     {previewExercises.length > 3 && (
@@ -619,7 +634,8 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
               </div>
             </div>
           </div>
-        );})}
+        );
+        })}
       </div>
     </div>
   );

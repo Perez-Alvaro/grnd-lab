@@ -125,15 +125,15 @@ const ExerciseCard = ({ exercise, format, styles }) => (
   // wrap={false} ensures the card moves entirely to the next page if it doesn't fit
   <View style={styles.card} wrap={false}>
     <View style={styles.topRow}>
-      <Text style={styles.title}>{exercise.title}</Text>
+      <Text style={styles.title}>{exercise.ejercicio || exercise.title}</Text>
       {exercise.videoUrl ? (
         <Link src={exercise.videoUrl} style={styles.videoButton}>
           Ver video
         </Link>
       ) : null}
     </View>
-    {exercise.variants && exercise.variants.length > 0 ? (
-      exercise.variants.map((variant, idx) => (
+    {exercise.variantes && exercise.variantes.length > 0 ? (
+      exercise.variantes.map((variant, idx) => (
         <View key={idx}>
           {idx > 0 && <View style={styles.divider} />}
           <View style={styles.metricsRow}>
@@ -163,22 +163,39 @@ const ExerciseCard = ({ exercise, format, styles }) => (
 
 const DaySection = ({ dia, format, styles }) => (
   <View style={{ marginBottom: 24 }}>
-    <Text style={styles.dayTitle}>{dia.titulo}</Text>
-    {dia.entradaEnCalor && dia.entradaEnCalor.length > 0 && (
-      <View>
-        <Text style={styles.sectionTitle}>Entrada en calor</Text>
-        {dia.entradaEnCalor.map((ex, idx) => (
-          <ExerciseCard key={`w-${idx}`} exercise={ex} format={format} styles={styles} />
-        ))}
-      </View>
-    )}
-    {dia.entrenamiento && dia.entrenamiento.length > 0 && (
-      <View>
-        <Text style={styles.sectionTitle}>Entrenamiento</Text>
-        {dia.entrenamiento.map((ex, idx) => (
-          <ExerciseCard key={`e-${idx}`} exercise={ex} format={format} styles={styles} />
-        ))}
-      </View>
+    <Text style={styles.dayTitle}>{dia.title || dia.titulo}</Text>
+    {dia.bloques ? (
+      dia.bloques.map((bloque, idx) => (
+        <View key={idx} style={{ marginBottom: 12 }}>
+          {bloque.titulo && (
+            <Text style={[styles.sectionTitle, bloque.color ? { color: bloque.color } : null]}>
+              {bloque.titulo}
+            </Text>
+          )}
+          {bloque.items.map((ex, i) => (
+            <ExerciseCard key={i} exercise={ex} format={format} styles={styles} />
+          ))}
+        </View>
+      ))
+    ) : (
+      <>
+        {dia.entradaEnCalor && dia.entradaEnCalor.length > 0 && (
+          <View>
+            <Text style={styles.sectionTitle}>Entrada en calor</Text>
+            {dia.entradaEnCalor.map((ex, idx) => (
+              <ExerciseCard key={`w-${idx}`} exercise={ex} format={format} styles={styles} />
+            ))}
+          </View>
+        )}
+        {dia.entrenamiento && dia.entrenamiento.length > 0 && (
+          <View>
+            <Text style={styles.sectionTitle}>Entrenamiento</Text>
+            {dia.entrenamiento.map((ex, idx) => (
+              <ExerciseCard key={`e-${idx}`} exercise={ex} format={format} styles={styles} />
+            ))}
+          </View>
+        )}
+      </>
     )}
   </View>
 );
