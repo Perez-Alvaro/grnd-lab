@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext.jsx';
-import TemplateModal from '../components/TemplateModal.jsx';
 import { generateRoutinePdf } from '../utils/pdf.jsx';
 import {
   Users,
@@ -25,8 +25,7 @@ const planLabel = { basic: 'básico', premium: 'premium' };
 function AdminDashboard() {
   const { state, dispatch } = useAppContext();
   const [activeTab, setActiveTab] = useState('overview');
-  const [showTemplateModal, setShowTemplateModal] = useState(false);
-  const [editingTemplate, setEditingTemplate] = useState(null);
+  const navigate = useNavigate();
 
   const tabs = [
     { id: 'overview', label: 'Resumen', icon: Eye },
@@ -58,21 +57,11 @@ function AdminDashboard() {
   };
 
   const handleCreateTemplate = () => {
-    setEditingTemplate(null);
-    setShowTemplateModal(true);
+    navigate('/admin/plantillas/nueva');
   };
 
   const handleEditTemplate = (template) => {
-    setEditingTemplate(template);
-    setShowTemplateModal(true);
-  };
-
-  const handleSaveTemplate = (templateData) => {
-    if (editingTemplate) {
-      dispatch({ type: 'UPDATE_TEMPLATE', payload: templateData });
-    } else {
-      dispatch({ type: 'ADD_TEMPLATE', payload: templateData });
-    }
+    navigate(`/admin/plantillas/${template.id}/editar`);
   };
 
   const handleDeleteTemplate = (templateId) => {
@@ -221,12 +210,6 @@ function AdminDashboard() {
         </div>
       </div>
 
-      <TemplateModal
-        isOpen={showTemplateModal}
-        onClose={() => setShowTemplateModal(false)}
-        template={editingTemplate}
-        onSave={handleSaveTemplate}
-      />
     </div>
   );
 }
