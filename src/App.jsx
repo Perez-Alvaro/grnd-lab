@@ -5,6 +5,7 @@ import Header from './components/Header.jsx';
 import Home from './pages/Home.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import PaymentSuccess from './pages/PaymentSuccess.jsx';
+import TemplatesEditorPage from './pages/TemplatesEditorPage.jsx';
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/plantillas/nueva" element={<TemplatesEditorPage />} />
+              <Route path="/admin/plantillas/:id/editar" element={<TemplatesEditorPage />} />
               <Route path="/success" element={<PaymentSuccess />} />
             </Routes>
           </main>
