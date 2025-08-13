@@ -35,7 +35,7 @@ export default function TemplatePreview({ template }) {
       {template.notes && (
         <div className="mb-6 p-4 bg-[#CBFF00]/10 border border-[#CBFF00]/20 rounded-lg">
           <h3 className="font-semibold text-[#CBFF00] mb-2">Notas de Entrenamiento</h3>
-          <p className="text-[#787878]">{template.notes}</p>
+          <p className="text-[#787878] whitespace-pre-line">{template.notes}</p>
         </div>
       )}
 
@@ -84,8 +84,8 @@ export default function TemplatePreview({ template }) {
                           </span>
                         </div>
                       ))}
-                      {exercise.notas && (
-                        <p className="text-sm text-[#787878]">{exercise.notas}</p>
+                      {exercise.notes && (
+                        <p className="text-sm text-[#787878] whitespace-pre-line">{exercise.notes}</p>
                       )}
                     </div>
                   ))}

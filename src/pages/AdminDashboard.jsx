@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext.jsx';
 import { generateRoutinePdf } from '../utils/pdf.jsx';
+import TemplateCard from '../components/TemplateCard.jsx';
 import {
   Users,
   CreditCard,
@@ -64,6 +65,14 @@ function AdminDashboard() {
     navigate(`/admin/plantillas/${template.id}/editar`);
   };
 
+  const handleDuplicateTemplate = (template) => {
+    const clone = JSON.parse(JSON.stringify(template));
+    clone.id = Date.now();
+    clone.name = `${template.name} (copia)`;
+    clone.createdAt = new Date().toISOString().slice(0, 10);
+    dispatch({ type: 'ADD_TEMPLATE', payload: clone });
+  };
+
   const handleDeleteTemplate = (templateId) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar esta plantilla?')) {
       dispatch({ type: 'DELETE_TEMPLATE', payload: templateId });
@@ -80,11 +89,10 @@ function AdminDashboard() {
           reps: ex.reps || '',
           descanso: ex.rest || '',
           cadencia: ex.cadence || 'S/D',
-          rir: ex.rir != null ? String(ex.rir) : 'S/D',
-          notas: ex.notes || ''
+          rir: ex.rir != null ? String(ex.rir) : 'S/D'
         }],
         videoUrl: ex.youtubeLink || '',
-        notas: ex.notes || ''
+        notes: ex.notes || ''
       });
       const days = tmpl.days.map((day, i) => {
         if (day.bloques) return day;
@@ -203,6 +211,7 @@ function AdminDashboard() {
               onEditTemplate={handleEditTemplate}
               onDeleteTemplate={handleDeleteTemplate}
               onDownloadPDF={handleDownloadPDF}
+              onDuplicateTemplate={handleDuplicateTemplate}
             />
           )}
           {activeTab === 'users' && <UsersTab state={state} onSendWhatsApp={handleSendWhatsApp} />}
@@ -468,7 +477,7 @@ function OverviewTab({ state }) {
   );
 }
 
-function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplate, onDownloadPDF }) {
+function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplate, onDownloadPDF, onDuplicateTemplate }) {
   const genderLabel = { male: 'masculino', female: 'femenino' };
   const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
   const [filters, setFilters] = useState({ tag: '', gender: '', frequency: '', objective: '' });
@@ -534,92 +543,30 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
         </select>
       </div>
 
-      <div className="grid gap-4">
-        {filteredTemplates.map((template) => {
-          const previewExercises = template.days ? (template.days[0]?.bloques?.flatMap(b => b.items) || []) : [];
-          return (
-          <div key={template.id} className="bg-[#202020] rounded-xl p-6 border border-[#787878]/20">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h4 className="text-lg font-semibold mb-2">{template.name}</h4>
-                <div className="flex space-x-3 text-sm">
-                  <span className="bg-[#787878]/20 px-2 py-1 rounded capitalize">
-                    {genderLabel[template.gender]}
-                  </span>
-                  <span className="bg-[#787878]/20 px-2 py-1 rounded">
-                    {template.frequency}x/semana
-                  </span>
-                  <span className="bg-[#787878]/20 px-2 py-1 rounded capitalize">
-                    {objectiveLabel[template.objective]}
-                  </span>
-                </div>
-                {template.tags && (
-                  <div className="flex flex-wrap gap-2 mt-2 text-xs">
-                    {template.tags.map((tag) => (
-                      <span key={tag} className="bg-[#787878]/20 px-2 py-1 rounded">#{tag}</span>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <div className="flex space-x-2">
-                <div className="flex">
-                  <button
-                    onClick={() => onDownloadPDF(template)}
-                    className="p-2 hover:bg-[#DBFE52]/20 text-[#DBFE52] rounded-lg transition-colors group"
-                    title="Descargar PDF de escritorio"
-                  >
-                    <Monitor className="h-4 w-4" />
-                  </button>
-                </div>
-                <button
-                  onClick={() => onEditTemplate(template)}
-                  className="p-2 hover:bg-[#787878]/20 rounded-lg transition-colors"
-                >
-                  <Edit className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => onDeleteTemplate(template.id)}
-                  className="p-2 hover:bg-red-500/20 text-red-400 rounded-lg transition-colors"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <p className="text-[#787878] text-sm">{template.notes}</p>
-              <div className="grid md:grid-cols-2 gap-4 mt-4">
-                <div>
-                  <h5 className="font-medium text-[#CBFF00] mb-2">Ejercicios:</h5>
-                  <ul className="text-sm text-[#787878] space-y-1">
-                    {previewExercises.slice(0, 3).map((exercise, index) => (
-                      <li key={index}>
-                        {exercise.ejercicio} - {exercise.variantes?.[0]?.series || '-'}x{exercise.variantes?.[0]?.reps || '-'}
-                      </li>
-                    ))}
-                    {previewExercises.length > 3 && (
-                      <li>... y {previewExercises.length - 3} más</li>
-                    )}
-                  </ul>
-                </div>
-                <div>
-                  <h5 className="font-medium text-[#CBFF00] mb-2">Acciones:</h5>
-                  <div className="flex flex-col space-y-2">
-                    <button
-                      onClick={() => onDownloadPDF(template)}
-                      className="flex items-center space-x-2 text-sm bg-[#DBFE52]/20 hover:bg-[#DBFE52]/30 text-[#DBFE52] px-3 py-1 rounded transition-colors"
-                    >
-                      <Monitor className="h-3 w-3" />
-                      <span>PDF de Escritorio</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-        })}
-      </div>
+      {filteredTemplates.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          {filteredTemplates.map((template) => (
+            <TemplateCard
+              key={template.id}
+              template={template}
+              onEdit={() => onEditTemplate(template)}
+              onDuplicate={() => onDuplicateTemplate(template)}
+              onDelete={() => onDeleteTemplate(template.id)}
+              onExportPdf={() => onDownloadPDF(template)}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-8 text-[#787878]">
+          <p>No hay plantillas con estos filtros. Crea una nueva.</p>
+          <button
+            onClick={onCreateTemplate}
+            className="mt-4 bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-4 py-2 rounded-lg font-medium"
+          >
+            Agregar Plantilla
+          </button>
+        </div>
+      )}
     </div>
   );
 }
