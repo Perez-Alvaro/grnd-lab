@@ -1,17 +1,11 @@
-import { Eye, Edit, Copy, Trash2, Monitor } from 'lucide-react';
 
-export default function TemplateActions({ onPreview, onEdit, onDuplicate, onDelete, onExportPdf }) {
+import { Edit, Copy, Trash2, Monitor } from 'lucide-react';
+
+export default function TemplateActions({ onEdit, onDuplicate, onDelete, onExportPdf }) {
   return (
     <div className="flex flex-wrap gap-2 md:justify-end">
       <button
-        onClick={onPreview}
-        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-[#787878]/20 hover:bg-[#787878]/10"
-        aria-label="Vista"
-      >
-        <Eye className="w-4 h-4" />
-        <span className="hidden sm:inline">Vista</span>
-      </button>
-      <button
+
         onClick={onEdit}
         className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-[#787878]/20 hover:bg-[#787878]/10"
         aria-label="Editar"
