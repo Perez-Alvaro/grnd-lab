@@ -4,6 +4,7 @@ const genderLabel = { male: 'masculino', female: 'femenino' };
 const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
 
 export default function TemplateCard({ template, onEdit, onDuplicate, onDelete, onExportPdf }) {
+
   const formattedDate = template.createdAt
     ? new Date(template.createdAt).toLocaleDateString('es-AR')
     : null;
@@ -14,6 +15,7 @@ export default function TemplateCard({ template, onEdit, onDuplicate, onDelete, 
 
   return (
     <div className="bg-[#1F1F1F] border border-[#3A3A3A] rounded-2xl p-4 md:p-5 shadow-lg shadow-black/20">
+
       <div className="flex justify-between items-start">
         <div>
           <button onClick={onEdit} className="text-left">
@@ -34,6 +36,7 @@ export default function TemplateCard({ template, onEdit, onDuplicate, onDelete, 
           </div>
         </div>
         <TemplateActions
+
           onEdit={onEdit}
           onDuplicate={onDuplicate}
           onDelete={onDelete}

@@ -549,6 +549,7 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
             <TemplateCard
               key={template.id}
               template={template}
+
               onEdit={() => onEditTemplate(template)}
               onDuplicate={() => onDuplicateTemplate(template)}
               onDelete={() => onDeleteTemplate(template.id)}
