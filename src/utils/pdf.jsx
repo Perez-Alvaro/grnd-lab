@@ -121,6 +121,13 @@ const Metric = ({ label, value, styles }) => (
   </View>
 );
 
+const renderNotes = (text, styles) =>
+  text.split('\n').map((line, idx) => (
+    <Text key={idx} style={[styles.notes, idx > 0 && { marginTop: 0 }]}>
+      {line}
+    </Text>
+  ));
+
 const ExerciseCard = ({ exercise, format, styles }) => (
   // wrap={false} ensures the card moves entirely to the next page if it doesn't fit
   <View style={styles.card} wrap={false}>
@@ -133,19 +140,21 @@ const ExerciseCard = ({ exercise, format, styles }) => (
       ) : null}
     </View>
     {exercise.variantes && exercise.variantes.length > 0 ? (
-      exercise.variantes.map((variant, idx) => (
-        <View key={idx}>
-          {idx > 0 && <View style={styles.divider} />}
-          <View style={styles.metricsRow}>
-            <Metric label="Series" value={variant.series} styles={styles} />
-            <Metric label="Rep." value={variant.reps} styles={styles} />
-            <Metric label="Desc." value={variant.descanso} styles={styles} />
-            <Metric label="Cadencia" value={variant.cadencia} styles={styles} />
-            <Metric label="RIR" value={variant.rir} styles={styles} />
+      <>
+        {exercise.variantes.map((variant, idx) => (
+          <View key={idx}>
+            {idx > 0 && <View style={styles.divider} />}
+            <View style={styles.metricsRow}>
+              <Metric label="Series" value={variant.series} styles={styles} />
+              <Metric label="Rep." value={variant.reps} styles={styles} />
+              <Metric label="Desc." value={variant.descanso} styles={styles} />
+              <Metric label="Cadencia" value={variant.cadencia} styles={styles} />
+              <Metric label="RIR" value={variant.rir} styles={styles} />
+            </View>
           </View>
-          {variant.notas ? <Text style={styles.notes}>{variant.notas}</Text> : null}
-        </View>
-      ))
+        ))}
+        {exercise.notes ? renderNotes(exercise.notes, styles) : null}
+      </>
     ) : (
       <>
         <View style={styles.metricsRow}>
@@ -155,7 +164,7 @@ const ExerciseCard = ({ exercise, format, styles }) => (
           <Metric label="Cadencia" value={exercise.cadencia} styles={styles} />
           <Metric label="RIR" value={exercise.rir} styles={styles} />
         </View>
-        {exercise.notas ? <Text style={styles.notes}>{exercise.notas}</Text> : null}
+        {exercise.notes ? renderNotes(exercise.notes, styles) : null}
       </>
     )}
   </View>

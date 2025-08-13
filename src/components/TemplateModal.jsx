@@ -8,15 +8,14 @@ const emptyVariant = {
   reps: '',
   descanso: '',
   cadencia: '',
-  rir: '',
-  notas: ''
+  rir: ''
 };
 
 const emptyExercise = {
   ejercicio: '',
   variantes: [{ ...emptyVariant }],
   videoUrl: '',
-  notas: ''
+  notes: ''
 };
 
 const emptyBlock = {
@@ -451,12 +450,12 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                             className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
                             placeholder="Link de video (YouTube)"
                           />
-                          <input
-                            type="text"
-                            value={item.notas}
-                            onChange={e => handleItemChange(dayIndex, blockIndex, itemIndex, 'notas', e.target.value)}
-                            className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+                          <textarea
+                            value={item.notes}
+                            onChange={e => handleItemChange(dayIndex, blockIndex, itemIndex, 'notes', e.target.value)}
+                            className="w-full bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors resize-none"
                             placeholder="Notas (opcional)"
+                            rows={2}
                           />
                         </div>
 
@@ -530,15 +529,6 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                                   </button>
                                 )}
                               </div>
-                              <input
-                                type="text"
-                                value={variant.notas}
-                                onChange={e =>
-                                  handleVariantChange(dayIndex, blockIndex, itemIndex, variantIndex, 'notas', e.target.value)
-                                }
-                                placeholder="Notas"
-                                className="md:col-span-6 bg-[#2D2D2D] border border-[#787878]/30 rounded-lg px-2 py-1 text-white"
-                              />
                             </div>
                           ))}
                           <button

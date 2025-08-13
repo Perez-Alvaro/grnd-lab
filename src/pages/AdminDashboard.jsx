@@ -89,11 +89,10 @@ function AdminDashboard() {
           reps: ex.reps || '',
           descanso: ex.rest || '',
           cadencia: ex.cadence || 'S/D',
-          rir: ex.rir != null ? String(ex.rir) : 'S/D',
-          notas: ex.notes || ''
+          rir: ex.rir != null ? String(ex.rir) : 'S/D'
         }],
         videoUrl: ex.youtubeLink || '',
-        notas: ex.notes || ''
+        notes: ex.notes || ''
       });
       const days = tmpl.days.map((day, i) => {
         if (day.bloques) return day;

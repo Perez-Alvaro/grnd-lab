@@ -5,15 +5,14 @@ const emptyVariant = {
   reps: '',
   descanso: '',
   cadencia: 'S/D',
-  rir: 'S/D',
-  notas: ''
+  rir: 'S/D'
 };
 
 const emptyExercise = {
   ejercicio: '',
   variantes: [{ ...emptyVariant }],
   videoUrl: '',
-  notas: ''
+  notes: ''
 };
 
 const emptyBlock = {
@@ -39,12 +38,11 @@ export default function migrateTemplate(tmpl: any) {
         reps: ex.reps || '',
         descanso: ex.rest || ex.descanso || '',
         cadencia: ex.cadence || ex.cadencia || 'S/D',
-        rir: ex.rir != null ? String(ex.rir) : ex.rir || 'S/D',
-        notas: ex.notes || ex.notas || ''
+        rir: ex.rir != null ? String(ex.rir) : ex.rir || 'S/D'
       }
     ],
     videoUrl: ex.youtubeLink || ex.videoUrl || '',
-    notas: ex.notes || ex.notas || ''
+    notes: ex.notes || ex.notas || ''
   });
 
   const days = (tmpl.days || [{ title: 'Día 1', warmup: tmpl.warmup || [], exercises: tmpl.exercises || [] }]).map(

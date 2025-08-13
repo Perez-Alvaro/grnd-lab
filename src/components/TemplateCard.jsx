@@ -3,7 +3,6 @@ import TemplateActions from './TemplateActions.jsx';
 const genderLabel = { male: 'masculino', female: 'femenino' };
 const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
 
-
 export default function TemplateCard({ template, onEdit, onDuplicate, onDelete, onExportPdf }) {
 
   const formattedDate = template.createdAt
@@ -37,7 +36,6 @@ export default function TemplateCard({ template, onEdit, onDuplicate, onDelete, 
           </div>
         </div>
         <TemplateActions
-
 
           onEdit={onEdit}
           onDuplicate={onDuplicate}
