@@ -40,17 +40,36 @@ function PlanSelector({ routine, onSelect, onBack }) {
 
   const routinePreview = {
     male: {
-      volume: { title: 'Programa de Ganancia Muscular', focus: 'Fuerza y Masa' },
-      fat_loss: { title: 'Programa Masculino de Pérdida de Grasa', focus: 'Definido y Fuerte' }
+      fat_loss: { title: 'Programa Masculino de Pérdida de Grasa', focus: 'Recomposición corporal' },
+      hypertrophy: { title: 'Programa de Hipertrofia Masculino', focus: 'Fuerza y masa' },
+      strength: { title: 'Programa de Fuerza Masculino', focus: 'Power básico' },
+      power: { title: 'Programa de Potencia Masculino', focus: 'Explosividad atlética' },
+      functional: { title: 'Programa Funcional Masculino', focus: 'Calistenia y control motor' },
+      hybrid: { title: 'Programa Híbrido Masculino', focus: 'Fuerza + resistencia' },
+      swimmers: { title: 'Programa Dryland Nadadores', focus: 'Escápulas y cadena posterior' }
     },
     female: {
-      volume: { title: 'Programa Femenino de Tonificación', focus: 'Curvas y Fuerza' },
-      fat_loss: { title: 'Programa Femenino de Pérdida de Grasa', focus: 'Delgada y Esculpida' }
+      fat_loss: { title: 'Programa Femenino de Pérdida de Grasa', focus: 'Recomposición corporal' },
+      hypertrophy: { title: 'Programa de Hipertrofia Femenino', focus: 'Curvas y fuerza' },
+      strength: { title: 'Programa de Fuerza Femenino', focus: 'Power básico' },
+      power: { title: 'Programa de Potencia Femenino', focus: 'Explosividad atlética' },
+      functional: { title: 'Programa Funcional Femenino', focus: 'Calistenia y control motor' },
+      hybrid: { title: 'Programa Híbrido Femenino', focus: 'Fuerza + resistencia' },
+      swimmers: { title: 'Programa Dryland Nadadoras', focus: 'Escápulas y cadena posterior' }
     }
   };
 
   const genderLabel = { male: 'masculino', female: 'femenino' };
-  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
+  const objectiveLabel = {
+    fat_loss: 'pérdida de grasa',
+    hypertrophy: 'hipertrofia',
+    strength: 'fuerza',
+    power: 'potencia',
+    functional: 'funcional',
+    hybrid: 'híbrido',
+    swimmers: 'nadadores',
+    volume: 'volumen'
+  };
 
   const preview = routinePreview[routine.gender][routine.objective];
 

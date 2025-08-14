@@ -1,7 +1,16 @@
 import TemplateActions from './TemplateActions.jsx';
 
 const genderLabel = { male: 'masculino', female: 'femenino' };
-const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
+const objectiveLabel = {
+  fat_loss: 'pérdida de grasa',
+  hypertrophy: 'hipertrofia',
+  strength: 'fuerza',
+  power: 'potencia',
+  functional: 'funcional',
+  hybrid: 'híbrido',
+  swimmers: 'nadadores',
+  volume: 'volumen'
+};
 
 export default function TemplateCard({ template, onEdit, onDuplicate, onDelete, onExportPdf }) {
 
