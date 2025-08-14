@@ -2,7 +2,16 @@ import React from 'react';
 
 export default function TemplatePreview({ template }) {
   const genderLabel = { male: 'masculino', female: 'femenino' };
-  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
+  const objectiveLabel = {
+    fat_loss: 'pérdida de grasa',
+    hypertrophy: 'hipertrofia',
+    strength: 'fuerza',
+    power: 'potencia',
+    functional: 'funcional',
+    hybrid: 'híbrido',
+    swimmers: 'nadadores',
+    volume: 'volumen'
+  };
   return (
     <div className="bg-[#202020] rounded-xl p-6 border border-[#787878]/20">
       <div className="text-center mb-6">
