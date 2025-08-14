@@ -63,8 +63,13 @@ function RoutineSelector({ onSelect }) {
   );
 
   const objectiveOptions = [
-    { value: 'volume', label: 'Aumento muscular (Volumen)' },
-    { value: 'fat_loss', label: 'Pérdida de grasa y tonificación' }
+    { value: 'fat_loss', label: 'Pérdida de grasa / recomposición' },
+    { value: 'hypertrophy', label: 'Hipertrofia (ganancia muscular)' },
+    { value: 'strength', label: 'Fuerza pura / Powerlifting básico' },
+    { value: 'power', label: 'Potencia / Atletas' },
+    { value: 'functional', label: 'Entrenamiento funcional / calistenia' },
+    { value: 'hybrid', label: 'Entrenamiento híbrido (fuerza + resistencia)' },
+    { value: 'swimmers', label: 'Preparación física – Nadadores (alto rendimiento)' }
   ];
 
   const genderOptions = [

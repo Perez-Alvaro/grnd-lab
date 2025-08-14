@@ -260,9 +260,14 @@ function OverviewTab({ state }) {
 
 
   const objectiveLabel = {
-    volume: 'Volumen',
     fat_loss: 'Pérdida de grasa',
-    definition: 'Definición',
+    hypertrophy: 'Hipertrofia',
+    strength: 'Fuerza',
+    power: 'Potencia',
+    functional: 'Funcional',
+    hybrid: 'Híbrido',
+    swimmers: 'Nadadores',
+    volume: 'Volumen'
   };
 
   const templateStats = state.sales.reduce((acc, sale) => {
@@ -479,7 +484,16 @@ function OverviewTab({ state }) {
 
 function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplate, onDownloadPDF, onDuplicateTemplate }) {
   const genderLabel = { male: 'masculino', female: 'femenino' };
-  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
+  const objectiveLabel = {
+    fat_loss: 'pérdida de grasa',
+    hypertrophy: 'hipertrofia',
+    strength: 'fuerza',
+    power: 'potencia',
+    functional: 'funcional',
+    hybrid: 'híbrido',
+    swimmers: 'nadadores',
+    volume: 'volumen'
+  };
   const [filters, setFilters] = useState({ tag: '', gender: '', frequency: '', objective: '' });
 
   const handleFilterChange = (field, value) => {
@@ -538,8 +552,13 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
           className="bg-[#202020] border border-[#787878]/30 rounded-xl px-3 py-2 text-white"
         >
           <option value="">Objetivo</option>
-          <option value="volume">Volumen</option>
-          <option value="fat_loss">Pérdida de Grasa</option>
+          <option value="fat_loss">Pérdida de grasa</option>
+          <option value="hypertrophy">Hipertrofia</option>
+          <option value="strength">Fuerza</option>
+          <option value="power">Potencia</option>
+          <option value="functional">Funcional</option>
+          <option value="hybrid">Híbrido</option>
+          <option value="swimmers">Nadadores</option>
         </select>
       </div>
 
@@ -574,7 +593,16 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
 
 function UsersTab({ state, onSendWhatsApp }) {
   const genderLabel = { male: 'masculino', female: 'femenino' };
-  const objectiveLabel = { volume: 'volumen', fat_loss: 'pérdida de grasa' };
+  const objectiveLabel = {
+    fat_loss: 'pérdida de grasa',
+    hypertrophy: 'hipertrofia',
+    strength: 'fuerza',
+    power: 'potencia',
+    functional: 'funcional',
+    hybrid: 'híbrido',
+    swimmers: 'nadadores',
+    volume: 'volumen'
+  };
   const [planFilter, setPlanFilter] = useState('');
   const filteredUsers = planFilter
     ? state.users.filter((user) => user.plan === planFilter)
