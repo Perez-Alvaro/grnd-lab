@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Plus, Trash2, Save, Copy, ChevronDown } from 'lucide-react';
+import { Plus, Trash2, Copy, ChevronDown } from 'lucide-react';
 import { useAppContext } from '../context/AppContext.jsx';
-import EditorToolbar from '../components/editor/EditorToolbar.jsx';
 import TemplatePreview from '../components/TemplatePreview.jsx';
+import EditorActionBar from '../components/editor/EditorActionBar.jsx';
 import migrateTemplate from '../utils/migrateTemplate.ts';
 import { generateRoutinePdf } from '../utils/pdf.jsx';
 
@@ -47,6 +47,9 @@ export default function TemplatesEditorPage() {
     days: initialDays
   });
   const [dirty, setDirty] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [valid, setValid] = useState(false);
+  const formRef = useRef(null);
   const draftKey = id ? `template_draft_${id}` : 'template_draft_new';
 
   const [headerOpen, setHeaderOpen] = useState(
@@ -101,6 +104,12 @@ export default function TemplatesEditorPage() {
     }, 2000);
     return () => clearTimeout(t);
   }, [formData, dirty, draftKey]);
+
+  useEffect(() => {
+    if (formRef.current) {
+      setValid(formRef.current.checkValidity());
+    }
+  }, [formData]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -256,8 +265,10 @@ export default function TemplatesEditorPage() {
     }
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     if (e) e.preventDefault();
+    if (saving || !valid) return;
+    setSaving(true);
     const templateData = {
       ...formData,
       id: existing?.id || Date.now(),
@@ -267,17 +278,25 @@ export default function TemplatesEditorPage() {
         .map(t => t.trim().toLowerCase())
         .filter(Boolean)
     };
-    if (existing) {
-      dispatch({ type: 'UPDATE_TEMPLATE', payload: templateData });
-    } else {
-      dispatch({ type: 'ADD_TEMPLATE', payload: templateData });
+    try {
+      if (existing) {
+        dispatch({ type: 'UPDATE_TEMPLATE', payload: templateData });
+      } else {
+        dispatch({ type: 'ADD_TEMPLATE', payload: templateData });
+      }
+      localStorage.removeItem(draftKey);
+      setDirty(false);
+      window.alert('Plantilla guardada');
+      navigate('/admin');
+    } catch (err) {
+      console.error(err);
+      window.alert('Error al guardar');
+    } finally {
+      setSaving(false);
     }
-    localStorage.removeItem(draftKey);
-    setDirty(false);
-    navigate('/admin');
   };
 
-  const handlePreview = () => {
+  const handlePdf = () => {
     const data = {
       planName: formData.name,
       objective: formData.objective,
@@ -294,6 +313,19 @@ export default function TemplatesEditorPage() {
     navigate('/admin');
   };
 
+  useEffect(() => {
+    const onKey = e => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        if (!saving && dirty && valid) {
+          handleSubmit();
+        }
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [dirty, saving, valid, handleSubmit]);
+
   const previewData = {
     ...formData,
     tags: formData.tags
@@ -303,12 +335,10 @@ export default function TemplatesEditorPage() {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 h-full">
-      <div className="md:col-span-12">
-        <EditorToolbar onBack={handleBack} onSave={handleSubmit} onPreview={handlePreview} />
-      </div>
-      <div className="md:col-span-7 border-r border-[#787878]/20 h-[calc(100vh-4rem)] overflow-y-auto p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-12 h-full">
+        <div className="md:col-span-7 border-r border-[#787878]/20 h-[calc(100vh-4rem)] overflow-y-auto p-6">
+          <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
             <section className="rounded-lg border border-[#787878]/20 bg-[#202020]">
               <header className="flex items-center justify-between p-3">
                 <h2 className="text-lg font-semibold">Datos de la plantilla</h2>
@@ -686,29 +716,31 @@ export default function TemplatesEditorPage() {
               </section>
             ))}
 
-          <div className="flex justify-between items-center">
-            <button
-              type="button"
-              onClick={addDay}
-              className="bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
-            >
-              <Plus className="h-4 w-4" />
-              <span>Agregar día</span>
-            </button>
-            <button
-              type="submit"
-              className="bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-6 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
-            >
-              <Save className="h-4 w-4" />
-              <span>Guardar plantilla</span>
-            </button>
-          </div>
+            <div className="flex justify-start">
+              <button
+                type="button"
+                onClick={addDay}
+                className="bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Agregar día</span>
+              </button>
+            </div>
         </form>
+        </div>
+        <div className="md:col-span-5 h-[calc(100vh-4rem)] overflow-y-auto p-6">
+          <TemplatePreview template={previewData} />
+        </div>
       </div>
-      <div className="md:col-span-5 h-[calc(100vh-4rem)] overflow-y-auto p-6">
-        <TemplatePreview template={previewData} />
-      </div>
-    </div>
+      <EditorActionBar
+        dirty={dirty}
+        valid={valid}
+        saving={saving}
+        onSave={handleSubmit}
+        onPdf={handlePdf}
+        onBack={handleBack}
+      />
+    </>
   );
 }
 
