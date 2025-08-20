@@ -1,4 +1,6 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
+
 import { useNavigate, useParams } from 'react-router-dom';
 import { Plus, Trash2, Copy, ChevronDown } from 'lucide-react';
 import { useAppContext } from '../context/AppContext.jsx';
@@ -48,7 +50,9 @@ export default function TemplatesEditorPage() {
     days: initialDays
   });
   const [dirty, setDirty] = useState(false);
+
   const draftKey = 'plantilla_draft';
+
 
   const [headerOpen, setHeaderOpen] = useState(
     JSON.parse(localStorage.getItem('fps-editor-header-open') ?? 'true')
@@ -94,6 +98,7 @@ export default function TemplatesEditorPage() {
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [dirty]);
+
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -249,12 +254,14 @@ export default function TemplatesEditorPage() {
     }
   };
 
+
   const handleSave = useCallback(() => {
     if (!dirty) return;
     localStorage.setItem(draftKey, JSON.stringify(formData));
     setDirty(false);
     toast.success('Cambios guardados temporalmente');
   }, [dirty, draftKey, formData]);
+
 
   const handlePdf = () => {
     const data = {
@@ -277,14 +284,18 @@ export default function TemplatesEditorPage() {
     const onKey = e => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
         e.preventDefault();
+
         if (dirty) {
           handleSave();
+
         }
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
+
   }, [dirty, handleSave]);
+
 
   const previewData = {
     ...formData,
@@ -298,7 +309,9 @@ export default function TemplatesEditorPage() {
     <>
       <div className="grid grid-cols-1 md:grid-cols-12 h-full">
         <div className="md:col-span-7 border-r border-[#787878]/20 h-[calc(100vh-4rem)] overflow-y-auto p-6">
+
           <form onSubmit={e => e.preventDefault()} className="space-y-6">
+
             <section className="rounded-lg border border-[#787878]/20 bg-[#202020]">
               <header className="flex items-center justify-between p-3">
                 <h2 className="text-lg font-semibold">Datos de la plantilla</h2>
@@ -692,12 +705,14 @@ export default function TemplatesEditorPage() {
           <TemplatePreview template={previewData} />
         </div>
       </div>
+
         <EditorActionBar
           dirty={dirty}
           onSave={handleSave}
           onPdf={handlePdf}
           onBack={handleBack}
         />
+
     </>
   );
 }
