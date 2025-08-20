@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Plus, Trash2, Save, Copy, ChevronDown } from 'lucide-react';
+import { Plus, Trash2, Copy, ChevronDown } from 'lucide-react';
 import { useAppContext } from '../context/AppContext.jsx';
-import EditorToolbar from '../components/editor/EditorToolbar.jsx';
 import TemplatePreview from '../components/TemplatePreview.jsx';
+import EditorActionBar from '../components/editor/EditorActionBar.jsx';
 import migrateTemplate from '../utils/migrateTemplate.ts';
 import { generateRoutinePdf } from '../utils/pdf.jsx';
+import { toast } from '../utils/toast.js';
 
 const emptyVariant = {
   series: '',
@@ -31,7 +32,7 @@ const emptyBlock = {
 export default function TemplatesEditorPage() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { state, dispatch } = useAppContext();
+  const { state } = useAppContext();
 
   const existing = id ? state.templates.find(t => String(t.id) === String(id)) : null;
   const migrated = migrateTemplate(existing);
@@ -47,7 +48,7 @@ export default function TemplatesEditorPage() {
     days: initialDays
   });
   const [dirty, setDirty] = useState(false);
-  const draftKey = id ? `template_draft_${id}` : 'template_draft_new';
+  const draftKey = 'plantilla_draft';
 
   const [headerOpen, setHeaderOpen] = useState(
     JSON.parse(localStorage.getItem('fps-editor-header-open') ?? 'true')
@@ -74,7 +75,7 @@ export default function TemplatesEditorPage() {
   useEffect(() => {
     const draft = localStorage.getItem(draftKey);
     if (draft) {
-      if (window.confirm('¿Recuperar borrador?')) {
+      if (window.confirm('¿Desea recuperar los cambios guardados?')) {
         setFormData(JSON.parse(draft));
       } else {
         localStorage.removeItem(draftKey);
@@ -93,14 +94,6 @@ export default function TemplatesEditorPage() {
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [dirty]);
-
-  useEffect(() => {
-    if (!dirty) return;
-    const t = setTimeout(() => {
-      localStorage.setItem(draftKey, JSON.stringify(formData));
-    }, 2000);
-    return () => clearTimeout(t);
-  }, [formData, dirty, draftKey]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -256,28 +249,14 @@ export default function TemplatesEditorPage() {
     }
   };
 
-  const handleSubmit = e => {
-    if (e) e.preventDefault();
-    const templateData = {
-      ...formData,
-      id: existing?.id || Date.now(),
-      frequency: parseInt(formData.frequency, 10),
-      tags: formData.tags
-        .split(',')
-        .map(t => t.trim().toLowerCase())
-        .filter(Boolean)
-    };
-    if (existing) {
-      dispatch({ type: 'UPDATE_TEMPLATE', payload: templateData });
-    } else {
-      dispatch({ type: 'ADD_TEMPLATE', payload: templateData });
-    }
-    localStorage.removeItem(draftKey);
+  const handleSave = useCallback(() => {
+    if (!dirty) return;
+    localStorage.setItem(draftKey, JSON.stringify(formData));
     setDirty(false);
-    navigate('/admin');
-  };
+    toast.success('Cambios guardados temporalmente');
+  }, [dirty, draftKey, formData]);
 
-  const handlePreview = () => {
+  const handlePdf = () => {
     const data = {
       planName: formData.name,
       objective: formData.objective,
@@ -294,6 +273,19 @@ export default function TemplatesEditorPage() {
     navigate('/admin');
   };
 
+  useEffect(() => {
+    const onKey = e => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        if (dirty) {
+          handleSave();
+        }
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [dirty, handleSave]);
+
   const previewData = {
     ...formData,
     tags: formData.tags
@@ -303,12 +295,10 @@ export default function TemplatesEditorPage() {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 h-full">
-      <div className="md:col-span-12">
-        <EditorToolbar onBack={handleBack} onSave={handleSubmit} onPreview={handlePreview} />
-      </div>
-      <div className="md:col-span-7 border-r border-[#787878]/20 h-[calc(100vh-4rem)] overflow-y-auto p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-12 h-full">
+        <div className="md:col-span-7 border-r border-[#787878]/20 h-[calc(100vh-4rem)] overflow-y-auto p-6">
+          <form onSubmit={e => e.preventDefault()} className="space-y-6">
             <section className="rounded-lg border border-[#787878]/20 bg-[#202020]">
               <header className="flex items-center justify-between p-3">
                 <h2 className="text-lg font-semibold">Datos de la plantilla</h2>
@@ -686,29 +676,29 @@ export default function TemplatesEditorPage() {
               </section>
             ))}
 
-          <div className="flex justify-between items-center">
-            <button
-              type="button"
-              onClick={addDay}
-              className="bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
-            >
-              <Plus className="h-4 w-4" />
-              <span>Agregar día</span>
-            </button>
-            <button
-              type="submit"
-              className="bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-6 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
-            >
-              <Save className="h-4 w-4" />
-              <span>Guardar plantilla</span>
-            </button>
-          </div>
+            <div className="flex justify-start">
+              <button
+                type="button"
+                onClick={addDay}
+                className="bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Agregar día</span>
+              </button>
+            </div>
         </form>
+        </div>
+        <div className="md:col-span-5 h-[calc(100vh-4rem)] overflow-y-auto p-6">
+          <TemplatePreview template={previewData} />
+        </div>
       </div>
-      <div className="md:col-span-5 h-[calc(100vh-4rem)] overflow-y-auto p-6">
-        <TemplatePreview template={previewData} />
-      </div>
-    </div>
+        <EditorActionBar
+          dirty={dirty}
+          onSave={handleSave}
+          onPdf={handlePdf}
+          onBack={handleBack}
+        />
+    </>
   );
 }
 
