@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+
+import React, { useState, useEffect, useCallback } from 'react';
+
 import { useNavigate, useParams } from 'react-router-dom';
 import { Plus, Trash2, Copy, ChevronDown } from 'lucide-react';
 import { useAppContext } from '../context/AppContext.jsx';
@@ -6,6 +8,7 @@ import TemplatePreview from '../components/TemplatePreview.jsx';
 import EditorActionBar from '../components/editor/EditorActionBar.jsx';
 import migrateTemplate from '../utils/migrateTemplate.ts';
 import { generateRoutinePdf } from '../utils/pdf.jsx';
+import { toast } from '../utils/toast.js';
 
 const emptyVariant = {
   series: '',
@@ -31,7 +34,7 @@ const emptyBlock = {
 export default function TemplatesEditorPage() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { state, dispatch } = useAppContext();
+  const { state } = useAppContext();
 
   const existing = id ? state.templates.find(t => String(t.id) === String(id)) : null;
   const migrated = migrateTemplate(existing);
@@ -47,10 +50,9 @@ export default function TemplatesEditorPage() {
     days: initialDays
   });
   const [dirty, setDirty] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [valid, setValid] = useState(false);
-  const formRef = useRef(null);
-  const draftKey = id ? `template_draft_${id}` : 'template_draft_new';
+
+  const draftKey = 'plantilla_draft';
+
 
   const [headerOpen, setHeaderOpen] = useState(
     JSON.parse(localStorage.getItem('fps-editor-header-open') ?? 'true')
@@ -77,7 +79,7 @@ export default function TemplatesEditorPage() {
   useEffect(() => {
     const draft = localStorage.getItem(draftKey);
     if (draft) {
-      if (window.confirm('¿Recuperar borrador?')) {
+      if (window.confirm('¿Desea recuperar los cambios guardados?')) {
         setFormData(JSON.parse(draft));
       } else {
         localStorage.removeItem(draftKey);
@@ -97,19 +99,6 @@ export default function TemplatesEditorPage() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [dirty]);
 
-  useEffect(() => {
-    if (!dirty) return;
-    const t = setTimeout(() => {
-      localStorage.setItem(draftKey, JSON.stringify(formData));
-    }, 2000);
-    return () => clearTimeout(t);
-  }, [formData, dirty, draftKey]);
-
-  useEffect(() => {
-    if (formRef.current) {
-      setValid(formRef.current.checkValidity());
-    }
-  }, [formData]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -265,36 +254,14 @@ export default function TemplatesEditorPage() {
     }
   };
 
-  const handleSubmit = async e => {
-    if (e) e.preventDefault();
-    if (saving || !valid) return;
-    setSaving(true);
-    const templateData = {
-      ...formData,
-      id: existing?.id || Date.now(),
-      frequency: parseInt(formData.frequency, 10),
-      tags: formData.tags
-        .split(',')
-        .map(t => t.trim().toLowerCase())
-        .filter(Boolean)
-    };
-    try {
-      if (existing) {
-        dispatch({ type: 'UPDATE_TEMPLATE', payload: templateData });
-      } else {
-        dispatch({ type: 'ADD_TEMPLATE', payload: templateData });
-      }
-      localStorage.removeItem(draftKey);
-      setDirty(false);
-      window.alert('Plantilla guardada');
-      navigate('/admin');
-    } catch (err) {
-      console.error(err);
-      window.alert('Error al guardar');
-    } finally {
-      setSaving(false);
-    }
-  };
+
+  const handleSave = useCallback(() => {
+    if (!dirty) return;
+    localStorage.setItem(draftKey, JSON.stringify(formData));
+    setDirty(false);
+    toast.success('Cambios guardados temporalmente');
+  }, [dirty, draftKey, formData]);
+
 
   const handlePdf = () => {
     const data = {
@@ -317,14 +284,18 @@ export default function TemplatesEditorPage() {
     const onKey = e => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
         e.preventDefault();
-        if (!saving && dirty && valid) {
-          handleSubmit();
+
+        if (dirty) {
+          handleSave();
+
         }
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [dirty, saving, valid, handleSubmit]);
+
+  }, [dirty, handleSave]);
+
 
   const previewData = {
     ...formData,
@@ -338,7 +309,9 @@ export default function TemplatesEditorPage() {
     <>
       <div className="grid grid-cols-1 md:grid-cols-12 h-full">
         <div className="md:col-span-7 border-r border-[#787878]/20 h-[calc(100vh-4rem)] overflow-y-auto p-6">
-          <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+
+          <form onSubmit={e => e.preventDefault()} className="space-y-6">
+
             <section className="rounded-lg border border-[#787878]/20 bg-[#202020]">
               <header className="flex items-center justify-between p-3">
                 <h2 className="text-lg font-semibold">Datos de la plantilla</h2>
@@ -732,14 +705,14 @@ export default function TemplatesEditorPage() {
           <TemplatePreview template={previewData} />
         </div>
       </div>
-      <EditorActionBar
-        dirty={dirty}
-        valid={valid}
-        saving={saving}
-        onSave={handleSubmit}
-        onPdf={handlePdf}
-        onBack={handleBack}
-      />
+
+        <EditorActionBar
+          dirty={dirty}
+          onSave={handleSave}
+          onPdf={handlePdf}
+          onBack={handleBack}
+        />
+
     </>
   );
 }
