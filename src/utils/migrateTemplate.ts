@@ -17,7 +17,6 @@ const emptyExercise = {
 
 const emptyBlock = {
   titulo: 'Entrenamiento',
-  tipo: 'normal',
   color: '',
   items: [{ ...emptyExercise }]
 };
@@ -27,7 +26,16 @@ export default function migrateTemplate(tmpl: any) {
     return { days: [{ title: 'Día 1', bloques: [{ ...emptyBlock }] }] };
   }
   if (tmpl.days && tmpl.days.every((d: any) => d.bloques)) {
-    return tmpl;
+    return {
+      ...tmpl,
+      days: tmpl.days.map((day: any) => ({
+        ...day,
+        bloques: day.bloques.map(({ tipo, ...b }: any) => {
+          void tipo;
+          return b;
+        })
+      }))
+    };
   }
 
   const convert = (ex: any) => ({

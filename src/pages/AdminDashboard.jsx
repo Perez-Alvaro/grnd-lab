@@ -101,7 +101,7 @@ function AdminDashboard() {
         if (day.exercises) items.push(...day.exercises.map(convert));
         return {
           title: day.title || `Día ${i + 1}`,
-          bloques: [{ titulo: 'Entrenamiento', tipo: 'normal', items }]
+          bloques: [{ titulo: 'Entrenamiento', items }]
         };
       });
       return { ...tmpl, days };

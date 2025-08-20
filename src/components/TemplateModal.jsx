@@ -20,7 +20,6 @@ const emptyExercise = {
 
 const emptyBlock = {
   titulo: 'Entrenamiento',
-  tipo: 'normal',
   color: '',
   items: [{ ...emptyExercise }]
 };
@@ -383,18 +382,6 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                       className="w-full bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors mr-2"
                       placeholder="Título del bloque"
                     />
-                    <select
-                      value={bloque.tipo}
-                      onChange={e => handleBlockChange(dayIndex, blockIndex, 'tipo', e.target.value)}
-                      className="bg-[#202020] border border-[#787878]/30 rounded-lg px-3 py-2 text-white focus:border-[#CBFF00] focus:outline-none transition-colors mr-2"
-                    >
-                      <option value="normal">normal</option>
-                      <option value="superset">superset</option>
-                      <option value="biserie">biserie</option>
-                      <option value="circuito">circuito</option>
-                      <option value="amrap">amrap</option>
-                      <option value="emom">emom</option>
-                    </select>
                     <div className="flex space-x-1">
                       <button
                         type="button"
