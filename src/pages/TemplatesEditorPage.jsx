@@ -390,14 +390,9 @@ export default function TemplatesEditorPage() {
                         onChange={e => handleInputChange('objective', e.target.value)}
                         className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
                       >
-                        <option value="">Selecciona objetivo</option>
+                        <option value="">Seleccioná tu objetivo</option>
                         <option value="fat_loss">Pérdida de grasa / recomposición</option>
                         <option value="hypertrophy">Hipertrofia (ganancia muscular)</option>
-                        <option value="strength">Fuerza pura / Powerlifting básico</option>
-                        <option value="power">Potencia / Atletas</option>
-                        <option value="functional">Entrenamiento funcional / calistenia</option>
-                        <option value="hybrid">Entrenamiento híbrido (fuerza + resistencia)</option>
-                        <option value="swimmers">Preparación física – Nadadores</option>
                       </select>
                     </div>
                   </div>
