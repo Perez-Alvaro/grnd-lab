@@ -62,10 +62,11 @@ const DayPreview = ({ day }) => {
                     <a
                       href={exercise.video}
                       target="_blank"
-                      rel="noreferrer"
-                      className="block truncate text-sm text-[#CBFF00] hover:underline"
+                      rel="noopener noreferrer"
+                      aria-label="Ver video del ejercicio"
+                      className="block cursor-pointer text-sm font-semibold text-[#CBFF00] hover:underline"
                     >
-                      {exercise.video}
+                      Ver
                     </a>
                   ) : (
                     <span className="text-sm text-[#787878]">Sin video</span>
