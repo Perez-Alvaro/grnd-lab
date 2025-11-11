@@ -1,6 +1,7 @@
 import { memo, useCallback } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { usePlanContext } from '../../context/PlanContext.jsx';
+import { TRAINING_GOALS } from '../../constants/objectives.js';
 
 const PlanMetadataForm = memo(() => {
   const { metadata, updateMetadata } = usePlanContext();
@@ -15,6 +16,9 @@ const PlanMetadataForm = memo(() => {
   const labelClasses = 'text-sm font-medium text-neutral-400';
   const inputClasses =
     'w-full rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-3 text-sm text-white shadow-sm transition-colors focus:border-[#CBFF00] focus:outline-none focus:ring-0';
+
+  const frequencyOptions = ['2', '3', '4', '5'];
+  const durationOptions = ['1', '2', '3', '4'];
 
   return (
     <section
@@ -58,14 +62,19 @@ const PlanMetadataForm = memo(() => {
           </div>
           <div className="flex flex-col gap-2">
             <label className={labelClasses}>Frecuencia (días/semana)</label>
-            <input
+            <select
               data-testid="plan-frequency-input"
-              type="number"
-              min="1"
               value={metadata.frequency}
               onChange={handleChange('frequency')}
               className={inputClasses}
-            />
+            >
+              <option value="">Seleccioná la frecuencia</option>
+              {frequencyOptions.map(option => (
+                <option key={option} value={option}>
+                  {option} días/semana
+                </option>
+              ))}
+            </select>
           </div>
           <div className="flex flex-col gap-2">
             <label className={labelClasses}>Objetivo</label>
@@ -76,11 +85,11 @@ const PlanMetadataForm = memo(() => {
               className={inputClasses}
             >
               <option value="">Seleccioná un objetivo</option>
-              <option value="hipertrofia">Hipertrofia</option>
-              <option value="fuerza">Fuerza</option>
-              <option value="resistencia">Resistencia</option>
-              <option value="pérdida de grasa">Pérdida de grasa</option>
-              <option value="salud general">Salud general</option>
+              {TRAINING_GOALS.map(goal => (
+                <option key={goal.value} value={goal.value}>
+                  {goal.label}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -88,14 +97,19 @@ const PlanMetadataForm = memo(() => {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2">
             <label className={labelClasses}>Duración (semanas)</label>
-            <input
+            <select
               data-testid="plan-duration-input"
-              type="number"
-              min="1"
               value={metadata.durationWeeks}
               onChange={handleChange('durationWeeks')}
               className={inputClasses}
-            />
+            >
+              <option value="">Seleccioná la duración</option>
+              {durationOptions.map(option => (
+                <option key={option} value={option}>
+                  {option} semanas
+                </option>
+              ))}
+            </select>
           </div>
           <div className="flex flex-col gap-2">
             <label className={labelClasses}>Autor / Coach</label>

@@ -3,1518 +3,1558 @@
     "id": 1,
     "gender": "male",
     "frequency": 4,
-    "objective": "volume",
+    "duration": 4,
+    "objective": "volumen",
     "plan": "premium",
     "name": "Masculino Volumen FST-7 4x/semana",
     "tags": [
       "fst-7",
+      "hipertrofia",
       "superseries"
     ],
-    "days": [
+    "notes": "Rutina enfocada en hipertrofia con técnicas FST-7. Ajustar cargas semanalmente manteniendo el RIR objetivo.",
+    "author": "Matías Zaccaro",
+    "createdAt": "2025-01-05",
+    "weeks": [
       {
-        "title": "Día 1 - Pecho y tríceps",
-        "warmup": [],
-        "exercises": [
+        "id": "volumen-semana-1",
+        "title": "Semana 1",
+        "summary": "Bloque inicial de volumen con énfasis en técnica y control.",
+        "notes": "Apunta a RIR 2 en los compuestos y respeta los descansos controlados.",
+        "days": [
           {
-            "name": "Press banca",
-            "sets": 4,
-            "reps": "8-10",
-            "rest": "90s",
-            "cadence": "2-0-1",
-            "rir": 2,
-            "notes": "superserie con press inclinado",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "volumen-s1-d1",
+            "name": "Día 1 - Pecho y tríceps",
+            "type": "ENTRENAMIENTO",
+            "notes": "Activación previa con aperturas ligeras antes del press.",
+            "exercises": [
+              {
+                "name": "Press banca",
+                "series": 4,
+                "sets": 4,
+                "reps": "8-10",
+                "rest": "90s",
+                "rir": 2,
+                "tempo": "2-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Superserie con press inclinado."
+              },
+              {
+                "name": "Press inclinado mancuernas",
+                "series": 4,
+                "sets": 4,
+                "reps": "10-12",
+                "rest": "75s",
+                "rir": 1,
+                "tempo": "2-1-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Recorrido completo controlado."
+              },
+              {
+                "name": "Aperturas en máquina",
+                "series": 3,
+                "sets": 3,
+                "reps": "15",
+                "rest": "60s",
+                "rir": 1,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Mantener tensión constante."
+              },
+              {
+                "name": "Extensión de tríceps en polea",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "45s",
+                "rir": 1,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Última serie con dropset ligero."
+              }
+            ]
           },
           {
-            "name": "Press inclinado mancuernas",
-            "sets": 4,
-            "reps": "10-12",
-            "rest": "75s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con aperturas",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "volumen-s1-d2",
+            "name": "Día 2 - Espalda y bíceps",
+            "type": "ENTRENAMIENTO",
+            "notes": "Priorizar retracción escapular en todos los remos.",
+            "exercises": [
+              {
+                "name": "Dominadas",
+                "series": 4,
+                "sets": 4,
+                "reps": "8",
+                "rest": "120s",
+                "rir": 2,
+                "tempo": "2-1-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Mantener core firme y pausa arriba."
+              },
+              {
+                "name": "Remo con barra",
+                "series": 4,
+                "sets": 4,
+                "reps": "10",
+                "rest": "90s",
+                "rir": 1,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Superserie con jalón al pecho."
+              },
+              {
+                "name": "Jalón al pecho",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "75s",
+                "rir": 1,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Apretar dorsales en la parte baja."
+              },
+              {
+                "name": "Curl con mancuernas alternado",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "60s",
+                "rir": 1,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Codos pegados al torso."
+              }
+            ]
           },
           {
-            "name": "Aperturas en máquina",
-            "sets": 4,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-1-2",
-            "rir": 1,
-            "notes": "superserie con press inclinado",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "volumen-s1-d3",
+            "name": "Día 3 - Piernas",
+            "type": "ENTRENAMIENTO",
+            "notes": "Calentar cadera y rodillas con movilidad dinámica.",
+            "exercises": [
+              {
+                "name": "Sentadilla trasera",
+                "series": 4,
+                "sets": 4,
+                "reps": "10",
+                "rest": "120s",
+                "rir": 2,
+                "tempo": "3-1-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Mantener columna neutra."
+              },
+              {
+                "name": "Prensa de piernas",
+                "series": 4,
+                "sets": 4,
+                "reps": "12",
+                "rest": "90s",
+                "rir": 1,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Superserie con extensión de piernas."
+              },
+              {
+                "name": "Extensión de piernas",
+                "series": 3,
+                "sets": 3,
+                "reps": "15",
+                "rest": "45s",
+                "rir": 1,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Tensión constante en el punto alto."
+              },
+              {
+                "name": "Curl femoral acostado",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "60s",
+                "rir": 1,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Última repetición con pausa isométrica."
+              }
+            ]
           },
           {
-            "name": "Extensión de tríceps en polea",
-            "sets": 7,
-            "reps": "10-12",
-            "rest": "30s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "FST-7 al final",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "volumen-s1-d4",
+            "name": "Día 4 - Hombros y brazos",
+            "type": "ENTRENAMIENTO",
+            "notes": "Enfocar en control de escápulas y bombeo final de brazos.",
+            "exercises": [
+              {
+                "name": "Press militar con barra",
+                "series": 4,
+                "sets": 4,
+                "reps": "8-10",
+                "rest": "90s",
+                "rir": 2,
+                "tempo": "2-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Controlar la fase excéntrica."
+              },
+              {
+                "name": "Elevaciones laterales",
+                "series": 4,
+                "sets": 4,
+                "reps": "12",
+                "rest": "45s",
+                "rir": 1,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Ligera flexión de codos."
+              },
+              {
+                "name": "Curl bíceps barra recta",
+                "series": 3,
+                "sets": 3,
+                "reps": "10",
+                "rest": "60s",
+                "rir": 1,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Evitar balanceo."
+              },
+              {
+                "name": "Fondos en paralelas",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "75s",
+                "rir": 1,
+                "tempo": "2-1-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Inclinación ligera para enfatizar tríceps."
+              }
+            ]
           }
         ]
       },
       {
-        "title": "Día 2 - Espalda y bíceps",
-        "warmup": [],
-        "exercises": [
+        "id": "volumen-semana-2",
+        "title": "Semana 2",
+        "summary": "Incremento de volumen con descansos moderados.",
+        "notes": "Aumenta ligeramente la carga en los compuestos manteniendo la técnica.",
+        "days": [
           {
-            "name": "Jalón al pecho",
-            "sets": 4,
-            "reps": "8-10",
-            "rest": "90s",
-            "cadence": "2-0-2",
-            "rir": 2,
-            "notes": "superserie con remo",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "volumen-s2-d1",
+            "name": "Día 1 - Pecho y tríceps",
+            "type": "ENTRENAMIENTO",
+            "notes": "Última serie de press inclinada con tempo controlado 3-1-1.",
+            "exercises": [
+              {
+                "name": "Press banca",
+                "series": 5,
+                "sets": 5,
+                "reps": "6-8",
+                "rest": "105s",
+                "rir": 2,
+                "tempo": "2-1-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Agregar pausa de 1s en el pecho."
+              },
+              {
+                "name": "Press inclinado mancuernas",
+                "series": 4,
+                "sets": 4,
+                "reps": "8-10",
+                "rest": "75s",
+                "rir": 1,
+                "tempo": "3-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Reducir descanso si el RIR supera 1."
+              },
+              {
+                "name": "Aperturas con polea alta",
+                "series": 4,
+                "sets": 4,
+                "reps": "12-15",
+                "rest": "45s",
+                "rir": 1,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Buscar máximo estiramiento."
+              },
+              {
+                "name": "Extensión de tríceps cuerda",
+                "series": 4,
+                "sets": 4,
+                "reps": "10-12",
+                "rest": "40s",
+                "rir": 1,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Aplicar FST-7 en las últimas series."
+              }
+            ]
           },
           {
-            "name": "Remo con barra",
-            "sets": 4,
-            "reps": "8-10",
-            "rest": "90s",
-            "cadence": "2-0-1",
-            "rir": 1,
-            "notes": "superserie con curl",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "volumen-s2-d2",
+            "name": "Día 2 - Espalda y bíceps",
+            "type": "ENTRENAMIENTO",
+            "notes": "Sumar band pull apart en el calentamiento.",
+            "exercises": [
+              {
+                "name": "Remo Pendlay",
+                "series": 4,
+                "sets": 4,
+                "reps": "8",
+                "rest": "105s",
+                "rir": 2,
+                "tempo": "1-1-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Espalda paralela al piso, explosivo en la subida."
+              },
+              {
+                "name": "Jalón al pecho agarre neutro",
+                "series": 4,
+                "sets": 4,
+                "reps": "10",
+                "rest": "90s",
+                "rir": 1,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Mantener tronco estable."
+              },
+              {
+                "name": "Remo en máquina unilateral",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "60s",
+                "rir": 1,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Sostener 1s la contracción final."
+              },
+              {
+                "name": "Curl bíceps en predicador",
+                "series": 4,
+                "sets": 4,
+                "reps": "10-12",
+                "rest": "50s",
+                "rir": 1,
+                "tempo": "3-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Fase excéntrica controlada."
+              }
+            ]
           },
           {
-            "name": "Remo en máquina",
-            "sets": 4,
-            "reps": "12",
-            "rest": "75s",
-            "cadence": "2-1-2",
-            "rir": 1,
-            "notes": "controlar escápulas",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "volumen-s2-d3",
+            "name": "Día 3 - Piernas",
+            "type": "ENTRENAMIENTO",
+            "notes": "Agregar caminata con trineo ligero al finalizar.",
+            "exercises": [
+              {
+                "name": "Sentadilla frontal",
+                "series": 4,
+                "sets": 4,
+                "reps": "8",
+                "rest": "135s",
+                "rir": 2,
+                "tempo": "3-1-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Pausa de 1s en el punto bajo."
+              },
+              {
+                "name": "Prensa de piernas",
+                "series": 5,
+                "sets": 5,
+                "reps": "10",
+                "rest": "90s",
+                "rir": 1,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Pies ligeramente más altos para enfatizar glúteo."
+              },
+              {
+                "name": "Peso muerto rumano",
+                "series": 4,
+                "sets": 4,
+                "reps": "10",
+                "rest": "90s",
+                "rir": 1,
+                "tempo": "3-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Mantener barra cerca del cuerpo."
+              },
+              {
+                "name": "Curl femoral sentado",
+                "series": 4,
+                "sets": 4,
+                "reps": "12",
+                "rest": "60s",
+                "rir": 1,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Última serie rest-pause 12+3+3."
+              }
+            ]
           },
           {
-            "name": "Curl bíceps barra",
-            "sets": 7,
-            "reps": "10-12",
-            "rest": "30s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "volumen-s2-d4",
+            "name": "Día 4 - Hombros y brazos",
+            "type": "ENTRENAMIENTO",
+            "notes": "Aplicar FST-7 en elevaciones laterales al final.",
+            "exercises": [
+              {
+                "name": "Press Arnold",
+                "series": 4,
+                "sets": 4,
+                "reps": "8-10",
+                "rest": "90s",
+                "rir": 2,
+                "tempo": "2-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Controlar la rotación de muñecas."
+              },
+              {
+                "name": "Elevaciones laterales en polea",
+                "series": 5,
+                "sets": 5,
+                "reps": "15",
+                "rest": "40s",
+                "rir": 1,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Mantener hombros bajos durante todo el movimiento."
+              },
+              {
+                "name": "Curl martillo",
+                "series": 4,
+                "sets": 4,
+                "reps": "12",
+                "rest": "60s",
+                "rir": 1,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Alternar brazos con control."
+              },
+              {
+                "name": "Extensión tríceps con barra Z",
+                "series": 4,
+                "sets": 4,
+                "reps": "10-12",
+                "rest": "60s",
+                "rir": 1,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Apoyar espalda contra el banco para aislar tríceps."
+              }
+            ]
           }
         ]
       },
       {
-        "title": "Día 3 - Piernas",
-        "warmup": [],
-        "exercises": [
+        "id": "volumen-semana-3",
+        "title": "Semana 3",
+        "summary": "Bloque de alta intensidad antes de la semana de consolidación.",
+        "notes": "Reducir descansos en accesorios y enfocar en tempos lentos.",
+        "days": [
           {
-            "name": "Sentadilla",
-            "sets": 4,
-            "reps": "8-10",
-            "rest": "120s",
-            "cadence": "2-0-1",
-            "rir": 2,
-            "notes": "enfocar profundidad",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "volumen-s3-d1",
+            "name": "Día 1 - Pecho y tríceps",
+            "type": "ENTRENAMIENTO",
+            "notes": "Incluir trabajo de pre-exhaust en aperturas.",
+            "exercises": [
+              {
+                "name": "Press banca con pausa",
+                "series": 5,
+                "sets": 5,
+                "reps": "5-6",
+                "rest": "120s",
+                "rir": 1,
+                "tempo": "2-2-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Pausa de 2s en el pecho."
+              },
+              {
+                "name": "Press inclinado con barra",
+                "series": 4,
+                "sets": 4,
+                "reps": "8",
+                "rest": "90s",
+                "rir": 1,
+                "tempo": "2-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Empuje explosivo y control en bajada."
+              },
+              {
+                "name": "Aperturas inclinadas",
+                "series": 4,
+                "sets": 4,
+                "reps": "12-15",
+                "rest": "40s",
+                "rir": 1,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Pre-exhaust antes del trabajo de tríceps."
+              },
+              {
+                "name": "Press cerrado en multipower",
+                "series": 4,
+                "sets": 4,
+                "reps": "10",
+                "rest": "60s",
+                "rir": 1,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Evitar rebotes, tronco estable."
+              }
+            ]
           },
           {
-            "name": "Prensa de piernas",
-            "sets": 4,
-            "reps": "12",
-            "rest": "90s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con peso muerto rumano",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "volumen-s3-d2",
+            "name": "Día 2 - Espalda y bíceps",
+            "type": "ENTRENAMIENTO",
+            "notes": "Sumar trabajo isométrico de 2s en la contracción.",
+            "exercises": [
+              {
+                "name": "Peso muerto rumano pesado",
+                "series": 4,
+                "sets": 4,
+                "reps": "6",
+                "rest": "150s",
+                "rir": 1,
+                "tempo": "3-1-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Mantener tensión en isquios todo el recorrido."
+              },
+              {
+                "name": "Remo con barra T",
+                "series": 4,
+                "sets": 4,
+                "reps": "8-10",
+                "rest": "105s",
+                "rir": 1,
+                "tempo": "2-1-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Pausa isométrica de 1s en contracción."
+              },
+              {
+                "name": "Jalón al pecho agarre prono",
+                "series": 4,
+                "sets": 4,
+                "reps": "10-12",
+                "rest": "75s",
+                "rir": 1,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Control total en la fase excéntrica."
+              },
+              {
+                "name": "Curl bíceps inclinado",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "50s",
+                "rir": 1,
+                "tempo": "3-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Realizar drop set en la última serie."
+              }
+            ]
           },
           {
-            "name": "Peso muerto rumano",
-            "sets": 4,
-            "reps": "10",
-            "rest": "90s",
-            "cadence": "2-0-2",
-            "rir": 2,
-            "notes": "control total",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "volumen-s3-d3",
+            "name": "Día 3 - Piernas",
+            "type": "ENTRENAMIENTO",
+            "notes": "Mayor intensidad en compuestos y foco en gemelos.",
+            "exercises": [
+              {
+                "name": "Sentadilla hack",
+                "series": 5,
+                "sets": 5,
+                "reps": "8",
+                "rest": "135s",
+                "rir": 1,
+                "tempo": "3-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Profundidad completa sin colapsar tronco."
+              },
+              {
+                "name": "Zancadas caminando",
+                "series": 4,
+                "sets": 4,
+                "reps": "12 por pierna",
+                "rest": "75s",
+                "rir": 1,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Paso largo y torso erguido."
+              },
+              {
+                "name": "Curl femoral en máquina",
+                "series": 4,
+                "sets": 4,
+                "reps": "12",
+                "rest": "60s",
+                "rir": 1,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Aplicar repeticiones 1.5 en las últimas dos series."
+              },
+              {
+                "name": "Elevación de gemelos de pie",
+                "series": 5,
+                "sets": 5,
+                "reps": "15",
+                "rest": "45s",
+                "rir": 1,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Sostener 2s en el punto alto."
+              }
+            ]
           },
           {
-            "name": "Curl femoral",
-            "sets": 7,
-            "reps": "10-12",
-            "rest": "30s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "volumen-s3-d4",
+            "name": "Día 4 - Hombros y brazos",
+            "type": "ENTRENAMIENTO",
+            "notes": "Mayor densidad con descansos reducidos en superseries.",
+            "exercises": [
+              {
+                "name": "Press militar sentado",
+                "series": 4,
+                "sets": 4,
+                "reps": "6-8",
+                "rest": "105s",
+                "rir": 1,
+                "tempo": "2-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Mantener pies firmes y core activo."
+              },
+              {
+                "name": "Elevaciones laterales con mancuernas",
+                "series": 5,
+                "sets": 5,
+                "reps": "15",
+                "rest": "35s",
+                "rir": 1,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Última serie con dropset triple."
+              },
+              {
+                "name": "Curl bíceps 21s",
+                "series": 3,
+                "sets": 3,
+                "reps": "21",
+                "rest": "60s",
+                "rir": 1,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "7 medias, 7 cortas, 7 completas."
+              },
+              {
+                "name": "Extensión tríceps en banco",
+                "series": 3,
+                "sets": 3,
+                "reps": "15",
+                "rest": "60s",
+                "rir": 1,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Superserie inmediata con curl bíceps sin descanso."
+              }
+            ]
           }
         ]
       },
       {
-        "title": "Día 4 - Hombros y brazos",
-        "warmup": [],
-        "exercises": [
+        "id": "volumen-semana-4",
+        "title": "Semana 4",
+        "summary": "Semana de consolidación con reducción controlada de volumen.",
+        "notes": "Mantener cargas similares pero con RIR más alto para favorecer recuperación.",
+        "days": [
           {
-            "name": "Press militar",
-            "sets": 4,
-            "reps": "8-10",
-            "rest": "90s",
-            "cadence": "2-0-1",
-            "rir": 2,
-            "notes": "última serie dropset",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "volumen-s4-d1",
+            "name": "Día 1 - Pecho y tríceps",
+            "type": "ENTRENAMIENTO",
+            "notes": "Centrarse en estiramiento y congestión sin llegar al fallo.",
+            "exercises": [
+              {
+                "name": "Press banca ligero",
+                "series": 4,
+                "sets": 4,
+                "reps": "10",
+                "rest": "90s",
+                "rir": 3,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Enfocar en técnica perfecta."
+              },
+              {
+                "name": "Press inclinado mancuernas",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "75s",
+                "rir": 2,
+                "tempo": "3-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Sostener 1s en la contracción máxima."
+              },
+              {
+                "name": "Aperturas en banco plano",
+                "series": 3,
+                "sets": 3,
+                "reps": "15",
+                "rest": "45s",
+                "rir": 2,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Respiración diafragmática entre series."
+              },
+              {
+                "name": "Extensión tríceps polea",
+                "series": 3,
+                "sets": 3,
+                "reps": "12-15",
+                "rest": "45s",
+                "rir": 2,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Bombeo final buscando máximo flujo sanguíneo."
+              }
+            ]
           },
           {
-            "name": "Elevaciones laterales",
-            "sets": 7,
-            "reps": "12-15",
-            "rest": "30s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "volumen-s4-d2",
+            "name": "Día 2 - Espalda y bíceps",
+            "type": "ENTRENAMIENTO",
+            "notes": "Ritmo fluido y sin llegar al fallo muscular.",
+            "exercises": [
+              {
+                "name": "Dominadas asistidas",
+                "series": 3,
+                "sets": 3,
+                "reps": "10",
+                "rest": "90s",
+                "rir": 3,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Controlar descensos lentos."
+              },
+              {
+                "name": "Remo con mancuernas",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "75s",
+                "rir": 2,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Trabajo unilateral con foco en control."
+              },
+              {
+                "name": "Jalón en polea con cuerda",
+                "series": 3,
+                "sets": 3,
+                "reps": "15",
+                "rest": "60s",
+                "rir": 2,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Pausa de 1s al llegar al abdomen."
+              },
+              {
+                "name": "Curl bíceps con cuerda",
+                "series": 3,
+                "sets": 3,
+                "reps": "15",
+                "rest": "45s",
+                "rir": 2,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Mantener hombros relajados."
+              }
+            ]
           },
           {
-            "name": "Curl martillo",
-            "sets": 4,
-            "reps": "10-12",
-            "rest": "75s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con extensión",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "volumen-s4-d3",
+            "name": "Día 3 - Piernas",
+            "type": "ENTRENAMIENTO",
+            "notes": "Controlar volumen para facilitar la recuperación.",
+            "exercises": [
+              {
+                "name": "Sentadilla goblet",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "90s",
+                "rir": 3,
+                "tempo": "3-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Torso erguido, foco en profundidad."
+              },
+              {
+                "name": "Prensa a una pierna",
+                "series": 3,
+                "sets": 3,
+                "reps": "12 por pierna",
+                "rest": "75s",
+                "rir": 2,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Alinear rodilla con la punta del pie."
+              },
+              {
+                "name": "Curl femoral con fitball",
+                "series": 3,
+                "sets": 3,
+                "reps": "15",
+                "rest": "45s",
+                "rir": 2,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Mantener glúteos elevados."
+              },
+              {
+                "name": "Elevación de gemelos sentado",
+                "series": 3,
+                "sets": 3,
+                "reps": "20",
+                "rest": "45s",
+                "rir": 2,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Sostener 2s en máxima contracción."
+              }
+            ]
           },
           {
-            "name": "Extensión tríceps cuerda",
-            "sets": 4,
-            "reps": "10-12",
-            "rest": "75s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con curl",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "volumen-s4-d4",
+            "name": "Día 4 - Hombros y brazos",
+            "type": "ENTRENAMIENTO",
+            "notes": "Sesión de bombeo y técnica perfecta.",
+            "exercises": [
+              {
+                "name": "Press militar con mancuernas",
+                "series": 3,
+                "sets": 3,
+                "reps": "10",
+                "rest": "90s",
+                "rir": 2,
+                "tempo": "2-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Movimiento controlado sin bloquear codos."
+              },
+              {
+                "name": "Elevaciones laterales en máquina",
+                "series": 3,
+                "sets": 3,
+                "reps": "15",
+                "rest": "45s",
+                "rir": 2,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Buscar congestión con poco descanso."
+              },
+              {
+                "name": "Curl bíceps en polea",
+                "series": 3,
+                "sets": 3,
+                "reps": "15",
+                "rest": "45s",
+                "rir": 2,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Tensión constante sin cerrar completamente los codos."
+              },
+              {
+                "name": "Extensión de tríceps sobre cabeza",
+                "series": 3,
+                "sets": 3,
+                "reps": "15",
+                "rest": "45s",
+                "rir": 2,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Evitar arquear la espalda."
+              }
+            ]
           }
         ]
       }
-    ],
-    "notes": "Rutina estilo Hany Rambod con técnicas FST-7.",
-    "createdAt": "2024-01-01",
-    "totalDescargas": 0,
-    "ultimaDescarga": null
+    ]
   },
   {
     "id": 2,
-    "gender": "male",
-    "frequency": 5,
-    "objective": "volume",
-    "plan": "premium",
-    "name": "Masculino Volumen FST-7 5x/semana",
-    "tags": [
-      "fst-7"
-    ],
-    "days": [
-      {
-        "title": "Día 1 - Pecho",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Press banca plano",
-            "sets": 4,
-            "reps": "8-10",
-            "rest": "90s",
-            "cadence": "2-0-1",
-            "rir": 2,
-            "notes": "última serie dropset",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Press inclinado barra",
-            "sets": 4,
-            "reps": "8-10",
-            "rest": "90s",
-            "cadence": "2-0-2",
-            "rir": 2,
-            "notes": "superserie con fondos",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Fondos",
-            "sets": 4,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-1",
-            "rir": 2,
-            "notes": "superserie con press",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Aperturas con cable",
-            "sets": 7,
-            "reps": "12",
-            "rest": "30s",
-            "cadence": "2-1-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      },
-      {
-        "title": "Día 2 - Espalda",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Dominadas",
-            "sets": 4,
-            "reps": "8-10",
-            "rest": "120s",
-            "cadence": "2-0-1",
-            "rir": 2,
-            "notes": "isométrico final",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Remo mancuerna",
-            "sets": 4,
-            "reps": "10",
-            "rest": "90s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con jalón",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Jalón estrecho",
-            "sets": 4,
-            "reps": "12",
-            "rest": "90s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con remo",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Pullover máquina",
-            "sets": 7,
-            "reps": "15",
-            "rest": "30s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      },
-      {
-        "title": "Día 3 - Piernas",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Sentadilla frontal",
-            "sets": 4,
-            "reps": "8",
-            "rest": "120s",
-            "cadence": "2-0-1",
-            "rir": 2,
-            "notes": "profundidad total",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Prensa",
-            "sets": 4,
-            "reps": "12",
-            "rest": "90s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con curl femoral",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Curl femoral",
-            "sets": 4,
-            "reps": "12",
-            "rest": "90s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con prensa",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Elevación de gemelos",
-            "sets": 7,
-            "reps": "15",
-            "rest": "30s",
-            "cadence": "2-1-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      },
-      {
-        "title": "Día 4 - Hombros",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Press militar mancuernas",
-            "sets": 4,
-            "reps": "8-10",
-            "rest": "90s",
-            "cadence": "2-0-1",
-            "rir": 2,
-            "notes": "última serie dropset",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Elevaciones laterales",
-            "sets": 4,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con pájaros",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Pájaro máquina",
-            "sets": 4,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con elevaciones",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Elevación frontal",
-            "sets": 7,
-            "reps": "15",
-            "rest": "30s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      },
-      {
-        "title": "Día 5 - Brazos",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Curl barra Z",
-            "sets": 4,
-            "reps": "10",
-            "rest": "90s",
-            "cadence": "2-0-2",
-            "rir": 2,
-            "notes": "última serie dropset",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Curl martillo",
-            "sets": 4,
-            "reps": "12",
-            "rest": "75s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con jalón",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Jalón tríceps cuerda",
-            "sets": 4,
-            "reps": "12",
-            "rest": "75s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con curl",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Extensión tríceps polea",
-            "sets": 7,
-            "reps": "12",
-            "rest": "30s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      }
-    ],
-    "notes": "Dividida semanal estilo Rambod.",
-    "createdAt": "2024-01-01",
-    "totalDescargas": 0,
-    "ultimaDescarga": null
-  },
-  {
-    "id": 3,
-    "gender": "male",
-    "frequency": 3,
-    "objective": "fat_loss",
-    "plan": "premium",
-    "name": "Masculino Pérdida de Grasa 3x/semana",
-    "tags": [
-      "hiit"
-    ],
-    "days": [
-      {
-        "title": "Día 1 - Full body",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Press banca",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con jalón",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Jalón al pecho",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con press",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Kettlebell swing",
-            "sets": 3,
-            "reps": "20",
-            "rest": "45s",
-            "cadence": "1-0-1",
-            "rir": 2,
-            "notes": "explosivo",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Battle rope",
-            "sets": 7,
-            "reps": "30s",
-            "rest": "20s",
-            "cadence": "1-0-1",
-            "rir": 0,
-            "notes": "FST-7 cardio",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      },
-      {
-        "title": "Día 2 - Piernas",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Sentadilla goblet",
-            "sets": 3,
-            "reps": "15",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con saltos",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Jump squats",
-            "sets": 3,
-            "reps": "15",
-            "rest": "45s",
-            "cadence": "1-0-1",
-            "rir": 2,
-            "notes": "superserie con goblet",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Peso muerto rumano mancuernas",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "controlar",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Mountain climbers",
-            "sets": 7,
-            "reps": "30s",
-            "rest": "20s",
-            "cadence": "1-0-1",
-            "rir": 0,
-            "notes": "FST-7 core",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      },
-      {
-        "title": "Día 3 - HIIT y brazos",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Kettlebell swing",
-            "sets": 3,
-            "reps": "20",
-            "rest": "45s",
-            "cadence": "1-0-1",
-            "rir": 2,
-            "notes": "superserie con burpees",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Burpees",
-            "sets": 3,
-            "reps": "15",
-            "rest": "45s",
-            "cadence": "1-0-1",
-            "rir": 2,
-            "notes": "superserie con swings",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Curl bíceps barra",
-            "sets": 3,
-            "reps": "15",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "última serie dropset",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Curl martillo",
-            "sets": 7,
-            "reps": "12",
-            "rest": "20s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      }
-    ],
-    "notes": "Circuitos de alta intensidad.",
-    "createdAt": "2024-01-01",
-    "totalDescargas": 0,
-    "ultimaDescarga": null
-  },
-  {
-    "id": 4,
-    "gender": "male",
-    "frequency": 4,
-    "objective": "fat_loss",
-    "plan": "premium",
-    "name": "Masculino Pérdida de Grasa 4x/semana",
-    "tags": [
-      "hiit"
-    ],
-    "days": [
-      {
-        "title": "Día 1 - Pecho y hombros",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Press banca",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con flexiones",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Flexiones pliométricas",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "1-0-1",
-            "rir": 2,
-            "notes": "superserie con press",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Press militar",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "control",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Battle rope",
-            "sets": 7,
-            "reps": "30s",
-            "rest": "20s",
-            "cadence": "1-0-1",
-            "rir": 0,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      },
-      {
-        "title": "Día 2 - Espalda y bíceps",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Dominadas asistidas",
-            "sets": 3,
-            "reps": "10",
-            "rest": "60s",
-            "cadence": "2-0-1",
-            "rir": 2,
-            "notes": "isometría final",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Remo barra T",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con jalón",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Jalón estrecho",
-            "sets": 3,
-            "reps": "15",
-            "rest": "45s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con remo",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Curl bíceps barra",
-            "sets": 7,
-            "reps": "12",
-            "rest": "30s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      },
-      {
-        "title": "Día 3 - Piernas",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Sentadilla frontal",
-            "sets": 3,
-            "reps": "10",
-            "rest": "90s",
-            "cadence": "2-0-1",
-            "rir": 2,
-            "notes": "superserie con box jumps",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Box jumps",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "1-0-1",
-            "rir": 2,
-            "notes": "superserie con sentadilla",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Peso muerto rumano",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "control",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Curl femoral",
-            "sets": 7,
-            "reps": "12",
-            "rest": "30s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      },
-      {
-        "title": "Día 4 - Circuito",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Kettlebell swing",
-            "sets": 3,
-            "reps": "20",
-            "rest": "45s",
-            "cadence": "1-0-1",
-            "rir": 2,
-            "notes": "superserie con burpees",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Burpees",
-            "sets": 3,
-            "reps": "15",
-            "rest": "45s",
-            "cadence": "1-0-1",
-            "rir": 2,
-            "notes": "superserie con swings",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Sprints",
-            "sets": 3,
-            "reps": "30s",
-            "rest": "30s",
-            "cadence": "1-0-1",
-            "rir": 1,
-            "notes": "máxima velocidad",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Plancha",
-            "sets": 7,
-            "reps": "30s",
-            "rest": "15s",
-            "cadence": "1-0-1",
-            "rir": 0,
-            "notes": "FST-7 core",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      }
-    ],
-    "notes": "Definición con superseries e intervalos.",
-    "createdAt": "2024-01-01",
-    "totalDescargas": 0,
-    "ultimaDescarga": null
-  },
-  {
-    "id": 5,
     "gender": "female",
     "frequency": 3,
-    "objective": "volume",
-    "plan": "premium",
-    "name": "Femenino Volumen 3x/semana",
+    "duration": 4,
+    "objective": "perdida_grasa",
+    "plan": "basic",
+    "name": "Full Body Definición 3x/semana",
     "tags": [
-      "fst-7",
-      "gluteos"
+      "full-body",
+      "definicion",
+      "metabolico"
     ],
-    "days": [
+    "notes": "Rutina de fuerza combinada con estímulo metabólico y sesiones de descanso activo.",
+    "author": "Matías Zaccaro",
+    "createdAt": "2025-01-05",
+    "weeks": [
       {
-        "title": "Día 1 - Piernas y glúteos",
-        "warmup": [],
-        "exercises": [
+        "id": "definicion-semana-1",
+        "title": "Semana 1",
+        "summary": "Adaptación general con énfasis en técnica y ritmo respiratorio.",
+        "notes": "Mantener un ritmo RPE 7 y registrar tiempos de descanso para progresión.",
+        "days": [
           {
-            "name": "Sentadilla libre",
-            "sets": 4,
-            "reps": "10",
-            "rest": "90s",
-            "cadence": "2-0-1",
-            "rir": 2,
-            "notes": "última serie dropset",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "definicion-s1-d1",
+            "name": "Día 1 - Full Body A",
+            "type": "ENTRENAMIENTO",
+            "notes": "Circuito base con foco en fuerza del tren inferior.",
+            "exercises": [
+              {
+                "name": "Sentadilla trasera",
+                "series": 4,
+                "sets": 4,
+                "reps": "10",
+                "rest": "90s",
+                "rir": 2,
+                "tempo": "2-1-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Controlar respiración y pies firmes."
+              },
+              {
+                "name": "Press banca plano",
+                "series": 4,
+                "sets": 4,
+                "reps": "10",
+                "rest": "75s",
+                "rir": 2,
+                "tempo": "2-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Control escapular sin rebote."
+              },
+              {
+                "name": "Dominadas asistidas",
+                "series": 3,
+                "sets": 3,
+                "reps": "8-10",
+                "rest": "75s",
+                "rir": 2,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Piernas extendidas para estabilizar core."
+              },
+              {
+                "name": "Plancha",
+                "series": 3,
+                "sets": 3,
+                "reps": "30s",
+                "rest": "45s",
+                "rir": 2,
+                "tempo": "isometría",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Activar glúteos y mantener alineación neutra."
+              }
+            ]
           },
           {
-            "name": "Peso muerto rumano",
-            "sets": 4,
-            "reps": "12",
-            "rest": "75s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con hip thrust",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "definicion-s1-d2",
+            "name": "Día 2 - Full Body B",
+            "type": "ENTRENAMIENTO",
+            "notes": "Mezcla de tirón y empuje con énfasis en cadera posterior.",
+            "exercises": [
+              {
+                "name": "Peso muerto rumano",
+                "series": 4,
+                "sets": 4,
+                "reps": "8",
+                "rest": "90s",
+                "rir": 2,
+                "tempo": "3-1-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Barra pegada al cuerpo y hombros retraídos."
+              },
+              {
+                "name": "Press militar",
+                "series": 4,
+                "sets": 4,
+                "reps": "10",
+                "rest": "75s",
+                "rir": 2,
+                "tempo": "2-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Core firme, evitar arquear la zona lumbar."
+              },
+              {
+                "name": "Curl bíceps con mancuernas",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "60s",
+                "rir": 1,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Codos fijos, sin balanceo."
+              },
+              {
+                "name": "Crunch abdominal",
+                "series": 3,
+                "sets": 3,
+                "reps": "20",
+                "rest": "45s",
+                "rir": 2,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Exhalar al subir, sin tirar del cuello."
+              }
+            ]
           },
           {
-            "name": "Hip thrust",
-            "sets": 4,
-            "reps": "12",
-            "rest": "75s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con peso muerto",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Abducción máquina",
-            "sets": 7,
-            "reps": "15",
-            "rest": "30s",
-            "cadence": "2-1-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "definicion-s1-d3",
+            "name": "Día 3 - Full Body C",
+            "type": "ENTRENAMIENTO",
+            "notes": "Sesión metabólica combinando tren inferior y superior.",
+            "exercises": [
+              {
+                "name": "Zancadas alternadas",
+                "series": 3,
+                "sets": 3,
+                "reps": "12 por pierna",
+                "rest": "60s",
+                "rir": 2,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Paso largo y torso recto."
+              },
+              {
+                "name": "Press inclinado con mancuernas",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "75s",
+                "rir": 2,
+                "tempo": "2-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Recorrido completo sin chocar mancuernas."
+              },
+              {
+                "name": "Jalón al pecho",
+                "series": 3,
+                "sets": 3,
+                "reps": "15",
+                "rest": "60s",
+                "rir": 2,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Pecho elevado y hombros relajados."
+              },
+              {
+                "name": "Burpees",
+                "series": 3,
+                "sets": 3,
+                "reps": "30s",
+                "rest": "45s",
+                "rir": 3,
+                "tempo": "ritmo constante",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Respiración continua y aterrizaje suave."
+              }
+            ]
           }
         ]
       },
       {
-        "title": "Día 2 - Espalda y brazos",
-        "warmup": [],
-        "exercises": [
+        "id": "definicion-semana-2",
+        "title": "Semana 2",
+        "summary": "Incremento de densidad manteniendo la técnica.",
+        "notes": "Reducir descansos en accesorios para aumentar gasto calórico.",
+        "days": [
           {
-            "name": "Jalón al pecho",
-            "sets": 4,
-            "reps": "10",
-            "rest": "90s",
-            "cadence": "2-0-2",
-            "rir": 2,
-            "notes": "última serie pausada",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "definicion-s2-d1",
+            "name": "Día 1 - Full Body A",
+            "type": "ENTRENAMIENTO",
+            "notes": "Añadir caminata ligera post sesión de 10 minutos.",
+            "exercises": [
+              {
+                "name": "Sentadilla trasera",
+                "series": 4,
+                "sets": 4,
+                "reps": "8",
+                "rest": "75s",
+                "rir": 2,
+                "tempo": "2-1-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Aumentar carga si se mantiene RIR 2."
+              },
+              {
+                "name": "Press banca con pausa",
+                "series": 4,
+                "sets": 4,
+                "reps": "8",
+                "rest": "75s",
+                "rir": 2,
+                "tempo": "2-2-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Pausa de 1s en el pecho."
+              },
+              {
+                "name": "Remo con mancuerna",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "60s",
+                "rir": 2,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Sostener 1s en la parte alta."
+              },
+              {
+                "name": "Plancha con toque de hombro",
+                "series": 3,
+                "sets": 3,
+                "reps": "40s",
+                "rest": "40s",
+                "rir": 2,
+                "tempo": "controlado",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Mantener cadera estable."
+              }
+            ]
           },
           {
-            "name": "Remo mancuernas",
-            "sets": 4,
-            "reps": "12",
-            "rest": "75s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con pullover",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "definicion-s2-d2",
+            "name": "Día 2 - Full Body B",
+            "type": "ENTRENAMIENTO",
+            "notes": "Circuito mixto con sprints suaves en bicicleta al terminar.",
+            "exercises": [
+              {
+                "name": "Peso muerto rumano",
+                "series": 4,
+                "sets": 4,
+                "reps": "10",
+                "rest": "75s",
+                "rir": 2,
+                "tempo": "3-1-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Barra cerca de las piernas."
+              },
+              {
+                "name": "Press militar sentado",
+                "series": 4,
+                "sets": 4,
+                "reps": "8-10",
+                "rest": "70s",
+                "rir": 2,
+                "tempo": "2-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Core firme y pies en el piso."
+              },
+              {
+                "name": "Remo invertido",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "60s",
+                "rir": 2,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Pausa breve en contracción."
+              },
+              {
+                "name": "Mountain climbers",
+                "series": 3,
+                "sets": 3,
+                "reps": "40s",
+                "rest": "40s",
+                "rir": 3,
+                "tempo": "ritmo controlado",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Hombros sobre muñecas, core firme."
+              }
+            ]
           },
           {
-            "name": "Pullover cuerda",
-            "sets": 4,
-            "reps": "15",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con remo",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Extensión tríceps polea",
-            "sets": 7,
-            "reps": "12",
-            "rest": "30s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "definicion-s2-d3",
+            "name": "Día 3 - Full Body C",
+            "type": "ENTRENAMIENTO",
+            "notes": "Sesión con bloque metabólico final.",
+            "exercises": [
+              {
+                "name": "Zancadas laterales",
+                "series": 3,
+                "sets": 3,
+                "reps": "12 por lado",
+                "rest": "60s",
+                "rir": 2,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Rodilla alineada con la punta del pie."
+              },
+              {
+                "name": "Press inclinado con barra",
+                "series": 3,
+                "sets": 3,
+                "reps": "10",
+                "rest": "70s",
+                "rir": 2,
+                "tempo": "2-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Bajar la barra controlando la velocidad."
+              },
+              {
+                "name": "Jalón con cuerda a la cara",
+                "series": 3,
+                "sets": 3,
+                "reps": "15",
+                "rest": "60s",
+                "rir": 2,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Separar la cuerda manteniendo codos altos."
+              },
+              {
+                "name": "Burpees",
+                "series": 4,
+                "sets": 4,
+                "reps": "35s",
+                "rest": "40s",
+                "rir": 3,
+                "tempo": "ritmo constante",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Mantener repeticiones consistentes en cada ronda."
+              }
+            ]
           }
         ]
       },
       {
-        "title": "Día 3 - Hombros y core",
-        "warmup": [],
-        "exercises": [
+        "id": "definicion-semana-3",
+        "title": "Semana 3",
+        "summary": "Bloque de intensidad moderada con intervalos controlados.",
+        "notes": "Utilizar monitor de frecuencia cardíaca para mantener zonas de trabajo aeróbico-alto.",
+        "days": [
           {
-            "name": "Press militar mancuernas",
-            "sets": 4,
-            "reps": "10",
-            "rest": "90s",
-            "cadence": "2-0-1",
-            "rir": 2,
-            "notes": "superserie con elevaciones",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "definicion-s3-d1",
+            "name": "Día 1 - Full Body A",
+            "type": "ENTRENAMIENTO",
+            "notes": "Enfoque en fuerza explosiva seguida de trabajo estabilizador.",
+            "exercises": [
+              {
+                "name": "Sentadilla goblet",
+                "series": 4,
+                "sets": 4,
+                "reps": "12",
+                "rest": "70s",
+                "rir": 2,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Peso cercano al pecho y core activo."
+              },
+              {
+                "name": "Press banca con mancuernas",
+                "series": 4,
+                "sets": 4,
+                "reps": "10",
+                "rest": "70s",
+                "rir": 2,
+                "tempo": "2-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Recorridos controlados sin rebote."
+              },
+              {
+                "name": "Remo con banda",
+                "series": 3,
+                "sets": 3,
+                "reps": "15",
+                "rest": "50s",
+                "rir": 2,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Ritmo continuo sin perder tensión."
+              },
+              {
+                "name": "Plancha lateral",
+                "series": 3,
+                "sets": 3,
+                "reps": "35s por lado",
+                "rest": "40s",
+                "rir": 2,
+                "tempo": "isometría",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Mantener cadera elevada."
+              }
+            ]
           },
           {
-            "name": "Elevaciones laterales",
-            "sets": 4,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con press",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "definicion-s3-d2",
+            "name": "Día 2 - Full Body B",
+            "type": "ENTRENAMIENTO",
+            "notes": "Bloque con componente pliométrico opcional.",
+            "exercises": [
+              {
+                "name": "Peso muerto con kettlebell",
+                "series": 4,
+                "sets": 4,
+                "reps": "12",
+                "rest": "70s",
+                "rir": 2,
+                "tempo": "2-1-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Empujar el piso con los pies."
+              },
+              {
+                "name": "Press militar push press",
+                "series": 4,
+                "sets": 4,
+                "reps": "8",
+                "rest": "70s",
+                "rir": 2,
+                "tempo": "1-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Uso controlado del impulso de piernas."
+              },
+              {
+                "name": "Remo TRX",
+                "series": 3,
+                "sets": 3,
+                "reps": "15",
+                "rest": "55s",
+                "rir": 2,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Ajustar inclinación para mantener RIR 2."
+              },
+              {
+                "name": "Sprint en bicicleta fija",
+                "series": 4,
+                "sets": 4,
+                "reps": "20s trabajo / 40s pausa",
+                "rest": "--",
+                "rir": 3,
+                "tempo": "intervalos",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Cadencia alta en cada sprint."
+              }
+            ]
           },
           {
-            "name": "Face pull",
-            "sets": 4,
-            "reps": "15",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "control escápulas",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "definicion-s3-d3",
+            "name": "Día 3 - Full Body C",
+            "type": "ENTRENAMIENTO",
+            "notes": "Sesión con énfasis en gasto calórico y core.",
+            "exercises": [
+              {
+                "name": "Step-up con mancuerna",
+                "series": 3,
+                "sets": 3,
+                "reps": "12 por pierna",
+                "rest": "60s",
+                "rir": 2,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Apoyar toda la planta del pie en el cajón."
+              },
+              {
+                "name": "Press inclinado con mancuernas neutras",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "70s",
+                "rir": 2,
+                "tempo": "2-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Controlar fase excéntrica completa."
+              },
+              {
+                "name": "Jalón al pecho agarre estrecho",
+                "series": 3,
+                "sets": 3,
+                "reps": "15",
+                "rest": "60s",
+                "rir": 2,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Mantener pecho elevado."
+              },
+              {
+                "name": "Battle rope",
+                "series": 4,
+                "sets": 4,
+                "reps": "30s",
+                "rest": "40s",
+                "rir": 3,
+                "tempo": "intervalos",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Ondas continuas con respiración controlada."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "definicion-semana-4",
+        "title": "Semana 4",
+        "summary": "Semana de descarga activa manteniendo el estímulo metabólico.",
+        "notes": "Reducir cargas un 10-15% y mantener técnica impecable.",
+        "days": [
+          {
+            "id": "definicion-s4-d1",
+            "name": "Día 1 - Full Body A",
+            "type": "ENTRENAMIENTO",
+            "notes": "Sesión enfocada en calidad de movimiento y respiración.",
+            "exercises": [
+              {
+                "name": "Sentadilla goblet",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "70s",
+                "rir": 3,
+                "tempo": "3-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Priorizar profundidad y control."
+              },
+              {
+                "name": "Press banca con mancuernas",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "70s",
+                "rir": 3,
+                "tempo": "2-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Sin llegar al fallo, concentrarse en la ejecución."
+              },
+              {
+                "name": "Remo con banda",
+                "series": 3,
+                "sets": 3,
+                "reps": "15",
+                "rest": "50s",
+                "rir": 3,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Tensión constante con respiración controlada."
+              },
+              {
+                "name": "Plancha",
+                "series": 3,
+                "sets": 3,
+                "reps": "40s",
+                "rest": "45s",
+                "rir": 3,
+                "tempo": "isometría",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Mantener alineación neutra en todo momento."
+              }
+            ]
           },
           {
-            "name": "Crunch en cable",
-            "sets": 7,
-            "reps": "15",
-            "rest": "30s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
+            "id": "definicion-s4-d2",
+            "name": "Día 2 - Full Body B",
+            "type": "ENTRENAMIENTO",
+            "notes": "Bloque aeróbico con énfasis en postura y core.",
+            "exercises": [
+              {
+                "name": "Peso muerto con kettlebell",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "70s",
+                "rir": 3,
+                "tempo": "2-1-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Sentir activación de glúteos sin fatiga excesiva."
+              },
+              {
+                "name": "Press militar sentado",
+                "series": 3,
+                "sets": 3,
+                "reps": "10",
+                "rest": "70s",
+                "rir": 3,
+                "tempo": "2-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Controlar la trayectoria sin empujar al fallo."
+              },
+              {
+                "name": "Remo TRX",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "55s",
+                "rir": 3,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Reducir inclinación para mantener RIR 3."
+              },
+              {
+                "name": "Caminata en cinta inclinada",
+                "series": 3,
+                "sets": 3,
+                "reps": "8 min",
+                "rest": "60s",
+                "rir": 3,
+                "tempo": "ritmo constante",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Mantener zona aeróbica media."
+              }
+            ]
+          },
+          {
+            "id": "definicion-s4-d3",
+            "name": "Día 3 - Full Body C",
+            "type": "ENTRENAMIENTO",
+            "notes": "Cerrar la semana con sesión moderada y énfasis en control.",
+            "exercises": [
+              {
+                "name": "Step-up con mancuerna",
+                "series": 3,
+                "sets": 3,
+                "reps": "12 por pierna",
+                "rest": "60s",
+                "rir": 3,
+                "tempo": "2-0-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Paso controlado evitando impulso."
+              },
+              {
+                "name": "Press inclinado con mancuernas neutras",
+                "series": 3,
+                "sets": 3,
+                "reps": "12",
+                "rest": "70s",
+                "rir": 3,
+                "tempo": "2-0-1",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Trabajo ligero enfocando estabilidad."
+              },
+              {
+                "name": "Jalón al pecho",
+                "series": 3,
+                "sets": 3,
+                "reps": "15",
+                "rest": "60s",
+                "rir": 3,
+                "tempo": "2-1-2",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Controlar movimiento sin balanceo."
+              },
+              {
+                "name": "Burpees",
+                "series": 3,
+                "sets": 3,
+                "reps": "25s",
+                "rest": "45s",
+                "rir": 3,
+                "tempo": "ritmo moderado",
+                "video": "https://youtu.be/dQw4w9WgXcQ",
+                "notes": "Mantener respiración constante y técnica sólida."
+              }
+            ]
           }
         ]
       }
-    ],
-    "notes": "Volumen enfocado en glúteos y hombros.",
-    "createdAt": "2024-01-01",
-    "totalDescargas": 0,
-    "ultimaDescarga": null
-  },
-  {
-    "id": 6,
-    "gender": "female",
-    "frequency": 4,
-    "objective": "volume",
-    "plan": "premium",
-    "name": "Femenino Volumen 4x/semana",
-    "tags": [
-      "fst-7"
-    ],
-    "days": [
-      {
-        "title": "Día 1 - Glúteos y femoral",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Peso muerto rumano",
-            "sets": 4,
-            "reps": "10",
-            "rest": "90s",
-            "cadence": "2-0-2",
-            "rir": 2,
-            "notes": "última serie dropset",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Hip thrust",
-            "sets": 4,
-            "reps": "12",
-            "rest": "75s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con abducción",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Abducción polea",
-            "sets": 4,
-            "reps": "15",
-            "rest": "60s",
-            "cadence": "2-1-2",
-            "rir": 1,
-            "notes": "superserie con hip thrust",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Curl femoral",
-            "sets": 7,
-            "reps": "12",
-            "rest": "30s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      },
-      {
-        "title": "Día 2 - Espalda y bíceps",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Dominadas asistidas",
-            "sets": 4,
-            "reps": "8-10",
-            "rest": "90s",
-            "cadence": "2-0-1",
-            "rir": 2,
-            "notes": "última serie isométrica",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Remo polea baja",
-            "sets": 4,
-            "reps": "12",
-            "rest": "75s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con pullover",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Pullover máquina",
-            "sets": 4,
-            "reps": "15",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con remo",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Curl bíceps barra",
-            "sets": 7,
-            "reps": "12",
-            "rest": "30s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      },
-      {
-        "title": "Día 3 - Pecho y tríceps",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Press banca inclinado",
-            "sets": 4,
-            "reps": "10",
-            "rest": "90s",
-            "cadence": "2-0-2",
-            "rir": 2,
-            "notes": "última serie dropset",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Aperturas máquina",
-            "sets": 4,
-            "reps": "12",
-            "rest": "75s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con press",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Press cerrado",
-            "sets": 4,
-            "reps": "10",
-            "rest": "75s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con fondos",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Fondos asistidos",
-            "sets": 7,
-            "reps": "12",
-            "rest": "30s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      },
-      {
-        "title": "Día 4 - Hombros y core",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Press arnold",
-            "sets": 4,
-            "reps": "10",
-            "rest": "90s",
-            "cadence": "2-0-1",
-            "rir": 2,
-            "notes": "última serie dropset",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Elevación lateral",
-            "sets": 4,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con pájaros",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Pájaros",
-            "sets": 4,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con elevación",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Plancha rueda",
-            "sets": 7,
-            "reps": "15",
-            "rest": "30s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      }
-    ],
-    "notes": "Dividida semanal para desarrollo equilibrado.",
-    "createdAt": "2024-01-01",
-    "totalDescargas": 0,
-    "ultimaDescarga": null
-  },
-  {
-    "id": 7,
-    "gender": "female",
-    "frequency": 3,
-    "objective": "fat_loss",
-    "plan": "premium",
-    "name": "Femenino Pérdida de Grasa 3x/semana",
-    "tags": [
-      "hiit"
-    ],
-    "days": [
-      {
-        "title": "Día 1 - Full body",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Sentadilla goblet",
-            "sets": 3,
-            "reps": "15",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con burpees",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Burpees",
-            "sets": 3,
-            "reps": "15",
-            "rest": "45s",
-            "cadence": "1-0-1",
-            "rir": 2,
-            "notes": "superserie con sentadilla",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Press militar",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con remo",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Battle rope",
-            "sets": 7,
-            "reps": "30s",
-            "rest": "20s",
-            "cadence": "1-0-1",
-            "rir": 0,
-            "notes": "FST-7 cardio",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      },
-      {
-        "title": "Día 2 - Piernas y core",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Zancadas caminando",
-            "sets": 3,
-            "reps": "20",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con saltos",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Saltos al cajón",
-            "sets": 3,
-            "reps": "12",
-            "rest": "45s",
-            "cadence": "1-0-1",
-            "rir": 2,
-            "notes": "superserie con zancadas",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Peso muerto rumano",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "control",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Mountain climbers",
-            "sets": 7,
-            "reps": "30s",
-            "rest": "20s",
-            "cadence": "1-0-1",
-            "rir": 0,
-            "notes": "FST-7 core",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      },
-      {
-        "title": "Día 3 - HIIT superior",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Kettlebell swing",
-            "sets": 3,
-            "reps": "20",
-            "rest": "45s",
-            "cadence": "1-0-1",
-            "rir": 2,
-            "notes": "superserie con flexiones",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Flexiones",
-            "sets": 3,
-            "reps": "15",
-            "rest": "45s",
-            "cadence": "1-0-1",
-            "rir": 2,
-            "notes": "superserie con swings",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Curl bíceps mancuernas",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "control",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Jumping jacks",
-            "sets": 7,
-            "reps": "30s",
-            "rest": "20s",
-            "cadence": "1-0-1",
-            "rir": 0,
-            "notes": "FST-7 cardio",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      }
-    ],
-    "notes": "Enfocada en quema de grasa con circuitos.",
-    "createdAt": "2024-01-01",
-    "totalDescargas": 0,
-    "ultimaDescarga": null
-  },
-  {
-    "id": 8,
-    "gender": "female",
-    "frequency": 4,
-    "objective": "fat_loss",
-    "plan": "premium",
-    "name": "Femenino Pérdida de Grasa 4x/semana",
-    "tags": [
-      "hiit"
-    ],
-    "days": [
-      {
-        "title": "Día 1 - Pecho y espalda",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Press banca",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con jalón",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Jalón al pecho",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con press",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Remo mancuernas",
-            "sets": 3,
-            "reps": "15",
-            "rest": "45s",
-            "cadence": "2-0-2",
-            "rir": 2,
-            "notes": "controlar escápulas",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Battle rope",
-            "sets": 7,
-            "reps": "30s",
-            "rest": "20s",
-            "cadence": "1-0-1",
-            "rir": 0,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      },
-      {
-        "title": "Día 2 - Piernas",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Sentadilla sumo",
-            "sets": 3,
-            "reps": "15",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con swings",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Kettlebell swing",
-            "sets": 3,
-            "reps": "20",
-            "rest": "45s",
-            "cadence": "1-0-1",
-            "rir": 2,
-            "notes": "superserie con sentadilla",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Peso muerto rumano",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "control",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Saltos al cajón",
-            "sets": 7,
-            "reps": "12",
-            "rest": "30s",
-            "cadence": "1-0-1",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      },
-      {
-        "title": "Día 3 - Hombros y brazos",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Press militar",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con remo vertical",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Remo vertical",
-            "sets": 3,
-            "reps": "12",
-            "rest": "60s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "superserie con press",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Curl bíceps cuerda",
-            "sets": 3,
-            "reps": "15",
-            "rest": "45s",
-            "cadence": "2-0-2",
-            "rir": 2,
-            "notes": "control",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Extensión tríceps cuerda",
-            "sets": 7,
-            "reps": "12",
-            "rest": "30s",
-            "cadence": "2-0-2",
-            "rir": 1,
-            "notes": "FST-7",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      },
-      {
-        "title": "Día 4 - Full body HIIT",
-        "warmup": [],
-        "exercises": [
-          {
-            "name": "Burpees",
-            "sets": 3,
-            "reps": "15",
-            "rest": "45s",
-            "cadence": "1-0-1",
-            "rir": 2,
-            "notes": "superserie con sprints",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Sprints",
-            "sets": 3,
-            "reps": "30s",
-            "rest": "30s",
-            "cadence": "1-0-1",
-            "rir": 1,
-            "notes": "superserie con burpees",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Jumping lunges",
-            "sets": 3,
-            "reps": "20",
-            "rest": "45s",
-            "cadence": "1-0-1",
-            "rir": 2,
-            "notes": "control equilibrio",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          },
-          {
-            "name": "Mountain climbers",
-            "sets": 7,
-            "reps": "30s",
-            "rest": "20s",
-            "cadence": "1-0-1",
-            "rir": 0,
-            "notes": "FST-7 core",
-            "youtubeLink": "https://youtu.be/dQw4w9WgXcQ"
-          }
-        ]
-      }
-    ],
-    "notes": "Definición con circuitos de alta intensidad.",
-    "createdAt": "2024-01-01",
-    "totalDescargas": 0,
-    "ultimaDescarga": null
+    ]
   }
 ]

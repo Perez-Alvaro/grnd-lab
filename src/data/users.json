@@ -6,7 +6,7 @@
     "email": "juan.gonzalez@example.com",
     "gender": "male",
     "frequency": 3,
-    "objective": "volume",
+    "objective": "volumen",
     "plan": "basic",
     "createdAt": "2025-03-01",
     "routines": [
@@ -22,7 +22,7 @@
     "email": "carlos.rodriguez@example.com",
     "gender": "male",
     "frequency": 4,
-    "objective": "definition",
+    "objective": "perdida_grasa",
     "plan": "premium",
     "createdAt": "2025-04-02",
     "routines": [
@@ -38,7 +38,7 @@
     "email": "luis.fernandez@example.com",
     "gender": "male",
     "frequency": 5,
-    "objective": "fat_loss",
+    "objective": "perdida_grasa",
     "plan": "basic",
     "createdAt": "2025-03-15",
     "routines": [
@@ -54,7 +54,7 @@
     "email": "miguel.lopez@example.com",
     "gender": "male",
     "frequency": 3,
-    "objective": "endurance",
+    "objective": "perdida_grasa",
     "plan": "premium",
     "createdAt": "2025-04-16",
     "routines": [
@@ -70,7 +70,7 @@
     "email": "fernando.martinez@example.com",
     "gender": "male",
     "frequency": 4,
-    "objective": "volume",
+    "objective": "volumen",
     "plan": "premium",
     "createdAt": "2025-03-25",
     "routines": [
@@ -86,7 +86,7 @@
     "email": "jorge.perez@example.com",
     "gender": "male",
     "frequency": 5,
-    "objective": "definition",
+    "objective": "perdida_grasa",
     "plan": "premium",
     "createdAt": "2025-04-26",
     "routines": [
@@ -102,7 +102,7 @@
     "email": "andres.gomez@example.com",
     "gender": "male",
     "frequency": 3,
-    "objective": "fat_loss",
+    "objective": "perdida_grasa",
     "plan": "premium",
     "createdAt": "2025-03-07",
     "routines": [
@@ -118,7 +118,7 @@
     "email": "pedro.diaz@example.com",
     "gender": "male",
     "frequency": 4,
-    "objective": "endurance",
+    "objective": "perdida_grasa",
     "plan": "basic",
     "createdAt": "2025-04-08",
     "routines": [
@@ -134,7 +134,7 @@
     "email": "santiago.alvarez@example.com",
     "gender": "male",
     "frequency": 5,
-    "objective": "volume",
+    "objective": "volumen",
     "plan": "premium",
     "createdAt": "2025-03-21",
     "routines": [
@@ -150,7 +150,7 @@
     "email": "diego.torres@example.com",
     "gender": "male",
     "frequency": 3,
-    "objective": "definition",
+    "objective": "perdida_grasa",
     "plan": "basic",
     "createdAt": "2025-04-22",
     "routines": [
@@ -166,7 +166,7 @@
     "email": "maria.perez@example.com",
     "gender": "female",
     "frequency": 4,
-    "objective": "fat_loss",
+    "objective": "perdida_grasa",
     "plan": "basic",
     "createdAt": "2025-03-03",
     "routines": [
@@ -181,7 +181,7 @@
     "email": "laura.gomez@example.com",
     "gender": "female",
     "frequency": 5,
-    "objective": "endurance",
+    "objective": "perdida_grasa",
     "plan": "premium",
     "createdAt": "2025-04-04",
     "routines": [
@@ -196,7 +196,7 @@
     "email": "lucia.diaz@example.com",
     "gender": "female",
     "frequency": 3,
-    "objective": "volume",
+    "objective": "volumen",
     "plan": "premium",
     "createdAt": "2025-03-13",
     "routines": [
@@ -211,7 +211,7 @@
     "email": "ana.alvarez@example.com",
     "gender": "female",
     "frequency": 4,
-    "objective": "definition",
+    "objective": "perdida_grasa",
     "plan": "premium",
     "createdAt": "2025-04-14",
     "routines": [
@@ -226,7 +226,7 @@
     "email": "carla.torres@example.com",
     "gender": "female",
     "frequency": 5,
-    "objective": "fat_loss",
+    "objective": "perdida_grasa",
     "plan": "premium",
     "createdAt": "2025-05-15",
     "routines": [
@@ -241,7 +241,7 @@
     "email": "sofia.gonzalez@example.com",
     "gender": "female",
     "frequency": 3,
-    "objective": "endurance",
+    "objective": "perdida_grasa",
     "plan": "basic",
     "createdAt": "2025-06-16",
     "routines": [
@@ -256,7 +256,7 @@
     "email": "elena.rodriguez@example.com",
     "gender": "female",
     "frequency": 4,
-    "objective": "volume",
+    "objective": "volumen",
     "plan": "premium",
     "createdAt": "2025-03-09",
     "routines": [
@@ -271,7 +271,7 @@
     "email": "julieta.fernandez@example.com",
     "gender": "female",
     "frequency": 5,
-    "objective": "definition",
+    "objective": "perdida_grasa",
     "plan": "basic",
     "createdAt": "2025-04-10",
     "routines": [
@@ -286,7 +286,7 @@
     "email": "rocio.lopez@example.com",
     "gender": "female",
     "frequency": 3,
-    "objective": "fat_loss",
+    "objective": "perdida_grasa",
     "plan": "basic",
     "createdAt": "2025-03-19",
     "routines": [
@@ -301,7 +301,7 @@
     "email": "valentina.martinez@example.com",
     "gender": "female",
     "frequency": 4,
-    "objective": "endurance",
+    "objective": "perdida_grasa",
     "plan": "premium",
     "createdAt": "2025-04-20",
     "routines": [

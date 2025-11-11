@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext.jsx';
 import usePDFExport from '../hooks/usePDFExport.js';
 import TemplateCard from '../components/TemplateCard.jsx';
+import { TRAINING_GOAL_LABELS, TRAINING_GOALS } from '../constants/objectives.js';
 import {
   Users,
   CreditCard,
@@ -81,51 +82,34 @@ function AdminDashboard() {
   };
 
   const handleDownloadPDF = (template) => {
-    const migrate = (tmpl) => {
-      if (tmpl.days && tmpl.days.every(d => d.bloques)) return tmpl;
-      const convert = ex => ({
-        ejercicio: ex.name || '',
-        variantes: [{
-          series: ex.sets != null ? String(ex.sets) : '',
-          reps: ex.reps || '',
-          descanso: ex.rest || '',
-          cadencia: ex.cadence || 'S/D',
-          rir: ex.rir != null ? String(ex.rir) : 'S/D'
-        }],
-        videoUrl: ex.youtubeLink || '',
-        notes: ex.notes || ''
-      });
-      const days = tmpl.days.map((day, i) => {
-        if (day.bloques) return day;
-        const items = [];
-        if (day.warmup) items.push(...day.warmup.map(convert));
-        if (day.exercises) items.push(...day.exercises.map(convert));
-        return {
-          title: day.title || `Día ${i + 1}`,
-          bloques: [{ titulo: 'Entrenamiento', items }]
-        };
-      });
-      return { ...tmpl, days };
-    };
+    const convertExercise = (exercise) => ({
+      name: exercise.name || '',
+      series: exercise.sets ?? exercise.series ?? '',
+      reps: exercise.reps || '',
+      rest: exercise.rest || '',
+      rir: exercise.rir ?? '',
+      tempo: exercise.tempo || '',
+      video: exercise.video || '',
+      notes: exercise.notes || exercise.note || ''
+    });
 
-    const migrated = migrate(template);
+    const weeks = (template.weeks || []).map((week, weekIndex) => ({
+      title: week.title || `Semana ${weekIndex + 1}`,
+      summary: week.summary || '',
+      notes: week.notes || '',
+      days: (week.days || []).map((day, dayIndex) => ({
+        name: day.name || day.title || `Día ${dayIndex + 1}`,
+        type: day.type || 'ENTRENAMIENTO',
+        exercises: (day.exercises || []).map(convertExercise)
+      }))
+    }));
 
     const planData = {
-      planName: migrated.name,
-      frequency: migrated.frequency ? `${migrated.frequency} días/semana` : '',
-      objective: migrated.objective,
-      weeks: [
-        {
-          title: 'Semana 1',
-          summary: '',
-          notes: [],
-          days: migrated.days.map((day, index) => ({
-            ...day,
-            title: day.title || `Día ${index + 1}`,
-            type: day.type || 'ENTRENAMIENTO',
-          })),
-        },
-      ],
+      planName: template.name,
+      frequency: template.frequency ? `${template.frequency} días/semana` : '',
+      objective: template.objective,
+      weeks,
+      notes: template.notes || ''
     };
 
     exportPlan(planData);
@@ -271,16 +255,7 @@ function OverviewTab({ state }) {
 
 
 
-  const objectiveLabel = {
-    fat_loss: 'Pérdida de grasa',
-    hypertrophy: 'Hipertrofia',
-    strength: 'Fuerza',
-    power: 'Potencia',
-    functional: 'Funcional',
-    hybrid: 'Híbrido',
-    swimmers: 'Nadadores',
-    volume: 'Volumen'
-  };
+  const objectiveLabel = TRAINING_GOAL_LABELS;
 
   const templateStats = state.sales.reduce((acc, sale) => {
     if (sale.templateId) {
@@ -496,16 +471,7 @@ function OverviewTab({ state }) {
 
 function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplate, onDownloadPDF, onDuplicateTemplate }) {
   const genderLabel = { male: 'masculino', female: 'femenino' };
-  const objectiveLabel = {
-    fat_loss: 'pérdida de grasa',
-    hypertrophy: 'hipertrofia',
-    strength: 'fuerza',
-    power: 'potencia',
-    functional: 'funcional',
-    hybrid: 'híbrido',
-    swimmers: 'nadadores',
-    volume: 'volumen'
-  };
+  const objectiveLabel = TRAINING_GOAL_LABELS;
   const [filters, setFilters] = useState({ tag: '', gender: '', frequency: '', objective: '' });
 
   const handleFilterChange = (field, value) => {
@@ -554,6 +520,7 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
           className="bg-[#202020] border border-[#787878]/30 rounded-xl px-3 py-2 text-white"
         >
           <option value="">Frecuencia</option>
+          <option value="2">2</option>
           <option value="3">3</option>
           <option value="4">4</option>
           <option value="5">5</option>
@@ -564,13 +531,11 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
           className="bg-[#202020] border border-[#787878]/30 rounded-xl px-3 py-2 text-white"
         >
           <option value="">Objetivo</option>
-          <option value="fat_loss">Pérdida de grasa</option>
-          <option value="hypertrophy">Hipertrofia</option>
-          <option value="strength">Fuerza</option>
-          <option value="power">Potencia</option>
-          <option value="functional">Funcional</option>
-          <option value="hybrid">Híbrido</option>
-          <option value="swimmers">Nadadores</option>
+          {TRAINING_GOALS.map(goal => (
+            <option key={goal.value} value={goal.value}>
+              {goal.label}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -605,16 +570,7 @@ function TemplatesTab({ state, onCreateTemplate, onEditTemplate, onDeleteTemplat
 
 function UsersTab({ state, onSendWhatsApp }) {
   const genderLabel = { male: 'masculino', female: 'femenino' };
-  const objectiveLabel = {
-    fat_loss: 'pérdida de grasa',
-    hypertrophy: 'hipertrofia',
-    strength: 'fuerza',
-    power: 'potencia',
-    functional: 'funcional',
-    hybrid: 'híbrido',
-    swimmers: 'nadadores',
-    volume: 'volumen'
-  };
+  const objectiveLabel = TRAINING_GOAL_LABELS;
   const [planFilter, setPlanFilter] = useState('');
   const filteredUsers = planFilter
     ? state.users.filter((user) => user.plan === planFilter)

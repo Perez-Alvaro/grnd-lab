@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, Plus, Trash2, Save, Eye, Copy } from 'lucide-react';
 import TemplatePreview from './TemplatePreview.jsx';
 import migrateTemplate from '../utils/migrateTemplate.ts';
+import { TRAINING_GOALS } from '../constants/objectives.js';
 
 const emptyVariant = {
   series: '',
@@ -288,6 +289,7 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                 className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
               >
                 <option value="">Selecciona frecuencia</option>
+                <option value="2">2 días/semana</option>
                 <option value="3">3 días/semana</option>
                 <option value="4">4 días/semana</option>
                 <option value="5">5 días/semana</option>
@@ -305,8 +307,11 @@ function TemplateModal({ isOpen, onClose, template = null, onSave }) {
                 className="w-full bg-[#202020] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
               >
                 <option value="">Seleccioná tu objetivo</option>
-                <option value="fat_loss">Pérdida de grasa / recomposición</option>
-                <option value="hypertrophy">Hipertrofia (ganancia muscular)</option>
+                {TRAINING_GOALS.map(goal => (
+                  <option key={goal.value} value={goal.value}>
+                    {goal.label}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
