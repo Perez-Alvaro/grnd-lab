@@ -85,11 +85,13 @@ const convertLegacyDay = (day, index = 0) => {
     ? bloques.flatMap(block => (block?.items || []).map(convertLegacyExercise))
     : Array.isArray(day?.exercises)
       ? day.exercises.map(convertLegacyExercise)
+      : Array.isArray(day?.ejercicios)
+        ? day.ejercicios.map(convertLegacyExercise)
       : [];
 
   return {
     id: createId(),
-    name: day?.title || day?.name || `Día ${index + 1}`,
+    name: day?.title || day?.name || day?.nombre || `Día ${index + 1}`,
     type,
     recoveryNote: day?.recoveryMessage || day?.mensajeRecuperacion || day?.notes || day?.notas || '',
     exercises: legacyExercises.length ? legacyExercises : [createExercise()]
@@ -150,11 +152,19 @@ export const buildInitialPlan = template => {
     metadata: {
       name: template?.name || '',
       gender: template?.gender || '',
-      objective: template?.objective || '',
-      durationWeeks: template?.duration ? String(template.duration) : String(convertedWeeks.length || 1),
-      frequency: template?.frequency ? String(template.frequency) : '',
-      notes: template?.notes || '',
-      author: template?.author || template?.coach || '',
+      objective: template?.objective || template?.objetivo || '',
+      durationWeeks: template?.duration
+        ? String(template.duration)
+        : template?.duracion
+          ? String(template.duracion)
+          : String(convertedWeeks.length || 1),
+      frequency: template?.frequency
+        ? String(template.frequency)
+        : template?.frecuencia
+          ? String(template.frecuencia).replace(/[^0-9]/g, '') || String(template.frecuencia)
+          : '',
+      notes: template?.notes || template?.notas || '',
+      author: template?.author || template?.coach || template?.autor || '',
       tags: tagsString
     },
     weeks: convertedWeeks.length ? convertedWeeks : [createEmptyWeek(1)]

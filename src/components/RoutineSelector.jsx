@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, Target, User, Calendar } from 'lucide-react';
+import { TRAINING_GOALS } from '../constants/objectives.js';
 
 function RoutineSelector({ onSelect }) {
   const [formData, setFormData] = useState({
@@ -62,10 +63,7 @@ function RoutineSelector({ onSelect }) {
     </div>
   );
 
-  const objectiveOptions = [
-    { value: 'fat_loss', label: 'Pérdida de grasa / recomposición' },
-    { value: 'hypertrophy', label: 'Hipertrofia (ganancia muscular)' }
-  ];
+  const objectiveOptions = TRAINING_GOALS;
 
   const genderOptions = [
     { value: 'male', label: 'Masculino' },
@@ -73,6 +71,7 @@ function RoutineSelector({ onSelect }) {
   ];
 
   const frequencyOptions = [
+    { value: '2', label: '2 días por semana' },
     { value: '3', label: '3 días por semana' },
     { value: '4', label: '4 días por semana' },
     { value: '5', label: '5 días por semana' }
