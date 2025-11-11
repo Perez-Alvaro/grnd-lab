@@ -99,7 +99,7 @@ export function Dialog({ open, onOpenChange, children }) {
       aria-modal="true"
       onClick={() => onOpenChange?.(false)}
     >
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-md" />
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-md" />
       <div
         className="relative w-full max-w-3xl"
         onClick={(event) => event.stopPropagation()}

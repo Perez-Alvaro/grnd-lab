@@ -1,24 +1,6 @@
 import React, { useMemo } from "react";
 
-const formatWeeks = (value) => {
-  if (!value && value !== 0) return "—";
-  const parsed = Number(value);
-  if (!Number.isNaN(parsed) && parsed > 0) {
-    return `${parsed} ${parsed === 1 ? "semana" : "semanas"}`;
-  }
-  return value;
-};
-
-const formatFrequency = (value) => {
-  if (!value && value !== 0) return "—";
-  const parsed = Number(value);
-  if (!Number.isNaN(parsed) && parsed > 0) {
-    return `${parsed}x/semana`;
-  }
-  return value;
-};
-
-function RoutineCard({ routine, onPreview, onSelect }) {
+function RoutineCard({ routine, onPreview }) {
   const fallbackImage = useMemo(
     () =>
       `data:image/svg+xml;utf8,${encodeURIComponent(`
@@ -36,81 +18,50 @@ function RoutineCard({ routine, onPreview, onSelect }) {
     [],
   );
 
-  const description = routine.description?.trim() || "—";
-  const duration = formatWeeks(routine.duration);
-  const frequency = formatFrequency(routine.frequency);
-  const level = routine.level?.trim() || "—";
-  const tags = Array.isArray(routine.tags) ? routine.tags : [];
+  const title = routine.title || routine.name;
+  const description = routine.description?.trim() || "";
+  const shortDescription =
+    routine.focus?.trim() ||
+    routine.shortDescription?.trim() ||
+    (Array.isArray(routine.highlights) && routine.highlights.length > 0
+      ? routine.highlights[0]
+      : description);
 
   return (
-    <article className="flex h-full min-h-[500px] w-full flex-col justify-between gap-4 rounded-2xl border border-neutral-800 bg-neutral-950 p-6 text-white shadow-lg transition-all duration-150 ease-in-out hover:border-lime-400 hover:shadow-[0_0_35px_-18px_rgba(181,255,0,0.4)]">
-      <div className="flex flex-col gap-3">
-        <div className="overflow-hidden rounded-xl border border-neutral-800">
-          {routine.image ? (
-            <img
-              src={routine.image}
-              alt={routine.title || routine.name}
-              className="h-[180px] w-full object-cover"
-              loading="lazy"
-            />
-          ) : (
-            <img
-              src={fallbackImage}
-              alt="Rutina sin imagen"
-              className="h-[180px] w-full object-cover"
-            />
+    <article className="group flex h-full w-full min-h-[380px] flex-col overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950 text-white shadow-[0_35px_80px_-60px_rgba(0,0,0,0.85)] transition-all duration-200 hover:border-lime-400 hover:shadow-[0_28px_75px_-45px_rgba(181,255,0,0.45)]">
+      <div className="relative h-48 w-full border-b border-neutral-800">
+        {routine.image ? (
+          <img
+            src={routine.image}
+            alt={title}
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <img
+            src={fallbackImage}
+            alt="Rutina sin imagen"
+            className="h-full w-full object-cover"
+          />
+        )}
+      </div>
+      <div className="flex flex-1 flex-col justify-between gap-6 p-6">
+        <div className="flex flex-col gap-2">
+          <h3 className="text-xl font-semibold leading-tight text-white line-clamp-2">
+            {title}
+          </h3>
+          {shortDescription && (
+            <p className="text-sm text-neutral-400 line-clamp-2">
+              {shortDescription}
+            </p>
           )}
         </div>
-        <h3 className="text-lg font-semibold text-lime-400">
-          {routine.title || routine.name}
-        </h3>
-        <p className="text-sm leading-relaxed text-gray-400 line-clamp-3">
-          {description}
-        </p>
-      </div>
-
-      <div className="grid grid-cols-3 gap-2 text-center text-sm">
-        <div>
-          <p className="text-xs uppercase text-gray-500">Duración</p>
-          <p className="font-semibold text-gray-200">{duration}</p>
-        </div>
-        <div>
-          <p className="text-xs uppercase text-gray-500">Frecuencia</p>
-          <p className="font-semibold text-gray-200">{frequency}</p>
-        </div>
-        <div>
-          <p className="text-xs uppercase text-gray-500">Nivel</p>
-          <p className="font-semibold text-gray-200">{level}</p>
-        </div>
-      </div>
-
-      {tags.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full bg-neutral-800 px-3 py-1 text-xs font-medium text-lime-400"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      )}
-
-      <div className="mt-auto flex items-center justify-between pt-2">
         <button
           type="button"
-          className="rounded-full border border-neutral-700 px-4 py-2 text-sm text-gray-300 transition-all hover:bg-neutral-800"
           onClick={() => onPreview?.(routine)}
+          className="inline-flex items-center justify-center rounded-md bg-lime-400 px-5 py-2 text-sm font-semibold text-black transition-colors duration-150 hover:bg-lime-500"
         >
-          Seguir explorando
-        </button>
-        <button
-          type="button"
-          className="rounded-full bg-lime-400 px-4 py-2 text-sm font-semibold text-black transition-all hover:bg-lime-500"
-          onClick={() => onSelect?.(routine)}
-        >
-          Seleccionar rutina
+          Ver detalles
         </button>
       </div>
     </article>

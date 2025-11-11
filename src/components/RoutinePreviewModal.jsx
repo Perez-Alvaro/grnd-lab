@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,11 +11,11 @@ import {
 function InfoPill({ label, value }) {
   const displayValue = value && value !== "" ? value : "—";
   return (
-    <div className="rounded-xl border border-neutral-700 bg-neutral-900 px-4 py-3 text-center">
-      <span className="block text-[11px] uppercase tracking-[0.3em] text-neutral-500">
+    <div className="rounded-xl border border-neutral-800 bg-neutral-900/80 px-4 py-4 text-center shadow-inner shadow-black/10">
+      <span className="block text-[11px] uppercase tracking-[0.35em] text-neutral-500">
         {label}
       </span>
-      <span className="mt-1 block text-sm font-semibold text-white">
+      <span className="mt-2 block text-base font-semibold text-white">
         {displayValue}
       </span>
     </div>
@@ -24,6 +24,23 @@ function InfoPill({ label, value }) {
 
 function RoutinePreviewModal({ routine, open, onClose, onSelect }) {
   if (!routine) return null;
+
+  const fallbackImage = useMemo(
+    () =>
+      `data:image/svg+xml;utf8,${encodeURIComponent(`
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'>
+          <defs>
+            <linearGradient id='gradient' x1='0%' y1='0%' x2='100%' y2='100%'>
+              <stop offset='0%' stop-color='%230E0E0E'/>
+              <stop offset='100%' stop-color='%23262626'/>
+            </linearGradient>
+          </defs>
+          <rect width='400' height='240' fill='url(%23gradient)'/>
+          <text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='Inter, sans-serif' font-size='28' fill='%23B5FF00'>Rutina</text>
+        </svg>
+      `)}`,
+    [],
+  );
 
   const formatWeeks = (value) => {
     if (!value && value !== 0) return "—";
@@ -54,38 +71,41 @@ function RoutinePreviewModal({ routine, open, onClose, onSelect }) {
   const frequency = formatFrequency(routine.frequency);
   const level = routine.level || "—";
 
+  const imageSrc = routine.image || fallbackImage;
+
   return (
     <Dialog open={open} onOpenChange={(value) => !value && onClose()}>
-      <DialogContent className="max-w-3xl border border-neutral-800 bg-neutral-950 text-white shadow-xl">
-        <DialogHeader className="px-8 pt-8 pb-4">
-          <DialogTitle className="text-2xl font-semibold text-white">
-            {routine.title || routine.name}
-          </DialogTitle>
-          <DialogDescription className="mt-3 text-sm leading-relaxed text-neutral-400">
-            {description}
-          </DialogDescription>
-        </DialogHeader>
-        <div className="px-8">
-          {routine.image && (
-            <div className="overflow-hidden rounded-2xl border border-neutral-800">
-              <img
-                src={routine.image}
-                alt={routine.title || routine.name}
-                className="h-64 w-full object-cover"
-              />
-            </div>
-          )}
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
+      <DialogContent className="max-w-3xl overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950 text-white shadow-[0_45px_120px_-50px_rgba(0,0,0,0.9)]">
+        <div className="flex flex-col gap-8 p-8">
+          <DialogHeader className="space-y-3 p-0">
+            <DialogTitle className="text-2xl font-semibold text-lime-400">
+              {routine.title || routine.name}
+            </DialogTitle>
+            <DialogDescription className="mt-1 text-sm leading-relaxed text-neutral-300">
+              {description}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="w-full overflow-hidden rounded-2xl border border-neutral-800">
+            <img
+              src={imageSrc}
+              alt={routine.title || routine.name}
+              className="h-64 w-full object-cover md:h-[260px]"
+            />
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
             <InfoPill label="Duración" value={duration} />
             <InfoPill label="Frecuencia" value={frequency} />
             <InfoPill label="Nivel" value={level} />
           </div>
+
           {tags.length > 0 && (
-            <div className="mt-6 flex flex-wrap gap-2 text-xs text-neutral-300">
+            <div className="flex flex-wrap gap-2">
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-neutral-700 bg-neutral-900 px-3 py-1 text-[11px] uppercase tracking-wide"
+                  className="rounded-full bg-neutral-800 px-3 py-1 text-xs font-medium uppercase tracking-wide text-lime-400"
                 >
                   {tag}
                 </span>
@@ -93,20 +113,21 @@ function RoutinePreviewModal({ routine, open, onClose, onSelect }) {
             </div>
           )}
         </div>
-        <DialogFooter className="flex flex-col gap-3 px-8 pb-8 pt-6 md:flex-row md:justify-between">
+
+        <DialogFooter className="flex flex-col gap-3 border-t border-neutral-800 bg-neutral-900/60 px-8 py-6 md:flex-row md:justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="w-full rounded-full border border-neutral-700 px-6 py-3 text-sm font-semibold uppercase tracking-wide text-neutral-300 transition-all hover:border-neutral-500 hover:bg-neutral-900 md:w-auto"
+            className="w-full rounded-full border border-neutral-700 px-6 py-2 text-sm font-semibold text-neutral-300 transition-colors duration-150 hover:border-neutral-500 hover:bg-neutral-900 md:w-auto"
           >
-            Seguir explorando
+            Cerrar
           </button>
           <button
             type="button"
             onClick={() => onSelect(routine)}
-            className="w-full rounded-full bg-lime-400 px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-lime-500 md:w-auto"
+            className="w-full rounded-full bg-lime-400 px-6 py-2 text-sm font-semibold text-black transition-transform transition-colors duration-150 hover:-translate-y-0.5 hover:bg-lime-500 md:w-auto"
           >
-            Seleccionar esta rutina
+            Seleccionar rutina
           </button>
         </DialogFooter>
       </DialogContent>
