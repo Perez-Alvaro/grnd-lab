@@ -27,7 +27,7 @@ function GenderSelector({ selectedGender, onSelect }) {
         <h2 className="text-3xl font-semibold uppercase text-white md:text-4xl">
           Seleccioná tu perfil
         </h2>
-        <p className="max-w-3xl text-sm text-neutral-400 md:text-base">
+        <p className="max-w-3xl text-sm text-gray-400 md:text-base">
           Definimos los planes en base a necesidades fisiológicas y carga
           tolerable. Elegí el enfoque que mejor representa tu estructura.
         </p>
@@ -40,7 +40,7 @@ function GenderSelector({ selectedGender, onSelect }) {
               type="button"
               onClick={() => onSelect(card.id)}
               className={cn(
-                "group flex w-full flex-col justify-center rounded-xl border border-neutral-800 bg-neutral-900 p-6 text-left transition-all duration-150 md:min-h-[220px] md:p-8",
+                "group flex w-full flex-col justify-center rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] p-6 text-left transition-all duration-150 md:min-h-[220px] md:p-8",
                 "hover:border-[#B5FF00] hover:shadow-[0_0_20px_-12px_rgba(181,255,0,0.6)] hover:-translate-y-0.5",
                 selectedGender === card.id &&
                   "border-[#B5FF00] ring-1 ring-[#B5FF00]",
@@ -49,7 +49,7 @@ function GenderSelector({ selectedGender, onSelect }) {
               <h3 className="text-xl font-semibold text-white md:text-2xl">
                 {card.label}
               </h3>
-              <p className="mt-3 text-sm text-neutral-400">
+              <p className="mt-3 text-sm text-gray-400">
                 {card.description}
               </p>
             </button>

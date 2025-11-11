@@ -38,7 +38,7 @@ const RoutinePreview = memo(() => {
     >
       <div className="border-b border-[#787878]/20 px-6 py-5">
         <div className="space-y-3 text-center">
-          <h2 className="text-3xl font-bold text-[#CBFF00]">
+          <h2 className="text-3xl font-bold text-[#B5FF00]">
             {plan.metadata.name || "Plan sin título"}
           </h2>
           <div className="flex flex-wrap justify-center gap-2 text-xs uppercase tracking-wider text-[#787878]">
@@ -104,7 +104,7 @@ const RoutinePreview = memo(() => {
               <a
                 key={anchor.id}
                 href={`#${anchor.id}`}
-                className="rounded-xl border border-[#787878]/30 bg-[#1A1A1A] p-4 text-sm text-white transition-colors hover:border-[#CBFF00]/60 hover:bg-[#242424]"
+                className="rounded-xl border border-[#787878]/30 bg-[#1A1A1A] p-4 text-sm text-white transition-colors hover:border-[#B5FF00]/60 hover:bg-[#242424]"
               >
                 Semana {anchor.number}
               </a>
@@ -113,8 +113,8 @@ const RoutinePreview = memo(() => {
         </nav>
 
         {plan.metadata.notes && (
-          <section className="rounded-2xl border border-[#CBFF00]/20 bg-[#CBFF00]/10 p-4 text-left">
-            <h3 className="text-sm font-semibold text-[#CBFF00] mb-2">
+          <section className="rounded-2xl border border-[#B5FF00]/20 bg-[#B5FF00]/10 p-4 text-left">
+            <h3 className="text-sm font-semibold text-[#B5FF00] mb-2">
               Notas generales
             </h3>
             <p className="text-sm text-[#C9C9C9] whitespace-pre-line">

@@ -28,8 +28,8 @@ function RoutineCard({ routine, onPreview }) {
       : description);
 
   return (
-    <article className="group flex h-full w-full min-h-[380px] flex-col overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-950 text-white shadow-[0_35px_80px_-60px_rgba(0,0,0,0.85)] transition-all duration-200 hover:border-lime-400 hover:shadow-[0_28px_75px_-45px_rgba(181,255,0,0.45)]">
-      <div className="relative h-48 w-full border-b border-neutral-800">
+    <article className="group flex h-full w-full min-h-[380px] flex-col overflow-hidden rounded-2xl border border-[#2E2E2E] bg-[#0E0E0E] text-white shadow-[0_35px_80px_-60px_rgba(0,0,0,0.85)] transition-all duration-200 hover:border-[#B5FF00] hover:shadow-[0_28px_75px_-45px_rgba(181,255,0,0.45)]">
+      <div className="relative h-48 w-full border-b border-[#2E2E2E]">
         {routine.image ? (
           <img
             src={routine.image}
@@ -59,7 +59,7 @@ function RoutineCard({ routine, onPreview }) {
         <button
           type="button"
           onClick={() => onPreview?.(routine)}
-          className="inline-flex items-center justify-center rounded-md bg-lime-400 px-5 py-2 text-sm font-semibold text-white transition-colors duration-150 hover:bg-lime-500"
+          className="inline-flex items-center justify-center rounded-md bg-[#B5FF00] px-5 py-2 text-sm font-semibold text-black transition-colors duration-150 hover:bg-[#D0FF4D]"
         >
           Ver vista previa
         </button>

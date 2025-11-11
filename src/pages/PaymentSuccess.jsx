@@ -4,51 +4,44 @@ import { Link } from "react-router-dom";
 
 function PaymentSuccess() {
   return (
-    <div className="container mx-auto px-4 py-16">
-      <div className="max-w-2xl mx-auto text-center">
-        <div className="bg-[#2D2D2D] rounded-2xl p-8 border border-[#CBFF00]/30">
-          <CheckCircle className="h-20 w-20 text-[#CBFF00] mx-auto mb-6" />
-
-          <h1 className="text-4xl font-bold mb-4">¡Bienvenido a Fitter!</h1>
-
-          <p className="text-[#787878] text-lg mb-8">
+    <div className="bg-[#0E0E0E]">
+      <div className="container mx-auto px-4 py-16">
+        <div className="mx-auto max-w-2xl rounded-3xl border border-[#2E2E2E] bg-[#0E0E0E] p-10 text-center shadow-[0_50px_120px_-60px_rgba(0,0,0,0.8)]">
+          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-[#B5FF00] bg-[#101010]">
+            <CheckCircle className="h-10 w-10 text-[#B5FF00]" />
+          </div>
+          <h1 className="text-4xl font-bold text-white">¡Bienvenido a Fitter!</h1>
+          <p className="mt-4 text-lg text-gray-400">
             ¡Tu pago fue exitoso y tu rutina personalizada está en camino!
           </p>
 
-          <div className="bg-[#F8FE9F]/10 border border-[#F8FE9F]/20 rounded-xl p-6 mb-8">
-            <h3 className="font-semibold text-[#F8FE9F] mb-4">¿Qué sigue?</h3>
-            <div className="text-left space-y-3 text-[#787878]">
-              <div className="flex items-start space-x-3">
-                <div className="w-2 h-2 bg-[#CBFF00] rounded-full mt-2 flex-shrink-0"></div>
-                <p>Revisa tu correo para ver tu rutina personalizada (PDF)</p>
-              </div>
-              <div className="flex items-start space-x-3">
-                <div className="w-2 h-2 bg-[#CBFF00] rounded-full mt-2 flex-shrink-0"></div>
-                <p>
-                  Accede a videos en YouTube con demostraciones de todos los
-                  ejercicios
-                </p>
-              </div>
-              <div className="flex items-start space-x-3">
-                <div className="w-2 h-2 bg-[#CBFF00] rounded-full mt-2 flex-shrink-0"></div>
-                <p>
-                  Usuarios Premium: Matías se pondrá en contacto contigo en 24
-                  horas
-                </p>
-              </div>
-            </div>
+          <div className="mt-10 rounded-2xl border border-[#2E2E2E] bg-[#1A1A1A] p-6 text-left">
+            <h3 className="text-lg font-semibold text-[#B5FF00]">¿Qué sigue?</h3>
+            <ul className="mt-4 space-y-4 text-sm text-gray-400">
+              <li className="flex items-start gap-3">
+                <span className="mt-1 block h-2 w-2 rounded-full bg-[#B5FF00]" />
+                <span>Revisá tu correo para descargar la rutina personalizada en PDF.</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-1 block h-2 w-2 rounded-full bg-[#B5FF00]" />
+                <span>Accedé a los videos técnicos con demostraciones de cada ejercicio.</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-1 block h-2 w-2 rounded-full bg-[#B5FF00]" />
+                <span>Clientes Premium: recibirás seguimiento personalizado en las próximas 24 horas.</span>
+              </li>
+            </ul>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               to="/"
-              className="inline-flex items-center justify-center space-x-2 bg-[#CBFF00] hover:bg-[#DBFE52] text-[#2D2D2D] font-semibold py-3 px-6 rounded-xl transition-colors"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#B5FF00] px-6 py-3 font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-[#D0FF4D]"
             >
               <ArrowLeft className="h-5 w-5" />
               <span>Volver al inicio</span>
             </Link>
-
-            <button className="bg-[#787878]/20 hover:bg-[#787878]/30 text-white font-semibold py-3 px-6 rounded-xl transition-colors">
+            <button className="inline-flex items-center justify-center gap-2 rounded-full border border-[#B5FF00] px-6 py-3 font-medium text-[#B5FF00] transition-colors hover:bg-[#B5FF00]/10">
               Contactar soporte
             </button>
           </div>

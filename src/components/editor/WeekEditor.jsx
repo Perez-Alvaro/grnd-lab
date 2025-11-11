@@ -76,17 +76,17 @@ const WeekEditor = memo(
 
     return (
       <div className="flex flex-col gap-6" data-testid="week-editor">
-        <section className="flex flex-col gap-4 rounded-xl border border-neutral-800 bg-neutral-900/70 p-5 shadow-sm">
+        <section className="flex flex-col gap-4 rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold text-white">
                 Índice del plan
               </h2>
-              <p className="text-sm text-neutral-400">
+              <p className="text-sm text-gray-400">
                 Gestiona las semanas y navega rápidamente
               </p>
             </div>
-            <span className="text-xs uppercase tracking-wide text-neutral-500">
+            <span className="text-xs uppercase tracking-wide text-gray-500">
               {weeks.length} semanas
             </span>
           </div>
@@ -96,15 +96,15 @@ const WeekEditor = memo(
                 key={week.id}
                 type="button"
                 onClick={() => onNavigateWeek?.(week.id)}
-                className="group flex flex-col gap-1 rounded-lg border border-neutral-800 bg-neutral-950/80 px-4 py-3 text-left transition-colors hover:border-[#CBFF00] hover:bg-neutral-900"
+                className="group flex flex-col gap-1 rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-left transition-colors hover:border-[#B5FF00] hover:bg-[#101010]"
               >
-                <span className="text-xs uppercase tracking-wide text-neutral-500">
+                <span className="text-xs uppercase tracking-wide text-gray-500">
                   Semana {index + 1}
                 </span>
                 <span className="text-sm font-semibold text-white">
                   {week.title || `Semana ${index + 1}`}
                 </span>
-                <span className="text-xs text-neutral-400">
+                <span className="text-xs text-gray-400">
                   {week.summary || "Añadí una descripción corta"}
                 </span>
               </button>
@@ -112,7 +112,7 @@ const WeekEditor = memo(
             <button
               type="button"
               onClick={handleAddWeek}
-              className="flex items-center justify-center gap-2 rounded-lg border border-dashed border-neutral-700 bg-neutral-950/80 px-4 py-3 text-sm font-semibold text-[#CBFF00] transition-colors hover:border-[#CBFF00] hover:bg-neutral-900"
+              className="flex items-center justify-center gap-2 rounded-lg border border-dashed border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm font-semibold text-[#B5FF00] transition-colors hover:border-[#B5FF00] hover:bg-[#101010]"
             >
               <Plus className="h-4 w-4" /> Agregar semana
             </button>
@@ -124,12 +124,12 @@ const WeekEditor = memo(
             key={week.id}
             ref={registerWeekRef ? registerWeekRef(week.id) : undefined}
             id={`editor-week-${index + 1}`}
-            className="flex flex-col gap-5 rounded-xl border border-neutral-800 bg-neutral-900/70 p-5 shadow-sm"
+            className="flex flex-col gap-5 rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] p-5 shadow-sm"
             data-testid="week-card"
           >
-            <div className="flex flex-col gap-4 border-b border-neutral-800 pb-5 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-col gap-4 border-b border-[#2E2E2E] pb-5 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex flex-col gap-1">
-                <span className="text-xs uppercase tracking-wide text-neutral-500">
+                <span className="text-xs uppercase tracking-wide text-gray-500">
                   Semana {index + 1}
                 </span>
                 <h3 className="text-xl font-semibold text-white">
@@ -140,7 +140,7 @@ const WeekEditor = memo(
                 <button
                   type="button"
                   onClick={() => handleDuplicateWeek(week.id)}
-                  className="inline-flex items-center gap-2 rounded-lg border border-neutral-700 px-3 py-2 text-sm font-medium text-[#CBFF00] transition-colors hover:border-[#CBFF00] hover:bg-neutral-900"
+                  className="inline-flex items-center gap-2 rounded-lg border border-[#2E2E2E] px-3 py-2 text-sm font-medium text-[#B5FF00] transition-colors hover:border-[#B5FF00] hover:bg-[#101010]"
                 >
                   <Copy className="h-4 w-4" /> Duplicar semana
                 </button>
@@ -156,7 +156,7 @@ const WeekEditor = memo(
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-neutral-400">
+                <label className="text-sm font-medium text-gray-400">
                   Nombre o foco de la semana
                 </label>
                 <input
@@ -164,11 +164,11 @@ const WeekEditor = memo(
                   value={week.title}
                   onChange={handleWeekFieldChange(week.id, "title")}
                   placeholder={`Semana ${index + 1}`}
-                  className="w-full rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none focus:ring-0"
+                  className="w-full rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white transition-colors focus:border-[#B5FF00] focus:outline-none focus:ring-0"
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-neutral-400">
+                <label className="text-sm font-medium text-gray-400">
                   Resumen
                 </label>
                 <input
@@ -176,11 +176,11 @@ const WeekEditor = memo(
                   value={week.summary}
                   onChange={handleWeekFieldChange(week.id, "summary")}
                   placeholder="Descripción corta del enfoque semanal"
-                  className="w-full rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none focus:ring-0"
+                  className="w-full rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white transition-colors focus:border-[#B5FF00] focus:outline-none focus:ring-0"
                 />
               </div>
               <div className="md:col-span-2 flex flex-col gap-2">
-                <label className="text-sm font-medium text-neutral-400">
+                <label className="text-sm font-medium text-gray-400">
                   Notas
                 </label>
                 <textarea
@@ -188,20 +188,20 @@ const WeekEditor = memo(
                   value={week.notes}
                   onChange={handleWeekFieldChange(week.id, "notes")}
                   placeholder="Notas generales, recordatorios o mensajes clave de la semana"
-                  className="min-h-[100px] w-full resize-none rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none focus:ring-0"
+                  className="min-h-[100px] w-full resize-none rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white transition-colors focus:border-[#B5FF00] focus:outline-none focus:ring-0"
                 />
               </div>
             </div>
 
             <div className="flex flex-col gap-5">
               <div className="flex items-center justify-between">
-                <h4 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
+                <h4 className="text-sm font-semibold uppercase tracking-wide text-gray-400">
                   Días ({week.days.length})
                 </h4>
                 <button
                   type="button"
                   onClick={() => addDay(week.id)}
-                  className="inline-flex items-center gap-2 rounded-lg border border-dashed border-neutral-700 px-3 py-2 text-sm font-semibold text-[#CBFF00] transition-colors hover:border-[#CBFF00] hover:bg-neutral-900"
+                  className="inline-flex items-center gap-2 rounded-lg border border-dashed border-[#2E2E2E] px-3 py-2 text-sm font-semibold text-[#B5FF00] transition-colors hover:border-[#B5FF00] hover:bg-[#101010]"
                 >
                   <Plus className="h-4 w-4" /> Agregar día
                 </button>

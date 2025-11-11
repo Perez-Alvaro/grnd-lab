@@ -33,11 +33,11 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
   const labelClasses =
     "text-xs font-semibold uppercase tracking-wide text-neutral-500";
   const inputClasses =
-    "h-11 w-full rounded-lg border border-neutral-800 bg-neutral-950 px-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none focus:ring-0";
+    "h-11 w-full rounded-lg border border-neutral-800 bg-neutral-950 px-3 text-sm text-white transition-colors focus:border-[#B5FF00] focus:outline-none focus:ring-0";
 
   return (
     <div
-      className="flex flex-col gap-4 rounded-lg border border-neutral-800 bg-neutral-900/70 p-4 shadow-sm transition-colors duration-200 ease-in-out hover:border-[#CBFF00]/40 hover:bg-neutral-900"
+      className="flex flex-col gap-4 rounded-lg border border-neutral-800 bg-neutral-900/70 p-4 shadow-sm transition-colors duration-200 ease-in-out hover:border-[#B5FF00]/40 hover:bg-neutral-900"
       data-testid="exercise-editor"
     >
       <div className="grid grid-cols-1 gap-3 md:grid-cols-6">
@@ -120,7 +120,7 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
           rows={2}
           value={exercise.note}
           onChange={handleChange("note")}
-          className="min-h-[80px] w-full resize-none rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none focus:ring-0"
+          className="min-h-[80px] w-full resize-none rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-3 text-sm text-white transition-colors focus:border-[#B5FF00] focus:outline-none focus:ring-0"
           placeholder="Ej. Superserie con press inclinado"
         />
       </div>
@@ -133,7 +133,7 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
           <button
             type="button"
             onClick={handleDuplicate}
-            className="inline-flex items-center gap-2 rounded-lg border border-neutral-700 px-3 py-2 text-xs font-semibold text-[#CBFF00] transition-colors hover:border-[#CBFF00] hover:bg-neutral-900"
+            className="inline-flex items-center gap-2 rounded-lg border border-neutral-700 px-3 py-2 text-xs font-semibold text-[#B5FF00] transition-colors hover:border-[#B5FF00] hover:bg-neutral-900"
           >
             <Copy className="h-4 w-4" /> Duplicar ejercicio
           </button>

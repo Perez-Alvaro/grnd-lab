@@ -13,9 +13,9 @@ const PlanMetadataForm = memo(() => {
     [updateMetadata],
   );
 
-  const labelClasses = "text-sm font-medium text-neutral-400";
+  const labelClasses = "text-sm font-medium text-gray-300";
   const inputClasses =
-    "w-full rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-3 text-sm text-white shadow-sm transition-colors focus:border-[#CBFF00] focus:outline-none focus:ring-0";
+    "w-full rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white shadow-sm transition-colors focus:border-[#B5FF00] focus:outline-none focus:ring-0";
 
   const frequencyOptions = ["2", "3", "4", "5"];
   const durationOptions = ["1", "2", "3", "4", "6", "8", "12"];
@@ -30,16 +30,16 @@ const PlanMetadataForm = memo(() => {
   return (
     <section
       data-testid="plan-metadata-form"
-      className="flex flex-col gap-4 rounded-xl border border-neutral-800 bg-neutral-900/70 p-5 shadow-sm"
+      className="flex flex-col gap-4 rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] p-5 shadow-[0_20px_70px_-45px_rgba(0,0,0,0.7)]"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <ChevronRight className="h-5 w-5 text-[#CBFF00]" />
+          <ChevronRight className="h-5 w-5 text-[#B5FF00]" />
           <h2 className="text-lg font-semibold text-white">
             Datos de la plantilla
           </h2>
         </div>
-        <span className="text-xs uppercase tracking-wide text-neutral-500">
+        <span className="text-xs uppercase tracking-wide text-gray-500">
           Completa la información base
         </span>
       </div>
