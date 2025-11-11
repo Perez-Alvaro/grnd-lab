@@ -1,9 +1,9 @@
 import { Document, Page, pdf } from '@react-pdf/renderer';
-import CoverPage from './sections/CoverPage.jsx';
-import WeekSection from './sections/WeekSection.jsx';
-import ProgressPage from './sections/ProgressPage.jsx';
+import CoverPage from './sections/CoverPage.js';
+import WeekSection from './sections/WeekSection.js';
+import ProgressPage from './sections/ProgressPage.js';
 import { createBaseStyles } from './utils/pdfStyles.js';
-import { normalizePlanData } from './utils/planNormalizer.js';
+import { normalizePlanData } from './utils/pdfLayout.js';
 
 const PlanDocument = ({ plan }) => {
   const styles = createBaseStyles();
