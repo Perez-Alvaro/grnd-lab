@@ -18,7 +18,14 @@ const PlanMetadataForm = memo(() => {
     "w-full rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-3 text-sm text-white shadow-sm transition-colors focus:border-[#CBFF00] focus:outline-none focus:ring-0";
 
   const frequencyOptions = ["2", "3", "4", "5"];
-  const durationOptions = ["1", "2", "3", "4"];
+  const durationOptions = ["1", "2", "3", "4", "6", "8", "12"];
+  const levelOptions = [
+    { value: "", label: "Seleccioná el nivel" },
+    { value: "Principiante", label: "Principiante" },
+    { value: "Intermedio", label: "Intermedio" },
+    { value: "Avanzado", label: "Avanzado" },
+    { value: "Todos los niveles", label: "Todos los niveles" },
+  ];
 
   return (
     <section
@@ -47,6 +54,18 @@ const PlanMetadataForm = memo(() => {
             onChange={handleChange("name")}
             placeholder="Ej. Masculino Volumen FST-7 4x/semana"
             className={`${inputClasses} max-w-[600px]`}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label className={labelClasses}>Descripción breve</label>
+          <textarea
+            data-testid="plan-description-input"
+            rows={3}
+            value={metadata.description}
+            onChange={handleChange("description")}
+            placeholder="Resumen clave que verá el cliente al explorar la rutina"
+            className={`${inputClasses} min-h-[100px] resize-none`}
           />
         </div>
 
@@ -98,7 +117,7 @@ const PlanMetadataForm = memo(() => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="flex flex-col gap-2">
             <label className={labelClasses}>Duración (semanas)</label>
             <select
@@ -126,6 +145,21 @@ const PlanMetadataForm = memo(() => {
               className={inputClasses}
             />
           </div>
+          <div className="flex flex-col gap-2">
+            <label className={labelClasses}>Nivel</label>
+            <select
+              data-testid="plan-level-input"
+              value={metadata.level}
+              onChange={handleChange("level")}
+              className={inputClasses}
+            >
+              {levelOptions.map((option) => (
+                <option key={option.value || "all"} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="flex flex-col gap-2">
@@ -138,6 +172,32 @@ const PlanMetadataForm = memo(() => {
             placeholder="fst-7, superseries"
             className={inputClasses}
           />
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="flex flex-col gap-2">
+            <label className={labelClasses}>Precio (ARS)</label>
+            <input
+              data-testid="plan-price-input"
+              type="number"
+              min="0"
+              value={metadata.price}
+              onChange={handleChange("price")}
+              placeholder="Valor del plan en pesos"
+              className={inputClasses}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className={labelClasses}>Imagen de portada (URL)</label>
+            <input
+              data-testid="plan-image-input"
+              type="url"
+              value={metadata.image}
+              onChange={handleChange("image")}
+              placeholder="https://..."
+              className={inputClasses}
+            />
+          </div>
         </div>
 
         <div className="flex flex-col gap-2">

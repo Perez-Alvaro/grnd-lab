@@ -13,6 +13,24 @@ function PaymentSection({ routine }) {
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  const formatWeeks = (value) => {
+    if (!value && value !== 0) return "—";
+    const parsed = Number(value);
+    if (!Number.isNaN(parsed) && parsed > 0) {
+      return `${parsed} ${parsed === 1 ? "semana" : "semanas"}`;
+    }
+    return value;
+  };
+
+  const formatFrequency = (value) => {
+    if (!value && value !== 0) return "—";
+    const parsed = Number(value);
+    if (!Number.isNaN(parsed) && parsed > 0) {
+      return `${parsed} sesiones semanales`;
+    }
+    return value;
+  };
+
   const plan = useMemo(
     () =>
       routine
@@ -108,8 +126,10 @@ function PaymentSection({ routine }) {
               {routine.name}
             </h3>
             <p className="text-sm text-neutral-400">
-              {routine.duration} • {routine.frequency} sesiones semanales •
-              Nivel {routine.level}
+              {formatWeeks(routine.duration)} • {formatFrequency(routine.frequency)}
+              {routine.level && routine.level !== ""
+                ? ` • Nivel ${routine.level}`
+                : ""}
             </p>
           </div>
           <div className="text-left md:text-right">

@@ -147,9 +147,13 @@ export const buildInitialPlan = (template) => {
         objective: "",
         durationWeeks: "1",
         frequency: "",
+        level: "",
+        description: "",
         notes: "",
         author: "",
         tags: "",
+        image: "",
+        price: "",
       },
       weeks: [createEmptyWeek(1)],
     };
@@ -191,9 +195,21 @@ export const buildInitialPlan = (template) => {
           ? String(template.frecuencia).replace(/[^0-9]/g, "") ||
             String(template.frecuencia)
           : "",
+      level: template?.level || template?.nivel || "",
+      description:
+        template?.description ||
+        template?.descripcion ||
+        template?.summary ||
+        "",
       notes: template?.notes || template?.notas || "",
       author: template?.author || template?.coach || template?.autor || "",
       tags: tagsString,
+      image: template?.image || template?.cover || template?.portada || "",
+      price: template?.price != null
+        ? String(template.price)
+        : template?.precio != null
+          ? String(template.precio)
+          : "",
     },
     weeks: convertedWeeks.length ? convertedWeeks : [createEmptyWeek(1)],
   };
@@ -579,6 +595,8 @@ export const usePlanEditor = ({ template, templateId, existingTemplate }) => {
         : "",
       author: plan.metadata.author,
       notes: plan.metadata.notes,
+      description: plan.metadata.description,
+      level: plan.metadata.level,
       weeks: plan.weeks.map((week, index) => ({
         title: week.title || `Semana ${index + 1}`,
         summary: week.summary,
@@ -646,10 +664,17 @@ export const usePlanEditor = ({ template, templateId, existingTemplate }) => {
       gender: plan.metadata.gender || existingTemplate?.gender || "",
       frequency: plan.metadata.frequency ? Number(plan.metadata.frequency) : "",
       objective: plan.metadata.objective || existingTemplate?.objective || "",
+      level: plan.metadata.level || existingTemplate?.level || "",
       tags,
+      description: plan.metadata.description,
       notes: plan.metadata.notes,
       author: plan.metadata.author,
       duration: plan.metadata.durationWeeks,
+      image: plan.metadata.image,
+      price:
+        plan.metadata.price && !Number.isNaN(Number(plan.metadata.price))
+          ? Number(plan.metadata.price)
+          : existingTemplate?.price || 0,
       createdAt: existingTemplate?.createdAt || now,
       updatedAt: now,
       weeks: plan.weeks.map((week, index) => ({
