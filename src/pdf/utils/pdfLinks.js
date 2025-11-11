@@ -1,0 +1,7 @@
+export const INDEX_ANCHOR = 'indice-interactivo';
+
+export const weekAnchorId = (weekNumber) => `semana-${weekNumber}`;
+
+export const indexLinkTarget = () => `#${INDEX_ANCHOR}`;
+
+export const weekLinkTarget = (weekNumber) => `#${weekAnchorId(weekNumber)}`;

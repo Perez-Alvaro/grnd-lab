@@ -7,7 +7,7 @@ import { useAppContext } from '../context/AppContext.jsx';
 import TemplatePreview from '../components/TemplatePreview.jsx';
 import EditorActionBar from '../components/editor/EditorActionBar.jsx';
 import migrateTemplate from '../utils/migrateTemplate.ts';
-import { generateRoutinePdf } from '../utils/pdf.jsx';
+import usePDFExport from '../pdf/hooks/usePDFExport.js';
 import { toast } from '../utils/toast.js';
 
 const emptyVariant = {
@@ -35,6 +35,7 @@ export default function TemplatesEditorPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { state } = useAppContext();
+  const exportPlan = usePDFExport();
 
   const existing = id ? state.templates.find(t => String(t.id) === String(id)) : null;
   const migrated = migrateTemplate(existing);
@@ -264,13 +265,30 @@ export default function TemplatesEditorPage() {
 
 
   const handlePdf = () => {
-    const data = {
+    const weekNotes = formData.notes
+      ? formData.notes.split('\n').map(line => line.trim()).filter(Boolean)
+      : [];
+
+    const planData = {
       planName: formData.name,
+      frequency: formData.frequency ? `${formData.frequency} días/semana` : '',
       objective: formData.objective,
-      frecuencia: `${formData.frequency} días/semana`,
-      dias: formData.days
+      notes: formData.notes,
+      weeks: [
+        {
+          title: 'Semana 1',
+          summary: weekNotes[0] || '',
+          notes: weekNotes,
+          days: formData.days.map((day, index) => ({
+            ...day,
+            title: day.title || `Día ${index + 1}`,
+            type: day.type || 'ENTRENAMIENTO',
+          })),
+        },
+      ],
     };
-    generateRoutinePdf(data);
+
+    exportPlan(planData);
   };
 
   const handleBack = () => {
