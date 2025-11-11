@@ -40,7 +40,7 @@ function ClientRoutineSelection() {
           className="relative overflow-hidden rounded-3xl border border-neutral-800 bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800"
         >
           <div className="absolute inset-0 opacity-30">
-            <div className="h-full w-full bg-[url('https://images.unsplash.com/photo-1517832207067-4db24a2ae47c?auto=format&fit=crop&w=1600&q=80')] bg-cover bg-center mix-blend-screen" />
+            <div className="h-full w-full bg-[url('https://cdn.dribbble.com/userupload/10260602/file/original-049e536669a951aa2a2c7d6dd568749a.png?resize=1600x1082&vertical=center')] bg-cover bg-center mix-blend-screen" />
           </div>
           <div className="relative z-10 flex flex-col items-start gap-6 px-8 py-16 md:px-16 md:py-20">
             <FadeIn className="flex w-full flex-col gap-6 text-left">
