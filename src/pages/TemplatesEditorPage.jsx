@@ -161,45 +161,47 @@ export default function TemplatesEditorPage() {
 
   return (
     <PlanProvider value={planContextValue}>
-      <div className="w-full max-w-7xl mx-auto px-4 lg:px-2 py-8 space-y-6">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={handleBack}
-              className="inline-flex items-center gap-2 rounded-xl border border-[#787878]/30 bg-[#1A1A1A] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#2D2D2D]"
-            >
-              <ArrowLeft className="h-4 w-4" /> Volver
-            </button>
-            <h1 className="text-2xl font-bold">Editor de Planes</h1>
+      <div className="w-full bg-transparent">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 lg:flex-row lg:flex-wrap">
+          <div className="flex flex-col gap-4 lg:basis-full lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={handleBack}
+                className="inline-flex items-center gap-2 rounded-xl border border-[#787878]/30 bg-[#1A1A1A] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#2D2D2D]"
+              >
+                <ArrowLeft className="h-4 w-4" /> Volver
+              </button>
+              <h1 className="text-2xl font-bold">Editor de Planes</h1>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={handleSave}
+                className="inline-flex items-center gap-2 rounded-xl bg-[#CBFF00] px-4 py-2 font-semibold text-[#1A1A1A] transition-colors hover:bg-[#DBFE52]"
+              >
+                <Save className="h-4 w-4" />
+                {isEditing ? 'Actualizar plantilla' : 'Guardar plantilla'}
+              </button>
+              <button
+                type="button"
+                onClick={handleExportPdf}
+                className="inline-flex items-center gap-2 rounded-xl border border-[#CBFF00]/40 bg-[#1A1A1A] px-4 py-2 font-semibold text-[#CBFF00] transition-colors hover:border-[#CBFF00] hover:bg-[#CBFF00] hover:text-black"
+              >
+                <FileDown className="h-4 w-4" /> Exportar PDF
+              </button>
+            </div>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={handleSave}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#CBFF00] px-4 py-2 font-semibold text-[#1A1A1A] transition-colors hover:bg-[#DBFE52]"
-            >
-              <Save className="h-4 w-4" />
-              {isEditing ? 'Actualizar plantilla' : 'Guardar plantilla'}
-            </button>
-            <button
-              type="button"
-              onClick={handleExportPdf}
-              className="inline-flex items-center gap-2 rounded-xl border border-[#CBFF00]/40 bg-[#1A1A1A] px-4 py-2 font-semibold text-[#CBFF00] transition-colors hover:border-[#CBFF00] hover:bg-[#CBFF00] hover:text-black"
-            >
-              <FileDown className="h-4 w-4" /> Exportar PDF
-            </button>
-          </div>
-        </div>
 
-        <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-start">
-          <div className="flex w-full flex-col gap-6 lg:w-1/3">
-            <PlanMetadataForm />
-            <WeekEditor onNavigateWeek={handleNavigateWeek} registerWeekRef={registerWeekRef} onActionError={onActionError} />
-          </div>
-          <div className="w-full lg:w-2/3">
-            <div className="max-h-[90vh] overflow-y-auto rounded-2xl border border-[#787878]/20 bg-[#161616] p-4 lg:p-6">
-              <RoutinePreview />
+          <div className="flex w-full flex-col gap-6 lg:basis-full lg:flex-row">
+            <div className="flex w-full flex-col gap-6 lg:w-3/5">
+              <PlanMetadataForm />
+              <WeekEditor onNavigateWeek={handleNavigateWeek} registerWeekRef={registerWeekRef} onActionError={onActionError} />
+            </div>
+            <div className="flex w-full flex-col lg:w-2/5">
+              <div className="h-full max-h-[90vh] overflow-y-auto rounded-2xl border border-[#787878]/20 bg-[#161616] p-4 lg:p-6">
+                <RoutinePreview />
+              </div>
             </div>
           </div>
         </div>
