@@ -1,9 +1,10 @@
-import { View, Text } from '@react-pdf/renderer';
+import { View, Text } from "@react-pdf/renderer";
 
 const ProgressPage = ({ progress, styles }) => {
   if (!progress) return null;
 
-  const hasMetrics = Array.isArray(progress.metrics) && progress.metrics.length > 0;
+  const hasMetrics =
+    Array.isArray(progress.metrics) && progress.metrics.length > 0;
   const hasNotes = Array.isArray(progress.notes) && progress.notes.length > 0;
 
   if (!hasMetrics && !hasNotes) return null;
@@ -30,7 +31,7 @@ const ProgressPage = ({ progress, styles }) => {
             {progress.metrics.map((metric, idx) => (
               <View key={idx} style={styles.metricCard}>
                 <Text style={styles.metricLabel}>{metric.label}</Text>
-                <Text style={styles.metricValue}>{metric.value || '-'}</Text>
+                <Text style={styles.metricValue}>{metric.value || "-"}</Text>
               </View>
             ))}
           </View>

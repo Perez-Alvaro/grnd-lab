@@ -1,19 +1,19 @@
-import { useMemo, useRef, useCallback, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Save, FileDown } from 'lucide-react';
-import { PlanProvider } from '../context/PlanContext.jsx';
-import { useAppContext } from '../context/AppContext.jsx';
-import usePlanEditor from '../hooks/usePlanEditor.js';
-import usePDFExport from '../hooks/usePDFExport.js';
-import PlanMetadataForm from '../components/editor/PlanMetadataForm.jsx';
-import WeekEditor from '../components/editor/WeekEditor.jsx';
-import RoutinePreview from '../components/preview/RoutinePreview.jsx';
-import EditorActionBar from '../components/editor/EditorActionBar.jsx';
-import migrateTemplate from '../utils/migrateTemplate.ts';
-import { toast } from '../utils/toast.js';
-import { savePlan, updatePlan } from '../services/planService.js';
+import { useMemo, useRef, useCallback, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { ArrowLeft, Save, FileDown } from "lucide-react";
+import { PlanProvider } from "../context/PlanContext.jsx";
+import { useAppContext } from "../context/AppContext.jsx";
+import usePlanEditor from "../hooks/usePlanEditor.js";
+import usePDFExport from "../hooks/usePDFExport.js";
+import PlanMetadataForm from "../components/editor/PlanMetadataForm.jsx";
+import WeekEditor from "../components/editor/WeekEditor.jsx";
+import RoutinePreview from "../components/preview/RoutinePreview.jsx";
+import EditorActionBar from "../components/editor/EditorActionBar.jsx";
+import migrateTemplate from "../utils/migrateTemplate.ts";
+import { toast } from "../utils/toast.js";
+import { savePlan, updatePlan } from "../services/planService.js";
 
-const buildContextValue = planEditor => ({
+const buildContextValue = (planEditor) => ({
   plan: planEditor.plan,
   metadata: planEditor.metadata,
   weeks: planEditor.weeks,
@@ -30,7 +30,7 @@ const buildContextValue = planEditor => ({
   addExercise: planEditor.addExercise,
   duplicateExercise: planEditor.duplicateExercise,
   removeExercise: planEditor.removeExercise,
-  updateExerciseField: planEditor.updateExerciseField
+  updateExerciseField: planEditor.updateExerciseField,
 });
 
 export default function TemplatesEditorPage() {
@@ -40,13 +40,20 @@ export default function TemplatesEditorPage() {
   const exportPlan = usePDFExport();
 
   const existing = useMemo(
-    () => (id ? state.templates.find(template => String(template.id) === String(id)) : null),
-    [id, state.templates]
+    () =>
+      id
+        ? state.templates.find((template) => String(template.id) === String(id))
+        : null,
+    [id, state.templates],
   );
 
   const migratedTemplate = useMemo(() => migrateTemplate(existing), [existing]);
 
-  const planEditor = usePlanEditor({ template: migratedTemplate, templateId: id, existingTemplate: existing });
+  const planEditor = usePlanEditor({
+    template: migratedTemplate,
+    templateId: id,
+    existingTemplate: existing,
+  });
 
   const planContextValue = useMemo(
     () => buildContextValue(planEditor),
@@ -67,35 +74,41 @@ export default function TemplatesEditorPage() {
       planEditor.addExercise,
       planEditor.duplicateExercise,
       planEditor.removeExercise,
-      planEditor.updateExerciseField
-    ]
+      planEditor.updateExerciseField,
+    ],
   );
 
   const weekRefs = useRef({});
-  const registerWeekRef = useCallback(weekId => node => {
-    if (node) {
-      weekRefs.current[weekId] = node;
-    } else {
-      delete weekRefs.current[weekId];
-    }
-  }, []);
+  const registerWeekRef = useCallback(
+    (weekId) => (node) => {
+      if (node) {
+        weekRefs.current[weekId] = node;
+      } else {
+        delete weekRefs.current[weekId];
+      }
+    },
+    [],
+  );
 
-  const handleNavigateWeek = useCallback(weekId => {
+  const handleNavigateWeek = useCallback((weekId) => {
     const target = weekRefs.current[weekId];
     if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, []);
 
   const handleBack = useCallback(() => {
-    if (planEditor.dirty && !window.confirm('Hay cambios sin guardar. ¿Desea salir igualmente?')) {
+    if (
+      planEditor.dirty &&
+      !window.confirm("Hay cambios sin guardar. ¿Desea salir igualmente?")
+    ) {
       return;
     }
-    navigate('/admin');
+    navigate("/admin");
   }, [navigate, planEditor.dirty]);
 
-  const handleValidationErrors = useCallback(errors => {
-    errors.forEach(message => toast.error(message));
+  const handleValidationErrors = useCallback((errors) => {
+    errors.forEach((message) => toast.error(message));
   }, []);
 
   const handleSave = useCallback(async () => {
@@ -112,20 +125,22 @@ export default function TemplatesEditorPage() {
         : await savePlan(payload);
 
       if (existing) {
-        dispatch({ type: 'UPDATE_TEMPLATE', payload: persisted });
-        toast.success('Plantilla actualizada correctamente.');
+        dispatch({ type: "UPDATE_TEMPLATE", payload: persisted });
+        toast.success("Plantilla actualizada correctamente.");
       } else {
-        dispatch({ type: 'ADD_TEMPLATE', payload: persisted });
-        toast.success('Plantilla creada correctamente.');
-        if (!id || id === 'nueva') {
-          navigate(`/admin/plantillas/${persisted.id}/editar`, { replace: true });
+        dispatch({ type: "ADD_TEMPLATE", payload: persisted });
+        toast.success("Plantilla creada correctamente.");
+        if (!id || id === "nueva") {
+          navigate(`/admin/plantillas/${persisted.id}/editar`, {
+            replace: true,
+          });
         }
       }
 
       planEditor.markAsSaved();
     } catch (error) {
       console.error(error);
-      toast.error('No se pudo guardar la plantilla. Intenta nuevamente.');
+      toast.error("No se pudo guardar la plantilla. Intenta nuevamente.");
     }
   }, [dispatch, existing, handleValidationErrors, id, navigate, planEditor]);
 
@@ -137,25 +152,25 @@ export default function TemplatesEditorPage() {
     }
     try {
       await exportPlan(planEditor.planForPdf);
-      toast.success('Exportando plan a PDF.');
+      toast.success("Exportando plan a PDF.");
     } catch (error) {
       console.error(error);
-      toast.error('No se pudo exportar el PDF en este momento.');
+      toast.error("No se pudo exportar el PDF en este momento.");
     }
   }, [exportPlan, handleValidationErrors, planEditor]);
 
   useEffect(() => {
-    const handleKeyDown = event => {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+    const handleKeyDown = (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
         event.preventDefault();
         handleSave();
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleSave]);
 
-  const onActionError = useCallback(message => toast.error(message), []);
+  const onActionError = useCallback((message) => toast.error(message), []);
 
   const isEditing = Boolean(existing);
 
@@ -181,7 +196,7 @@ export default function TemplatesEditorPage() {
                 className="inline-flex items-center gap-2 rounded-xl bg-[#CBFF00] px-4 py-2 font-semibold text-[#1A1A1A] transition-colors hover:bg-[#DBFE52]"
               >
                 <Save className="h-4 w-4" />
-                {isEditing ? 'Actualizar plantilla' : 'Guardar plantilla'}
+                {isEditing ? "Actualizar plantilla" : "Guardar plantilla"}
               </button>
               <button
                 type="button"
@@ -198,7 +213,11 @@ export default function TemplatesEditorPage() {
           <div className="flex flex-col lg:flex-row w-full max-w-7xl mx-auto gap-6 px-4 py-8 sm:px-6 lg:px-6">
             <section className="lg:w-1/2 flex flex-col gap-6">
               <PlanMetadataForm />
-              <WeekEditor onNavigateWeek={handleNavigateWeek} registerWeekRef={registerWeekRef} onActionError={onActionError} />
+              <WeekEditor
+                onNavigateWeek={handleNavigateWeek}
+                registerWeekRef={registerWeekRef}
+                onActionError={onActionError}
+              />
             </section>
             <aside className="lg:w-1/2 sticky top-0 max-h-[90vh] overflow-y-auto rounded-2xl border border-neutral-800 bg-neutral-900/80 p-4 lg:p-6">
               <RoutinePreview />
@@ -207,7 +226,12 @@ export default function TemplatesEditorPage() {
         </div>
       </div>
 
-      <EditorActionBar dirty={planEditor.dirty} onSave={handleSave} onPdf={handleExportPdf} onBack={handleBack} />
+      <EditorActionBar
+        dirty={planEditor.dirty}
+        onSave={handleSave}
+        onPdf={handleExportPdf}
+        onBack={handleBack}
+      />
     </PlanProvider>
   );
 }

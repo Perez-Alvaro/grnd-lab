@@ -1,1 +1,1 @@
-export { default, generateTrainingPlanPDF } from './PlanRenderer.jsx';
+export { default, generateTrainingPlanPDF } from "./PlanRenderer.jsx";

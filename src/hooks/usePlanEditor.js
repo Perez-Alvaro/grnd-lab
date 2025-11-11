@@ -1,100 +1,118 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 
 const createId = () => Math.random().toString(36).slice(2, 10);
 
-const defaultDayLabels = ['Lunes', 'Miércoles', 'Viernes'];
+const defaultDayLabels = ["Lunes", "Miércoles", "Viernes"];
 
 export const createExercise = () => ({
   id: createId(),
-  name: '',
-  sets: '',
-  reps: '',
-  rest: '',
-  rir: '',
-  tempo: '',
-  video: '',
-  note: ''
+  name: "",
+  sets: "",
+  reps: "",
+  rest: "",
+  rir: "",
+  tempo: "",
+  video: "",
+  note: "",
 });
 
-export const createDay = (label = 'Día 1') => ({
+export const createDay = (label = "Día 1") => ({
   id: createId(),
   name: label,
-  type: 'ENTRENAMIENTO',
-  recoveryNote: '',
-  exercises: [createExercise()]
+  type: "ENTRENAMIENTO",
+  recoveryNote: "",
+  exercises: [createExercise()],
 });
 
 export const createEmptyWeek = (number = 1) => ({
   id: createId(),
   title: `Semana ${number}`,
-  summary: '',
-  notes: '',
-  days: defaultDayLabels.map(dayLabel => createDay(dayLabel))
+  summary: "",
+  notes: "",
+  days: defaultDayLabels.map((dayLabel) => createDay(dayLabel)),
 });
 
-const cloneExercise = exercise => ({
+const cloneExercise = (exercise) => ({
   ...exercise,
-  id: createId()
+  id: createId(),
 });
 
-const cloneDay = day => ({
+const cloneDay = (day) => ({
   ...day,
   id: createId(),
-  exercises: day.exercises.map(cloneExercise)
+  exercises: day.exercises.map(cloneExercise),
 });
 
-const cloneWeek = week => ({
+const cloneWeek = (week) => ({
   ...week,
   id: createId(),
-  days: week.days.map(cloneDay)
+  days: week.days.map(cloneDay),
 });
 
-const parseTags = value =>
+const parseTags = (value) =>
   value
-    .split(',')
-    .map(tag => tag.trim().toLowerCase())
+    .split(",")
+    .map((tag) => tag.trim().toLowerCase())
     .filter(Boolean);
 
 const adjustDuration = (metadata, previousWeekCount, nextWeekCount) => {
   const currentDuration = parseInt(metadata.durationWeeks, 10);
-  if (!metadata.durationWeeks || Number.isNaN(currentDuration) || currentDuration === previousWeekCount) {
+  if (
+    !metadata.durationWeeks ||
+    Number.isNaN(currentDuration) ||
+    currentDuration === previousWeekCount
+  ) {
     return { ...metadata, durationWeeks: String(nextWeekCount) };
   }
   return metadata;
 };
 
-const convertLegacyExercise = exercise => {
-  const variant = Array.isArray(exercise?.variantes) ? exercise.variantes[0] || {} : {};
+const convertLegacyExercise = (exercise) => {
+  const variant = Array.isArray(exercise?.variantes)
+    ? exercise.variantes[0] || {}
+    : {};
   return {
     id: createId(),
-    name: exercise?.ejercicio || exercise?.name || '',
-    sets: variant.series || exercise?.series || exercise?.sets || '',
-    reps: variant.reps || exercise?.reps || '',
-    rest: variant.descanso || exercise?.descanso || exercise?.rest || '',
-    rir: variant.rir || exercise?.rir || '',
-    tempo: variant.cadencia || exercise?.cadencia || exercise?.tempo || '',
-    video: exercise?.videoUrl || exercise?.youtubeLink || exercise?.video || '',
-    note: exercise?.notes || exercise?.note || exercise?.notas || ''
+    name: exercise?.ejercicio || exercise?.name || "",
+    sets: variant.series || exercise?.series || exercise?.sets || "",
+    reps: variant.reps || exercise?.reps || "",
+    rest: variant.descanso || exercise?.descanso || exercise?.rest || "",
+    rir: variant.rir || exercise?.rir || "",
+    tempo: variant.cadencia || exercise?.cadencia || exercise?.tempo || "",
+    video: exercise?.videoUrl || exercise?.youtubeLink || exercise?.video || "",
+    note: exercise?.notes || exercise?.note || exercise?.notas || "",
   };
 };
 
 const convertLegacyDay = (day, index = 0) => {
-  const type = (day?.type || day?.estado || day?.tipo || 'ENTRENAMIENTO').toUpperCase();
+  const type = (
+    day?.type ||
+    day?.estado ||
+    day?.tipo ||
+    "ENTRENAMIENTO"
+  ).toUpperCase();
   const bloques = Array.isArray(day?.bloques) ? day.bloques : [];
   const legacyExercises = bloques.length
-    ? bloques.flatMap(block => (block?.items || []).map(convertLegacyExercise))
+    ? bloques.flatMap((block) =>
+        (block?.items || []).map(convertLegacyExercise),
+      )
     : Array.isArray(day?.exercises)
       ? day.exercises.map(convertLegacyExercise)
       : Array.isArray(day?.ejercicios)
         ? day.ejercicios.map(convertLegacyExercise)
-      : [];
+        : [];
 
   return {
     id: createId(),
     name: day?.title || day?.name || day?.nombre || `Día ${index + 1}`,
     type,
-    recoveryNote: day?.recoveryMessage || day?.mensajeRecuperacion || day?.notes || day?.notas || '',
-    exercises: legacyExercises.length ? legacyExercises : [createExercise()]
+    recoveryNote:
+      day?.recoveryMessage ||
+      day?.mensajeRecuperacion ||
+      day?.notes ||
+      day?.notas ||
+      "",
+    exercises: legacyExercises.length ? legacyExercises : [createExercise()],
   };
 };
 
@@ -105,54 +123,63 @@ const convertLegacyWeek = (week, index = 0) => {
       ? week.dias
       : [];
 
-  const convertedDays = daysSource.map((day, dayIndex) => convertLegacyDay(day, dayIndex));
+  const convertedDays = daysSource.map((day, dayIndex) =>
+    convertLegacyDay(day, dayIndex),
+  );
 
   return {
     id: createId(),
     title: week?.title || week?.nombre || week?.titulo || `Semana ${index + 1}`,
-    summary: week?.summary || week?.descripcionCorta || week?.description || '',
+    summary: week?.summary || week?.descripcionCorta || week?.description || "",
     notes: Array.isArray(week?.notes)
-      ? week.notes.filter(Boolean).join('\n')
-      : week?.notes || week?.descripcion || '',
-    days: convertedDays.length ? convertedDays : [createDay()]
+      ? week.notes.filter(Boolean).join("\n")
+      : week?.notes || week?.descripcion || "",
+    days: convertedDays.length ? convertedDays : [createDay()],
   };
 };
 
-export const buildInitialPlan = template => {
+export const buildInitialPlan = (template) => {
   if (!template) {
     return {
       metadata: {
-        name: '',
-        gender: '',
-        objective: '',
-        durationWeeks: '1',
-        frequency: '',
-        notes: '',
-        author: '',
-        tags: ''
+        name: "",
+        gender: "",
+        objective: "",
+        durationWeeks: "1",
+        frequency: "",
+        notes: "",
+        author: "",
+        tags: "",
       },
-      weeks: [createEmptyWeek(1)]
+      weeks: [createEmptyWeek(1)],
     };
   }
 
-  const weeksSource = Array.isArray(template?.weeks) && template.weeks.length
-    ? template.weeks
-    : [{
-        title: 'Semana 1',
-        summary: template?.summary || '',
-        notes: template?.notes || '',
-        days: template?.days || []
-      }];
+  const weeksSource =
+    Array.isArray(template?.weeks) && template.weeks.length
+      ? template.weeks
+      : [
+          {
+            title: "Semana 1",
+            summary: template?.summary || "",
+            notes: template?.notes || "",
+            days: template?.days || [],
+          },
+        ];
 
-  const convertedWeeks = weeksSource.map((week, index) => convertLegacyWeek(week, index));
+  const convertedWeeks = weeksSource.map((week, index) =>
+    convertLegacyWeek(week, index),
+  );
 
-  const tagsString = Array.isArray(template?.tags) ? template.tags.join(', ') : template?.tags || '';
+  const tagsString = Array.isArray(template?.tags)
+    ? template.tags.join(", ")
+    : template?.tags || "";
 
   return {
     metadata: {
-      name: template?.name || '',
-      gender: template?.gender || '',
-      objective: template?.objective || template?.objetivo || '',
+      name: template?.name || "",
+      gender: template?.gender || "",
+      objective: template?.objective || template?.objetivo || "",
       durationWeeks: template?.duration
         ? String(template.duration)
         : template?.duracion
@@ -161,23 +188,25 @@ export const buildInitialPlan = template => {
       frequency: template?.frequency
         ? String(template.frequency)
         : template?.frecuencia
-          ? String(template.frecuencia).replace(/[^0-9]/g, '') || String(template.frecuencia)
-          : '',
-      notes: template?.notes || template?.notas || '',
-      author: template?.author || template?.coach || template?.autor || '',
-      tags: tagsString
+          ? String(template.frecuencia).replace(/[^0-9]/g, "") ||
+            String(template.frecuencia)
+          : "",
+      notes: template?.notes || template?.notas || "",
+      author: template?.author || template?.coach || template?.autor || "",
+      tags: tagsString,
     },
-    weeks: convertedWeeks.length ? convertedWeeks : [createEmptyWeek(1)]
+    weeks: convertedWeeks.length ? convertedWeeks : [createEmptyWeek(1)],
   };
 };
 
-const buildDraftKey = (templateId) => `plan-editor-draft-${templateId || 'new'}`;
+const buildDraftKey = (templateId) =>
+  `plan-editor-draft-${templateId || "new"}`;
 
 const PLAN_VALIDATION_MESSAGES = {
-  NAME: 'El plan debe tener un nombre.',
-  WEEKS: 'El plan debe incluir al menos una semana con un día activo.',
-  DAYS: 'Cada semana debe tener al menos un día.',
-  EXERCISES: 'Cada día de entrenamiento debe tener al menos un ejercicio.'
+  NAME: "El plan debe tener un nombre.",
+  WEEKS: "El plan debe incluir al menos una semana con un día activo.",
+  DAYS: "Cada semana debe tener al menos un día.",
+  EXERCISES: "Cada día de entrenamiento debe tener al menos un ejercicio.",
 };
 
 export const usePlanEditor = ({ template, templateId, existingTemplate }) => {
@@ -205,7 +234,7 @@ export const usePlanEditor = ({ template, templateId, existingTemplate }) => {
         }
       }
     } catch (error) {
-      console.error('Error restoring draft', error);
+      console.error("Error restoring draft", error);
       localStorage.removeItem(draftKey);
     }
     restoredDraftRef.current = true;
@@ -216,24 +245,24 @@ export const usePlanEditor = ({ template, templateId, existingTemplate }) => {
     try {
       localStorage.setItem(draftKey, JSON.stringify(plan));
     } catch (error) {
-      console.error('Error saving draft', error);
+      console.error("Error saving draft", error);
     }
   }, [plan, dirty, draftKey]);
 
   useEffect(() => {
-    const handleBeforeUnload = event => {
+    const handleBeforeUnload = (event) => {
       if (!dirty) return;
       event.preventDefault();
-      event.returnValue = '';
+      event.returnValue = "";
     };
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [dirty]);
 
-  const applyPlanChange = useCallback(mutator => {
+  const applyPlanChange = useCallback((mutator) => {
     let hasChanged = false;
-    setPlan(prev => {
+    setPlan((prev) => {
       const next = mutator(prev);
       if (!next || next === prev) {
         return prev;
@@ -247,199 +276,265 @@ export const usePlanEditor = ({ template, templateId, existingTemplate }) => {
     return hasChanged;
   }, []);
 
-  const updateMetadata = useCallback((field, value) => {
-    return applyPlanChange(prev => {
-      if (prev.metadata[field] === value) return prev;
-      return {
-        ...prev,
-        metadata: {
-          ...prev.metadata,
-          [field]: value
-        }
-      };
-    });
-  }, [applyPlanChange]);
-
-  const updateWeek = useCallback((weekId, updater) => {
-    return applyPlanChange(prev => {
-      const weeks = prev.weeks.map(week => {
-        if (week.id !== weekId) return week;
-        const nextWeek = updater(week);
-        return nextWeek === week ? week : nextWeek;
+  const updateMetadata = useCallback(
+    (field, value) => {
+      return applyPlanChange((prev) => {
+        if (prev.metadata[field] === value) return prev;
+        return {
+          ...prev,
+          metadata: {
+            ...prev.metadata,
+            [field]: value,
+          },
+        };
       });
-      const hasChanged = weeks.some((week, index) => week !== prev.weeks[index]);
-      if (!hasChanged) return prev;
-      return {
-        ...prev,
-        weeks
-      };
-    });
-  }, [applyPlanChange]);
+    },
+    [applyPlanChange],
+  );
 
-  const updateDay = useCallback((weekId, dayId, updater) => {
-    return updateWeek(weekId, week => {
-      const days = week.days.map(day => {
-        if (day.id !== dayId) return day;
-        const nextDay = updater(day);
-        return nextDay === day ? day : nextDay;
+  const updateWeek = useCallback(
+    (weekId, updater) => {
+      return applyPlanChange((prev) => {
+        const weeks = prev.weeks.map((week) => {
+          if (week.id !== weekId) return week;
+          const nextWeek = updater(week);
+          return nextWeek === week ? week : nextWeek;
+        });
+        const hasChanged = weeks.some(
+          (week, index) => week !== prev.weeks[index],
+        );
+        if (!hasChanged) return prev;
+        return {
+          ...prev,
+          weeks,
+        };
       });
-      const hasChanged = days.some((day, index) => day !== week.days[index]);
-      if (!hasChanged) return week;
-      return { ...week, days };
-    });
-  }, [updateWeek]);
+    },
+    [applyPlanChange],
+  );
+
+  const updateDay = useCallback(
+    (weekId, dayId, updater) => {
+      return updateWeek(weekId, (week) => {
+        const days = week.days.map((day) => {
+          if (day.id !== dayId) return day;
+          const nextDay = updater(day);
+          return nextDay === day ? day : nextDay;
+        });
+        const hasChanged = days.some((day, index) => day !== week.days[index]);
+        if (!hasChanged) return week;
+        return { ...week, days };
+      });
+    },
+    [updateWeek],
+  );
 
   const addWeek = useCallback(() => {
-    return applyPlanChange(prev => {
+    return applyPlanChange((prev) => {
       const nextWeekNumber = prev.weeks.length + 1;
       const nextWeeks = [...prev.weeks, createEmptyWeek(nextWeekNumber)];
-      const metadata = adjustDuration(prev.metadata, prev.weeks.length, nextWeeks.length);
+      const metadata = adjustDuration(
+        prev.metadata,
+        prev.weeks.length,
+        nextWeeks.length,
+      );
       return { ...prev, weeks: nextWeeks, metadata };
     });
   }, [applyPlanChange]);
 
-  const duplicateWeek = useCallback(weekId => {
-    return applyPlanChange(prev => {
-      const index = prev.weeks.findIndex(week => week.id === weekId);
-      if (index === -1) return prev;
-      const duplicated = cloneWeek(prev.weeks[index]);
-      duplicated.title = `${duplicated.title || `Semana ${index + 1}`} (copia)`;
-      const weeks = [...prev.weeks];
-      weeks.splice(index + 1, 0, duplicated);
-      const metadata = adjustDuration(prev.metadata, prev.weeks.length, weeks.length);
-      return { ...prev, weeks, metadata };
-    });
-  }, [applyPlanChange]);
-
-  const removeWeek = useCallback(weekId => {
-    let blocked = false;
-    const changed = applyPlanChange(prev => {
-      if (prev.weeks.length === 1) {
-        blocked = true;
-        return prev;
-      }
-      const nextWeeks = prev.weeks.filter(week => week.id !== weekId);
-      if (nextWeeks.length === prev.weeks.length) return prev;
-      const metadata = adjustDuration(prev.metadata, prev.weeks.length, nextWeeks.length);
-      return { ...prev, weeks: nextWeeks, metadata };
-    });
-    return {
-      success: changed && !blocked,
-      error: blocked ? PLAN_VALIDATION_MESSAGES.WEEKS : null
-    };
-  }, [applyPlanChange]);
-
-  const addDay = useCallback(weekId => {
-    return updateWeek(weekId, week => ({
-      ...week,
-      days: [...week.days, createDay(`Día ${week.days.length + 1}`)]
-    }));
-  }, [updateWeek]);
-
-  const duplicateDay = useCallback((weekId, dayId) => {
-    return updateWeek(weekId, week => {
-      const index = week.days.findIndex(day => day.id === dayId);
-      if (index === -1) return week;
-      const duplicated = cloneDay(week.days[index]);
-      duplicated.name = `${duplicated.name} (copia)`;
-      const days = [...week.days];
-      days.splice(index + 1, 0, duplicated);
-      return { ...week, days };
-    });
-  }, [updateWeek]);
-
-  const removeDay = useCallback((weekId, dayId) => {
-    let blocked = false;
-    const changed = updateWeek(weekId, week => {
-      if (week.days.length === 1) {
-        blocked = true;
-        return week;
-      }
-      const days = week.days.filter(day => day.id !== dayId);
-      return days.length === week.days.length ? week : { ...week, days };
-    });
-    return {
-      success: changed && !blocked,
-      error: blocked ? PLAN_VALIDATION_MESSAGES.DAYS : null
-    };
-  }, [updateWeek]);
-
-  const updateWeekField = useCallback((weekId, field, value) => {
-    return updateWeek(weekId, week => {
-      if (week[field] === value) return week;
-      return { ...week, [field]: value };
-    });
-  }, [updateWeek]);
-
-  const updateDayField = useCallback((weekId, dayId, field, value) => {
-    return updateDay(weekId, dayId, day => {
-      if (day[field] === value) return day;
-      return { ...day, [field]: value };
-    });
-  }, [updateDay]);
-
-  const setDayType = useCallback((weekId, dayId, value) => {
-    return updateDay(weekId, dayId, day => {
-      if (day.type === value) return day;
-      const next = {
-        ...day,
-        type: value
-      };
-      if (value === 'DESCANSO' && !day.recoveryNote) {
-        next.recoveryNote = 'Recuperación activa, movilidad suave y respiración profunda.';
-      }
-      return next;
-    });
-  }, [updateDay]);
-
-  const updateExerciseField = useCallback((weekId, dayId, exerciseId, field, value) => {
-    return updateDay(weekId, dayId, day => {
-      let changed = false;
-      const exercises = day.exercises.map(exercise => {
-        if (exercise.id !== exerciseId) return exercise;
-        if (exercise[field] === value) return exercise;
-        changed = true;
-        return { ...exercise, [field]: value };
+  const duplicateWeek = useCallback(
+    (weekId) => {
+      return applyPlanChange((prev) => {
+        const index = prev.weeks.findIndex((week) => week.id === weekId);
+        if (index === -1) return prev;
+        const duplicated = cloneWeek(prev.weeks[index]);
+        duplicated.title = `${duplicated.title || `Semana ${index + 1}`} (copia)`;
+        const weeks = [...prev.weeks];
+        weeks.splice(index + 1, 0, duplicated);
+        const metadata = adjustDuration(
+          prev.metadata,
+          prev.weeks.length,
+          weeks.length,
+        );
+        return { ...prev, weeks, metadata };
       });
-      if (!changed) return day;
-      return { ...day, exercises };
-    });
-  }, [updateDay]);
+    },
+    [applyPlanChange],
+  );
 
-  const addExercise = useCallback((weekId, dayId) => {
-    return updateDay(weekId, dayId, day => ({
-      ...day,
-      exercises: [...day.exercises, createExercise()]
-    }));
-  }, [updateDay]);
+  const removeWeek = useCallback(
+    (weekId) => {
+      let blocked = false;
+      const changed = applyPlanChange((prev) => {
+        if (prev.weeks.length === 1) {
+          blocked = true;
+          return prev;
+        }
+        const nextWeeks = prev.weeks.filter((week) => week.id !== weekId);
+        if (nextWeeks.length === prev.weeks.length) return prev;
+        const metadata = adjustDuration(
+          prev.metadata,
+          prev.weeks.length,
+          nextWeeks.length,
+        );
+        return { ...prev, weeks: nextWeeks, metadata };
+      });
+      return {
+        success: changed && !blocked,
+        error: blocked ? PLAN_VALIDATION_MESSAGES.WEEKS : null,
+      };
+    },
+    [applyPlanChange],
+  );
 
-  const duplicateExercise = useCallback((weekId, dayId, exerciseId) => {
-    return updateDay(weekId, dayId, day => {
-      const index = day.exercises.findIndex(exercise => exercise.id === exerciseId);
-      if (index === -1) return day;
-      const duplicated = cloneExercise(day.exercises[index]);
-      duplicated.name = `${duplicated.name || 'Ejercicio'} (copia)`;
-      const exercises = [...day.exercises];
-      exercises.splice(index + 1, 0, duplicated);
-      return { ...day, exercises };
-    });
-  }, [updateDay]);
+  const addDay = useCallback(
+    (weekId) => {
+      return updateWeek(weekId, (week) => ({
+        ...week,
+        days: [...week.days, createDay(`Día ${week.days.length + 1}`)],
+      }));
+    },
+    [updateWeek],
+  );
 
-  const removeExercise = useCallback((weekId, dayId, exerciseId) => {
-    let blocked = false;
-    const changed = updateDay(weekId, dayId, day => {
-      if (day.exercises.length === 1) {
-        blocked = true;
-        return day;
-      }
-      const exercises = day.exercises.filter(exercise => exercise.id !== exerciseId);
-      return exercises.length === day.exercises.length ? day : { ...day, exercises };
-    });
-    return {
-      success: changed && !blocked,
-      error: blocked ? PLAN_VALIDATION_MESSAGES.EXERCISES : null
-    };
-  }, [updateDay]);
+  const duplicateDay = useCallback(
+    (weekId, dayId) => {
+      return updateWeek(weekId, (week) => {
+        const index = week.days.findIndex((day) => day.id === dayId);
+        if (index === -1) return week;
+        const duplicated = cloneDay(week.days[index]);
+        duplicated.name = `${duplicated.name} (copia)`;
+        const days = [...week.days];
+        days.splice(index + 1, 0, duplicated);
+        return { ...week, days };
+      });
+    },
+    [updateWeek],
+  );
+
+  const removeDay = useCallback(
+    (weekId, dayId) => {
+      let blocked = false;
+      const changed = updateWeek(weekId, (week) => {
+        if (week.days.length === 1) {
+          blocked = true;
+          return week;
+        }
+        const days = week.days.filter((day) => day.id !== dayId);
+        return days.length === week.days.length ? week : { ...week, days };
+      });
+      return {
+        success: changed && !blocked,
+        error: blocked ? PLAN_VALIDATION_MESSAGES.DAYS : null,
+      };
+    },
+    [updateWeek],
+  );
+
+  const updateWeekField = useCallback(
+    (weekId, field, value) => {
+      return updateWeek(weekId, (week) => {
+        if (week[field] === value) return week;
+        return { ...week, [field]: value };
+      });
+    },
+    [updateWeek],
+  );
+
+  const updateDayField = useCallback(
+    (weekId, dayId, field, value) => {
+      return updateDay(weekId, dayId, (day) => {
+        if (day[field] === value) return day;
+        return { ...day, [field]: value };
+      });
+    },
+    [updateDay],
+  );
+
+  const setDayType = useCallback(
+    (weekId, dayId, value) => {
+      return updateDay(weekId, dayId, (day) => {
+        if (day.type === value) return day;
+        const next = {
+          ...day,
+          type: value,
+        };
+        if (value === "DESCANSO" && !day.recoveryNote) {
+          next.recoveryNote =
+            "Recuperación activa, movilidad suave y respiración profunda.";
+        }
+        return next;
+      });
+    },
+    [updateDay],
+  );
+
+  const updateExerciseField = useCallback(
+    (weekId, dayId, exerciseId, field, value) => {
+      return updateDay(weekId, dayId, (day) => {
+        let changed = false;
+        const exercises = day.exercises.map((exercise) => {
+          if (exercise.id !== exerciseId) return exercise;
+          if (exercise[field] === value) return exercise;
+          changed = true;
+          return { ...exercise, [field]: value };
+        });
+        if (!changed) return day;
+        return { ...day, exercises };
+      });
+    },
+    [updateDay],
+  );
+
+  const addExercise = useCallback(
+    (weekId, dayId) => {
+      return updateDay(weekId, dayId, (day) => ({
+        ...day,
+        exercises: [...day.exercises, createExercise()],
+      }));
+    },
+    [updateDay],
+  );
+
+  const duplicateExercise = useCallback(
+    (weekId, dayId, exerciseId) => {
+      return updateDay(weekId, dayId, (day) => {
+        const index = day.exercises.findIndex(
+          (exercise) => exercise.id === exerciseId,
+        );
+        if (index === -1) return day;
+        const duplicated = cloneExercise(day.exercises[index]);
+        duplicated.name = `${duplicated.name || "Ejercicio"} (copia)`;
+        const exercises = [...day.exercises];
+        exercises.splice(index + 1, 0, duplicated);
+        return { ...day, exercises };
+      });
+    },
+    [updateDay],
+  );
+
+  const removeExercise = useCallback(
+    (weekId, dayId, exerciseId) => {
+      let blocked = false;
+      const changed = updateDay(weekId, dayId, (day) => {
+        if (day.exercises.length === 1) {
+          blocked = true;
+          return day;
+        }
+        const exercises = day.exercises.filter(
+          (exercise) => exercise.id !== exerciseId,
+        );
+        return exercises.length === day.exercises.length
+          ? day
+          : { ...day, exercises };
+      });
+      return {
+        success: changed && !blocked,
+        error: blocked ? PLAN_VALIDATION_MESSAGES.EXERCISES : null,
+      };
+    },
+    [updateDay],
+  );
 
   const markAsSaved = useCallback(() => {
     setDirty(false);
@@ -456,13 +551,13 @@ export const usePlanEditor = ({ template, templateId, existingTemplate }) => {
       errors.push(PLAN_VALIDATION_MESSAGES.WEEKS);
     }
 
-    plan.weeks.forEach(week => {
+    plan.weeks.forEach((week) => {
       if (!week.days.length) {
         errors.push(PLAN_VALIDATION_MESSAGES.DAYS);
         return;
       }
-      week.days.forEach(day => {
-        if (day.type === 'ENTRENAMIENTO' && !day.exercises.length) {
+      week.days.forEach((day) => {
+        if (day.type === "ENTRENAMIENTO" && !day.exercises.length) {
           errors.push(PLAN_VALIDATION_MESSAGES.EXERCISES);
         }
       });
@@ -470,55 +565,60 @@ export const usePlanEditor = ({ template, templateId, existingTemplate }) => {
 
     return {
       isValid: errors.length === 0,
-      errors: Array.from(new Set(errors))
+      errors: Array.from(new Set(errors)),
     };
   }, [plan]);
 
-  const planForPdf = useMemo(() => ({
-    planName: plan.metadata.name,
-    objective: plan.metadata.objective,
-    duration: plan.metadata.durationWeeks,
-    frequency: plan.metadata.frequency ? `${plan.metadata.frequency} días/semana` : '',
-    author: plan.metadata.author,
-    notes: plan.metadata.notes,
-    weeks: plan.weeks.map((week, index) => ({
-      title: week.title || `Semana ${index + 1}`,
-      summary: week.summary,
-      notes: week.notes,
-      days: week.days.map(day => ({
-        name: day.name,
-        type: day.type,
-        recoveryMessage: day.recoveryNote,
-        notes: day.recoveryNote,
-        exercises: day.exercises.map(exercise => ({
-          name: exercise.name,
-          series: exercise.sets,
-          reps: exercise.reps,
-          descanso: exercise.rest,
-          rir: exercise.rir,
-          cadencia: exercise.tempo,
-          videoUrl: exercise.video,
-          notes: exercise.note
-        }))
-      }))
-    }))
-  }), [plan]);
+  const planForPdf = useMemo(
+    () => ({
+      planName: plan.metadata.name,
+      objective: plan.metadata.objective,
+      duration: plan.metadata.durationWeeks,
+      frequency: plan.metadata.frequency
+        ? `${plan.metadata.frequency} días/semana`
+        : "",
+      author: plan.metadata.author,
+      notes: plan.metadata.notes,
+      weeks: plan.weeks.map((week, index) => ({
+        title: week.title || `Semana ${index + 1}`,
+        summary: week.summary,
+        notes: week.notes,
+        days: week.days.map((day) => ({
+          name: day.name,
+          type: day.type,
+          recoveryMessage: day.recoveryNote,
+          notes: day.recoveryNote,
+          exercises: day.exercises.map((exercise) => ({
+            name: exercise.name,
+            series: exercise.sets,
+            reps: exercise.reps,
+            descanso: exercise.rest,
+            rir: exercise.rir,
+            cadencia: exercise.tempo,
+            videoUrl: exercise.video,
+            notes: exercise.note,
+          })),
+        })),
+      })),
+    }),
+    [plan],
+  );
 
   const buildTemplatePayload = useCallback(() => {
     const tags = parseTags(plan.metadata.tags);
-    const flattenedDays = plan.weeks.flatMap(week =>
-      week.days.map(day => ({
+    const flattenedDays = plan.weeks.flatMap((week) =>
+      week.days.map((day) => ({
         title: day.name,
         type: day.type,
         notes: day.recoveryNote,
         bloques:
-          day.type === 'DESCANSO'
+          day.type === "DESCANSO"
             ? []
             : [
                 {
-                  titulo: 'Entrenamiento',
-                  color: '',
-                  items: day.exercises.map(exercise => ({
+                  titulo: "Entrenamiento",
+                  color: "",
+                  items: day.exercises.map((exercise) => ({
                     ejercicio: exercise.name,
                     variantes: [
                       {
@@ -526,15 +626,15 @@ export const usePlanEditor = ({ template, templateId, existingTemplate }) => {
                         reps: exercise.reps,
                         descanso: exercise.rest,
                         cadencia: exercise.tempo,
-                        rir: exercise.rir
-                      }
+                        rir: exercise.rir,
+                      },
                     ],
                     videoUrl: exercise.video,
-                    notes: exercise.note
-                  }))
-                }
-              ]
-      }))
+                    notes: exercise.note,
+                  })),
+                },
+              ],
+      })),
     );
 
     const now = new Date().toISOString();
@@ -542,10 +642,10 @@ export const usePlanEditor = ({ template, templateId, existingTemplate }) => {
 
     return {
       id: baseId,
-      name: plan.metadata.name || 'Plan sin título',
-      gender: plan.metadata.gender || existingTemplate?.gender || '',
-      frequency: plan.metadata.frequency ? Number(plan.metadata.frequency) : '',
-      objective: plan.metadata.objective || existingTemplate?.objective || '',
+      name: plan.metadata.name || "Plan sin título",
+      gender: plan.metadata.gender || existingTemplate?.gender || "",
+      frequency: plan.metadata.frequency ? Number(plan.metadata.frequency) : "",
+      objective: plan.metadata.objective || existingTemplate?.objective || "",
       tags,
       notes: plan.metadata.notes,
       author: plan.metadata.author,
@@ -558,19 +658,19 @@ export const usePlanEditor = ({ template, templateId, existingTemplate }) => {
         title: week.title || `Semana ${index + 1}`,
         summary: week.summary,
         notes: week.notes,
-        days: week.days.map(day => ({
+        days: week.days.map((day) => ({
           id: day.id || createId(),
           title: day.name,
           type: day.type,
           notes: day.recoveryNote,
           bloques:
-            day.type === 'DESCANSO'
+            day.type === "DESCANSO"
               ? []
               : [
                   {
-                    titulo: 'Entrenamiento',
-                    color: '',
-                    items: day.exercises.map(exercise => ({
+                    titulo: "Entrenamiento",
+                    color: "",
+                    items: day.exercises.map((exercise) => ({
                       id: exercise.id || createId(),
                       ejercicio: exercise.name,
                       variantes: [
@@ -579,17 +679,17 @@ export const usePlanEditor = ({ template, templateId, existingTemplate }) => {
                           reps: exercise.reps,
                           descanso: exercise.rest,
                           cadencia: exercise.tempo,
-                          rir: exercise.rir
-                        }
+                          rir: exercise.rir,
+                        },
                       ],
                       videoUrl: exercise.video,
-                      notes: exercise.note
-                    }))
-                  }
-                ]
-        }))
+                      notes: exercise.note,
+                    })),
+                  },
+                ],
+        })),
       })),
-      days: flattenedDays
+      days: flattenedDays,
     };
   }, [plan, existingTemplate]);
 
@@ -616,7 +716,7 @@ export const usePlanEditor = ({ template, templateId, existingTemplate }) => {
     markAsSaved,
     validatePlan,
     planForPdf,
-    buildTemplatePayload
+    buildTemplatePayload,
   };
 };
 

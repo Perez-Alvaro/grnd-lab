@@ -1,12 +1,12 @@
-import { StyleSheet } from '@react-pdf/renderer';
+import { StyleSheet } from "@react-pdf/renderer";
 
 export const palette = {
-  background: '#202020',
-  card: '#2D2D2D',
-  neutral: '#787878',
-  accent: '#CBFF00',
-  secondary: '#DBFE52',
-  text: '#FFFFFF',
+  background: "#202020",
+  card: "#2D2D2D",
+  neutral: "#787878",
+  accent: "#CBFF00",
+  secondary: "#DBFE52",
+  text: "#FFFFFF",
 };
 
 export const spacing = {
@@ -30,13 +30,13 @@ export const createBaseStyles = () =>
     page: {
       padding: spacing.pagePadding,
       backgroundColor: palette.background,
-      fontFamily: 'Helvetica',
+      fontFamily: "Helvetica",
       fontSize: typography.base,
       color: palette.text,
     },
     coverWrapper: {
-      flexDirection: 'column',
-      justifyContent: 'space-between',
+      flexDirection: "column",
+      justifyContent: "space-between",
       flexGrow: 1,
     },
     coverHeader: {
@@ -53,7 +53,7 @@ export const createBaseStyles = () =>
     metadataLabel: {
       fontSize: typography.small,
       color: palette.neutral,
-      textTransform: 'uppercase',
+      textTransform: "uppercase",
       letterSpacing: 1,
     },
     metadataValue: {
@@ -70,19 +70,19 @@ export const createBaseStyles = () =>
       marginBottom: 12,
     },
     indexGrid: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
+      flexDirection: "row",
+      flexWrap: "wrap",
     },
     indexCard: {
-      width: '48%',
+      width: "48%",
       backgroundColor: palette.card,
       borderRadius: 16,
       borderWidth: 1,
-      borderColor: 'rgba(120,120,120,0.2)',
+      borderColor: "rgba(120,120,120,0.2)",
       padding: spacing.indexCardPadding,
       marginBottom: spacing.dayGap,
       marginRight: 12,
-      textDecoration: 'none',
+      textDecoration: "none",
     },
     indexCardTitle: {
       fontSize: typography.medium,
@@ -116,22 +116,22 @@ export const createBaseStyles = () =>
       marginTop: 10,
       color: palette.accent,
       fontSize: typography.base,
-      textDecoration: 'none',
+      textDecoration: "none",
     },
     dayContainer: {
       backgroundColor: palette.card,
       borderRadius: 16,
       borderWidth: 1,
-      borderColor: 'rgba(120,120,120,0.2)',
+      borderColor: "rgba(120,120,120,0.2)",
       padding: spacing.indexCardPadding,
       marginBottom: spacing.dayGap,
-      pageBreakInside: 'avoid',
-      breakInside: 'avoid',
+      pageBreakInside: "avoid",
+      breakInside: "avoid",
     },
     dayHeader: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
       marginBottom: 12,
     },
     dayName: {
@@ -145,19 +145,19 @@ export const createBaseStyles = () =>
       paddingVertical: 4,
       paddingHorizontal: 10,
       borderRadius: 9999,
-      textTransform: 'uppercase',
+      textTransform: "uppercase",
     },
     dayTypeTraining: {
-      backgroundColor: 'rgba(203,255,0,0.15)',
+      backgroundColor: "rgba(203,255,0,0.15)",
       color: palette.accent,
       borderWidth: 1,
-      borderColor: 'rgba(203,255,0,0.35)',
+      borderColor: "rgba(203,255,0,0.35)",
     },
     dayTypeRest: {
-      backgroundColor: 'rgba(120,120,120,0.15)',
+      backgroundColor: "rgba(120,120,120,0.15)",
       color: palette.neutral,
       borderWidth: 1,
-      borderColor: 'rgba(120,120,120,0.35)',
+      borderColor: "rgba(120,120,120,0.35)",
     },
     restMessage: {
       fontSize: typography.base,
@@ -167,17 +167,17 @@ export const createBaseStyles = () =>
     table: {
       marginTop: 8,
       borderRadius: 12,
-      overflow: 'hidden',
+      overflow: "hidden",
       borderWidth: 1,
-      borderColor: 'rgba(120,120,120,0.25)',
+      borderColor: "rgba(120,120,120,0.25)",
     },
     tableRow: {
-      flexDirection: 'row',
+      flexDirection: "row",
       borderBottomWidth: 1,
-      borderBottomColor: 'rgba(120,120,120,0.2)',
+      borderBottomColor: "rgba(120,120,120,0.2)",
     },
     tableHeaderRow: {
-      backgroundColor: 'rgba(45,45,45,0.75)',
+      backgroundColor: "rgba(45,45,45,0.75)",
     },
     tableCell: {
       flexGrow: 1,
@@ -187,46 +187,46 @@ export const createBaseStyles = () =>
       color: palette.text,
     },
     exerciseCol: {
-      flexBasis: '32%',
+      flexBasis: "32%",
       minWidth: 140,
     },
     seriesCol: {
-      flexBasis: '11%',
+      flexBasis: "11%",
       minWidth: 40,
-      textAlign: 'center',
+      textAlign: "center",
     },
     repsCol: {
-      flexBasis: '11%',
+      flexBasis: "11%",
       minWidth: 40,
-      textAlign: 'center',
+      textAlign: "center",
     },
     restCol: {
-      flexBasis: '12%',
+      flexBasis: "12%",
       minWidth: 48,
-      textAlign: 'center',
+      textAlign: "center",
     },
     rirCol: {
-      flexBasis: '10%',
+      flexBasis: "10%",
       minWidth: 40,
-      textAlign: 'center',
+      textAlign: "center",
     },
     tempoCol: {
-      flexBasis: '12%',
+      flexBasis: "12%",
       minWidth: 56,
-      textAlign: 'center',
+      textAlign: "center",
     },
     videoCol: {
-      flexBasis: '12%',
+      flexBasis: "12%",
       minWidth: 48,
-      textAlign: 'center',
+      textAlign: "center",
     },
     videoLink: {
       color: palette.accent,
-      textDecoration: 'none',
+      textDecoration: "none",
       fontWeight: 600,
     },
     tableRowAlternate: {
-      backgroundColor: 'rgba(32,32,32,0.8)',
+      backgroundColor: "rgba(32,32,32,0.8)",
     },
     notesList: {
       marginTop: 12,
@@ -243,7 +243,7 @@ export const createBaseStyles = () =>
       fontWeight: 700,
     },
     progressWrapper: {
-      flexDirection: 'column',
+      flexDirection: "column",
     },
     progressTitle: {
       fontSize: typography.large,
@@ -255,7 +255,7 @@ export const createBaseStyles = () =>
       backgroundColor: palette.card,
       borderRadius: 16,
       borderWidth: 1,
-      borderColor: 'rgba(120,120,120,0.2)',
+      borderColor: "rgba(120,120,120,0.2)",
       padding: spacing.indexCardPadding,
       marginBottom: spacing.dayGap,
     },
@@ -271,24 +271,24 @@ export const createBaseStyles = () =>
       lineHeight: 1.5,
     },
     metricsGrid: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
+      flexDirection: "row",
+      flexWrap: "wrap",
       marginTop: 8,
     },
     metricCard: {
-      width: '48%',
-      backgroundColor: 'rgba(45,45,45,0.75)',
+      width: "48%",
+      backgroundColor: "rgba(45,45,45,0.75)",
       borderRadius: 12,
       padding: 12,
       marginBottom: 12,
       marginRight: 12,
       borderWidth: 1,
-      borderColor: 'rgba(120,120,120,0.2)',
+      borderColor: "rgba(120,120,120,0.2)",
     },
     metricLabel: {
       fontSize: typography.small,
       color: palette.neutral,
-      textTransform: 'uppercase',
+      textTransform: "uppercase",
       letterSpacing: 0.5,
     },
     metricValue: {

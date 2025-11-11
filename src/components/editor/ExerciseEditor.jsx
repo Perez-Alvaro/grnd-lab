@@ -1,15 +1,22 @@
-import { memo, useCallback } from 'react';
-import { Copy, Trash2 } from 'lucide-react';
-import { usePlanContext } from '../../context/PlanContext.jsx';
+import { memo, useCallback } from "react";
+import { Copy, Trash2 } from "lucide-react";
+import { usePlanContext } from "../../context/PlanContext.jsx";
 
 const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
-  const { updateExerciseField, duplicateExercise, removeExercise } = usePlanContext();
+  const { updateExerciseField, duplicateExercise, removeExercise } =
+    usePlanContext();
 
   const handleChange = useCallback(
-    field => event => {
-      updateExerciseField(weekId, dayId, exercise.id, field, event.target.value);
+    (field) => (event) => {
+      updateExerciseField(
+        weekId,
+        dayId,
+        exercise.id,
+        field,
+        event.target.value,
+      );
     },
-    [dayId, exercise.id, updateExerciseField, weekId]
+    [dayId, exercise.id, updateExerciseField, weekId],
   );
 
   const handleDuplicate = useCallback(() => {
@@ -23,9 +30,10 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
     }
   }, [dayId, exercise.id, onActionError, removeExercise, weekId]);
 
-  const labelClasses = 'text-xs font-semibold uppercase tracking-wide text-neutral-500';
+  const labelClasses =
+    "text-xs font-semibold uppercase tracking-wide text-neutral-500";
   const inputClasses =
-    'h-11 w-full rounded-lg border border-neutral-800 bg-neutral-950 px-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none focus:ring-0';
+    "h-11 w-full rounded-lg border border-neutral-800 bg-neutral-950 px-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none focus:ring-0";
 
   return (
     <div
@@ -38,7 +46,7 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
           <input
             type="text"
             value={exercise.name}
-            onChange={handleChange('name')}
+            onChange={handleChange("name")}
             placeholder="Nombre del ejercicio"
             className={inputClasses}
           />
@@ -48,7 +56,7 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
           <input
             type="text"
             value={exercise.sets}
-            onChange={handleChange('sets')}
+            onChange={handleChange("sets")}
             className={inputClasses}
           />
         </div>
@@ -57,7 +65,7 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
           <input
             type="text"
             value={exercise.reps}
-            onChange={handleChange('reps')}
+            onChange={handleChange("reps")}
             className={inputClasses}
             placeholder="Reps"
           />
@@ -67,7 +75,7 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
           <input
             type="text"
             value={exercise.rir}
-            onChange={handleChange('rir')}
+            onChange={handleChange("rir")}
             className={inputClasses}
             placeholder="RIR"
           />
@@ -77,7 +85,7 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
           <input
             type="text"
             value={exercise.rest}
-            onChange={handleChange('rest')}
+            onChange={handleChange("rest")}
             className={inputClasses}
             placeholder="Ej. 90s"
           />
@@ -87,7 +95,7 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
           <input
             type="text"
             value={exercise.tempo}
-            onChange={handleChange('tempo')}
+            onChange={handleChange("tempo")}
             className={inputClasses}
             placeholder="Ej. 2-1-2"
           />
@@ -97,7 +105,7 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
           <input
             type="url"
             value={exercise.video}
-            onChange={handleChange('video')}
+            onChange={handleChange("video")}
             placeholder="URL del video"
             className={inputClasses}
           />
@@ -105,18 +113,22 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Notas específicas</label>
+        <label className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
+          Notas específicas
+        </label>
         <textarea
           rows={2}
           value={exercise.note}
-          onChange={handleChange('note')}
+          onChange={handleChange("note")}
           className="min-h-[80px] w-full resize-none rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none focus:ring-0"
           placeholder="Ej. Superserie con press inclinado"
         />
       </div>
 
       <div className="flex flex-col gap-3 border-t border-neutral-800 pt-3 md:flex-row md:items-center md:justify-between">
-        <span className="text-xs text-neutral-500">Gestioná este ejercicio rápidamente</span>
+        <span className="text-xs text-neutral-500">
+          Gestioná este ejercicio rápidamente
+        </span>
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
@@ -138,6 +150,6 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
   );
 });
 
-ExerciseEditor.displayName = 'ExerciseEditor';
+ExerciseEditor.displayName = "ExerciseEditor";
 
 export default ExerciseEditor;

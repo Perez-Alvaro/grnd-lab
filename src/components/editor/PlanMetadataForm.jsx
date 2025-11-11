@@ -1,24 +1,24 @@
-import { memo, useCallback } from 'react';
-import { ChevronRight } from 'lucide-react';
-import { usePlanContext } from '../../context/PlanContext.jsx';
-import { TRAINING_GOALS } from '../../constants/objectives.js';
+import { memo, useCallback } from "react";
+import { ChevronRight } from "lucide-react";
+import { usePlanContext } from "../../context/PlanContext.jsx";
+import { TRAINING_GOALS } from "../../constants/objectives.js";
 
 const PlanMetadataForm = memo(() => {
   const { metadata, updateMetadata } = usePlanContext();
 
   const handleChange = useCallback(
-    field => event => {
+    (field) => (event) => {
       updateMetadata(field, event.target.value);
     },
-    [updateMetadata]
+    [updateMetadata],
   );
 
-  const labelClasses = 'text-sm font-medium text-neutral-400';
+  const labelClasses = "text-sm font-medium text-neutral-400";
   const inputClasses =
-    'w-full rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-3 text-sm text-white shadow-sm transition-colors focus:border-[#CBFF00] focus:outline-none focus:ring-0';
+    "w-full rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-3 text-sm text-white shadow-sm transition-colors focus:border-[#CBFF00] focus:outline-none focus:ring-0";
 
-  const frequencyOptions = ['2', '3', '4', '5'];
-  const durationOptions = ['1', '2', '3', '4'];
+  const frequencyOptions = ["2", "3", "4", "5"];
+  const durationOptions = ["1", "2", "3", "4"];
 
   return (
     <section
@@ -28,9 +28,13 @@ const PlanMetadataForm = memo(() => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <ChevronRight className="h-5 w-5 text-[#CBFF00]" />
-          <h2 className="text-lg font-semibold text-white">Datos de la plantilla</h2>
+          <h2 className="text-lg font-semibold text-white">
+            Datos de la plantilla
+          </h2>
         </div>
-        <span className="text-xs uppercase tracking-wide text-neutral-500">Completa la información base</span>
+        <span className="text-xs uppercase tracking-wide text-neutral-500">
+          Completa la información base
+        </span>
       </div>
 
       <div className="flex flex-col gap-4">
@@ -40,7 +44,7 @@ const PlanMetadataForm = memo(() => {
             data-testid="plan-name-input"
             type="text"
             value={metadata.name}
-            onChange={handleChange('name')}
+            onChange={handleChange("name")}
             placeholder="Ej. Masculino Volumen FST-7 4x/semana"
             className={`${inputClasses} max-w-[600px]`}
           />
@@ -52,7 +56,7 @@ const PlanMetadataForm = memo(() => {
             <select
               data-testid="plan-gender-select"
               value={metadata.gender}
-              onChange={handleChange('gender')}
+              onChange={handleChange("gender")}
               className={inputClasses}
             >
               <option value="">Todos</option>
@@ -65,11 +69,11 @@ const PlanMetadataForm = memo(() => {
             <select
               data-testid="plan-frequency-input"
               value={metadata.frequency}
-              onChange={handleChange('frequency')}
+              onChange={handleChange("frequency")}
               className={inputClasses}
             >
               <option value="">Seleccioná la frecuencia</option>
-              {frequencyOptions.map(option => (
+              {frequencyOptions.map((option) => (
                 <option key={option} value={option}>
                   {option} días/semana
                 </option>
@@ -81,11 +85,11 @@ const PlanMetadataForm = memo(() => {
             <select
               data-testid="plan-objective-select"
               value={metadata.objective}
-              onChange={handleChange('objective')}
+              onChange={handleChange("objective")}
               className={inputClasses}
             >
               <option value="">Seleccioná un objetivo</option>
-              {TRAINING_GOALS.map(goal => (
+              {TRAINING_GOALS.map((goal) => (
                 <option key={goal.value} value={goal.value}>
                   {goal.label}
                 </option>
@@ -100,11 +104,11 @@ const PlanMetadataForm = memo(() => {
             <select
               data-testid="plan-duration-input"
               value={metadata.durationWeeks}
-              onChange={handleChange('durationWeeks')}
+              onChange={handleChange("durationWeeks")}
               className={inputClasses}
             >
               <option value="">Seleccioná la duración</option>
-              {durationOptions.map(option => (
+              {durationOptions.map((option) => (
                 <option key={option} value={option}>
                   {option} semanas
                 </option>
@@ -117,7 +121,7 @@ const PlanMetadataForm = memo(() => {
               data-testid="plan-author-input"
               type="text"
               value={metadata.author}
-              onChange={handleChange('author')}
+              onChange={handleChange("author")}
               placeholder="Nombre del entrenador"
               className={inputClasses}
             />
@@ -130,7 +134,7 @@ const PlanMetadataForm = memo(() => {
             data-testid="plan-tags-input"
             type="text"
             value={metadata.tags}
-            onChange={handleChange('tags')}
+            onChange={handleChange("tags")}
             placeholder="fst-7, superseries"
             className={inputClasses}
           />
@@ -142,7 +146,7 @@ const PlanMetadataForm = memo(() => {
             data-testid="plan-notes-input"
             rows={3}
             value={metadata.notes}
-            onChange={handleChange('notes')}
+            onChange={handleChange("notes")}
             placeholder="Rutina estilo Hany Rambod con técnicas FST-7."
             className={`${inputClasses} min-h-[120px] resize-none`}
           />
@@ -152,6 +156,6 @@ const PlanMetadataForm = memo(() => {
   );
 });
 
-PlanMetadataForm.displayName = 'PlanMetadataForm';
+PlanMetadataForm.displayName = "PlanMetadataForm";
 
 export default PlanMetadataForm;

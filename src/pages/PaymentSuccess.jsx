@@ -1,6 +1,6 @@
-import React from 'react';
-import { CheckCircle, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { CheckCircle, ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function PaymentSuccess() {
   return (
@@ -8,10 +8,8 @@ function PaymentSuccess() {
       <div className="max-w-2xl mx-auto text-center">
         <div className="bg-[#2D2D2D] rounded-2xl p-8 border border-[#CBFF00]/30">
           <CheckCircle className="h-20 w-20 text-[#CBFF00] mx-auto mb-6" />
-          
-          <h1 className="text-4xl font-bold mb-4">
-            ¡Bienvenido a Fitter!
-          </h1>
+
+          <h1 className="text-4xl font-bold mb-4">¡Bienvenido a Fitter!</h1>
 
           <p className="text-[#787878] text-lg mb-8">
             ¡Tu pago fue exitoso y tu rutina personalizada está en camino!
@@ -26,11 +24,17 @@ function PaymentSuccess() {
               </div>
               <div className="flex items-start space-x-3">
                 <div className="w-2 h-2 bg-[#CBFF00] rounded-full mt-2 flex-shrink-0"></div>
-                <p>Accede a videos en YouTube con demostraciones de todos los ejercicios</p>
+                <p>
+                  Accede a videos en YouTube con demostraciones de todos los
+                  ejercicios
+                </p>
               </div>
               <div className="flex items-start space-x-3">
                 <div className="w-2 h-2 bg-[#CBFF00] rounded-full mt-2 flex-shrink-0"></div>
-                <p>Usuarios Premium: Matías se pondrá en contacto contigo en 24 horas</p>
+                <p>
+                  Usuarios Premium: Matías se pondrá en contacto contigo en 24
+                  horas
+                </p>
               </div>
             </div>
           </div>

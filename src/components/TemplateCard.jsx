@@ -1,12 +1,17 @@
-import TemplateActions from './TemplateActions.jsx';
-import { TRAINING_GOAL_LABELS } from '../constants/objectives.js';
+import TemplateActions from "./TemplateActions.jsx";
+import { TRAINING_GOAL_LABELS } from "../constants/objectives.js";
 
-const genderLabel = { male: 'masculino', female: 'femenino' };
+const genderLabel = { male: "masculino", female: "femenino" };
 
-export default function TemplateCard({ template, onEdit, onDuplicate, onDelete, onExportPdf }) {
-
+export default function TemplateCard({
+  template,
+  onEdit,
+  onDuplicate,
+  onDelete,
+  onExportPdf,
+}) {
   const formattedDate = template.createdAt
-    ? new Date(template.createdAt).toLocaleDateString('es-AR')
+    ? new Date(template.createdAt).toLocaleDateString("es-AR")
     : null;
   const totalWeeks = Array.isArray(template.weeks) ? template.weeks.length : 0;
   const totalDays = Array.isArray(template.weeks)
@@ -16,11 +21,11 @@ export default function TemplateCard({ template, onEdit, onDuplicate, onDelete, 
   if (formattedDate) meta.push(`Actualizada: ${formattedDate}`);
   if (totalWeeks) meta.push(`Semanas: ${totalWeeks}`);
   if (totalDays) meta.push(`Días: ${totalDays}`);
-  if (template.tags?.length) meta.push(`Etiquetas: ${template.tags.join(', ')}`);
+  if (template.tags?.length)
+    meta.push(`Etiquetas: ${template.tags.join(", ")}`);
 
   return (
     <div className="bg-[#1F1F1F] border border-[#3A3A3A] rounded-2xl p-4 md:p-5 shadow-lg shadow-black/20">
-
       <div className="flex justify-between items-start">
         <div>
           <button onClick={onEdit} className="text-left">
@@ -41,7 +46,6 @@ export default function TemplateCard({ template, onEdit, onDuplicate, onDelete, 
           </div>
         </div>
         <TemplateActions
-
           onEdit={onEdit}
           onDuplicate={onDuplicate}
           onDelete={onDelete}
@@ -49,7 +53,7 @@ export default function TemplateCard({ template, onEdit, onDuplicate, onDelete, 
         />
       </div>
       {meta.length > 0 && (
-        <p className="text-xs text-[#787878] mt-4">{meta.join(' • ')}</p>
+        <p className="text-xs text-[#787878] mt-4">{meta.join(" • ")}</p>
       )}
     </div>
   );

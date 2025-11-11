@@ -1,6 +1,6 @@
-import { Fragment } from 'react';
-import { View, Text, Link } from '@react-pdf/renderer';
-import { indexLinkTarget, weekAnchorId } from '../utils/pdfAnchors.js';
+import { Fragment } from "react";
+import { View, Text, Link } from "@react-pdf/renderer";
+import { indexLinkTarget, weekAnchorId } from "../utils/pdfAnchors.js";
 
 const DayNotes = ({ notes, styles }) => {
   if (!notes || !notes.length) return null;
@@ -30,17 +30,16 @@ const ExerciseTable = ({ exercises, styles }) => {
         <Text style={[styles.tableCell, styles.videoCol]}>Video</Text>
       </View>
       {exercises.map((exercise, idx) => {
-        const name = exercise.name || '—';
+        const name = exercise.name || "—";
         const setsValue = exercise.series ?? exercise.sets;
-        const sets = setsValue === 0 || setsValue ? setsValue : '–';
+        const sets = setsValue === 0 || setsValue ? setsValue : "–";
         const repsValue = exercise.reps;
-        const reps = repsValue === 0 || repsValue ? repsValue : '–';
+        const reps = repsValue === 0 || repsValue ? repsValue : "–";
         const restValue = exercise.rest ?? exercise.descanso;
-        const rest = restValue === 0 || restValue ? restValue : '–';
-        const rir =
-          exercise.rir === 0 || exercise.rir ? exercise.rir : '–';
+        const rest = restValue === 0 || restValue ? restValue : "–";
+        const rir = exercise.rir === 0 || exercise.rir ? exercise.rir : "–";
         const tempoValue = exercise.tempo ?? exercise.cadencia;
-        const tempo = tempoValue === 0 || tempoValue ? tempoValue : '–';
+        const tempo = tempoValue === 0 || tempoValue ? tempoValue : "–";
         const videoUrl = exercise.video || exercise.videoUrl;
 
         return (
@@ -75,7 +74,7 @@ const ExerciseTable = ({ exercises, styles }) => {
 };
 
 const DayBlock = ({ day, styles }) => {
-  const isRestDay = day.type === 'DESCANSO';
+  const isRestDay = day.type === "DESCANSO";
 
   return (
     <View style={styles.dayContainer} wrap={false}>
@@ -87,7 +86,7 @@ const DayBlock = ({ day, styles }) => {
             isRestDay ? styles.dayTypeRest : styles.dayTypeTraining,
           ]}
         >
-          {isRestDay ? 'Descanso' : 'Entrenamiento'}
+          {isRestDay ? "Descanso" : "Entrenamiento"}
         </Text>
       </View>
       {isRestDay ? (
@@ -103,11 +102,15 @@ const DayBlock = ({ day, styles }) => {
 };
 
 const WeekSection = ({ week, styles, breakBefore = false }) => (
-  <View style={styles.weekSection} break={breakBefore} id={weekAnchorId(week.number)}>
+  <View
+    style={styles.weekSection}
+    break={breakBefore}
+    id={weekAnchorId(week.number)}
+  >
     <View style={styles.weekHeader}>
       <Text style={styles.weekTitle}>{week.title}</Text>
       {week.notes && week.notes.length ? (
-        <Text style={styles.weekSubtitle}>{week.notes.join('\n')}</Text>
+        <Text style={styles.weekSubtitle}>{week.notes.join("\n")}</Text>
       ) : null}
       <Link src={indexLinkTarget()} style={styles.backToIndex}>
         Volver al índice

@@ -1,11 +1,15 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Button, FadeIn, TransitionBox } from '../components/reactbits/index.js';
-import GenderSelector from '../components/GenderSelector.jsx';
-import GoalSelector from '../components/GoalSelector.jsx';
-import RoutineCarousel from '../components/RoutineCarousel.jsx';
-import RoutinePreviewModal from '../components/RoutinePreviewModal.jsx';
-import PaymentSection from '../components/PaymentSection.jsx';
-import { clientRoutines } from '../data/clientRoutines.js';
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Button,
+  FadeIn,
+  TransitionBox,
+} from "../components/reactbits/index.js";
+import GenderSelector from "../components/GenderSelector.jsx";
+import GoalSelector from "../components/GoalSelector.jsx";
+import RoutineCarousel from "../components/RoutineCarousel.jsx";
+import RoutinePreviewModal from "../components/RoutinePreviewModal.jsx";
+import PaymentSection from "../components/PaymentSection.jsx";
+import { clientRoutines } from "../data/clientRoutines.js";
 
 function ClientRoutineSelection() {
   const heroRef = useRef(null);
@@ -19,17 +23,23 @@ function ClientRoutineSelection() {
   useEffect(() => {
     if (selectedGender && selectedGoal) {
       setFilteredRoutines(
-        clientRoutines.filter((routine) => routine.gender === selectedGender && routine.goal === selectedGoal)
+        clientRoutines.filter(
+          (routine) =>
+            routine.gender === selectedGender && routine.goal === selectedGoal,
+        ),
       );
     } else {
       setFilteredRoutines([]);
     }
   }, [selectedGender, selectedGoal]);
 
-  const readyForRoutines = useMemo(() => Boolean(selectedGender && selectedGoal), [selectedGender, selectedGoal]);
+  const readyForRoutines = useMemo(
+    () => Boolean(selectedGender && selectedGoal),
+    [selectedGender, selectedGoal],
+  );
 
   const handleStart = () => {
-    genderRef.current?.scrollIntoView({ behavior: 'smooth' });
+    genderRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -53,7 +63,9 @@ function ClientRoutineSelection() {
                 Elegí tu entrenamiento. Superá tus límites.
               </h1>
               <p className="max-w-2xl text-base text-neutral-300 md:text-lg">
-                Planes diseñados por entrenadores certificados. Seleccioná tu perfil, objetivo y desbloqueá rutinas con enfoque técnico y resultados medibles.
+                Planes diseñados por entrenadores certificados. Seleccioná tu
+                perfil, objetivo y desbloqueá rutinas con enfoque técnico y
+                resultados medibles.
               </p>
               <div className="flex flex-wrap items-center gap-4">
                 <Button
@@ -69,7 +81,11 @@ function ClientRoutineSelection() {
                   color="neutral"
                   rounded="full"
                   className="border border-[#B5FF00]/40 bg-transparent px-6 py-3 text-sm font-semibold uppercase tracking-wide text-neutral-200 hover:border-[#B5FF00] hover:bg-[#B5FF00]/10"
-                  onClick={() => document.getElementById('rutinas')?.scrollIntoView({ behavior: 'smooth' })}
+                  onClick={() =>
+                    document
+                      .getElementById("rutinas")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
                 >
                   Ver planes disponibles
                 </Button>
@@ -79,15 +95,25 @@ function ClientRoutineSelection() {
         </div>
 
         <div ref={genderRef} className="mt-14 md:mt-20">
-          <GenderSelector selectedGender={selectedGender} onSelect={setSelectedGender} />
+          <GenderSelector
+            selectedGender={selectedGender}
+            onSelect={setSelectedGender}
+          />
         </div>
 
         <TransitionBox variant="fade-up">
-          <GoalSelector selectedGoal={selectedGoal} onSelect={setSelectedGoal} readyForRoutines={readyForRoutines} />
+          <GoalSelector
+            selectedGoal={selectedGoal}
+            onSelect={setSelectedGoal}
+            readyForRoutines={readyForRoutines}
+          />
         </TransitionBox>
 
         <TransitionBox id="rutinas" variant="fade-up" delay={120}>
-          <RoutineCarousel routines={filteredRoutines} onPreview={setPreviewRoutine} />
+          <RoutineCarousel
+            routines={filteredRoutines}
+            onPreview={setPreviewRoutine}
+          />
         </TransitionBox>
 
         <TransitionBox id="pago" variant="fade-up" delay={160}>
@@ -102,7 +128,9 @@ function ClientRoutineSelection() {
         onSelect={(routine) => {
           setSelectedRoutine(routine);
           setPreviewRoutine(null);
-          document.getElementById('pago')?.scrollIntoView({ behavior: 'smooth' });
+          document
+            .getElementById("pago")
+            ?.scrollIntoView({ behavior: "smooth" });
         }}
       />
     </div>
