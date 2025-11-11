@@ -1,19 +1,23 @@
-import { Fragment, memo } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { Fragment, memo } from "react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 
 const DayPreview = ({ day }) => {
-  const isRest = day.type === 'DESCANSO';
+  const isRest = day.type === "DESCANSO";
 
   return (
     <div className="rounded-xl border border-[#787878]/20 bg-[#1A1A1A] p-4 space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <h4 className="text-lg font-semibold text-white">{day.name}</h4>
-          {isRest && day.recoveryNote && <p className="text-sm text-[#787878]">{day.recoveryNote}</p>}
+          {isRest && day.recoveryNote && (
+            <p className="text-sm text-[#787878]">{day.recoveryNote}</p>
+          )}
         </div>
         <span
           className={`text-xs font-semibold px-3 py-1 rounded-full ${
-            isRest ? 'bg-[#787878]/20 text-[#A1A1A1]' : 'bg-[#CBFF00]/20 text-[#CBFF00]'
+            isRest
+              ? "bg-[#787878]/20 text-[#A1A1A1]"
+              : "bg-[#CBFF00]/20 text-[#CBFF00]"
           }`}
         >
           {day.type}
@@ -26,41 +30,60 @@ const DayPreview = ({ day }) => {
             <table className="min-w-[720px] w-full border-collapse text-sm">
               <thead>
                 <tr className="text-[11px] uppercase tracking-wide text-[#787878] border-b border-[#787878]/20">
-                  <th className="py-2 pr-3 text-left font-semibold">Ejercicio</th>
-                  <th className="px-3 py-2 text-center font-semibold">Series</th>
+                  <th className="py-2 pr-3 text-left font-semibold">
+                    Ejercicio
+                  </th>
+                  <th className="px-3 py-2 text-center font-semibold">
+                    Series
+                  </th>
                   <th className="px-3 py-2 text-center font-semibold">Reps</th>
                   <th className="px-3 py-2 text-center font-semibold">Desc</th>
                   <th className="px-3 py-2 text-center font-semibold">RIR</th>
-                  <th className="px-3 py-2 text-center font-semibold">Cadencia</th>
+                  <th className="px-3 py-2 text-center font-semibold">
+                    Cadencia
+                  </th>
                   <th className="px-3 py-2 text-right font-semibold">Video</th>
                 </tr>
               </thead>
               <tbody>
                 {day.exercises.map((exercise, exerciseIndex) => {
                   const setsValue = exercise.sets ?? exercise.series;
-                  const sets = setsValue === 0 || setsValue ? setsValue : '–';
+                  const sets = setsValue === 0 || setsValue ? setsValue : "–";
                   const repsValue = exercise.reps;
-                  const reps = repsValue === 0 || repsValue ? repsValue : '–';
+                  const reps = repsValue === 0 || repsValue ? repsValue : "–";
                   const restValue = exercise.rest ?? exercise.descanso;
-                  const rest = restValue === 0 || restValue ? restValue : '–';
-                  const rir = exercise.rir ?? '–';
+                  const rest = restValue === 0 || restValue ? restValue : "–";
+                  const rir = exercise.rir ?? "–";
                   const tempoValue = exercise.tempo ?? exercise.cadencia;
-                  const tempo = tempoValue === 0 || tempoValue ? tempoValue : '–';
+                  const tempo =
+                    tempoValue === 0 || tempoValue ? tempoValue : "–";
                   const videoUrl = exercise.video || exercise.videoUrl;
                   const rawNote = exercise.note ?? exercise.notes;
-                  const note = Array.isArray(rawNote) ? rawNote.join('\n') : rawNote;
+                  const note = Array.isArray(rawNote)
+                    ? rawNote.join("\n")
+                    : rawNote;
 
                   return (
                     <Fragment key={exercise.id || exerciseIndex}>
                       <tr className="border-b border-[#787878]/20 text-[#C9C9C9]">
                         <td className="py-3 pr-3 text-left text-sm font-medium text-white align-top">
-                          {exercise.name || '—'}
+                          {exercise.name || "—"}
                         </td>
-                        <td className="px-3 py-3 text-center align-top">{sets}</td>
-                        <td className="px-3 py-3 text-center align-top">{reps}</td>
-                        <td className="px-3 py-3 text-center align-top">{rest}</td>
-                        <td className="px-3 py-3 text-center align-top">{rir}</td>
-                        <td className="px-3 py-3 text-center align-top">{tempo}</td>
+                        <td className="px-3 py-3 text-center align-top">
+                          {sets}
+                        </td>
+                        <td className="px-3 py-3 text-center align-top">
+                          {reps}
+                        </td>
+                        <td className="px-3 py-3 text-center align-top">
+                          {rest}
+                        </td>
+                        <td className="px-3 py-3 text-center align-top">
+                          {rir}
+                        </td>
+                        <td className="px-3 py-3 text-center align-top">
+                          {tempo}
+                        </td>
                         <td className="px-3 py-3 text-right align-top">
                           {videoUrl ? (
                             <a
@@ -79,8 +102,13 @@ const DayPreview = ({ day }) => {
                       </tr>
                       {note && (
                         <tr className="border-b border-[#787878]/20 last:border-0">
-                          <td colSpan={7} className="px-3 pb-3 pt-2 align-top text-sm text-[#C9C9C9]">
-                            <p className="text-xs uppercase text-[#787878]">Notas</p>
+                          <td
+                            colSpan={7}
+                            className="px-3 pb-3 pt-2 align-top text-sm text-[#C9C9C9]"
+                          >
+                            <p className="text-xs uppercase text-[#787878]">
+                              Notas
+                            </p>
                             <p className="mt-1 whitespace-pre-line">{note}</p>
                           </td>
                         </tr>
@@ -110,12 +138,22 @@ const WeekPreview = memo(({ week, index, collapsed, onToggle }) => {
         className="flex w-full items-center justify-between gap-2 border-b border-[#787878]/20 px-5 py-4 text-left"
       >
         <div>
-          <p className="text-xs uppercase tracking-wide text-[#787878]">Semana {index + 1}</p>
-          <h3 className="text-xl font-semibold text-white">{week.title || `Semana ${index + 1}`}</h3>
-          {week.summary && <p className="text-sm text-[#C9C9C9] mt-1">{week.summary}</p>}
+          <p className="text-xs uppercase tracking-wide text-[#787878]">
+            Semana {index + 1}
+          </p>
+          <h3 className="text-xl font-semibold text-white">
+            {week.title || `Semana ${index + 1}`}
+          </h3>
+          {week.summary && (
+            <p className="text-sm text-[#C9C9C9] mt-1">{week.summary}</p>
+          )}
         </div>
         <span className="rounded-full bg-[#1A1A1A] p-2 text-[#CBFF00]">
-          {collapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+          {collapsed ? (
+            <ChevronRight className="h-5 w-5" />
+          ) : (
+            <ChevronDown className="h-5 w-5" />
+          )}
         </span>
       </button>
 
@@ -123,13 +161,17 @@ const WeekPreview = memo(({ week, index, collapsed, onToggle }) => {
         <div className="space-y-5 px-5 pb-5 pt-4">
           {week.notes && (
             <div className="rounded-xl border border-[#787878]/20 bg-[#1A1A1A] p-4">
-              <h4 className="text-xs uppercase tracking-wide text-[#787878] mb-1">Notas de la semana</h4>
-              <p className="text-sm text-[#C9C9C9] whitespace-pre-line">{week.notes}</p>
+              <h4 className="text-xs uppercase tracking-wide text-[#787878] mb-1">
+                Notas de la semana
+              </h4>
+              <p className="text-sm text-[#C9C9C9] whitespace-pre-line">
+                {week.notes}
+              </p>
             </div>
           )}
 
           <div className="space-y-4">
-            {week.days.map(day => (
+            {week.days.map((day) => (
               <DayPreview key={day.id} day={day} />
             ))}
           </div>
@@ -139,6 +181,6 @@ const WeekPreview = memo(({ week, index, collapsed, onToggle }) => {
   );
 });
 
-WeekPreview.displayName = 'WeekPreview';
+WeekPreview.displayName = "WeekPreview";
 
 export default WeekPreview;

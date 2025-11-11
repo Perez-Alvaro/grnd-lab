@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useReducer } from 'react';
-import templates from '../data/templates.json';
-import users from '../data/users.json';
-import sales from '../data/sales.json';
+import React, { createContext, useContext, useReducer } from "react";
+import templates from "../data/templates.json";
+import users from "../data/users.json";
+import sales from "../data/sales.json";
 
 const AppContext = createContext();
 
@@ -11,34 +11,34 @@ const initialState = {
   sales,
   selectedPlan: null,
   loading: false,
-  error: null
+  error: null,
 };
 
 function appReducer(state, action) {
   switch (action.type) {
-    case 'SET_LOADING':
+    case "SET_LOADING":
       return { ...state, loading: action.payload };
-    case 'SET_ERROR':
+    case "SET_ERROR":
       return { ...state, error: action.payload };
-    case 'SET_SELECTED_PLAN':
+    case "SET_SELECTED_PLAN":
       return { ...state, selectedPlan: action.payload };
-    case 'ADD_TEMPLATE':
+    case "ADD_TEMPLATE":
       return { ...state, templates: [...state.templates, action.payload] };
-    case 'UPDATE_TEMPLATE':
+    case "UPDATE_TEMPLATE":
       return {
         ...state,
-        templates: state.templates.map(t =>
-          t.id === action.payload.id ? action.payload : t
-        )
+        templates: state.templates.map((t) =>
+          t.id === action.payload.id ? action.payload : t,
+        ),
       };
-    case 'DELETE_TEMPLATE':
+    case "DELETE_TEMPLATE":
       return {
         ...state,
-        templates: state.templates.filter(t => t.id !== action.payload)
+        templates: state.templates.filter((t) => t.id !== action.payload),
       };
-    case 'ADD_USER':
+    case "ADD_USER":
       return { ...state, users: [...state.users, action.payload] };
-    case 'ADD_SALE':
+    case "ADD_SALE":
       return { ...state, sales: [...state.sales, action.payload] };
     default:
       return state;
@@ -58,7 +58,7 @@ export function AppProvider({ children }) {
 export function useAppContext() {
   const context = useContext(AppContext);
   if (!context) {
-    throw new Error('useAppContext must be used within an AppProvider');
+    throw new Error("useAppContext must be used within an AppProvider");
   }
   return context;
 }

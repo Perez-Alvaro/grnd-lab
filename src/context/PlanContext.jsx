@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext } from "react";
 
 const PlanContext = createContext(null);
 
@@ -9,7 +9,9 @@ export const PlanProvider = ({ value, children }) => (
 export const usePlanContext = () => {
   const context = useContext(PlanContext);
   if (!context) {
-    throw new Error('usePlanContext debe utilizarse dentro de un PlanProvider.');
+    throw new Error(
+      "usePlanContext debe utilizarse dentro de un PlanProvider.",
+    );
   }
   return context;
 };

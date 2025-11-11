@@ -7,11 +7,7 @@
     "objective": "volumen",
     "plan": "premium",
     "name": "Masculino Volumen FST-7 4x/semana",
-    "tags": [
-      "fst-7",
-      "hipertrofia",
-      "superseries"
-    ],
+    "tags": ["fst-7", "hipertrofia", "superseries"],
     "notes": "Rutina enfocada en hipertrofia con técnicas FST-7. Ajustar cargas semanalmente manteniendo el RIR objetivo.",
     "author": "Matías Zaccaro",
     "createdAt": "2025-01-05",
@@ -890,11 +886,7 @@
     "objective": "perdida_grasa",
     "plan": "basic",
     "name": "Full Body Definición 3x/semana",
-    "tags": [
-      "full-body",
-      "definicion",
-      "metabolico"
-    ],
+    "tags": ["full-body", "definicion", "metabolico"],
     "notes": "Rutina de fuerza combinada con estímulo metabólico y sesiones de descanso activo.",
     "author": "Matías Zaccaro",
     "createdAt": "2025-01-05",

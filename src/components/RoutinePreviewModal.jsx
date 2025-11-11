@@ -1,18 +1,22 @@
-import React from 'react';
+import React from "react";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
-} from './reactbits/index.js';
+  DialogTitle,
+} from "./reactbits/index.js";
 
 function InfoPill({ label, value }) {
   return (
     <div className="rounded-xl border border-neutral-700 bg-neutral-900 px-4 py-3 text-center">
-      <span className="block text-[11px] uppercase tracking-[0.3em] text-neutral-500">{label}</span>
-      <span className="mt-1 block text-sm font-semibold text-white">{value}</span>
+      <span className="block text-[11px] uppercase tracking-[0.3em] text-neutral-500">
+        {label}
+      </span>
+      <span className="mt-1 block text-sm font-semibold text-white">
+        {value}
+      </span>
     </div>
   );
 }
@@ -25,18 +29,26 @@ function RoutinePreviewModal({ routine, open, onClose, onSelect }) {
       <DialogContent className="border border-neutral-700 bg-neutral-950 text-white">
         <DialogHeader className="px-8 pt-8 pb-4">
           <DialogTitle className="text-white">{routine.name}</DialogTitle>
-          <DialogDescription className="mt-3 text-sm text-neutral-400">{routine.focus}</DialogDescription>
+          <DialogDescription className="mt-3 text-sm text-neutral-400">
+            {routine.focus}
+          </DialogDescription>
         </DialogHeader>
         <div className="px-8">
           <div className="overflow-hidden rounded-2xl border border-neutral-800">
-            <img src={routine.image} alt={routine.name} className="h-64 w-full object-cover" />
+            <img
+              src={routine.image}
+              alt={routine.name}
+              className="h-64 w-full object-cover"
+            />
           </div>
           <div className="mt-6 grid gap-4 md:grid-cols-3">
             <InfoPill label="Duración" value={routine.duration} />
             <InfoPill label="Frecuencia" value={`${routine.frequency} días`} />
             <InfoPill label="Nivel" value={routine.level} />
           </div>
-          <p className="mt-6 text-sm leading-relaxed text-neutral-400">{routine.description}</p>
+          <p className="mt-6 text-sm leading-relaxed text-neutral-400">
+            {routine.description}
+          </p>
           <div className="mt-6 flex flex-wrap gap-2 text-xs text-neutral-400">
             {routine.tags.map((tag) => (
               <span

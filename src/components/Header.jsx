@@ -1,10 +1,10 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Dumbbell, Shield } from 'lucide-react';
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Dumbbell, Shield } from "lucide-react";
 
 function Header() {
   const location = useLocation();
-  
+
   return (
     <header className="sticky top-0 z-50 border-b border-neutral-800/80 bg-neutral-950/90 backdrop-blur">
       <div className="container mx-auto px-4 py-4 text-white">
@@ -19,7 +19,7 @@ function Header() {
           </Link>
 
           <nav className="flex items-center space-x-4">
-            {location.pathname !== '/admin' && (
+            {location.pathname !== "/admin" && (
               <Link
                 to="/admin"
                 className="flex items-center space-x-2 rounded-full border border-[#B5FF00] px-4 py-2 text-sm font-medium text-[#B5FF00] transition-colors hover:bg-[#B5FF00]/10"
