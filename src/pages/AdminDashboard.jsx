@@ -458,7 +458,26 @@ const DashboardTemplates = ({
   );
 };
 
-const DashboardSalesTable = ({ sales }) => {
+const DashboardMailExport = ({ onExport, emailCount }) => (
+  <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+    <div>
+      <h3 className="text-lg font-semibold text-lime-400">Lista de contactos</h3>
+      <p className="text-sm text-gray-400">
+        Descargá todos los correos de tus clientes para impulsar campañas de marketing directas.
+      </p>
+      <p className="text-xs text-gray-500 mt-2">Correos únicos disponibles: {emailCount}</p>
+    </div>
+    <button
+      onClick={onExport}
+      className="px-4 py-2 rounded-full bg-lime-400 text-black font-semibold hover:bg-lime-500 transition-all shadow-[0_0_12px_rgba(181,255,0,0.3)]"
+    >
+      <Mail className="h-4 w-4 inline-block mr-2" />
+      Descargar Emails (.txt)
+    </button>
+  </div>
+);
+
+const DashboardSalesTable = ({ sales, onExportEmails, emailCount }) => {
   const [planFilter, setPlanFilter] = useState("all");
   const [sortField, setSortField] = useState("date");
   const [sortDirection, setSortDirection] = useState("desc");
@@ -611,28 +630,11 @@ const DashboardSalesTable = ({ sales }) => {
           </button>
         </div>
       </div>
+
+      <DashboardMailExport onExport={onExportEmails} emailCount={emailCount} />
     </section>
   );
 };
-
-const DashboardMailExport = ({ onExport, emailCount }) => (
-  <section id="contactos" className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 flex items-center justify-between gap-4">
-    <div>
-      <h3 className="text-lg font-semibold text-lime-400">Lista de contactos</h3>
-      <p className="text-sm text-gray-400">
-        Descargá todos los correos de tus clientes para impulsar campañas de marketing directas.
-      </p>
-      <p className="text-xs text-gray-500 mt-2">Correos únicos disponibles: {emailCount}</p>
-    </div>
-    <button
-      onClick={onExport}
-      className="px-4 py-2 rounded-full bg-lime-400 text-black font-semibold hover:bg-lime-500 transition-all shadow-[0_0_12px_rgba(181,255,0,0.3)]"
-    >
-      <Mail className="h-4 w-4 inline-block mr-2" />
-      Descargar Emails (.txt)
-    </button>
-  </section>
-);
 
 function AdminDashboard() {
   const { state, dispatch } = useAppContext();
@@ -645,7 +647,6 @@ function AdminDashboard() {
     charts: useRef(null),
     templates: useRef(null),
     ventas: useRef(null),
-    contactos: useRef(null),
   };
 
   const currentMonthKey = useMemo(() => {
@@ -905,7 +906,6 @@ function AdminDashboard() {
     { id: "charts", label: "Analítica" },
     { id: "templates", label: "Plantillas" },
     { id: "ventas", label: "Ventas" },
-    { id: "contactos", label: "Contactos" },
   ];
 
   return (
@@ -951,12 +951,9 @@ function AdminDashboard() {
         </div>
 
         <div ref={sectionRefs.ventas}>
-          <DashboardSalesTable sales={salesRecords} />
-        </div>
-
-        <div ref={sectionRefs.contactos}>
-          <DashboardMailExport
-            onExport={handleExportEmails}
+          <DashboardSalesTable
+            sales={salesRecords}
+            onExportEmails={handleExportEmails}
             emailCount={uniqueEmails.length}
           />
         </div>
