@@ -23,104 +23,112 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
     }
   }, [dayId, exercise.id, onActionError, removeExercise, weekId]);
 
+  const labelClasses = 'text-xs font-semibold uppercase tracking-wide text-neutral-500';
+  const inputClasses =
+    'h-11 w-full rounded-lg border border-neutral-800 bg-neutral-950 px-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none focus:ring-0';
+
   return (
     <div
-      className="flex flex-col gap-3 rounded-xl border border-[#787878]/25 bg-[#1A1A1A] p-3 transition-all duration-150 ease-in-out hover:border-[#CBFF00]/40 hover:bg-[#1D1D1D] sm:p-4"
+      className="flex flex-col gap-4 rounded-lg border border-neutral-800 bg-neutral-900/70 p-4 shadow-sm transition-colors duration-200 ease-in-out hover:border-[#CBFF00]/40 hover:bg-neutral-900"
       data-testid="exercise-editor"
     >
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-6 sm:[grid-template-columns:2.4fr_repeat(4,_minmax(0,_1fr))_2.2fr]">
-        <div className="flex flex-col gap-1 sm:col-span-1">
-          <label className="text-xs font-semibold uppercase tracking-wide text-[#787878]">Ejercicio</label>
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-6">
+        <div className="flex flex-col gap-2 md:col-span-2">
+          <label className={labelClasses}>Ejercicio</label>
           <input
             type="text"
             value={exercise.name}
             onChange={handleChange('name')}
             placeholder="Nombre del ejercicio"
-            className="h-10 w-full rounded-lg border border-[#787878]/30 bg-[#202020] px-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none"
+            className={inputClasses}
           />
         </div>
-        <div className="flex flex-col gap-1 sm:col-span-1">
-          <label className="text-xs font-semibold uppercase tracking-wide text-[#787878]">Series</label>
+        <div className="flex flex-col gap-2 md:col-span-1">
+          <label className={labelClasses}>Series</label>
           <input
             type="text"
             value={exercise.sets}
             onChange={handleChange('sets')}
-            className="h-10 w-full rounded-lg border border-[#787878]/30 bg-[#202020] px-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none"
+            className={inputClasses}
           />
         </div>
-        <div className="flex flex-col gap-1 sm:col-span-1">
-          <label className="text-xs font-semibold uppercase tracking-wide text-[#787878]">Reps</label>
-          <div className="grid grid-cols-2 gap-2">
-            <input
-              type="text"
-              value={exercise.reps}
-              onChange={handleChange('reps')}
-              className="h-10 w-full rounded-lg border border-[#787878]/30 bg-[#202020] px-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none"
-              placeholder="Reps"
-            />
-            <input
-              type="text"
-              value={exercise.rir}
-              onChange={handleChange('rir')}
-              className="h-10 w-full rounded-lg border border-[#787878]/30 bg-[#202020] px-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none"
-              placeholder="RIR"
-            />
-          </div>
+        <div className="flex flex-col gap-2 md:col-span-1">
+          <label className={labelClasses}>Reps</label>
+          <input
+            type="text"
+            value={exercise.reps}
+            onChange={handleChange('reps')}
+            className={inputClasses}
+            placeholder="Reps"
+          />
         </div>
-        <div className="flex flex-col gap-1 sm:col-span-1">
-          <label className="text-xs font-semibold uppercase tracking-wide text-[#787878]">Desc</label>
+        <div className="flex flex-col gap-2 md:col-span-1">
+          <label className={labelClasses}>RIR</label>
+          <input
+            type="text"
+            value={exercise.rir}
+            onChange={handleChange('rir')}
+            className={inputClasses}
+            placeholder="RIR"
+          />
+        </div>
+        <div className="flex flex-col gap-2 md:col-span-1">
+          <label className={labelClasses}>Descanso</label>
           <input
             type="text"
             value={exercise.rest}
             onChange={handleChange('rest')}
-            className="h-10 w-full rounded-lg border border-[#787878]/30 bg-[#202020] px-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none"
+            className={inputClasses}
+            placeholder="Ej. 90s"
           />
         </div>
-        <div className="flex flex-col gap-1 sm:col-span-1">
-          <label className="text-xs font-semibold uppercase tracking-wide text-[#787878]">Cadencia</label>
+        <div className="flex flex-col gap-2 md:col-span-1">
+          <label className={labelClasses}>Cadencia</label>
           <input
             type="text"
             value={exercise.tempo}
             onChange={handleChange('tempo')}
-            className="h-10 w-full rounded-lg border border-[#787878]/30 bg-[#202020] px-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none"
+            className={inputClasses}
+            placeholder="Ej. 2-1-2"
           />
         </div>
-        <div className="flex flex-col gap-1 sm:col-span-1">
-          <label className="text-xs font-semibold uppercase tracking-wide text-[#787878]">Video</label>
+        <div className="flex flex-col gap-2 md:col-span-3">
+          <label className={labelClasses}>Video o referencia</label>
           <input
             type="url"
             value={exercise.video}
             onChange={handleChange('video')}
             placeholder="URL del video"
-            className="h-10 w-full rounded-lg border border-[#787878]/30 bg-[#202020] px-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none"
+            className={inputClasses}
           />
         </div>
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-xs font-semibold uppercase tracking-wide text-[#787878]">Notas específicas</label>
+        <label className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Notas específicas</label>
         <textarea
           rows={2}
           value={exercise.note}
           onChange={handleChange('note')}
-          className="min-h-[80px] w-full resize-none rounded-lg border border-[#787878]/30 bg-[#202020] px-3 py-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none"
+          className="min-h-[80px] w-full resize-none rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none focus:ring-0"
+          placeholder="Ej. Superserie con press inclinado"
         />
       </div>
 
-      <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <span className="text-xs text-[#787878]">Gestioná este ejercicio rápidamente</span>
+      <div className="flex flex-col gap-3 border-t border-neutral-800 pt-3 md:flex-row md:items-center md:justify-between">
+        <span className="text-xs text-neutral-500">Gestioná este ejercicio rápidamente</span>
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={handleDuplicate}
-            className="inline-flex min-w-[140px] items-center justify-center gap-2 rounded-lg border border-[#787878]/40 px-3 py-2 text-sm font-semibold text-[#CBFF00] transition-all duration-150 ease-in-out hover:border-[#CBFF00] hover:bg-[#1F1F1F]"
+            className="inline-flex items-center gap-2 rounded-lg border border-neutral-700 px-3 py-2 text-xs font-semibold text-[#CBFF00] transition-colors hover:border-[#CBFF00] hover:bg-neutral-900"
           >
             <Copy className="h-4 w-4" /> Duplicar ejercicio
           </button>
           <button
             type="button"
             onClick={handleRemove}
-            className="inline-flex min-w-[140px] items-center justify-center gap-2 rounded-lg border border-red-500/30 px-3 py-2 text-sm font-semibold text-red-400 transition-all duration-150 ease-in-out hover:border-red-400 hover:bg-red-500/10"
+            className="inline-flex items-center gap-2 rounded-lg border border-red-500/40 px-3 py-2 text-xs font-semibold text-red-400 transition-colors hover:border-red-400 hover:bg-red-500/10"
           >
             <Trash2 className="h-4 w-4" /> Eliminar
           </button>

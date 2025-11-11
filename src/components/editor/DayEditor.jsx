@@ -1,9 +1,9 @@
-import { memo, useCallback, useEffect, useRef } from 'react';
-import { Copy, Trash2, Plus } from 'lucide-react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { Copy, Trash2, Plus, ChevronDown } from 'lucide-react';
 import { usePlanContext } from '../../context/PlanContext.jsx';
 import ExerciseEditor from './ExerciseEditor.jsx';
 
-const DayEditor = memo(({ weekId, day, index, onActionError }) => {
+const DayEditor = memo(({ weekId, day, index, onActionError, registerDayRef }) => {
   const {
     updateDayField,
     setDayType,
@@ -44,6 +44,7 @@ const DayEditor = memo(({ weekId, day, index, onActionError }) => {
   const isRestDay = day.type === 'DESCANSO';
   const exercisesEndRef = useRef(null);
   const previousExerciseCountRef = useRef(day.exercises.length);
+  const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
     const previousCount = previousExerciseCountRef.current;
@@ -55,47 +56,55 @@ const DayEditor = memo(({ weekId, day, index, onActionError }) => {
     previousExerciseCountRef.current = day.exercises.length;
   }, [day.exercises.length]);
 
+  const labelClasses = 'text-sm font-medium text-neutral-400';
+  const inputClasses =
+    'w-full rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none focus:ring-0';
+
   return (
     <div
       data-testid="day-editor"
-      className="flex flex-col gap-4 rounded-2xl border border-[#787878]/25 bg-[#141414] p-4 transition-all duration-150 ease-in-out hover:border-[#CBFF00]/30 hover:bg-[#1C1C1C] sm:p-5"
+      ref={registerDayRef}
+      className="overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950/80 shadow-sm transition-all duration-200 ease-in-out"
     >
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div className="flex flex-col gap-2">
-            <span className="text-xs font-semibold uppercase tracking-wide text-[#787878]">Día {index + 1}</span>
-            <input
-              type="text"
-              value={day.name}
-              onChange={handleFieldChange('name')}
-              placeholder={`Día ${index + 1}`}
-              className="w-full rounded-lg border border-[#787878]/30 bg-[#1A1A1A] px-4 py-2 text-lg font-semibold text-white transition-colors focus:border-[#CBFF00] focus:outline-none"
-            />
-          </div>
-          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
-            <div className="flex w-full items-center gap-2 sm:w-auto">
-              <label className="text-xs font-semibold uppercase tracking-wide text-[#787878]">Entrenamiento</label>
-              <select
-                value={day.type}
-                onChange={handleTypeChange}
-                className="h-10 w-full rounded-lg border border-[#787878]/40 bg-[#1A1A1A] px-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none sm:w-40"
-              >
-                <option value="ENTRENAMIENTO">Entrenamiento</option>
-                <option value="DESCANSO">Descanso</option>
-              </select>
-            </div>
-            <div className="flex flex-wrap items-center justify-end gap-2 sm:flex-nowrap">
+      <div className="flex flex-col gap-4 p-5">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <button
+              type="button"
+              onClick={() => setIsOpen(value => !value)}
+              className="flex flex-1 items-center justify-between gap-4 text-left"
+            >
+              <div className="flex flex-col gap-1">
+                <span className="text-xs uppercase tracking-wide text-neutral-500">Día {index + 1}</span>
+                <span className="text-base font-semibold text-white">
+                  {day.name ? day.name : `Día ${index + 1}`}
+                </span>
+                <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-400">
+                  <span>{isRestDay ? 'Día de descanso' : 'Sesión de entrenamiento'}</span>
+                  {!isRestDay && day.exercises.length > 0 && (
+                    <>
+                      <span className="h-1 w-1 rounded-full bg-neutral-700" />
+                      <span>{day.exercises.length} ejercicios</span>
+                    </>
+                  )}
+                </div>
+              </div>
+              <ChevronDown
+                className={`h-5 w-5 text-neutral-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+              />
+            </button>
+            <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={handleDuplicateDay}
-                className="inline-flex min-w-[130px] items-center justify-center gap-2 rounded-lg border border-[#787878]/40 px-3 py-2 text-sm font-semibold text-[#CBFF00] transition-all duration-150 ease-in-out hover:border-[#CBFF00] hover:bg-[#1F1F1F]"
+                className="inline-flex items-center gap-2 rounded-lg border border-neutral-700 px-3 py-2 text-xs font-semibold text-[#CBFF00] transition-colors hover:border-[#CBFF00] hover:bg-neutral-900"
               >
-                <Copy className="h-4 w-4" /> Duplicar día
+                <Copy className="h-4 w-4" /> Duplicar
               </button>
               <button
                 type="button"
                 onClick={handleRemoveDay}
-                className="inline-flex min-w-[130px] items-center justify-center gap-2 rounded-lg border border-red-500/30 px-3 py-2 text-sm font-semibold text-red-400 transition-all duration-150 ease-in-out hover:border-red-400 hover:bg-red-500/10"
+                className="inline-flex items-center gap-2 rounded-lg border border-red-500/40 px-3 py-2 text-xs font-semibold text-red-400 transition-colors hover:border-red-400 hover:bg-red-500/10"
               >
                 <Trash2 className="h-4 w-4" /> Eliminar
               </button>
@@ -103,55 +112,81 @@ const DayEditor = memo(({ weekId, day, index, onActionError }) => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <label className="text-sm font-semibold uppercase tracking-wide text-[#9B9B9B]">
-            Mensaje de recuperación
-          </label>
-          <textarea
-            rows={2}
-            value={day.recoveryNote}
-            onChange={handleFieldChange('recoveryNote')}
-            placeholder="Recomendaciones, movilidad, recordatorios de respiración..."
-            className="w-full resize-none rounded-lg border border-[#787878]/30 bg-[#1A1A1A] px-4 py-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none"
-          />
-        </div>
+        <div
+          className={`grid transition-all duration-200 ease-in-out ${
+            isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 pointer-events-none'
+          }`}
+        >
+          <div className="min-h-0 overflow-hidden">
+            <div className="flex flex-col gap-6 pt-2">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="flex flex-col gap-2">
+                  <label className={labelClasses}>Título del día</label>
+                  <input
+                    type="text"
+                    value={day.name}
+                    onChange={handleFieldChange('name')}
+                    placeholder={`Día ${index + 1}`}
+                    className={inputClasses}
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label className={labelClasses}>Tipo de día</label>
+                  <select value={day.type} onChange={handleTypeChange} className={inputClasses}>
+                    <option value="ENTRENAMIENTO">Entrenamiento</option>
+                    <option value="DESCANSO">Descanso</option>
+                  </select>
+                </div>
+              </div>
 
-        {!isRestDay && (
-          <p className="text-sm font-semibold uppercase tracking-wide text-[#9B9B9B]">
-            Ejercicios ({day.exercises.length})
-          </p>
-        )}
-      </div>
+              <div className="flex flex-col gap-2">
+                <label className={labelClasses}>Notas del día</label>
+                <textarea
+                  rows={3}
+                  value={day.recoveryNote}
+                  onChange={handleFieldChange('recoveryNote')}
+                  placeholder="Recomendaciones, movilidad, recordatorios de respiración..."
+                  className={`${inputClasses} min-h-[100px] resize-none`}
+                />
+              </div>
 
-      {isRestDay ? (
-        <p className="rounded-lg border border-[#787878]/30 bg-[#1A1A1A] px-4 py-3 text-sm text-[#C9C9C9]">
-          Día de descanso. Usa este espacio para pautas de recuperación activa.
-        </p>
-      ) : (
-        <div className="flex flex-col gap-4">
-          {day.exercises.map((exercise, exerciseIndex) => (
-            <div
-              key={exercise.id}
-              className={exerciseIndex > 0 ? 'mt-2 border-t border-[#242424] pt-4' : ''}
-            >
-              <ExerciseEditor
-                weekId={weekId}
-                dayId={day.id}
-                exercise={exercise}
-                onActionError={onActionError}
-              />
+              {isRestDay ? (
+                <p className="rounded-lg border border-dashed border-neutral-800 bg-neutral-950/80 px-4 py-4 text-sm text-neutral-300">
+                  Día de descanso. Usa este espacio para pautas de recuperación activa.
+                </p>
+              ) : (
+                <div className="flex flex-col gap-5">
+                  <div className="flex items-center justify-between">
+                    <h5 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
+                      Ejercicios ({day.exercises.length})
+                    </h5>
+                    <button
+                      type="button"
+                      onClick={handleAddExercise}
+                      className="inline-flex items-center gap-2 rounded-lg border border-dashed border-neutral-700 px-3 py-2 text-xs font-semibold text-[#CBFF00] transition-colors hover:border-[#CBFF00] hover:bg-neutral-900"
+                    >
+                      <Plus className="h-4 w-4" /> Agregar ejercicio
+                    </button>
+                  </div>
+
+                  <div className="flex flex-col gap-5">
+                    {day.exercises.map(exercise => (
+                      <ExerciseEditor
+                        key={exercise.id}
+                        weekId={weekId}
+                        dayId={day.id}
+                        exercise={exercise}
+                        onActionError={onActionError}
+                      />
+                    ))}
+                    <div ref={exercisesEndRef} />
+                  </div>
+                </div>
+              )}
             </div>
-          ))}
-          <div ref={exercisesEndRef} />
-          <button
-            type="button"
-            onClick={handleAddExercise}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[#CBFF00] transition-colors hover:text-[#DBFE52]"
-          >
-            <Plus className="h-4 w-4" /> Agregar ejercicio
-          </button>
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 });
