@@ -55,15 +55,15 @@ const DayEditor = memo(
       previousExerciseCountRef.current = day.exercises.length;
     }, [day.exercises.length]);
 
-    const labelClasses = "text-sm font-medium text-neutral-400";
+    const labelClasses = "text-sm font-medium text-gray-400";
     const inputClasses =
-      "w-full rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-3 text-sm text-white transition-colors focus:border-[#CBFF00] focus:outline-none focus:ring-0";
+      "w-full rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white transition-colors focus:border-[#B5FF00] focus:outline-none focus:ring-0";
 
     return (
       <div
         data-testid="day-editor"
         ref={registerDayRef}
-        className="overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950/80 shadow-sm transition-all duration-200 ease-in-out"
+        className="overflow-hidden rounded-xl border border-[#2E2E2E] bg-[#0A0A0A] shadow-sm transition-all duration-200 ease-in-out"
       >
         <div className="flex flex-col gap-4 p-5">
           <div className="flex flex-col gap-4">
@@ -74,13 +74,13 @@ const DayEditor = memo(
                 className="flex flex-1 items-center justify-between gap-4 text-left"
               >
                 <div className="flex flex-col gap-1">
-                  <span className="text-xs uppercase tracking-wide text-neutral-500">
+                  <span className="text-xs uppercase tracking-wide text-gray-500">
                     Día {index + 1}
                   </span>
                   <span className="text-base font-semibold text-white">
                     {day.name ? day.name : `Día ${index + 1}`}
                   </span>
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-400">
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-gray-400">
                     <span>
                       {isRestDay
                         ? "Día de descanso"
@@ -88,21 +88,21 @@ const DayEditor = memo(
                     </span>
                     {!isRestDay && day.exercises.length > 0 && (
                       <>
-                        <span className="h-1 w-1 rounded-full bg-neutral-700" />
+                        <span className="h-1 w-1 rounded-full bg-[#2E2E2E]" />
                         <span>{day.exercises.length} ejercicios</span>
                       </>
                     )}
                   </div>
                 </div>
                 <ChevronDown
-                  className={`h-5 w-5 text-neutral-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                  className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
                 />
               </button>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={handleDuplicateDay}
-                  className="inline-flex items-center gap-2 rounded-lg border border-neutral-700 px-3 py-2 text-xs font-semibold text-[#CBFF00] transition-colors hover:border-[#CBFF00] hover:bg-neutral-900"
+                  className="inline-flex items-center gap-2 rounded-lg border border-[#2E2E2E] px-3 py-2 text-xs font-semibold text-[#B5FF00] transition-colors hover:border-[#B5FF00] hover:bg-[#101010]"
                 >
                   <Copy className="h-4 w-4" /> Duplicar
                 </button>
@@ -162,20 +162,20 @@ const DayEditor = memo(
                 </div>
 
                 {isRestDay ? (
-                  <p className="rounded-lg border border-dashed border-neutral-800 bg-neutral-950/80 px-4 py-4 text-sm text-neutral-300">
+                  <p className="rounded-lg border border-dashed border-[#2E2E2E] bg-[#0A0A0A] px-4 py-4 text-sm text-gray-300">
                     Día de descanso. Usa este espacio para pautas de
                     recuperación activa.
                   </p>
                 ) : (
                   <div className="flex flex-col gap-5">
                     <div className="flex items-center justify-between">
-                      <h5 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
+                      <h5 className="text-sm font-semibold uppercase tracking-wide text-gray-400">
                         Ejercicios ({day.exercises.length})
                       </h5>
                       <button
                         type="button"
                         onClick={handleAddExercise}
-                        className="inline-flex items-center gap-2 rounded-lg border border-dashed border-neutral-700 px-3 py-2 text-xs font-semibold text-[#CBFF00] transition-colors hover:border-[#CBFF00] hover:bg-neutral-900"
+                        className="inline-flex items-center gap-2 rounded-lg border border-dashed border-[#2E2E2E] px-3 py-2 text-xs font-semibold text-[#B5FF00] transition-colors hover:border-[#B5FF00] hover:bg-[#101010]"
                       >
                         <Plus className="h-4 w-4" /> Agregar ejercicio
                       </button>

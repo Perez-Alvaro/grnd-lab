@@ -25,22 +25,22 @@ export default function TemplateCard({
     meta.push(`Etiquetas: ${template.tags.join(", ")}`);
 
   return (
-    <div className="bg-[#1F1F1F] border border-[#3A3A3A] rounded-2xl p-4 md:p-5 shadow-lg shadow-black/20">
-      <div className="flex justify-between items-start">
+    <div className="rounded-2xl border border-[#2E2E2E] bg-[#1A1A1A] p-4 shadow-[0_25px_70px_-45px_rgba(0,0,0,0.8)] transition-colors hover:border-[#B5FF00]/60 md:p-5">
+      <div className="flex items-start justify-between">
         <div>
           <button onClick={onEdit} className="text-left">
-            <h4 className="text-lg md:text-xl font-semibold hover:text-[#CBFF00] transition-colors">
+            <h4 className="text-lg font-semibold text-white transition-colors hover:text-[#B5FF00] md:text-xl">
               {template.name}
             </h4>
           </button>
           <div className="flex flex-wrap gap-2 mt-2">
-            <span className="rounded-full px-2.5 py-1 text-sm bg-[#787878]/20 border border-[#787878]/20 capitalize">
+            <span className="rounded-full border border-[#2E2E2E] bg-[#0E0E0E] px-2.5 py-1 text-sm capitalize text-gray-300">
               {genderLabel[template.gender]}
             </span>
-            <span className="rounded-full px-2.5 py-1 text-sm bg-[#787878]/20 border border-[#787878]/20">
+            <span className="rounded-full border border-[#2E2E2E] bg-[#0E0E0E] px-2.5 py-1 text-sm text-gray-300">
               {template.frequency}x/semana
             </span>
-            <span className="rounded-full px-2.5 py-1 text-sm bg-[#787878]/20 border border-[#787878]/20 capitalize">
+            <span className="rounded-full border border-[#2E2E2E] bg-[#0E0E0E] px-2.5 py-1 text-sm capitalize text-gray-300">
               {TRAINING_GOAL_LABELS[template.objective] || template.objective}
             </span>
           </div>
@@ -53,7 +53,7 @@ export default function TemplateCard({
         />
       </div>
       {meta.length > 0 && (
-        <p className="text-xs text-[#787878] mt-4">{meta.join(" • ")}</p>
+        <p className="mt-4 text-xs text-gray-500">{meta.join(" • ")}</p>
       )}
     </div>
   );

@@ -27,7 +27,7 @@ function GoalSelector({ selectedGoal, onSelect, readyForRoutines }) {
         <h2 className="text-3xl font-semibold uppercase text-white md:text-4xl">
           Definí tu objetivo
         </h2>
-        <p className="max-w-3xl text-sm text-neutral-400 md:text-base">
+        <p className="max-w-3xl text-sm text-gray-400 md:text-base">
           Afinamos los bloques semanales y la densidad de entrenamiento según tu
           misión principal. Seleccioná la prioridad para filtrar la
           programación.
@@ -41,7 +41,7 @@ function GoalSelector({ selectedGoal, onSelect, readyForRoutines }) {
               type="button"
               onClick={() => onSelect(goal.id)}
               className={cn(
-                "flex w-full flex-col justify-center rounded-xl border border-neutral-800 bg-neutral-900 p-6 text-left transition-all duration-150 md:min-h-[220px] md:p-8",
+                "flex w-full flex-col justify-center rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] p-6 text-left transition-all duration-150 md:min-h-[220px] md:p-8",
                 "hover:border-[#B5FF00] hover:shadow-[0_0_20px_-12px_rgba(181,255,0,0.6)] hover:-translate-y-0.5",
                 selectedGoal === goal.id &&
                   "border-[#B5FF00] ring-1 ring-[#B5FF00]",
@@ -50,7 +50,7 @@ function GoalSelector({ selectedGoal, onSelect, readyForRoutines }) {
               <h3 className="text-xl font-semibold text-white md:text-2xl">
                 {goal.title}
               </h3>
-              <p className="mt-3 text-sm text-neutral-400">
+              <p className="mt-3 text-sm text-gray-400">
                 {goal.description}
               </p>
             </button>

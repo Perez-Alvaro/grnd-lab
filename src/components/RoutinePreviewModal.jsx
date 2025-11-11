@@ -11,8 +11,8 @@ import {
 function InfoPill({ label, value }) {
   const displayValue = value && value !== "" ? value : "—";
   return (
-    <div className="rounded-xl border border-[#1a1a1a] bg-black px-4 py-4 text-center shadow-inner shadow-black/20">
-      <span className="block text-[11px] uppercase tracking-[0.35em] text-gray-500">
+    <div className="rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] px-4 py-4 text-center shadow-inner shadow-black/10">
+      <span className="block text-[11px] uppercase tracking-[0.35em] text-gray-400">
         {label}
       </span>
       <span className="mt-2 block text-base font-semibold text-white">
@@ -75,7 +75,7 @@ function RoutinePreviewModal({ routine, open, onClose, onSelect }) {
 
   return (
     <Dialog open={open} onOpenChange={(value) => !value && onClose()}>
-      <DialogContent className="max-w-3xl overflow-hidden rounded-2xl border border-[#1a1a1a] bg-black text-white shadow-[0_45px_120px_-50px_rgba(0,0,0,1)]">
+      <DialogContent className="max-w-3xl overflow-hidden rounded-2xl border border-[#2E2E2E] bg-[#0E0E0E] text-white shadow-[0_45px_120px_-50px_rgba(0,0,0,1)]">
         <div className="flex flex-col gap-8 p-8">
           <DialogHeader className="space-y-3 p-0">
             <DialogTitle className="text-2xl font-semibold text-lime-400">
@@ -86,7 +86,7 @@ function RoutinePreviewModal({ routine, open, onClose, onSelect }) {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="w-full overflow-hidden rounded-2xl border border-[#1a1a1a] bg-black">
+          <div className="w-full overflow-hidden rounded-2xl border border-[#2E2E2E] bg-[#0E0E0E]">
             <img
               src={imageSrc}
               alt={routine.title || routine.name}
@@ -105,7 +105,7 @@ function RoutinePreviewModal({ routine, open, onClose, onSelect }) {
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full bg-[#111] px-3 py-1 text-xs font-medium uppercase tracking-wide text-lime-400"
+                  className="rounded-full border border-[#2E2E2E] bg-[#1A1A1A] px-3 py-1 text-xs font-medium uppercase tracking-wide text-lime-400"
                 >
                   {tag}
                 </span>
@@ -114,18 +114,18 @@ function RoutinePreviewModal({ routine, open, onClose, onSelect }) {
           )}
         </div>
 
-        <DialogFooter className="flex flex-col gap-3 border-t border-[#1a1a1a] bg-[#0d0d0d] px-8 py-6 md:flex-row md:justify-end">
+        <DialogFooter className="flex flex-col gap-3 border-t border-[#2E2E2E] bg-[#0A0A0A] px-8 py-6 md:flex-row md:justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="w-full rounded-full border border-[#333] px-6 py-2 text-sm font-semibold text-gray-300 transition-colors duration-150 hover:border-gray-500 hover:bg-[#111] md:w-auto"
+            className="w-full rounded-full border border-[#B5FF00] px-6 py-2 text-sm font-semibold text-[#B5FF00] transition-colors duration-150 hover:bg-[#B5FF00]/10 md:w-auto"
           >
             Cerrar
           </button>
           <button
             type="button"
             onClick={() => onSelect(routine)}
-            className="w-full rounded-full bg-lime-400 px-6 py-2 text-sm font-semibold text-white transition-transform transition-colors duration-150 hover:-translate-y-0.5 hover:bg-lime-500 md:w-auto"
+            className="w-full rounded-full bg-[#B5FF00] px-6 py-2 text-sm font-semibold text-black transition-transform transition-colors duration-150 hover:-translate-y-0.5 hover:bg-[#D0FF4D] md:w-auto"
           >
             Seleccionar rutina
           </button>

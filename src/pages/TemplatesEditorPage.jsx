@@ -177,23 +177,23 @@ export default function TemplatesEditorPage() {
   return (
     <PlanProvider value={planContextValue}>
       <div className="w-full bg-transparent">
-        <header className="border-b border-neutral-800/60 bg-neutral-950">
+        <header className="border-b border-[#2E2E2E] bg-[#0E0E0E]">
           <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={handleBack}
-                className="inline-flex items-center gap-2 rounded-xl border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-900"
+                className="inline-flex items-center gap-2 rounded-full border border-[#B5FF00] px-4 py-2 text-sm font-medium text-[#B5FF00] transition-colors hover:bg-[#B5FF00]/10"
               >
                 <ArrowLeft className="h-4 w-4" /> Volver
               </button>
-              <h1 className="text-2xl font-bold">Editor de Planes</h1>
+              <h1 className="text-2xl font-bold text-white">Editor de Planes</h1>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <button
                 type="button"
                 onClick={handleSave}
-                className="inline-flex items-center gap-2 rounded-xl bg-[#CBFF00] px-4 py-2 font-semibold text-[#1A1A1A] transition-colors hover:bg-[#DBFE52]"
+                className="inline-flex items-center gap-2 rounded-full bg-[#B5FF00] px-4 py-2 text-sm font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-[#D0FF4D]"
               >
                 <Save className="h-4 w-4" />
                 {isEditing ? "Actualizar plantilla" : "Guardar plantilla"}
@@ -201,7 +201,7 @@ export default function TemplatesEditorPage() {
               <button
                 type="button"
                 onClick={handleExportPdf}
-                className="inline-flex items-center gap-2 rounded-xl border border-[#CBFF00]/40 bg-neutral-950 px-4 py-2 font-semibold text-[#CBFF00] transition-colors hover:border-[#CBFF00] hover:bg-[#CBFF00] hover:text-black"
+                className="inline-flex items-center gap-2 rounded-full border border-[#2E2E2E] px-4 py-2 text-sm font-medium text-gray-200 transition-colors hover:border-[#B5FF00]/60 hover:text-white"
               >
                 <FileDown className="h-4 w-4" /> Exportar PDF
               </button>

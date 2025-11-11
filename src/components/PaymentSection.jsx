@@ -62,11 +62,11 @@ function PaymentSection({ routine }) {
 
   if (!routine) {
     return (
-      <FadeIn className="mt-24 rounded-2xl border border-dashed border-neutral-700 bg-neutral-900/70 p-12 text-center">
-        <h3 className="text-2xl font-semibold uppercase text-neutral-300">
+      <FadeIn className="mt-24 rounded-2xl border border-dashed border-[#2E2E2E] bg-[#0E0E0E] p-12 text-center">
+        <h3 className="text-2xl font-semibold uppercase text-gray-300">
           Seleccioná una rutina
         </h3>
-        <p className="mt-4 text-sm text-neutral-500">
+        <p className="mt-4 text-sm text-gray-500">
           Abrí una rutina disponible y confirmala para habilitar el checkout con
           Mercado Pago.
         </p>
@@ -76,7 +76,7 @@ function PaymentSection({ routine }) {
 
   if (success) {
     return (
-      <FadeIn className="mt-20 rounded-2xl border border-[#B5FF00]/40 bg-neutral-900 p-12 text-center">
+      <FadeIn className="mt-20 rounded-2xl border border-[#B5FF00]/40 bg-[#0E0E0E] p-12 text-center">
         <div className="mx-auto flex max-w-xl flex-col items-center gap-6">
           <div className="flex h-16 w-16 items-center justify-center rounded-full border border-[#B5FF00] text-3xl">
             ✅
@@ -85,7 +85,7 @@ function PaymentSection({ routine }) {
             <h2 className="text-3xl font-semibold uppercase text-white">
               Pago confirmado
             </h2>
-            <p className="text-sm text-neutral-400">
+            <p className="text-sm text-gray-400">
               Enviamos <span className="text-white">{routine.name}</span> a{" "}
               <span className="text-white">{formData.email}</span>. También
               recibirás seguimiento técnico y actualizaciones automáticas.
@@ -93,7 +93,7 @@ function PaymentSection({ routine }) {
           </div>
           <button
             type="button"
-            className="rounded-full bg-[#B5FF00] px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-[#c7ff3d]"
+            className="rounded-full bg-[#B5FF00] px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-[#D0FF4D]"
             onClick={() => window.location.assign("/")}
           >
             Volver al inicio
@@ -112,20 +112,20 @@ function PaymentSection({ routine }) {
         <h2 className="text-3xl font-semibold uppercase text-white md:text-4xl">
           Checkout Mercado Pago
         </h2>
-        <p className="max-w-3xl text-sm text-neutral-400 md:text-base">
+        <p className="max-w-3xl text-sm text-gray-400 md:text-base">
           Confirmá tus datos y ejecutá el pago seguro con Mercado Pago.
           Mantenemos la integración existente sin modificar la lógica del
           backend.
         </p>
       </FadeIn>
 
-      <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-8 shadow-[0_0_35px_-20px_rgba(181,255,0,0.5)]">
+      <div className="rounded-2xl border border-[#2E2E2E] bg-[#0E0E0E] p-8 shadow-[0_0_35px_-20px_rgba(181,255,0,0.35)]">
         <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
           <div className="space-y-2">
             <h3 className="text-2xl font-semibold text-white">
               {routine.name}
             </h3>
-            <p className="text-sm text-neutral-400">
+            <p className="text-sm text-gray-400">
               {formatWeeks(routine.duration)} • {formatFrequency(routine.frequency)}
               {routine.level && routine.level !== ""
                 ? ` • Nivel ${routine.level}`
@@ -133,7 +133,7 @@ function PaymentSection({ routine }) {
             </p>
           </div>
           <div className="text-left md:text-right">
-            <span className="text-xs uppercase tracking-[0.3em] text-neutral-500">
+            <span className="text-xs uppercase tracking-[0.3em] text-gray-500">
               Inversión
             </span>
             <p className="text-3xl font-bold text-[#B5FF00]">
@@ -144,7 +144,7 @@ function PaymentSection({ routine }) {
 
         <form className="mt-8 grid gap-6" onSubmit={handleSubmit}>
           <div className="grid gap-4 md:grid-cols-2">
-            <label className="flex flex-col gap-2 text-sm font-medium text-neutral-300">
+            <label className="flex flex-col gap-2 text-sm font-medium text-gray-200">
               Nombre
               <input
                 required
@@ -152,11 +152,11 @@ function PaymentSection({ routine }) {
                 onChange={(event) =>
                   handleChange("firstName", event.target.value)
                 }
-                className="rounded-lg border border-neutral-700 bg-neutral-950 px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none"
+                className="rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none"
                 placeholder="Tu nombre"
               />
             </label>
-            <label className="flex flex-col gap-2 text-sm font-medium text-neutral-300">
+            <label className="flex flex-col gap-2 text-sm font-medium text-gray-200">
               Apellido
               <input
                 required
@@ -164,28 +164,28 @@ function PaymentSection({ routine }) {
                 onChange={(event) =>
                   handleChange("lastName", event.target.value)
                 }
-                className="rounded-lg border border-neutral-700 bg-neutral-950 px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none"
+                className="rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none"
                 placeholder="Tu apellido"
               />
             </label>
           </div>
 
-          <label className="flex flex-col gap-2 text-sm font-medium text-neutral-300">
+          <label className="flex flex-col gap-2 text-sm font-medium text-gray-200">
             Email de entrega
             <input
               required
               type="email"
               value={formData.email}
               onChange={(event) => handleChange("email", event.target.value)}
-              className="rounded-lg border border-neutral-700 bg-neutral-950 px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none"
+              className="rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none"
               placeholder="tuemail@example.com"
             />
-            <span className="text-xs text-neutral-500">
+            <span className="text-xs text-gray-500">
               Enviaremos la rutina, seguimiento y comprobante a este correo.
             </span>
           </label>
 
-          <div className="flex flex-col items-center gap-4 rounded-xl border border-neutral-800 bg-neutral-950 p-6 text-center">
+          <div className="flex flex-col items-center gap-4 rounded-xl border border-[#2E2E2E] bg-[#0A0A0A] p-6 text-center">
             <span className="text-sm font-semibold uppercase tracking-[0.3em] text-[#B5FF00]">
               Método de pago
             </span>
@@ -196,7 +196,7 @@ function PaymentSection({ routine }) {
                 className="h-10"
               />
             </div>
-            <p className="text-xs text-neutral-500">
+            <p className="text-xs text-gray-500">
               Pago 100% seguro en pesos argentinos. Se respeta la integración
               oficial utilizada en la versión administrativa.
             </p>
@@ -205,7 +205,7 @@ function PaymentSection({ routine }) {
           <button
             type="submit"
             disabled={processing}
-            className="rounded-full bg-[#B5FF00] px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-[#c7ff3d] disabled:cursor-not-allowed disabled:opacity-70"
+            className="rounded-full bg-[#B5FF00] px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-[#D0FF4D] disabled:cursor-not-allowed disabled:bg-[#2E2E2E] disabled:text-gray-500 disabled:hover:bg-[#2E2E2E]"
           >
             {processing
               ? "Procesando..."

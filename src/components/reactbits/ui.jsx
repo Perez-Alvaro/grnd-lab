@@ -30,27 +30,27 @@ export const Button = forwardRef(function Button(
   const palette = {
     primary: {
       solid:
-        "bg-[#d7ff00] text-neutral-900 hover:bg-[#e4ff4d] focus-visible:ring-[#d7ff00]/60",
+        "bg-[#B5FF00] text-black hover:bg-[#D0FF4D] focus-visible:ring-[#B5FF00]/60",
       outline:
-        "border-2 border-[#d7ff00] text-neutral-900 hover:bg-[#d7ff00]/10 focus-visible:ring-[#d7ff00]/40",
+        "border-2 border-[#B5FF00] text-[#B5FF00] hover:bg-[#B5FF00]/10 focus-visible:ring-[#B5FF00]/40",
       ghost:
-        "text-neutral-900 hover:bg-[#d7ff00]/10 focus-visible:ring-[#d7ff00]/40",
+        "text-[#B5FF00] hover:bg-[#B5FF00]/10 focus-visible:ring-[#B5FF00]/40",
     },
     lime: {
       solid:
-        "bg-[#d7ff00] text-neutral-900 hover:bg-[#e4ff4d] focus-visible:ring-[#d7ff00]/60",
+        "bg-[#B5FF00] text-black hover:bg-[#D0FF4D] focus-visible:ring-[#B5FF00]/60",
       outline:
-        "border-2 border-[#d7ff00] text-neutral-900 hover:bg-[#d7ff00]/10 focus-visible:ring-[#d7ff00]/40",
+        "border-2 border-[#B5FF00] text-[#B5FF00] hover:bg-[#B5FF00]/10 focus-visible:ring-[#B5FF00]/40",
       ghost:
-        "text-[#508200] hover:bg-[#d7ff00]/15 focus-visible:ring-[#d7ff00]/40",
+        "text-[#B5FF00] hover:bg-[#B5FF00]/10 focus-visible:ring-[#B5FF00]/40",
     },
     neutral: {
       solid:
-        "bg-neutral-900 text-white hover:bg-neutral-800 focus-visible:ring-neutral-900/60",
+        "bg-[#1A1A1A] text-gray-200 hover:bg-[#222] focus-visible:ring-[#B5FF00]/20",
       outline:
-        "border border-neutral-300 text-neutral-800 hover:bg-white focus-visible:ring-neutral-400/40",
+        "border border-[#2E2E2E] text-gray-200 hover:bg-[#1A1A1A] focus-visible:ring-[#B5FF00]/20",
       ghost:
-        "text-neutral-600 hover:bg-neutral-200/70 focus-visible:ring-neutral-400/40",
+        "text-gray-400 hover:bg-[#1A1A1A] focus-visible:ring-[#B5FF00]/20",
     },
   };
 
@@ -119,7 +119,7 @@ export const DialogContent = forwardRef(function DialogContent(
     <div
       ref={ref}
       className={cn(
-        "bg-white rounded-3xl shadow-2xl overflow-hidden animate-[fadeIn_0.4s_ease-out]",
+        "bg-[#0E0E0E] rounded-3xl border border-[#2E2E2E] shadow-[0_50px_140px_-70px_rgba(0,0,0,0.85)] overflow-hidden animate-[fadeIn_0.4s_ease-out]",
         className,
       )}
       {...props}
@@ -135,14 +135,14 @@ export const DialogHeader = ({ className = "", children }) => (
 
 export const DialogTitle = ({ className = "", children }) => (
   <h3
-    className={cn("text-2xl md:text-3xl font-bold text-neutral-900", className)}
+    className={cn("text-2xl md:text-3xl font-bold text-white", className)}
   >
     {children}
   </h3>
 );
 
 export const DialogDescription = ({ className = "", children }) => (
-  <p className={cn("mt-3 text-base text-neutral-600", className)}>{children}</p>
+  <p className={cn("mt-3 text-base text-gray-400", className)}>{children}</p>
 );
 
 export const DialogFooter = ({ className = "", children }) => (
