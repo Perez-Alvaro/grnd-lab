@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import {
   Button,
   FadeIn,
@@ -9,9 +9,10 @@ import GoalSelector from "../components/GoalSelector.jsx";
 import RoutineCarousel from "../components/RoutineCarousel.jsx";
 import RoutinePreviewModal from "../components/RoutinePreviewModal.jsx";
 import PaymentSection from "../components/PaymentSection.jsx";
-import { clientRoutines } from "../data/clientRoutines.js";
+import { useAppContext } from "../context/AppContext.jsx";
 
 function ClientRoutineSelection() {
+  const { state } = useAppContext();
   const heroRef = useRef(null);
   const genderRef = useRef(null);
   const [selectedGender, setSelectedGender] = useState(null);
@@ -20,18 +21,64 @@ function ClientRoutineSelection() {
   const [previewRoutine, setPreviewRoutine] = useState(null);
   const [selectedRoutine, setSelectedRoutine] = useState(null);
 
+  const goalMapping = useMemo(
+    () => ({
+      fat_loss: "perdida_grasa",
+      muscle_gain: "volumen",
+    }),
+    [],
+  );
+
+  const trainerRoutines = useMemo(() => {
+    return (state.templates || []).map((template) => {
+      const rawTags = Array.isArray(template.tags)
+        ? template.tags
+        : typeof template.tags === "string"
+          ? template.tags.split(",").map((tag) => tag.trim()).filter(Boolean)
+          : [];
+
+      return {
+        id: template.id,
+        name: template.name || "Plan sin título",
+        title: template.name || "Plan sin título",
+        description: template.description || template.notes || "",
+        duration: template.duration ? String(template.duration) : "",
+        frequency: template.frequency ? String(template.frequency) : "",
+        level: template.level || "",
+        tags: rawTags,
+        image: template.image || "",
+        gender: template.gender || "",
+        objective: template.objective || "",
+        price: template.price ?? 0,
+      };
+    });
+  }, [state.templates]);
+
   useEffect(() => {
     if (selectedGender && selectedGoal) {
+      const mappedGoal = goalMapping[selectedGoal] || selectedGoal;
       setFilteredRoutines(
-        clientRoutines.filter(
-          (routine) =>
-            routine.gender === selectedGender && routine.goal === selectedGoal,
-        ),
+        trainerRoutines.filter((routine) => {
+          const matchesGender =
+            !routine.gender || routine.gender === selectedGender;
+          const matchesGoal =
+            !mappedGoal || routine.objective === mappedGoal;
+          return matchesGender && matchesGoal;
+        }),
       );
     } else {
       setFilteredRoutines([]);
     }
-  }, [selectedGender, selectedGoal]);
+  }, [goalMapping, selectedGender, selectedGoal, trainerRoutines]);
+
+  useEffect(() => {
+    if (
+      selectedRoutine &&
+      !filteredRoutines.some((routine) => routine.id === selectedRoutine.id)
+    ) {
+      setSelectedRoutine(null);
+    }
+  }, [filteredRoutines, selectedRoutine]);
 
   const readyForRoutines = useMemo(
     () => Boolean(selectedGender && selectedGoal),
@@ -41,6 +88,13 @@ function ClientRoutineSelection() {
   const handleStart = () => {
     genderRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  const handleSelectRoutine = useCallback((routine) => {
+    setSelectedRoutine(routine);
+    document
+      .getElementById("pago")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
 
   return (
     <div className="flex w-full flex-col items-center bg-neutral-950 text-white">
@@ -113,6 +167,7 @@ function ClientRoutineSelection() {
           <RoutineCarousel
             routines={filteredRoutines}
             onPreview={setPreviewRoutine}
+            onSelect={handleSelectRoutine}
           />
         </TransitionBox>
 
@@ -126,11 +181,8 @@ function ClientRoutineSelection() {
         open={Boolean(previewRoutine)}
         onClose={() => setPreviewRoutine(null)}
         onSelect={(routine) => {
-          setSelectedRoutine(routine);
+          handleSelectRoutine(routine);
           setPreviewRoutine(null);
-          document
-            .getElementById("pago")
-            ?.scrollIntoView({ behavior: "smooth" });
         }}
       />
     </div>

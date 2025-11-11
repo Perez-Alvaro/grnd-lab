@@ -7,7 +7,11 @@
     "objective": "volumen",
     "plan": "premium",
     "name": "Masculino Volumen FST-7 4x/semana",
-    "tags": ["fst-7", "hipertrofia", "superseries"],
+    "tags": [
+      "fst-7",
+      "hipertrofia",
+      "superseries"
+    ],
     "notes": "Rutina enfocada en hipertrofia con técnicas FST-7. Ajustar cargas semanalmente manteniendo el RIR objetivo.",
     "author": "Matías Zaccaro",
     "createdAt": "2025-01-05",
@@ -876,7 +880,11 @@
           }
         ]
       }
-    ]
+    ],
+    "description": "Programa orientado a hipertrofia y fuerza con bloques FST-7, progresiones controladas y seguimiento semanal para atletas intermedios.",
+    "level": "Intermedio",
+    "image": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1600&q=80",
+    "price": 32999
   },
   {
     "id": 2,
@@ -886,7 +894,11 @@
     "objective": "perdida_grasa",
     "plan": "basic",
     "name": "Full Body Definición 3x/semana",
-    "tags": ["full-body", "definicion", "metabolico"],
+    "tags": [
+      "full-body",
+      "definicion",
+      "metabolico"
+    ],
     "notes": "Rutina de fuerza combinada con estímulo metabólico y sesiones de descanso activo.",
     "author": "Matías Zaccaro",
     "createdAt": "2025-01-05",
@@ -1547,6 +1559,10 @@
           }
         ]
       }
-    ]
+    ],
+    "description": "Ciclo funcional de definición que combina fuerza, acondicionamiento metabólico y estabilidad central con cargas progresivas.",
+    "level": "Principiante - Intermedio",
+    "image": "https://images.unsplash.com/photo-1556817411-31ae72fa3ea0?auto=format&fit=crop&w=1600&q=80",
+    "price": 28999
   }
 ]

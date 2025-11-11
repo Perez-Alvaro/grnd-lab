@@ -58,12 +58,22 @@ const RoutinePreview = memo(() => {
                 {plan.metadata.durationWeeks} semanas
               </span>
             )}
+            {plan.metadata.level && (
+              <span className="rounded-full border border-[#787878]/20 bg-[#787878]/20 px-3 py-1">
+                Nivel {plan.metadata.level}
+              </span>
+            )}
             {plan.metadata.author && (
               <span className="rounded-full border border-[#787878]/20 bg-[#787878]/20 px-3 py-1 capitalize">
                 {plan.metadata.author}
               </span>
             )}
           </div>
+          {plan.metadata.description && (
+            <p className="text-sm text-[#C9C9C9]">
+              {plan.metadata.description}
+            </p>
+          )}
           {tags.length > 0 && (
             <div className="flex flex-wrap justify-center gap-2 text-[11px] text-[#787878]">
               {tags.map((tag) => (
