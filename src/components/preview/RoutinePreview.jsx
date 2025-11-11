@@ -2,6 +2,7 @@ import { memo, useMemo, useState, useCallback } from 'react';
 import { usePlanContext } from '../../context/PlanContext.jsx';
 import WeekPreview from './WeekPreview.jsx';
 import { buildWeekAnchors } from '../../pdf/utils/pdfAnchors.js';
+import { TRAINING_GOAL_LABELS } from '../../constants/objectives.js';
 
 const RoutinePreview = memo(() => {
   const { plan } = usePlanContext();
@@ -46,7 +47,7 @@ const RoutinePreview = memo(() => {
           <div className="flex flex-wrap justify-center gap-2 text-xs uppercase tracking-wider text-[#787878]">
             {plan.metadata.objective && (
               <span className="rounded-full border border-[#787878]/20 bg-[#787878]/20 px-3 py-1 capitalize">
-                {plan.metadata.objective}
+                {TRAINING_GOAL_LABELS[plan.metadata.objective] || plan.metadata.objective}
               </span>
             )}
             {plan.metadata.frequency && (

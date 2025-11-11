@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowLeft, Check, Star, MessageCircle, Crown } from 'lucide-react';
+import { TRAINING_GOAL_LABELS } from '../constants/objectives.js';
 
 function PlanSelector({ routine, onSelect, onBack }) {
   const plans = [
@@ -40,38 +41,34 @@ function PlanSelector({ routine, onSelect, onBack }) {
 
   const routinePreview = {
     male: {
-      fat_loss: { title: 'Programa Masculino de Pérdida de Grasa', focus: 'Recomposición corporal' },
-      hypertrophy: { title: 'Programa de Hipertrofia Masculino', focus: 'Fuerza y masa' },
-      strength: { title: 'Programa de Fuerza Masculino', focus: 'Power básico' },
-      power: { title: 'Programa de Potencia Masculino', focus: 'Explosividad atlética' },
-      functional: { title: 'Programa Funcional Masculino', focus: 'Calistenia y control motor' },
-      hybrid: { title: 'Programa Híbrido Masculino', focus: 'Fuerza + resistencia' },
-      swimmers: { title: 'Programa Dryland Nadadores', focus: 'Escápulas y cadena posterior' }
+      volumen: {
+        title: 'Programa Masculino Volumen FST-7',
+        focus: 'Hipertrofia con técnicas de fascia y congestión controlada'
+      },
+      perdida_grasa: {
+        title: 'Programa Masculino Definición Metabólica',
+        focus: 'Circuitos full body con énfasis en fuerza y gasto calórico'
+      }
     },
     female: {
-      fat_loss: { title: 'Programa Femenino de Pérdida de Grasa', focus: 'Recomposición corporal' },
-      hypertrophy: { title: 'Programa de Hipertrofia Femenino', focus: 'Curvas y fuerza' },
-      strength: { title: 'Programa de Fuerza Femenino', focus: 'Power básico' },
-      power: { title: 'Programa de Potencia Femenino', focus: 'Explosividad atlética' },
-      functional: { title: 'Programa Funcional Femenino', focus: 'Calistenia y control motor' },
-      hybrid: { title: 'Programa Híbrido Femenino', focus: 'Fuerza + resistencia' },
-      swimmers: { title: 'Programa Dryland Nadadoras', focus: 'Escápulas y cadena posterior' }
+      volumen: {
+        title: 'Programa Femenino Volumen Esculpido',
+        focus: 'Hipertrofia estratégica con énfasis en glúteos y tren superior'
+      },
+      perdida_grasa: {
+        title: 'Programa Femenino Definición Total',
+        focus: 'Sesiones full body con bloques metabólicos y core activo'
+      }
     }
   };
 
   const genderLabel = { male: 'masculino', female: 'femenino' };
-  const objectiveLabel = {
-    fat_loss: 'pérdida de grasa',
-    hypertrophy: 'hipertrofia',
-    strength: 'fuerza',
-    power: 'potencia',
-    functional: 'funcional',
-    hybrid: 'híbrido',
-    swimmers: 'nadadores',
-    volume: 'volumen'
-  };
+  const objectiveLabel = TRAINING_GOAL_LABELS;
 
-  const preview = routinePreview[routine.gender][routine.objective];
+  const preview = routinePreview[routine.gender]?.[routine.objective] || {
+    title: 'Plan personalizado',
+    focus: 'Entrenamiento adaptado a tus objetivos'
+  };
 
   return (
     <section className="max-w-6xl mx-auto">
