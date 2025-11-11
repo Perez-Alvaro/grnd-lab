@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext.jsx';
-import { generateRoutinePdf } from '../utils/pdf.jsx';
+import usePDFExport from '../pdf/hooks/usePDFExport.js';
 import TemplateCard from '../components/TemplateCard.jsx';
 import {
   Users,
@@ -27,6 +27,7 @@ function AdminDashboard() {
   const { state, dispatch } = useAppContext();
   const [activeTab, setActiveTab] = useState('overview');
   const navigate = useNavigate();
+  const exportPlan = usePDFExport();
 
   const tabs = [
     { id: 'overview', label: 'Resumen', icon: Eye },
@@ -109,14 +110,25 @@ function AdminDashboard() {
 
     const migrated = migrate(template);
 
-    const data = {
+    const planData = {
       planName: migrated.name,
+      frequency: migrated.frequency ? `${migrated.frequency} días/semana` : '',
       objective: migrated.objective,
-      frecuencia: `${migrated.frequency} días/semana`,
-      dias: migrated.days,
+      weeks: [
+        {
+          title: 'Semana 1',
+          summary: '',
+          notes: [],
+          days: migrated.days.map((day, index) => ({
+            ...day,
+            title: day.title || `Día ${index + 1}`,
+            type: day.type || 'ENTRENAMIENTO',
+          })),
+        },
+      ],
     };
 
-    generateRoutinePdf(data);
+    exportPlan(planData);
   };
 
   const handleSendWhatsApp = (user) => {

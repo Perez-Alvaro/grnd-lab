@@ -26,13 +26,13 @@ src/
 ## 🔧 Mocks y futura integración
 - `src/utils/mockApi.js` contiene funciones que simulan pago y envío de rutinas.
 - `src/utils/api.js` define funciones vacías para futuras llamadas a `/api/pagar`, `/api/generarRutina` y `/api/enviarRutina`.
-- `src/utils/pdf.jsx` exporta `generateRoutinePdf` que arma PDFs con tarjetas oscuras mobile‑friendly usando `@react-pdf/renderer`.
+- `src/pdf/PlanRenderer.jsx` expone `generateTrainingPlanPDF` con la nueva plantilla unificada, construida con `@react-pdf/renderer`.
 
 Para conectar con un backend real, reemplazá las funciones de `mockApi.js` por llamadas a los métodos definidos en `api.js`.
 
 ## 📄 Generación de PDF
 
-El PDF muestra cada ejercicio como una card oscura con miniatura, métricas en grilla (series, repeticiones, descanso, cadencia, RIR y notas) y encabezados por día. Diseñado mobile-first con contraste AA y margenes de 24/36 px.
+El PDF comienza con una portada y un índice interactivo que enlaza a cada semana del plan. Luego, cada semana se muestra en secciones independientes con sus días (entrenamiento o descanso), tablas de ejercicios con columnas estándar (Ejercicio, Series, Reps, Desc, Video) y notas en viñetas, respetando la paleta oscura original.
 
 ## 💡 Notas
 Este repositorio está listo para ser mostrado como prototipo funcional y para escalar a una integración completa con backend.
