@@ -36,6 +36,11 @@ El PDF comienza con una portada y un índice interactivo que enlaza a cada seman
 
 ## 💡 Notas
 Este repositorio está listo para ser mostrado como prototipo funcional y para escalar a una integración completa con backend.
-PARA BORRAR LA ULTIMA VERSION Y HACER ROLLBACK 
+
+## PARA BORRAR LA ULTIMA VERSION Y HACER ROLLBACK 
 git reset --hard HEAD~1
 git push origin main --force
+## PARA LIMPIAR DEPENDENCIAS Y REINSTALAR 
+rm -rf node_modules package-lock.json
+npm cache clean --force
+npm install --legacy-peer-deps
