@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { Fragment, memo } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 
 const DayPreview = ({ day }) => {
@@ -22,65 +22,75 @@ const DayPreview = ({ day }) => {
 
       {!isRest && (
         <div className="space-y-3">
-          <div className="hidden md:grid grid-cols-7 gap-4 text-[11px] uppercase tracking-wide text-[#787878]">
-            <span className="col-span-2">Ejercicio</span>
-            <span>Series</span>
-            <span>Reps</span>
-            <span>Desc</span>
-            <span>RIR</span>
-            <span>Cadencia</span>
-            <span>Video</span>
+          <div className="overflow-x-auto">
+            <table className="min-w-[720px] w-full border-collapse text-sm">
+              <thead>
+                <tr className="text-[11px] uppercase tracking-wide text-[#787878] border-b border-[#787878]/20">
+                  <th className="py-2 pr-3 text-left font-semibold">Ejercicio</th>
+                  <th className="px-3 py-2 text-center font-semibold">Series</th>
+                  <th className="px-3 py-2 text-center font-semibold">Reps</th>
+                  <th className="px-3 py-2 text-center font-semibold">Desc</th>
+                  <th className="px-3 py-2 text-center font-semibold">RIR</th>
+                  <th className="px-3 py-2 text-center font-semibold">Cadencia</th>
+                  <th className="px-3 py-2 text-right font-semibold">Video</th>
+                </tr>
+              </thead>
+              <tbody>
+                {day.exercises.map((exercise, exerciseIndex) => {
+                  const setsValue = exercise.sets ?? exercise.series;
+                  const sets = setsValue === 0 || setsValue ? setsValue : '–';
+                  const repsValue = exercise.reps;
+                  const reps = repsValue === 0 || repsValue ? repsValue : '–';
+                  const restValue = exercise.rest ?? exercise.descanso;
+                  const rest = restValue === 0 || restValue ? restValue : '–';
+                  const rir = exercise.rir ?? '–';
+                  const tempoValue = exercise.tempo ?? exercise.cadencia;
+                  const tempo = tempoValue === 0 || tempoValue ? tempoValue : '–';
+                  const videoUrl = exercise.video || exercise.videoUrl;
+                  const rawNote = exercise.note ?? exercise.notes;
+                  const note = Array.isArray(rawNote) ? rawNote.join('\n') : rawNote;
+
+                  return (
+                    <Fragment key={exercise.id || exerciseIndex}>
+                      <tr className="border-b border-[#787878]/20 text-[#C9C9C9]">
+                        <td className="py-3 pr-3 text-left text-sm font-medium text-white align-top">
+                          {exercise.name || '—'}
+                        </td>
+                        <td className="px-3 py-3 text-center align-top">{sets}</td>
+                        <td className="px-3 py-3 text-center align-top">{reps}</td>
+                        <td className="px-3 py-3 text-center align-top">{rest}</td>
+                        <td className="px-3 py-3 text-center align-top">{rir}</td>
+                        <td className="px-3 py-3 text-center align-top">{tempo}</td>
+                        <td className="px-3 py-3 text-right align-top">
+                          {videoUrl ? (
+                            <a
+                              href={videoUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label="Ver video del ejercicio"
+                              className="text-sm font-semibold text-[#CBFF00] hover:underline"
+                            >
+                              Ver
+                            </a>
+                          ) : (
+                            <span className="text-[#787878]">Sin video</span>
+                          )}
+                        </td>
+                      </tr>
+                      {note && (
+                        <tr className="border-b border-[#787878]/20 last:border-0">
+                          <td colSpan={7} className="px-3 pb-3 pt-2 align-top text-sm text-[#C9C9C9]">
+                            <p className="text-xs uppercase text-[#787878]">Notas</p>
+                            <p className="mt-1 whitespace-pre-line">{note}</p>
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
-          {day.exercises.map(exercise => (
-            <div key={exercise.id} className="space-y-2">
-              <div className="grid grid-cols-3 gap-x-4 gap-y-1 items-start md:grid-cols-7 md:gap-y-0 md:items-center">
-                <span className="col-span-3 block overflow-hidden text-sm font-medium text-white md:col-span-2 md:text-sm truncate">
-                  {exercise.name || '—'}
-                </span>
-                <div className="col-span-1 flex items-center justify-between overflow-hidden text-sm text-[#C9C9C9] md:block md:text-sm">
-                  <span className="text-xs uppercase text-[#787878] md:hidden">Series</span>
-                  <span className="block truncate">{exercise.sets || '—'}</span>
-                </div>
-                <div className="col-span-1 flex items-center justify-between overflow-hidden text-sm text-[#C9C9C9] md:block md:text-sm">
-                  <span className="text-xs uppercase text-[#787878] md:hidden">Reps</span>
-                  <span className="block truncate">{exercise.reps || '—'}</span>
-                </div>
-                <div className="col-span-1 flex items-center justify-between overflow-hidden text-sm text-[#C9C9C9] md:block md:text-sm">
-                  <span className="text-xs uppercase text-[#787878] md:hidden">Desc</span>
-                  <span className="block truncate">{exercise.rest || '—'}</span>
-                </div>
-                <div className="col-span-1 flex items-center justify-between overflow-hidden text-sm text-[#C9C9C9] md:block md:text-sm">
-                  <span className="text-xs uppercase text-[#787878] md:hidden">RIR</span>
-                  <span className="block truncate">{exercise.rir || '—'}</span>
-                </div>
-                <div className="col-span-1 flex items-center justify-between overflow-hidden text-sm text-[#C9C9C9] md:block md:text-sm">
-                  <span className="text-xs uppercase text-[#787878] md:hidden">Cadencia</span>
-                  <span className="block truncate">{exercise.tempo || '—'}</span>
-                </div>
-                <div className="col-span-3 overflow-hidden md:col-span-1 md:justify-self-end md:text-right">
-                  {exercise.video ? (
-                    <a
-                      href={exercise.video}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Ver video del ejercicio"
-                      className="block cursor-pointer text-sm font-semibold text-[#CBFF00] hover:underline"
-                    >
-                      Ver
-                    </a>
-                  ) : (
-                    <span className="text-sm text-[#787878]">Sin video</span>
-                  )}
-                </div>
-              </div>
-              {exercise.note && (
-                <div className="mt-2 md:pl-0">
-                  <p className="text-xs uppercase text-[#787878]">Notas</p>
-                  <p className="mt-1 text-sm text-[#C9C9C9] whitespace-pre-line">{exercise.note}</p>
-                </div>
-              )}
-            </div>
-          ))}
         </div>
       )}
     </div>

@@ -25,29 +25,51 @@ const ExerciseTable = ({ exercises, styles }) => {
         <Text style={[styles.tableCell, styles.seriesCol]}>Series</Text>
         <Text style={[styles.tableCell, styles.repsCol]}>Reps</Text>
         <Text style={[styles.tableCell, styles.restCol]}>Desc</Text>
+        <Text style={[styles.tableCell, styles.rirCol]}>RIR</Text>
+        <Text style={[styles.tableCell, styles.tempoCol]}>Cadencia</Text>
         <Text style={[styles.tableCell, styles.videoCol]}>Video</Text>
       </View>
-      {exercises.map((exercise, idx) => (
-        <View
-          key={`${exercise.name}-${idx}`}
-          style={[
-            styles.tableRow,
-            idx % 2 === 0 ? null : styles.tableRowAlternate,
-          ]}
-        >
-          <Text style={[styles.tableCell, styles.exerciseCol]}>{exercise.name}</Text>
-          <Text style={[styles.tableCell, styles.seriesCol]}>{exercise.series || '-'}</Text>
-          <Text style={[styles.tableCell, styles.repsCol]}>{exercise.reps || '-'}</Text>
-          <Text style={[styles.tableCell, styles.restCol]}>{exercise.descanso || '-'}</Text>
-          {exercise.videoUrl ? (
-            <Link src={exercise.videoUrl} style={[styles.tableCell, styles.videoCol, styles.videoLink]}>
-              Ver
-            </Link>
-          ) : (
-            <Text style={[styles.tableCell, styles.videoCol]}>-</Text>
-          )}
-        </View>
-      ))}
+      {exercises.map((exercise, idx) => {
+        const name = exercise.name || '—';
+        const setsValue = exercise.series ?? exercise.sets;
+        const sets = setsValue === 0 || setsValue ? setsValue : '–';
+        const repsValue = exercise.reps;
+        const reps = repsValue === 0 || repsValue ? repsValue : '–';
+        const restValue = exercise.rest ?? exercise.descanso;
+        const rest = restValue === 0 || restValue ? restValue : '–';
+        const rir =
+          exercise.rir === 0 || exercise.rir ? exercise.rir : '–';
+        const tempoValue = exercise.tempo ?? exercise.cadencia;
+        const tempo = tempoValue === 0 || tempoValue ? tempoValue : '–';
+        const videoUrl = exercise.video || exercise.videoUrl;
+
+        return (
+          <View
+            key={`${name}-${idx}`}
+            style={[
+              styles.tableRow,
+              idx % 2 === 0 ? null : styles.tableRowAlternate,
+            ]}
+          >
+            <Text style={[styles.tableCell, styles.exerciseCol]}>{name}</Text>
+            <Text style={[styles.tableCell, styles.seriesCol]}>{sets}</Text>
+            <Text style={[styles.tableCell, styles.repsCol]}>{reps}</Text>
+            <Text style={[styles.tableCell, styles.restCol]}>{rest}</Text>
+            <Text style={[styles.tableCell, styles.rirCol]}>{rir}</Text>
+            <Text style={[styles.tableCell, styles.tempoCol]}>{tempo}</Text>
+            {videoUrl ? (
+              <Link
+                src={videoUrl}
+                style={[styles.tableCell, styles.videoCol, styles.videoLink]}
+              >
+                Ver
+              </Link>
+            ) : (
+              <Text style={[styles.tableCell, styles.videoCol]}>-</Text>
+            )}
+          </View>
+        );
+      })}
     </View>
   );
 };

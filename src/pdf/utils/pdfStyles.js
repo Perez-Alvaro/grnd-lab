@@ -187,22 +187,37 @@ export const createBaseStyles = () =>
       color: palette.text,
     },
     exerciseCol: {
-      flexBasis: '36%',
+      flexBasis: '32%',
+      minWidth: 140,
     },
     seriesCol: {
-      flexBasis: '12%',
+      flexBasis: '11%',
+      minWidth: 40,
       textAlign: 'center',
     },
     repsCol: {
-      flexBasis: '12%',
+      flexBasis: '11%',
+      minWidth: 40,
       textAlign: 'center',
     },
     restCol: {
-      flexBasis: '16%',
+      flexBasis: '12%',
+      minWidth: 48,
+      textAlign: 'center',
+    },
+    rirCol: {
+      flexBasis: '10%',
+      minWidth: 40,
+      textAlign: 'center',
+    },
+    tempoCol: {
+      flexBasis: '12%',
+      minWidth: 56,
       textAlign: 'center',
     },
     videoCol: {
-      flexBasis: '16%',
+      flexBasis: '12%',
+      minWidth: 48,
       textAlign: 'center',
     },
     videoLink: {
