@@ -114,7 +114,7 @@ function ArrowButton({ direction = 'left', onClick, disabled }) {
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'absolute top-1/2 z-10 -translate-y-1/2 rounded-full bg-white shadow-lg p-3 text-neutral-900 transition-all hover:shadow-xl disabled:opacity-40',
+        'absolute top-1/2 z-10 -translate-y-1/2 rounded-full border border-[#B5FF00]/40 bg-neutral-950/90 p-3 text-[#B5FF00] transition-all hover:border-[#B5FF00] hover:bg-neutral-900 disabled:opacity-30',
         direction === 'left' ? 'left-3' : 'right-3'
       )}
     >

@@ -1,21 +1,7 @@
 import React, { useMemo, useState } from 'react';
-import {
-  Button,
-  Card,
-  CardBody,
-  Container,
-  FadeIn,
-  Tag,
-  TransitionBox
-} from './reactbits/index.js';
+import { FadeIn } from './reactbits/index.js';
 import { useAppContext } from '../context/AppContext.jsx';
 import { mockProcessPayment } from '../utils/mockApi.js';
-
-const paymentMethods = [
-  { id: 'mercadopago', label: 'MercadoPago', accent: '#00a6ff' },
-  { id: 'card', label: 'Tarjeta de crédito', accent: '#2d2d2d' },
-  { id: 'transfer', label: 'Transferencia bancaria', accent: '#6c8f00' }
-];
 
 function PaymentSection({ routine }) {
   const { dispatch } = useAppContext();
@@ -57,134 +43,119 @@ function PaymentSection({ routine }) {
   };
 
   if (!routine) {
-    return null;
+    return (
+      <FadeIn className="mt-24 rounded-2xl border border-dashed border-neutral-700 bg-neutral-900/70 p-12 text-center">
+        <h3 className="text-2xl font-semibold uppercase text-neutral-300">Seleccioná una rutina</h3>
+        <p className="mt-4 text-sm text-neutral-500">
+          Abrí una rutina disponible y confirmala para habilitar el checkout con Mercado Pago.
+        </p>
+      </FadeIn>
+    );
   }
 
   if (success) {
     return (
-      <section className="w-full py-24">
-        <Container className="max-w-3xl">
-          <FadeIn className="rounded-3xl bg-white p-12 shadow-xl">
-            <div className="mx-auto flex max-w-xl flex-col items-center text-center">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#d7ff00]/30 text-3xl">🎉</div>
-              <h2 className="mt-6 text-3xl font-extrabold text-neutral-900">¡Pago exitoso!</h2>
-              <p className="mt-4 text-neutral-600">
-                Tu rutina <strong>{routine.name}</strong> ya está en camino. En pocos minutos recibirás el acceso directo en tu correo.
-              </p>
-              <div className="mt-8 grid gap-4 rounded-2xl bg-[#f3f7dc] p-6 text-left text-neutral-700">
-                <p>• Enviaremos el PDF completo a {formData.email}</p>
-                <p>• Vas a recibir videos de técnica y recordatorios motivacionales</p>
-                <p>• Si necesitás ajustes, respondé al correo y personalizamos juntos</p>
-              </div>
-              <Button className="mt-8" color="lime" onClick={() => window.location.assign('/')}>Volver al inicio</Button>
-            </div>
-          </FadeIn>
-        </Container>
-      </section>
+      <FadeIn className="mt-20 rounded-2xl border border-[#B5FF00]/40 bg-neutral-900 p-12 text-center">
+        <div className="mx-auto flex max-w-xl flex-col items-center gap-6">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full border border-[#B5FF00] text-3xl">✅</div>
+          <div className="space-y-3">
+            <h2 className="text-3xl font-semibold uppercase text-white">Pago confirmado</h2>
+            <p className="text-sm text-neutral-400">
+              Enviamos <span className="text-white">{routine.name}</span> a <span className="text-white">{formData.email}</span>. También recibirás seguimiento técnico y actualizaciones automáticas.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="rounded-full bg-[#B5FF00] px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-[#c7ff3d]"
+            onClick={() => window.location.assign('/')}
+          >
+            Volver al inicio
+          </button>
+        </div>
+      </FadeIn>
     );
   }
 
   return (
-    <section id="pago" className="w-full py-24">
-      <Container className="max-w-5xl">
-        <FadeIn className="text-center">
-          <span className="text-sm uppercase tracking-[0.45em] text-neutral-500">Paso 04</span>
-          <h2 className="mt-3 text-3xl md:text-4xl font-bold text-neutral-900">Elegí tu método de pago</h2>
-          <p className="mt-4 text-lg text-neutral-600">
-            Finalizá tu acceso a la rutina y desbloqueá materiales exclusivos. Nada cambia en el backend, solo tu energía.
-          </p>
-        </FadeIn>
+    <section className="mt-16 flex flex-col gap-8">
+      <FadeIn className="flex flex-col gap-3 text-left">
+        <span className="text-xs uppercase tracking-[0.4em] text-[#B5FF00]">Paso 04</span>
+        <h2 className="text-3xl font-semibold uppercase text-white md:text-4xl">Checkout Mercado Pago</h2>
+        <p className="max-w-3xl text-sm text-neutral-400 md:text-base">
+          Confirmá tus datos y ejecutá el pago seguro con Mercado Pago. Mantenemos la integración existente sin modificar la lógica del backend.
+        </p>
+      </FadeIn>
 
-        <TransitionBox variant="fade-up" delay={180} className="mt-14">
-          <Card className="bg-white p-8 shadow-xl">
-            <CardBody className="space-y-8">
-              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div className="text-left">
-                  <h3 className="text-2xl font-semibold text-neutral-900">{routine.name}</h3>
-                  <p className="mt-2 text-sm text-neutral-500">
-                    {routine.duration} • {routine.frequency} días por semana • Nivel {routine.level}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs uppercase tracking-[0.3em] text-neutral-500">Inversión</span>
-                  <p className="text-3xl font-bold text-neutral-900">${routine.price.toLocaleString('es-AR')}</p>
-                </div>
-              </div>
+      <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-8 shadow-[0_0_35px_-20px_rgba(181,255,0,0.5)]">
+        <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+          <div className="space-y-2">
+            <h3 className="text-2xl font-semibold text-white">{routine.name}</h3>
+            <p className="text-sm text-neutral-400">
+              {routine.duration} • {routine.frequency} sesiones semanales • Nivel {routine.level}
+            </p>
+          </div>
+          <div className="text-left md:text-right">
+            <span className="text-xs uppercase tracking-[0.3em] text-neutral-500">Inversión</span>
+            <p className="text-3xl font-bold text-[#B5FF00]">${routine.price.toLocaleString('es-AR')}</p>
+          </div>
+        </div>
 
-              <form className="grid gap-6" onSubmit={handleSubmit}>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <label className="flex flex-col text-left text-sm font-medium text-neutral-600">
-                    Nombre
-                    <input
-                      required
-                      value={formData.firstName}
-                      onChange={(event) => handleChange('firstName', event.target.value)}
-                      className="mt-2 rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-800 focus:border-[#d7ff00] focus:outline-none"
-                      placeholder="Tu nombre"
-                    />
-                  </label>
-                  <label className="flex flex-col text-left text-sm font-medium text-neutral-600">
-                    Apellido
-                    <input
-                      required
-                      value={formData.lastName}
-                      onChange={(event) => handleChange('lastName', event.target.value)}
-                      className="mt-2 rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-800 focus:border-[#d7ff00] focus:outline-none"
-                      placeholder="Tu apellido"
-                    />
-                  </label>
-                </div>
-                <label className="flex flex-col text-left text-sm font-medium text-neutral-600">
-                  Email de entrega
-                  <input
-                    required
-                    type="email"
-                    value={formData.email}
-                    onChange={(event) => handleChange('email', event.target.value)}
-                    className="mt-2 rounded-xl border border-neutral-300 bg-white px-4 py-3 text-neutral-800 focus:border-[#d7ff00] focus:outline-none"
-                    placeholder="tuemail@example.com"
-                  />
-                  <span className="mt-1 text-xs text-neutral-400">Enviaremos la rutina y accesos exclusivos a este correo.</span>
-                </label>
+        <form className="mt-8 grid gap-6" onSubmit={handleSubmit}>
+          <div className="grid gap-4 md:grid-cols-2">
+            <label className="flex flex-col gap-2 text-sm font-medium text-neutral-300">
+              Nombre
+              <input
+                required
+                value={formData.firstName}
+                onChange={(event) => handleChange('firstName', event.target.value)}
+                className="rounded-lg border border-neutral-700 bg-neutral-950 px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none"
+                placeholder="Tu nombre"
+              />
+            </label>
+            <label className="flex flex-col gap-2 text-sm font-medium text-neutral-300">
+              Apellido
+              <input
+                required
+                value={formData.lastName}
+                onChange={(event) => handleChange('lastName', event.target.value)}
+                className="rounded-lg border border-neutral-700 bg-neutral-950 px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none"
+                placeholder="Tu apellido"
+              />
+            </label>
+          </div>
 
-                <div className="grid gap-3 md:grid-cols-3">
-                  {paymentMethods.map((method) => (
-                    <div
-                      key={method.id}
-                      className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4 text-center text-sm font-semibold text-neutral-700"
-                      style={{ boxShadow: `inset 0 0 0 1px ${method.accent}20` }}
-                    >
-                      {method.label}
-                    </div>
-                  ))}
-                </div>
+          <label className="flex flex-col gap-2 text-sm font-medium text-neutral-300">
+            Email de entrega
+            <input
+              required
+              type="email"
+              value={formData.email}
+              onChange={(event) => handleChange('email', event.target.value)}
+              className="rounded-lg border border-neutral-700 bg-neutral-950 px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none"
+              placeholder="tuemail@example.com"
+            />
+            <span className="text-xs text-neutral-500">Enviaremos la rutina, seguimiento y comprobante a este correo.</span>
+          </label>
 
-                <div className="grid gap-4 rounded-2xl bg-neutral-900/90 p-6 text-sm text-neutral-100">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Tag tone="lime">Seguro y cifrado</Tag>
-                    <Tag tone="lime">Soporte humano</Tag>
-                    <Tag tone="lime">Actualizaciones gratis</Tag>
-                  </div>
-                  <p>
-                    Esta es una pasarela demo. Al desplegar en producción mantenemos la integración actual con MercadoPago y tarjetas, sin tocar el backend.
-                  </p>
-                </div>
+          <div className="flex flex-col items-center gap-4 rounded-xl border border-neutral-800 bg-neutral-950 p-6 text-center">
+            <span className="text-sm font-semibold uppercase tracking-[0.3em] text-[#B5FF00]">Método de pago</span>
+            <div className="flex items-center justify-center">
+              <img src="/logos/mercadopago.svg" alt="Mercado Pago" className="h-10" />
+            </div>
+            <p className="text-xs text-neutral-500">
+              Pago 100% seguro en pesos argentinos. Se respeta la integración oficial utilizada en la versión administrativa.
+            </p>
+          </div>
 
-                <Button
-                  type="submit"
-                  color="lime"
-                  size="lg"
-                  rounded="full"
-                  className="w-full shadow-lg hover:shadow-xl"
-                  disabled={processing}
-                >
-                  {processing ? 'Procesando...' : `Completar pedido - $${routine.price.toLocaleString('es-AR')}`}
-                </Button>
-              </form>
-            </CardBody>
-          </Card>
-        </TransitionBox>
-      </Container>
+          <button
+            type="submit"
+            disabled={processing}
+            className="rounded-full bg-[#B5FF00] px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-[#c7ff3d] disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            {processing ? 'Procesando...' : `Proceder al pago - $${routine.price.toLocaleString('es-AR')}`}
+          </button>
+        </form>
+      </div>
     </section>
   );
 }

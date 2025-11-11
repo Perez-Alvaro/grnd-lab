@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Container, FadeIn, TransitionBox } from '../components/reactbits/index.js';
+import { Button, FadeIn, TransitionBox } from '../components/reactbits/index.js';
 import GenderSelector from '../components/GenderSelector.jsx';
 import GoalSelector from '../components/GoalSelector.jsx';
 import RoutineCarousel from '../components/RoutineCarousel.jsx';
@@ -33,64 +33,67 @@ function ClientRoutineSelection() {
   };
 
   return (
-    <div className="bg-gradient-to-b from-[#f5f6f3] via-[#f7f8f2] to-[#eef0e3] text-neutral-900">
-      <section ref={heroRef} className="relative flex min-h-[80vh] flex-col items-center justify-center overflow-hidden py-20">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#f5f6f3] via-[#f0f2e8] to-[#e7eadb]" />
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1571019613576-2b22c76fd955?auto=format&fit=crop&w=1600&q=80')] bg-cover bg-center opacity-20" />
+    <div className="flex w-full flex-col items-center bg-neutral-950 text-white">
+      <section className="w-full max-w-6xl px-6 py-12 md:py-16">
+        <div
+          ref={heroRef}
+          className="relative overflow-hidden rounded-3xl border border-neutral-800 bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800"
+        >
+          <div className="absolute inset-0 opacity-30">
+            <div className="h-full w-full bg-[url('https://images.unsplash.com/photo-1517832207067-4db24a2ae47c?auto=format&fit=crop&w=1600&q=80')] bg-cover bg-center mix-blend-screen" />
+          </div>
+          <div className="relative z-10 flex flex-col items-start gap-6 px-8 py-16 md:px-16 md:py-20">
+            <FadeIn className="flex w-full flex-col gap-6 text-left">
+              <div className="flex items-center gap-3 text-sm uppercase tracking-[0.4em] text-[#B5FF00]">
+                <span className="h-px flex-1 bg-[#B5FF00]/40" />
+                <span>Gateway Cliente</span>
+                <span className="h-px flex-1 bg-[#B5FF00]/40" />
+              </div>
+              <h1 className="text-4xl font-bold uppercase leading-tight text-white md:text-6xl">
+                Elegí tu entrenamiento. Superá tus límites.
+              </h1>
+              <p className="max-w-2xl text-base text-neutral-300 md:text-lg">
+                Planes diseñados por entrenadores certificados. Seleccioná tu perfil, objetivo y desbloqueá rutinas con enfoque técnico y resultados medibles.
+              </p>
+              <div className="flex flex-wrap items-center gap-4">
+                <Button
+                  size="lg"
+                  rounded="full"
+                  className="bg-[#B5FF00] px-8 py-4 text-base font-semibold uppercase tracking-wide text-black transition-transform hover:-translate-y-0.5 hover:bg-[#c7ff3d]"
+                  onClick={handleStart}
+                >
+                  Comenzar selección
+                </Button>
+                <Button
+                  variant="outline"
+                  color="neutral"
+                  rounded="full"
+                  className="border border-[#B5FF00]/40 bg-transparent px-6 py-3 text-sm font-semibold uppercase tracking-wide text-neutral-200 hover:border-[#B5FF00] hover:bg-[#B5FF00]/10"
+                  onClick={() => document.getElementById('rutinas')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  Ver planes disponibles
+                </Button>
+              </div>
+            </FadeIn>
+          </div>
         </div>
-        <Container className="relative z-10 max-w-4xl text-center">
-          <FadeIn className="space-y-6">
-            <span className="inline-flex items-center justify-center rounded-full bg-white/70 px-5 py-2 text-sm font-semibold text-neutral-600 shadow-md">
-              Nueva pasarela emocional MZ Experience
-            </span>
-            <h1 className="text-4xl font-extrabold text-neutral-900 md:text-6xl">
-              Transformá tu energía con rutinas guiadas paso a paso
-            </h1>
-            <p className="text-lg text-neutral-700 md:text-xl">
-              Deslizá por una experiencia inmersiva, conectá con tu propósito y desbloqueá la rutina que mejor acompaña tu momento vital.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <Button
-                color="primary"
-                rounded="full"
-                size="lg"
-                className="shadow-xl hover:shadow-2xl"
-                onClick={handleStart}
-              >
-                Comenzar mi transformación
-              </Button>
-              <Button
-                variant="ghost"
-                color="neutral"
-                rounded="full"
-                size="md"
-                onClick={() => document.getElementById('rutinas')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                Ver rutinas
-              </Button>
-            </div>
-          </FadeIn>
-        </Container>
+
+        <div ref={genderRef} className="mt-14 md:mt-20">
+          <GenderSelector selectedGender={selectedGender} onSelect={setSelectedGender} />
+        </div>
+
+        <TransitionBox variant="fade-up">
+          <GoalSelector selectedGoal={selectedGoal} onSelect={setSelectedGoal} readyForRoutines={readyForRoutines} />
+        </TransitionBox>
+
+        <TransitionBox id="rutinas" variant="fade-up" delay={120}>
+          <RoutineCarousel routines={filteredRoutines} onPreview={setPreviewRoutine} />
+        </TransitionBox>
+
+        <TransitionBox id="pago" variant="fade-up" delay={160}>
+          <PaymentSection routine={selectedRoutine} />
+        </TransitionBox>
       </section>
-
-      <div ref={genderRef}>
-        <GenderSelector selectedGender={selectedGender} onSelect={setSelectedGender} onCta={() => document.getElementById('objetivo')?.scrollIntoView({ behavior: 'smooth' })} />
-      </div>
-
-      <TransitionBox variant="fade-up">
-        <GoalSelector selectedGoal={selectedGoal} onSelect={setSelectedGoal} readyForRoutines={readyForRoutines} />
-      </TransitionBox>
-
-      <RoutineCarousel
-        routines={filteredRoutines}
-        onPreview={setPreviewRoutine}
-        onSelect={(routine) => {
-          setPreviewRoutine(routine);
-        }}
-      />
-
-      <PaymentSection routine={selectedRoutine} />
 
       <RoutinePreviewModal
         routine={previewRoutine}

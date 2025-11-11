@@ -1,75 +1,61 @@
 import React from 'react';
-import { Button, Card, CardBody, Container, FadeIn } from './reactbits/index.js';
+import { FadeIn } from './reactbits/index.js';
 import { cn } from '../utils/cn.js';
 
 const goals = [
   {
     id: 'fat_loss',
-    title: 'Pérdida de grasa / recomposición',
-    description: 'Definí tu silueta con entrenamientos metabólicos, circuitos de fuerza y hábitos sostenibles.'
+    title: 'Pérdida de Grasa (Fuerza y Resistencia)',
+    description: 'Sesiones de fuerza metabolizada con bloques de conditioning y control de cargas para optimizar la recomposición.'
   },
   {
     id: 'muscle_gain',
-    title: 'Volumen / ganancia muscular',
-    description: 'Activá fases de sobrecarga progresiva con énfasis en fuerza, potencia y recuperación inteligente.'
+    title: 'Volumen (Fuerza e Hipertrofia)',
+    description: 'Programación de hipertrofia estructurada con énfasis en palancas, progresión lineal y capacidad neural.'
   }
 ];
 
 function GoalSelector({ selectedGoal, onSelect, readyForRoutines }) {
   return (
-    <section id="objetivo" className="w-full py-20">
-      <Container className="max-w-4xl">
-        <FadeIn className="text-center">
-          <span className="text-sm uppercase tracking-[0.45em] text-neutral-500">Paso 02</span>
-          <h2 className="mt-3 text-3xl md:text-4xl font-bold text-neutral-900">¿Cuál es tu objetivo principal?</h2>
-          <p className="mt-4 text-lg text-neutral-600">
-            Seleccioná el tipo de transformación que buscás para personalizar la propuesta emocional.
-          </p>
-        </FadeIn>
+    <section id="objetivo" className="mt-16 flex flex-col gap-8">
+      <FadeIn className="flex flex-col gap-3 text-left">
+        <span className="text-xs uppercase tracking-[0.4em] text-[#B5FF00]">Paso 02</span>
+        <h2 className="text-3xl font-semibold uppercase text-white md:text-4xl">Definí tu objetivo</h2>
+        <p className="max-w-3xl text-sm text-neutral-400 md:text-base">
+          Afinamos los bloques semanales y la densidad de entrenamiento según tu misión principal. Seleccioná la prioridad para filtrar la programación.
+        </p>
+      </FadeIn>
 
-        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2">
-          {goals.map((goal, index) => (
-            <FadeIn key={goal.id} delay={index * 140}>
-              <Card
-                interactive
-                className={cn(
-                  'border-2 border-transparent bg-white/70 backdrop-blur-sm transition-all duration-500 hover:border-[#d7ff00]/60',
-                  selectedGoal === goal.id && 'border-[#d7ff00] bg-[#f7fbe6] shadow-xl'
-                )}
-              >
-                <CardBody className="flex flex-col gap-4">
-                  <h3 className="text-2xl font-semibold text-neutral-900">{goal.title}</h3>
-                  <p className="text-sm text-neutral-600">{goal.description}</p>
-                  <Button
-                    variant={selectedGoal === goal.id ? 'solid' : 'outline'}
-                    color="lime"
-                    size="md"
-                    rounded="full"
-                    className={cn('mt-2 self-start', selectedGoal === goal.id && 'shadow-lg')}
-                    onClick={() => onSelect(goal.id)}
-                  >
-                    {selectedGoal === goal.id ? 'Objetivo activado' : 'Seleccionar'}
-                  </Button>
-                </CardBody>
-              </Card>
-            </FadeIn>
-          ))}
-        </div>
-
-        {readyForRoutines && (
-          <FadeIn delay={260} className="mt-14 flex justify-center">
-            <Button
-              rounded="full"
-              size="lg"
-              color="lime"
-              className="shadow-md hover:shadow-xl"
-              onClick={() => document.getElementById('rutinas')?.scrollIntoView({ behavior: 'smooth' })}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {goals.map((goal, index) => (
+          <FadeIn key={goal.id} delay={index * 80}>
+            <button
+              type="button"
+              onClick={() => onSelect(goal.id)}
+              className={cn(
+                'flex w-full flex-col justify-center rounded-xl border border-neutral-800 bg-neutral-900 p-6 text-left transition-all duration-150 md:min-h-[220px] md:p-8',
+                'hover:border-[#B5FF00] hover:shadow-[0_0_20px_-12px_rgba(181,255,0,0.6)] hover:-translate-y-0.5',
+                selectedGoal === goal.id && 'border-[#B5FF00] ring-1 ring-[#B5FF00]'
+              )}
             >
-              Ver mis rutinas recomendadas 💪
-            </Button>
+              <h3 className="text-xl font-semibold text-white md:text-2xl">{goal.title}</h3>
+              <p className="mt-3 text-sm text-neutral-400">{goal.description}</p>
+            </button>
           </FadeIn>
-        )}
-      </Container>
+        ))}
+      </div>
+
+      {readyForRoutines && (
+        <FadeIn delay={200} className="flex justify-center">
+          <button
+            type="button"
+            className="rounded-full border border-[#B5FF00] bg-[#B5FF00] px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-[#c7ff3d]"
+            onClick={() => document.getElementById('rutinas')?.scrollIntoView({ behavior: 'smooth' })}
+          >
+            Ver rutinas recomendadas
+          </button>
+        </FadeIn>
+      )}
     </section>
   );
 }
