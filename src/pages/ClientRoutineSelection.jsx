@@ -76,19 +76,6 @@ function ClientRoutineSelection() {
                 >
                   Comenzar selección
                 </Button>
-                <Button
-                  variant="outline"
-                  color="neutral"
-                  rounded="full"
-                  className="border border-[#B5FF00]/40 bg-transparent px-6 py-3 text-sm font-semibold uppercase tracking-wide text-neutral-200 hover:border-[#B5FF00] hover:bg-[#B5FF00]/10"
-                  onClick={() =>
-                    document
-                      .getElementById("rutinas")
-                      ?.scrollIntoView({ behavior: "smooth" })
-                  }
-                >
-                  Ver planes disponibles
-                </Button>
               </div>
             </FadeIn>
           </div>
