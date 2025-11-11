@@ -22,58 +22,61 @@ const DayPreview = ({ day }) => {
 
       {!isRest && (
         <div className="space-y-3">
-          <div className="hidden lg:grid grid-cols-12 gap-3 text-[11px] uppercase tracking-wide text-[#787878]">
-            <span className="col-span-4">Ejercicio</span>
+          <div className="hidden md:grid grid-cols-7 gap-4 text-[11px] uppercase tracking-wide text-[#787878]">
+            <span className="col-span-2">Ejercicio</span>
             <span>Series</span>
             <span>Reps</span>
             <span>Desc</span>
             <span>RIR</span>
             <span>Cadencia</span>
-            <span className="col-span-3">Video</span>
+            <span>Video</span>
           </div>
           {day.exercises.map(exercise => (
-            <div key={exercise.id} className="grid grid-cols-1 gap-3 lg:grid-cols-12">
-              <div className="lg:col-span-4">
-                <p className="text-sm font-medium text-white">{exercise.name || '—'}</p>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-[#C9C9C9] lg:col-span-1">
-                <span className="lg:hidden text-xs uppercase text-[#787878]">Series:</span>
-                <span>{exercise.sets || '—'}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-[#C9C9C9] lg:col-span-1">
-                <span className="lg:hidden text-xs uppercase text-[#787878]">Reps:</span>
-                <span>{exercise.reps || '—'}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-[#C9C9C9] lg:col-span-1">
-                <span className="lg:hidden text-xs uppercase text-[#787878]">Desc:</span>
-                <span>{exercise.rest || '—'}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-[#C9C9C9] lg:col-span-1">
-                <span className="lg:hidden text-xs uppercase text-[#787878]">RIR:</span>
-                <span>{exercise.rir || '—'}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-[#C9C9C9] lg:col-span-1">
-                <span className="lg:hidden text-xs uppercase text-[#787878]">Cadencia:</span>
-                <span>{exercise.tempo || '—'}</span>
-              </div>
-              <div className="lg:col-span-3">
-                {exercise.video ? (
-                  <a
-                    href={exercise.video}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-sm text-[#CBFF00] hover:underline break-words"
-                  >
-                    {exercise.video}
-                  </a>
-                ) : (
-                  <span className="text-sm text-[#787878]">Sin video</span>
-                )}
+            <div key={exercise.id} className="space-y-2">
+              <div className="grid grid-cols-3 gap-x-4 gap-y-1 items-start md:grid-cols-7 md:gap-y-0 md:items-center">
+                <span className="col-span-3 block overflow-hidden text-sm font-medium text-white md:col-span-2 md:text-sm truncate">
+                  {exercise.name || '—'}
+                </span>
+                <div className="col-span-1 flex items-center justify-between overflow-hidden text-sm text-[#C9C9C9] md:block md:text-sm">
+                  <span className="text-xs uppercase text-[#787878] md:hidden">Series</span>
+                  <span className="block truncate">{exercise.sets || '—'}</span>
+                </div>
+                <div className="col-span-1 flex items-center justify-between overflow-hidden text-sm text-[#C9C9C9] md:block md:text-sm">
+                  <span className="text-xs uppercase text-[#787878] md:hidden">Reps</span>
+                  <span className="block truncate">{exercise.reps || '—'}</span>
+                </div>
+                <div className="col-span-1 flex items-center justify-between overflow-hidden text-sm text-[#C9C9C9] md:block md:text-sm">
+                  <span className="text-xs uppercase text-[#787878] md:hidden">Desc</span>
+                  <span className="block truncate">{exercise.rest || '—'}</span>
+                </div>
+                <div className="col-span-1 flex items-center justify-between overflow-hidden text-sm text-[#C9C9C9] md:block md:text-sm">
+                  <span className="text-xs uppercase text-[#787878] md:hidden">RIR</span>
+                  <span className="block truncate">{exercise.rir || '—'}</span>
+                </div>
+                <div className="col-span-1 flex items-center justify-between overflow-hidden text-sm text-[#C9C9C9] md:block md:text-sm">
+                  <span className="text-xs uppercase text-[#787878] md:hidden">Cadencia</span>
+                  <span className="block truncate">{exercise.tempo || '—'}</span>
+                </div>
+                <div className="col-span-3 overflow-hidden md:col-span-1 md:justify-self-end md:text-right">
+                  {exercise.video ? (
+                    <a
+                      href={exercise.video}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Ver video del ejercicio"
+                      className="block cursor-pointer text-sm font-semibold text-[#CBFF00] hover:underline"
+                    >
+                      Ver
+                    </a>
+                  ) : (
+                    <span className="text-sm text-[#787878]">Sin video</span>
+                  )}
+                </div>
               </div>
               {exercise.note && (
-                <div className="lg:col-span-12">
+                <div className="mt-2 md:pl-0">
                   <p className="text-xs uppercase text-[#787878]">Notas</p>
-                  <p className="text-sm text-[#C9C9C9] whitespace-pre-line">{exercise.note}</p>
+                  <p className="mt-1 text-sm text-[#C9C9C9] whitespace-pre-line">{exercise.note}</p>
                 </div>
               )}
             </div>
