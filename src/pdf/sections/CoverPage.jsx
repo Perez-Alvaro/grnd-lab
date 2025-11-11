@@ -1,5 +1,5 @@
 import { View, Text, Link } from '@react-pdf/renderer';
-import { INDEX_ANCHOR, weekLinkTarget } from '../utils/pdfLinks.js';
+import { INDEX_ANCHOR, weekLinkTarget } from '../utils/pdfAnchors.js';
 
 const renderMetadataItem = (styles, label, value) => {
   if (!value) return null;

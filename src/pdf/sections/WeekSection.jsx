@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { View, Text, Link } from '@react-pdf/renderer';
-import { indexLinkTarget, weekAnchorId } from '../utils/pdfLinks.js';
+import { indexLinkTarget, weekAnchorId } from '../utils/pdfAnchors.js';
 
 const DayNotes = ({ notes, styles }) => {
   if (!notes || !notes.length) return null;

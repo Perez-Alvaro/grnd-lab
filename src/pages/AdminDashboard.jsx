@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext.jsx';
-import usePDFExport from '../pdf/hooks/usePDFExport.js';
+import usePDFExport from '../hooks/usePDFExport.js';
 import TemplateCard from '../components/TemplateCard.jsx';
 import {
   Users,
