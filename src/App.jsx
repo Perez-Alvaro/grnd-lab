@@ -11,7 +11,7 @@ function App() {
   return (
     <AppProvider>
       <Router>
-        <div className="min-h-screen bg-[#202020] text-white font-sans">
+        <div className="min-h-screen bg-[#f5f6f3] text-neutral-900 font-sans">
           <Header />
           <main>
             <Routes>
