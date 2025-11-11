@@ -12,109 +12,125 @@ const PlanMetadataForm = memo(() => {
     [updateMetadata]
   );
 
+  const labelClasses = 'text-sm font-medium text-neutral-400';
+  const inputClasses =
+    'w-full rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-3 text-sm text-white shadow-sm transition-colors focus:border-[#CBFF00] focus:outline-none focus:ring-0';
+
   return (
     <section
       data-testid="plan-metadata-form"
-      className="bg-[#202020] border border-[#787878]/20 rounded-2xl p-6 space-y-6"
+      className="flex flex-col gap-4 rounded-xl border border-neutral-800 bg-neutral-900/70 p-5 shadow-sm"
     >
-      <div className="flex items-center gap-2">
-        <ChevronRight className="h-5 w-5 text-[#CBFF00]" />
-        <h2 className="text-lg font-semibold">Información del plan</h2>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <ChevronRight className="h-5 w-5 text-[#CBFF00]" />
+          <h2 className="text-lg font-semibold text-white">Datos de la plantilla</h2>
+        </div>
+        <span className="text-xs uppercase tracking-wide text-neutral-500">Completa la información base</span>
       </div>
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-[#787878] mb-2">Nombre del plan</label>
+
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <label className={labelClasses}>Nombre de la plantilla</label>
           <input
             data-testid="plan-name-input"
             type="text"
             value={metadata.name}
             onChange={handleChange('name')}
-            placeholder="ej. Hipertrofia Intermedia 4 semanas"
-            className="w-full bg-[#1A1A1A] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+            placeholder="Ej. Masculino Volumen FST-7 4x/semana"
+            className={`${inputClasses} max-w-[600px]`}
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium text-[#787878] mb-2">Objetivo</label>
-          <select
-            data-testid="plan-objective-select"
-            value={metadata.objective}
-            onChange={handleChange('objective')}
-            className="w-full bg-[#1A1A1A] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-          >
-            <option value="">Seleccioná un objetivo</option>
-            <option value="hipertrofia">Hipertrofia</option>
-            <option value="fuerza">Fuerza</option>
-            <option value="resistencia">Resistencia</option>
-            <option value="pérdida de grasa">Pérdida de grasa</option>
-            <option value="salud general">Salud general</option>
-          </select>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="flex flex-col gap-2">
+            <label className={labelClasses}>Género</label>
+            <select
+              data-testid="plan-gender-select"
+              value={metadata.gender}
+              onChange={handleChange('gender')}
+              className={inputClasses}
+            >
+              <option value="">Todos</option>
+              <option value="male">Masculino</option>
+              <option value="female">Femenino</option>
+            </select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className={labelClasses}>Frecuencia (días/semana)</label>
+            <input
+              data-testid="plan-frequency-input"
+              type="number"
+              min="1"
+              value={metadata.frequency}
+              onChange={handleChange('frequency')}
+              className={inputClasses}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className={labelClasses}>Objetivo</label>
+            <select
+              data-testid="plan-objective-select"
+              value={metadata.objective}
+              onChange={handleChange('objective')}
+              className={inputClasses}
+            >
+              <option value="">Seleccioná un objetivo</option>
+              <option value="hipertrofia">Hipertrofia</option>
+              <option value="fuerza">Fuerza</option>
+              <option value="resistencia">Resistencia</option>
+              <option value="pérdida de grasa">Pérdida de grasa</option>
+              <option value="salud general">Salud general</option>
+            </select>
+          </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-[#787878] mb-2">Duración (semanas)</label>
-          <input
-            data-testid="plan-duration-input"
-            type="number"
-            min="1"
-            value={metadata.durationWeeks}
-            onChange={handleChange('durationWeeks')}
-            className="w-full bg-[#1A1A1A] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-          />
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="flex flex-col gap-2">
+            <label className={labelClasses}>Duración (semanas)</label>
+            <input
+              data-testid="plan-duration-input"
+              type="number"
+              min="1"
+              value={metadata.durationWeeks}
+              onChange={handleChange('durationWeeks')}
+              className={inputClasses}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className={labelClasses}>Autor / Coach</label>
+            <input
+              data-testid="plan-author-input"
+              type="text"
+              value={metadata.author}
+              onChange={handleChange('author')}
+              placeholder="Nombre del entrenador"
+              className={inputClasses}
+            />
+          </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-[#787878] mb-2">Frecuencia semanal</label>
-          <input
-            data-testid="plan-frequency-input"
-            type="number"
-            min="1"
-            value={metadata.frequency}
-            onChange={handleChange('frequency')}
-            className="w-full bg-[#1A1A1A] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-[#787878] mb-2">Género objetivo</label>
-          <select
-            data-testid="plan-gender-select"
-            value={metadata.gender}
-            onChange={handleChange('gender')}
-            className="w-full bg-[#1A1A1A] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-          >
-            <option value="">Todos</option>
-            <option value="male">Masculino</option>
-            <option value="female">Femenino</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-[#787878] mb-2">Autor / Coach</label>
-          <input
-            data-testid="plan-author-input"
-            type="text"
-            value={metadata.author}
-            onChange={handleChange('author')}
-            placeholder="Nombre del entrenador"
-            className="w-full bg-[#1A1A1A] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
-          />
-        </div>
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-[#787878] mb-2">Etiquetas (separadas por coma)</label>
+
+        <div className="flex flex-col gap-2">
+          <label className={labelClasses}>Tags</label>
           <input
             data-testid="plan-tags-input"
             type="text"
             value={metadata.tags}
             onChange={handleChange('tags')}
-            placeholder="ej. torso/pierna, avanzado, volumen"
-            className="w-full bg-[#1A1A1A] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors"
+            placeholder="fst-7, superseries"
+            className={inputClasses}
           />
         </div>
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-[#787878] mb-2">Notas generales del plan</label>
+
+        <div className="flex flex-col gap-2">
+          <label className={labelClasses}>Notas e instrucciones</label>
           <textarea
             data-testid="plan-notes-input"
-            rows={4}
+            rows={3}
             value={metadata.notes}
             onChange={handleChange('notes')}
-            placeholder="Introduce pautas generales, recomendaciones de progresión, recordatorios de recuperación..."
-            className="w-full bg-[#1A1A1A] border border-[#787878]/30 rounded-xl px-4 py-3 text-white focus:border-[#CBFF00] focus:outline-none transition-colors resize-none"
+            placeholder="Rutina estilo Hany Rambod con técnicas FST-7."
+            className={`${inputClasses} min-h-[120px] resize-none`}
           />
         </div>
       </div>

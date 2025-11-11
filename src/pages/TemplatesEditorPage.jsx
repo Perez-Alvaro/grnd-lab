@@ -162,13 +162,13 @@ export default function TemplatesEditorPage() {
   return (
     <PlanProvider value={planContextValue}>
       <div className="w-full bg-transparent">
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 lg:flex-row lg:flex-wrap">
-          <div className="flex flex-col gap-4 lg:basis-full lg:flex-row lg:items-center lg:justify-between">
+        <header className="border-b border-neutral-800/60 bg-neutral-950">
+          <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={handleBack}
-                className="inline-flex items-center gap-2 rounded-xl border border-[#787878]/30 bg-[#1A1A1A] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#2D2D2D]"
+                className="inline-flex items-center gap-2 rounded-xl border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-900"
               >
                 <ArrowLeft className="h-4 w-4" /> Volver
               </button>
@@ -186,23 +186,23 @@ export default function TemplatesEditorPage() {
               <button
                 type="button"
                 onClick={handleExportPdf}
-                className="inline-flex items-center gap-2 rounded-xl border border-[#CBFF00]/40 bg-[#1A1A1A] px-4 py-2 font-semibold text-[#CBFF00] transition-colors hover:border-[#CBFF00] hover:bg-[#CBFF00] hover:text-black"
+                className="inline-flex items-center gap-2 rounded-xl border border-[#CBFF00]/40 bg-neutral-950 px-4 py-2 font-semibold text-[#CBFF00] transition-colors hover:border-[#CBFF00] hover:bg-[#CBFF00] hover:text-black"
               >
                 <FileDown className="h-4 w-4" /> Exportar PDF
               </button>
             </div>
           </div>
+        </header>
 
-          <div className="flex w-full flex-col gap-6 lg:basis-full lg:flex-row">
-            <div className="flex w-full flex-col gap-6 lg:w-3/5">
+        <div className="px-3 sm:px-6">
+          <div className="flex flex-col lg:flex-row w-full max-w-7xl mx-auto gap-6 px-4 py-8 sm:px-6 lg:px-6">
+            <section className="lg:w-1/2 flex flex-col gap-6">
               <PlanMetadataForm />
               <WeekEditor onNavigateWeek={handleNavigateWeek} registerWeekRef={registerWeekRef} onActionError={onActionError} />
-            </div>
-            <div className="flex w-full flex-col lg:w-2/5">
-              <div className="h-full max-h-[90vh] overflow-y-auto rounded-2xl border border-[#787878]/20 bg-[#161616] p-4 lg:p-6">
-                <RoutinePreview />
-              </div>
-            </div>
+            </section>
+            <aside className="lg:w-1/2 sticky top-0 max-h-[90vh] overflow-y-auto rounded-2xl border border-neutral-800 bg-neutral-900/80 p-4 lg:p-6">
+              <RoutinePreview />
+            </aside>
           </div>
         </div>
       </div>
