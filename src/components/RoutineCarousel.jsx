@@ -27,8 +27,7 @@ function RoutineCarousel({ routines, onPreview, onSelect }) {
           Rutinas disponibles
         </h2>
         <p className="max-w-3xl text-sm text-neutral-400 md:text-base">
-          Cada plan incluye estructura semanal, cargas objetivo y seguimiento.
-          Desplegá la vista previa antes de confirmar.
+          
         </p>
       </FadeIn>
 

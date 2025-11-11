@@ -59,9 +59,9 @@ function RoutineCard({ routine, onPreview }) {
         <button
           type="button"
           onClick={() => onPreview?.(routine)}
-          className="inline-flex items-center justify-center rounded-md bg-lime-400 px-5 py-2 text-sm font-semibold text-black transition-colors duration-150 hover:bg-lime-500"
+          className="inline-flex items-center justify-center rounded-md bg-lime-400 px-5 py-2 text-sm font-semibold text-white transition-colors duration-150 hover:bg-lime-500"
         >
-          Ver detalles
+          Ver vista previa
         </button>
       </div>
     </article>
