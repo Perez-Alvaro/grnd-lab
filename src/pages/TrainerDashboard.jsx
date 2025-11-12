@@ -300,14 +300,6 @@ const DashboardSales = ({ sales, onExportEmails }) => {
             <option value="basic">Básico</option>
             <option value="premium">Premium</option>
           </select>
-          <button
-            type="button"
-            onClick={onExportEmails}
-            className="inline-flex items-center gap-2 rounded-full border border-[#B5FF00] px-4 py-2 text-sm font-semibold text-[#0E0E0E] transition-all hover:-translate-y-0.5 hover:bg-[#B5FF00]"
-          >
-            <Mail className="h-4 w-4 text-black" />
-            Descargar emails
-          </button>
         </div>
       </div>
 
@@ -411,6 +403,20 @@ const DashboardTemplates = ({
     objective: "",
   });
 
+  // Helper: convierte lo que tenga la rutina (key o label) al key real
+  const getObjectiveKey = (objectiveValue) => {
+    if (!objectiveValue) return null;
+
+    // Caso 1: la rutina ya guarda el key (ej: "hypertrophy")
+    if (TRAINING_GOAL_LABELS[objectiveValue]) return objectiveValue;
+
+    // Caso 2: la rutina guarda el label (ej: "Volumen (Fuerza e Hipertrofia)")
+    const entry = Object.entries(TRAINING_GOAL_LABELS).find(
+      ([, label]) => label === objectiveValue,
+    );
+    return entry ? entry[0] : null;
+  };
+
   const availableTags = useMemo(() => {
     const set = new Set();
     routines.forEach((template) =>
@@ -419,12 +425,26 @@ const DashboardTemplates = ({
     return Array.from(set);
   }, [routines]);
 
+  // Objetivos que realmente existen en las rutinas
+  const availableObjectives = useMemo(() => {
+    const set = new Set();
+    routines.forEach((template) => {
+      const key = getObjectiveKey(template.objective);
+      if (key) set.add(key);
+    });
+    return Array.from(set);
+  }, [routines]);
+
   const filteredRoutines = useMemo(() => {
     return routines.filter((template) => {
       if (filters.tag && !template.tags?.includes(filters.tag)) return false;
       if (filters.gender && template.gender !== filters.gender) return false;
-      if (filters.objective && template.objective !== filters.objective)
-        return false;
+
+      if (filters.objective) {
+        const routineObjectiveKey = getObjectiveKey(template.objective);
+        if (routineObjectiveKey !== filters.objective) return false;
+      }
+
       return true;
     });
   }, [routines, filters]);
@@ -433,7 +453,8 @@ const DashboardTemplates = ({
     setFilters((prev) => ({ ...prev, [field]: value }));
   };
 
-  const resetFilters = () => setFilters({ tag: "", gender: "", objective: "" });
+  const resetFilters = () =>
+    setFilters({ tag: "", gender: "", objective: "" });
 
   return (
     <section className="flex flex-col gap-6 rounded-2xl border border-[#2E2E2E] bg-[#0E0E0E] p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
@@ -506,9 +527,9 @@ const DashboardTemplates = ({
             className="rounded-lg border border-[#2E2E2E] bg-[#1A1A1A] px-3 py-2 text-sm text-gray-200 focus:border-[#B5FF00] focus:outline-none"
           >
             <option value="">Todos</option>
-            {TRAINING_GOALS.map((goal) => (
-              <option key={goal} value={goal}>
-                {TRAINING_GOAL_LABELS[goal]}
+            {availableObjectives.map((goalKey) => (
+              <option key={goalKey} value={goalKey}>
+                {TRAINING_GOAL_LABELS[goalKey] || goalKey}
               </option>
             ))}
           </select>
