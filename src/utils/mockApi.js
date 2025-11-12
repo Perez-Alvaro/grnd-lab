@@ -7,9 +7,9 @@ export function mockProcessPayment(formData, routine, plan) {
         firstName: formData.firstName,
         lastName: formData.lastName,
         gender: routine.gender,
-        frequency: parseInt(routine.frequency, 10),
+        frequency: Number.parseInt(routine.frequency, 10) || 0,
         objective: routine.objective,
-        plan: plan.id,
+        plan: routine.plan || plan.name,
         createdAt: new Date().toISOString().split("T")[0],
         routines: [routine.id],
       };
@@ -17,11 +17,11 @@ export function mockProcessPayment(formData, routine, plan) {
       const newSale = {
         id: Date.now(),
         userEmail: formData.email,
-        plan: plan.id,
+        plan: routine.plan || plan.name,
         amount: plan.price,
         date: new Date().toISOString().split("T")[0],
         status: "completed",
-        templateId: routine.id,
+        routineId: routine.id,
       };
 
       resolve({ user: newUser, sale: newSale });
@@ -29,7 +29,7 @@ export function mockProcessPayment(formData, routine, plan) {
   });
 }
 
-export function mockSendRoutineEmail(_email, _pdfBlob) {
+export function mockSendRoutineEmail() {
   return new Promise((resolve) => setTimeout(resolve, 1000));
 }
 

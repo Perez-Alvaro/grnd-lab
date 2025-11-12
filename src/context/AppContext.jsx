@@ -1,15 +1,14 @@
-import React, { createContext, useContext, useReducer } from "react";
-import templates from "../data/templates.json";
-import users from "../data/users.json";
-import sales from "../data/sales.json";
+/* eslint-disable react-refresh/only-export-components */
+import React, { createContext, useContext, useEffect, useReducer } from "react";
+import API from "../api/endpoints.js";
 
 const AppContext = createContext();
 
 const initialState = {
-  templates,
-  users,
-  sales,
-  selectedPlan: null,
+  routines: [],
+  users: [],
+  sales: [],
+  selectedRoutine: null,
   loading: false,
   error: null,
 };
@@ -20,21 +19,28 @@ function appReducer(state, action) {
       return { ...state, loading: action.payload };
     case "SET_ERROR":
       return { ...state, error: action.payload };
-    case "SET_SELECTED_PLAN":
-      return { ...state, selectedPlan: action.payload };
-    case "ADD_TEMPLATE":
-      return { ...state, templates: [...state.templates, action.payload] };
-    case "UPDATE_TEMPLATE":
+    case "SET_SELECTED_ROUTINE":
+      return { ...state, selectedRoutine: action.payload };
+    case "SET_DATA":
       return {
         ...state,
-        templates: state.templates.map((t) =>
+        routines: action.payload.routines,
+        users: action.payload.users,
+        sales: action.payload.sales,
+      };
+    case "ADD_ROUTINE":
+      return { ...state, routines: [...state.routines, action.payload] };
+    case "UPDATE_ROUTINE":
+      return {
+        ...state,
+        routines: state.routines.map((t) =>
           t.id === action.payload.id ? action.payload : t,
         ),
       };
-    case "DELETE_TEMPLATE":
+    case "DELETE_ROUTINE":
       return {
         ...state,
-        templates: state.templates.filter((t) => t.id !== action.payload),
+        routines: state.routines.filter((t) => t.id !== action.payload),
       };
     case "ADD_USER":
       return { ...state, users: [...state.users, action.payload] };
@@ -47,6 +53,43 @@ function appReducer(state, action) {
 
 export function AppProvider({ children }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const fetchData = async () => {
+      dispatch({ type: "SET_LOADING", payload: true });
+      try {
+        const [routines, sales, users] = await Promise.all([
+          API.getRoutines(),
+          API.getSales(),
+          API.getUsers(),
+        ]);
+
+        if (!mounted) return;
+
+        dispatch({
+          type: "SET_DATA",
+          payload: { routines, sales, users },
+        });
+        dispatch({ type: "SET_ERROR", payload: null });
+      } catch (error) {
+        if (mounted) {
+          dispatch({ type: "SET_ERROR", payload: error });
+        }
+      } finally {
+        if (mounted) {
+          dispatch({ type: "SET_LOADING", payload: false });
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <AppContext.Provider value={{ state, dispatch }}>

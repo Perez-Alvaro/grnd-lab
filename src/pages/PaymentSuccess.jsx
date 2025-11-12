@@ -10,25 +10,38 @@ function PaymentSuccess() {
           <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-[#B5FF00] bg-[#101010]">
             <CheckCircle className="h-10 w-10 text-[#B5FF00]" />
           </div>
-          <h1 className="text-4xl font-bold text-white">¡Bienvenido a Fitter!</h1>
+          <h1 className="text-4xl font-bold text-white">
+            ¡Bienvenido a Fitter!
+          </h1>
           <p className="mt-4 text-lg text-gray-400">
             ¡Tu pago fue exitoso y tu rutina personalizada está en camino!
           </p>
 
           <div className="mt-10 rounded-2xl border border-[#2E2E2E] bg-[#1A1A1A] p-6 text-left">
-            <h3 className="text-lg font-semibold text-[#B5FF00]">¿Qué sigue?</h3>
+            <h3 className="text-lg font-semibold text-[#B5FF00]">
+              ¿Qué sigue?
+            </h3>
             <ul className="mt-4 space-y-4 text-sm text-gray-400">
               <li className="flex items-start gap-3">
                 <span className="mt-1 block h-2 w-2 rounded-full bg-[#B5FF00]" />
-                <span>Revisá tu correo para descargar la rutina personalizada en PDF.</span>
+                <span>
+                  Revisá tu correo para descargar la rutina personalizada en
+                  PDF.
+                </span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="mt-1 block h-2 w-2 rounded-full bg-[#B5FF00]" />
-                <span>Accedé a los videos técnicos con demostraciones de cada ejercicio.</span>
+                <span>
+                  Accedé a los videos técnicos con demostraciones de cada
+                  ejercicio.
+                </span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="mt-1 block h-2 w-2 rounded-full bg-[#B5FF00]" />
-                <span>Clientes Premium: recibirás seguimiento personalizado en las próximas 24 horas.</span>
+                <span>
+                  Clientes Premium: recibirás seguimiento personalizado en las
+                  próximas 24 horas.
+                </span>
               </li>
             </ul>
           </div>

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { Document, Page, pdf } from "@react-pdf/renderer";
 import CoverPage from "./sections/CoverPage.js";
 import WeekSection from "./sections/WeekSection.js";

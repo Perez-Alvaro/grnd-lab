@@ -1,11 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AppProvider } from "./context/AppContext.jsx";
-import Header from "./components/Header.jsx";
-import Home from "./pages/Home.jsx";
-import AdminDashboard from "./pages/AdminDashboard.jsx";
+import Header from "./components/Shared/Header.jsx";
+import ClientHome from "./pages/ClientHome.jsx";
+import TrainerDashboard from "./pages/TrainerDashboard.jsx";
 import PaymentSuccess from "./pages/PaymentSuccess.jsx";
-import TemplatesEditorPage from "./pages/TemplatesEditorPage.jsx";
+import RoutineEditor from "./pages/RoutineEditor.jsx";
+import RoutinePreview from "./pages/RoutinePreview.jsx";
 
 function App() {
   return (
@@ -15,16 +16,17 @@ function App() {
           <Header />
           <main>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/" element={<ClientHome />} />
+              <Route path="/admin" element={<TrainerDashboard />} />
               <Route
                 path="/admin/plantillas/nueva"
-                element={<TemplatesEditorPage />}
+                element={<RoutineEditor />}
               />
               <Route
                 path="/admin/plantillas/:id/editar"
-                element={<TemplatesEditorPage />}
+                element={<RoutineEditor />}
               />
+              <Route path="/rutinas/:id" element={<RoutinePreview />} />
               <Route path="/success" element={<PaymentSuccess />} />
             </Routes>
           </main>
