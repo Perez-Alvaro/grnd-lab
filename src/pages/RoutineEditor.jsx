@@ -9,7 +9,6 @@ import usePDFExport from "../hooks/usePDFExport.js";
 import PlanMetadataForm from "../components/Trainer/editor/PlanMetadataForm.jsx";
 import WeekEditor from "../components/Trainer/editor/WeekEditor.jsx";
 import RoutinePreview from "../components/Trainer/preview/RoutinePreview.jsx";
-import EditorActionBar from "../components/Trainer/editor/EditorActionBar.jsx";
 import migrateTemplate from "../utils/migrateTemplate.ts";
 import { toast } from "../utils/toast.js";
 
@@ -215,12 +214,6 @@ export default function RoutineEditorPage() {
         </div>
       </div>
 
-      <EditorActionBar
-        dirty={planEditor.dirty}
-        onSave={handleSave}
-        onPdf={handleExportPdf}
-        onBack={handleBack}
-      />
     </PlanProvider>
   );
 }

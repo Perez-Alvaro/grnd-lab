@@ -25,19 +25,15 @@ import {
 import { useAppContext } from "../context/AppContext.jsx";
 import usePDFExport from "../hooks/usePDFExport.js";
 import TemplateCard from "../components/Trainer/TemplateCard.jsx";
-import {
-  TRAINING_GOAL_LABELS,
-  TRAINING_GOALS,
-} from "../constants/objectives.js";
+import { TRAINING_GOAL_LABELS } from "../constants/objectives.js";
 
-const planLabel = {
-  basic: "Básico",
-  Basic: "Básico",
-  premium: "Premium",
-  Premium: "Premium",
-  essential: "Essential",
-  Essential: "Essential",
+const PLAN_VARIANTS = {
+  premium: { label: "Premium", className: "text-lime-400" },
+  essential: { label: "Essential", className: "text-yellow-400" },
+  basic: { label: "Basic", className: "text-gray-400" },
 };
+
+const PLAN_ORDER = ["premium", "essential", "basic"];
 
 const addMonths = (monthKey, offset) => {
   const [year, month] = monthKey.split("-").map(Number);
@@ -55,12 +51,19 @@ const formatMonthLabel = (monthKey) => {
   });
 };
 
-const formatCurrency = (value) =>
-  value.toLocaleString("es-AR", {
+const formatCurrency = (value = 0) =>
+  Number(value || 0).toLocaleString("es-AR", {
     style: "currency",
     currency: "ARS",
     maximumFractionDigits: 0,
   });
+
+const calculateVariation = (current, previous) => {
+  if (previous === 0) {
+    return current > 0 ? 100 : null;
+  }
+  return ((current - previous) / previous) * 100;
+};
 
 const formatVariation = (value) => {
   if (value === null || Number.isNaN(value)) return "N/A";
@@ -230,16 +233,35 @@ const DashboardCharts = ({
   </div>
 );
 
-const DashboardSales = ({ sales, onExportEmails }) => {
+const DashboardSales = ({ sales }) => {
   const [planFilter, setPlanFilter] = useState("all");
   const [sortField, setSortField] = useState("date");
   const [sortDirection, setSortDirection] = useState("desc");
   const [page, setPage] = useState(0);
   const pageSize = 8;
 
+  const planOptions = useMemo(() => {
+    const present = new Set();
+    sales.forEach((sale) => {
+      if (sale.planKey) {
+        present.add(sale.planKey);
+      }
+    });
+    return Array.from(present).sort((a, b) => {
+      const indexA = PLAN_ORDER.indexOf(a);
+      const indexB = PLAN_ORDER.indexOf(b);
+      if (indexA === -1 && indexB === -1) {
+        return a.localeCompare(b);
+      }
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+      return indexA - indexB;
+    });
+  }, [sales]);
+
   const filteredSales = useMemo(() => {
     const filtered = sales.filter((sale) =>
-      planFilter === "all" ? true : sale.plan === planFilter,
+      planFilter === "all" ? true : sale.planKey === planFilter,
     );
     const sorted = [...filtered].sort((a, b) => {
       const dir = sortDirection === "asc" ? 1 : -1;
@@ -277,7 +299,7 @@ const DashboardSales = ({ sales, onExportEmails }) => {
   };
 
   return (
-    <section className="flex h-full flex-col gap-6 rounded-2xl border border-[#2E2E2E] bg-[#0E0E0E] p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
+    <section className="flex h-full flex-col gap-6 rounded-2xl border border-neutral-800 bg-neutral-950 p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-white">
@@ -294,18 +316,21 @@ const DashboardSales = ({ sales, onExportEmails }) => {
               setPage(0);
               setPlanFilter(event.target.value);
             }}
-            className="rounded-full border border-[#2E2E2E] bg-[#1A1A1A] px-4 py-2 text-sm text-gray-200 focus:border-[#B5FF00] focus:outline-none"
+            className="rounded-full border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm text-gray-200 transition-colors focus:border-lime-400 focus:outline-none"
           >
             <option value="all">Todos los planes</option>
-            <option value="basic">Básico</option>
-            <option value="premium">Premium</option>
+            {planOptions.map((option) => (
+              <option key={option} value={option}>
+                {PLAN_VARIANTS[option]?.label || option}
+              </option>
+            ))}
           </select>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-[#2E2E2E]">
-        <table className="min-w-full divide-y divide-[#2E2E2E] text-sm">
-          <thead className="bg-[#101010] text-xs uppercase tracking-wide text-gray-500">
+      <div className="overflow-hidden rounded-2xl border border-neutral-800">
+        <table className="min-w-full divide-y divide-neutral-800 text-sm">
+          <thead className="bg-neutral-950 text-xs uppercase tracking-wide text-gray-500">
             <tr>
               <th className="px-4 py-3 text-left font-medium">Cliente</th>
               <th className="px-4 py-3 text-left font-medium">Email</th>
@@ -315,7 +340,7 @@ const DashboardSales = ({ sales, onExportEmails }) => {
                 <button
                   type="button"
                   onClick={() => handleSort("amount")}
-                  className="inline-flex items-center gap-1 text-gray-400 hover:text-[#B5FF00]"
+                  className="inline-flex items-center gap-1 text-gray-400 transition-colors hover:text-lime-400"
                 >
                   Monto
                 </button>
@@ -324,20 +349,23 @@ const DashboardSales = ({ sales, onExportEmails }) => {
                 <button
                   type="button"
                   onClick={() => handleSort("date")}
-                  className="inline-flex items-center gap-1 text-gray-400 hover:text-[#B5FF00]"
+                  className="inline-flex items-center gap-1 text-gray-400 transition-colors hover:text-lime-400"
                 >
                   Fecha
                 </button>
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#2E2E2E] bg-[#0E0E0E] text-gray-300">
+          <tbody className="divide-y divide-neutral-800 bg-neutral-950 text-gray-300">
             {paginatedSales.map((sale) => (
-              <tr key={sale.id} className="hover:bg-[#1A1A1A]">
+              <tr
+                key={sale.id}
+                className="transition-colors hover:bg-neutral-900"
+              >
                 <td className="px-4 py-3 text-white">{sale.clientName}</td>
                 <td className="px-4 py-3">{sale.email}</td>
-                <td className="px-4 py-3 capitalize text-[#B5FF00]">
-                  {planLabel[sale.plan] || sale.plan}
+                <td className={`px-4 py-3 capitalize ${sale.planClass}`}>
+                  {sale.planLabel}
                 </td>
                 <td className="px-4 py-3 text-white">{sale.routineName}</td>
                 <td className="px-4 py-3 text-white">
@@ -357,7 +385,7 @@ const DashboardSales = ({ sales, onExportEmails }) => {
         </table>
       </div>
 
-      <div className="flex flex-col gap-4 border-t border-[#2E2E2E] pt-4 text-sm text-gray-400 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-4 border-t border-neutral-800 pt-4 text-sm text-gray-400 md:flex-row md:items-center md:justify-between">
         <p>
           Total filtrado:{" "}
           <span className="font-semibold text-white">
@@ -369,7 +397,7 @@ const DashboardSales = ({ sales, onExportEmails }) => {
           <button
             type="button"
             onClick={() => setPage((prev) => Math.max(0, prev - 1))}
-            className="rounded-full border border-[#2E2E2E] px-4 py-2 text-xs uppercase tracking-[0.2em] text-gray-400 transition-colors hover:border-[#B5FF00]/60 hover:text-white"
+            className="rounded-full border border-neutral-800 px-4 py-2 text-xs uppercase tracking-[0.2em] text-gray-400 transition-colors hover:border-lime-400/60 hover:text-white"
           >
             Anterior
           </button>
@@ -379,7 +407,7 @@ const DashboardSales = ({ sales, onExportEmails }) => {
           <button
             type="button"
             onClick={() => setPage((prev) => Math.min(pageCount - 1, prev + 1))}
-            className="rounded-full border border-[#2E2E2E] px-4 py-2 text-xs uppercase tracking-[0.2em] text-gray-400 transition-colors hover:border-[#B5FF00]/60 hover:text-white"
+            className="rounded-full border border-neutral-800 px-4 py-2 text-xs uppercase tracking-[0.2em] text-gray-400 transition-colors hover:border-lime-400/60 hover:text-white"
           >
             Siguiente
           </button>
@@ -601,9 +629,20 @@ function AdminDashboard() {
   const { state, dispatch } = useAppContext();
   const exportPlan = usePDFExport();
 
-  const currentDate = new Date();
-  const currentMonthKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}`;
-  const previousMonthKey = addMonths(currentMonthKey, -1);
+  const monthKeys = useMemo(() => {
+    const set = new Set();
+    state.sales.forEach((sale) => {
+      if (sale.date) {
+        set.add(sale.date.slice(0, 7));
+      }
+    });
+    return Array.from(set).sort();
+  }, [state.sales]);
+
+  const latestMonthKey = state.metrics?.meses?.actual
+    ?? (monthKeys.length ? monthKeys[monthKeys.length - 1] : null);
+  const previousMonthKey = state.metrics?.meses?.anterior
+    ?? (monthKeys.length > 1 ? monthKeys[monthKeys.length - 2] : null);
 
   const userByEmail = useMemo(() => {
     const map = new Map();
@@ -628,11 +667,19 @@ function AdminDashboard() {
       const clientName = user
         ? `${user.firstName} ${user.lastName}`.trim()
         : sale.userEmail;
+      const planKey = (sale.plan || "").toLowerCase();
+      const planInfo = PLAN_VARIANTS[planKey] || {
+        label: sale.plan,
+        className: "text-gray-400",
+      };
       return {
         id: sale.id,
         clientName,
         email: sale.userEmail,
         plan: sale.plan,
+        planKey,
+        planLabel: planInfo.label || sale.plan,
+        planClass: planInfo.className,
         routineName: routine ? routine.name || routine.title : "Sin rutina",
         routineObjective: routine?.objective,
         date: sale.date,
@@ -647,36 +694,37 @@ function AdminDashboard() {
       (sum, sale) => sum + sale.amount,
       0,
     );
-    const monthlyRevenue = state.sales
-      .filter((sale) => sale.date.startsWith(currentMonthKey))
-      .reduce((sum, sale) => sum + sale.amount, 0);
-    const previousRevenue = state.sales
-      .filter((sale) => sale.date.startsWith(previousMonthKey))
-      .reduce((sum, sale) => sum + sale.amount, 0);
 
-    const monthlyDownloads = state.sales.filter((sale) =>
-      sale.date.startsWith(currentMonthKey),
-    ).length;
-    const previousDownloads = state.sales.filter((sale) =>
-      sale.date.startsWith(previousMonthKey),
-    ).length;
+    const revenueForMonth = (monthKey) =>
+      monthKey
+        ? state.sales
+            .filter((sale) => sale.date.startsWith(monthKey))
+            .reduce((sum, sale) => sum + sale.amount, 0)
+        : 0;
 
-    const monthlyRevenueVariation = previousRevenue
-      ? ((monthlyRevenue - previousRevenue) / previousRevenue) * 100
-      : previousRevenue === 0 && monthlyRevenue > 0
-        ? 100
-        : null;
+    const downloadsForMonth = (monthKey) =>
+      monthKey
+        ? state.sales.filter((sale) => sale.date.startsWith(monthKey)).length
+        : 0;
 
-    const monthlyDownloadsVariation = previousDownloads
-      ? ((monthlyDownloads - previousDownloads) / previousDownloads) * 100
-      : previousDownloads === 0 && monthlyDownloads > 0
-        ? 100
-        : null;
+    const monthlyRevenue = state.metrics?.ingresosMensuales
+      ?? revenueForMonth(latestMonthKey);
+    const previousRevenue = revenueForMonth(previousMonthKey);
 
-    const totalClients = state.users.length;
+    const monthlyDownloads = state.metrics?.descargasMes
+      ?? downloadsForMonth(latestMonthKey);
+    const previousDownloads = downloadsForMonth(previousMonthKey);
+
+    const totalClients = state.metrics?.totalUsuarios ?? state.users.length;
+    const activeRoutines = state.metrics?.rutinasActivas ?? state.routines.length;
     const totalDownloads = state.sales.length;
-    const activeRoutines = state.routines.length;
-    const averageTicket = totalDownloads ? totalRevenue / totalDownloads : 0;
+    const averageTicket = state.metrics?.ticketPromedio
+      ?? (totalDownloads ? totalRevenue / totalDownloads : 0);
+
+    const monthlyRevenueVariation = state.metrics?.variacionIngresos
+      ?? calculateVariation(monthlyRevenue, previousRevenue);
+    const monthlyDownloadsVariation = state.metrics?.variacionDescargas
+      ?? calculateVariation(monthlyDownloads, previousDownloads);
 
     return {
       values: {
@@ -691,13 +739,20 @@ function AdminDashboard() {
         monthlyRevenue: monthlyRevenueVariation,
         monthlyDownloads: monthlyDownloadsVariation,
       },
+      months: {
+        latest: latestMonthKey,
+        previous: previousMonthKey,
+        all: monthKeys,
+      },
     };
   }, [
+    state.metrics,
     state.sales,
     state.users,
     state.routines,
-    currentMonthKey,
+    latestMonthKey,
     previousMonthKey,
+    monthKeys,
   ]);
 
   const routinePerformance = useMemo(() => {
@@ -729,9 +784,11 @@ function AdminDashboard() {
       .sort((a, b) => b.count - a.count)
       .slice(0, 5);
 
-    const monthsRange = Array.from({ length: 6 }).map((_, index) =>
-      addMonths(currentMonthKey, index - 5),
-    );
+    const monthsRange = metrics.months?.latest
+      ? Array.from({ length: 6 }).map((_, index) =>
+          addMonths(metrics.months.latest, index - 5),
+        )
+      : (metrics.months?.all || monthKeys).slice(-6);
 
     const monthlyRevenueData = monthsRange.map((monthKey) => {
       const revenue = state.sales
@@ -739,7 +796,7 @@ function AdminDashboard() {
         .reduce((sum, sale) => sum + sale.amount, 0);
       return {
         key: monthKey,
-        month: formatMonthLabel(monthKey),
+        month: monthKey ? formatMonthLabel(monthKey) : "",
         revenue,
       };
     });
@@ -754,7 +811,7 @@ function AdminDashboard() {
       monthlyRevenueData,
       topRoutineChartData,
     };
-  }, [state.sales, routineMap, currentMonthKey]);
+  }, [state.sales, routineMap, metrics.months, monthKeys]);
 
   const uniqueEmails = useMemo(() => {
     return Array.from(new Set(salesRecords.map((sale) => sale.email)));
@@ -878,7 +935,6 @@ function AdminDashboard() {
           />
           <DashboardSales
             sales={salesRecords}
-            onExportEmails={handleExportEmails}
           />
         </section>
 

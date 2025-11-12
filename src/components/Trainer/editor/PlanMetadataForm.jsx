@@ -2,6 +2,7 @@ import { memo, useCallback } from "react";
 import { ChevronRight } from "lucide-react";
 import { usePlanContext } from "../../../context/PlanContext.jsx";
 import { TRAINING_GOALS } from "../../../constants/objectives.js";
+import ImageUploader from "@/components/Shared/ImageUploader.jsx";
 
 const PlanMetadataForm = memo(() => {
   const { metadata, updateMetadata } = usePlanContext();
@@ -9,6 +10,13 @@ const PlanMetadataForm = memo(() => {
   const handleChange = useCallback(
     (field) => (event) => {
       updateMetadata(field, event.target.value);
+    },
+    [updateMetadata],
+  );
+
+  const handleImageChange = useCallback(
+    (nextValue) => {
+      updateMetadata("image", nextValue);
     },
     [updateMetadata],
   );
@@ -187,15 +195,13 @@ const PlanMetadataForm = memo(() => {
               className={inputClasses}
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <label className={labelClasses}>Imagen de portada (URL)</label>
-            <input
-              data-testid="plan-image-input"
-              type="url"
+          <div className="md:col-span-2">
+            <ImageUploader
+              label="Imagen de portada"
               value={metadata.image}
-              onChange={handleChange("image")}
-              placeholder="https://..."
-              className={inputClasses}
+              onChange={handleImageChange}
+              helperText="Seleccioná una imagen para mostrar en la previsualización y el carrusel del cliente"
+              inputProps={{ "data-testid": "plan-image-input" }}
             />
           </div>
         </div>
