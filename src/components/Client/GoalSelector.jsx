@@ -58,30 +58,7 @@ function GoalSelector({
         </p>
       </FadeIn>
 
-      <div className="flex flex-col gap-4 rounded-2xl border border-[#2E2E2E] bg-[#0E0E0E] p-4 md:flex-row md:items-end md:justify-between md:p-6">
-        <label className="flex w-full flex-col gap-2 text-sm font-medium text-gray-200 md:max-w-xs">
-          <span className="text-xs uppercase tracking-[0.3em] text-[#B5FF00]">
-            Objetivo
-          </span>
-          <div className="relative">
-            <select
-              className="w-full rounded-md border border-lime-400 bg-neutral-950 px-3 py-2 text-sm font-medium text-lime-400 shadow-[0_0_0_1px_rgba(181,255,0,0.2)] focus:outline-none focus:ring-2 focus:ring-lime-400 focus:ring-offset-2 focus:ring-offset-neutral-900 z-50"
-              value={selectedGoal}
-              onChange={(event) => onSelect(event.target.value)}
-            >
-              {options.map((option) => (
-                <option key={option} value={option} className="bg-neutral-950 text-lime-400">
-                  {option}
-                </option>
-              ))}
-            </select>
-          </div>
-        </label>
-
-        <p className="text-xs text-gray-500 md:text-sm">
-          El desplegable toma los objetivos vigentes del catálogo del entrenador
-          para garantizar coherencia entre filtros y rutinas publicadas.
-        </p>
+      <div className="text-sm text-gray-400">
       </div>
 
       {cards.length > 0 && (
