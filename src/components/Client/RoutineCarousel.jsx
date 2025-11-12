@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import { FadeIn } from "../Shared/reactbits/index.js";
 import RoutineCard from "./RoutineCard.jsx";
 
@@ -32,15 +33,22 @@ function RoutineCarousel({ routines, onPreview, onSelect }) {
         </p>
       </FadeIn>
 
-      <div className="rounded-2xl border border-[#2E2E2E] bg-[#0E0E0E] p-6 md:p-8">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          {routines.map((routine) => (
-            <RoutineCard
+      <div className="rounded-2xl border border-[#2E2E2E] bg-[#0E0E0E] p-4 sm:p-6 md:p-8">
+        <div className="flex flex-col items-center gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+          {routines.map((routine, index) => (
+            <motion.div
               key={routine.id}
-              routine={routine}
-              onPreview={onPreview}
-              onSelect={onSelect}
-            />
+              className="flex w-full max-w-[340px]"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.08 }}
+            >
+              <RoutineCard
+                routine={routine}
+                onPreview={onPreview}
+                onSelect={onSelect}
+              />
+            </motion.div>
           ))}
         </div>
       </div>
