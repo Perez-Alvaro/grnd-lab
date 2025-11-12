@@ -5,11 +5,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  Button,
-  FadeIn,
-  TransitionBox,
-} from "../components/Shared/reactbits/index.js";
+import { motion } from "framer-motion";
+import { Button, FadeIn } from "../components/Shared/reactbits/index.js";
 import GenderSelector from "../components/Client/GenderSelector.jsx";
 import GoalSelector from "../components/Client/GoalSelector.jsx";
 import RoutineCarousel from "../components/Client/RoutineCarousel.jsx";
@@ -22,7 +19,7 @@ function ClientHome() {
   const heroRef = useRef(null);
   const genderRef = useRef(null);
   const [selectedGender, setSelectedGender] = useState(null);
-  const [selectedGoal, setSelectedGoal] = useState(null);
+  const [selectedGoal, setSelectedGoal] = useState("Todos");
   const [filteredRoutines, setFilteredRoutines] = useState([]);
   const [previewRoutine, setPreviewRoutine] = useState(null);
   const [selectedRoutine, setSelectedRoutine] = useState(null);
@@ -44,20 +41,38 @@ function ClientHome() {
     }));
   }, [state.routines]);
 
+  const objectives = useMemo(() => {
+    const uniqueObjectives = new Set();
+    trainerRoutines.forEach((routine) => {
+      if (routine.objective) {
+        uniqueObjectives.add(routine.objective);
+      }
+    });
+    return Array.from(uniqueObjectives);
+  }, [trainerRoutines]);
+
   useEffect(() => {
-    if (selectedGender && selectedGoal) {
-      setFilteredRoutines(
-        trainerRoutines.filter((routine) => {
-          const matchesGender =
-            !routine.gender || routine.gender === selectedGender;
-          const matchesGoal =
-            !routine.objective || routine.objective === selectedGoal;
-          return matchesGender && matchesGoal;
-        }),
-      );
-    } else {
-      setFilteredRoutines([]);
+    if (selectedGoal !== "Todos" && !objectives.includes(selectedGoal)) {
+      setSelectedGoal("Todos");
     }
+  }, [objectives, selectedGoal]);
+
+  useEffect(() => {
+    if (!selectedGender) {
+      setFilteredRoutines([]);
+      return;
+    }
+
+    const routines = trainerRoutines.filter((routine) => {
+      const matchesGender = !routine.gender || routine.gender === selectedGender;
+      const matchesGoal =
+        selectedGoal === "Todos" || !routine.objective
+          ? true
+          : routine.objective === selectedGoal;
+      return matchesGender && matchesGoal;
+    });
+
+    setFilteredRoutines(routines);
   }, [selectedGender, selectedGoal, trainerRoutines]);
 
   useEffect(() => {
@@ -70,7 +85,7 @@ function ClientHome() {
   }, [filteredRoutines, selectedRoutine]);
 
   const readyForRoutines = useMemo(
-    () => Boolean(selectedGender && selectedGoal),
+    () => Boolean(selectedGender && (selectedGoal || selectedGoal === "Todos")),
     [selectedGender, selectedGoal],
   );
 
@@ -81,13 +96,20 @@ function ClientHome() {
   const handleSelectRoutine = useCallback((routine) => {
     setSelectedRoutine(routine);
     document
-      .getElementById("pago")
+      .getElementById("checkout-section")
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
+  const sectionMotionProps = {
+    initial: { opacity: 0, y: 20 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.3 },
+    transition: { duration: 0.5, ease: "easeOut" },
+  };
+
   return (
     <div className="flex w-full flex-col items-center bg-neutral-950 text-white">
-      <section className="w-full max-w-6xl px-6 py-12 md:py-16">
+      <section className="w-full max-w-6xl px-4 py-12 sm:px-6 md:py-16">
         <div
           ref={heroRef}
           className="relative overflow-hidden rounded-3xl border border-neutral-800 bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800"
@@ -131,25 +153,26 @@ function ClientHome() {
           />
         </div>
 
-        <TransitionBox variant="fade-up">
+        <motion.div {...sectionMotionProps}>
           <GoalSelector
+            objectives={objectives}
             selectedGoal={selectedGoal}
             onSelect={setSelectedGoal}
             readyForRoutines={readyForRoutines}
           />
-        </TransitionBox>
+        </motion.div>
 
-        <TransitionBox id="rutinas" variant="fade-up" delay={120}>
+        <motion.div id="rutinas" {...sectionMotionProps}>
           <RoutineCarousel
             routines={filteredRoutines}
             onPreview={setPreviewRoutine}
             onSelect={handleSelectRoutine}
           />
-        </TransitionBox>
+        </motion.div>
 
-        <TransitionBox id="pago" variant="fade-up" delay={160}>
+        <motion.div id="pago" {...sectionMotionProps}>
           <PaymentSection routine={selectedRoutine} />
-        </TransitionBox>
+        </motion.div>
       </section>
 
       <RoutinePreviewModal

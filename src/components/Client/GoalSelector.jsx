@@ -1,23 +1,47 @@
-import React from "react";
+import React, { useMemo } from "react";
+import { motion } from "framer-motion";
 import { FadeIn } from "../Shared/reactbits/index.js";
 import { cn } from "../../utils/cn.js";
 
-const goals = [
-  {
-    id: "Pérdida de Grasa (Fuerza y Resistencia)",
-    title: "Pérdida de Grasa (Fuerza y Resistencia)",
-    description:
-      "Sesiones de fuerza metabolizada con bloques de conditioning y control de cargas para optimizar la recomposición.",
-  },
-  {
-    id: "Volumen (Fuerza e Hipertrofia)",
-    title: "Volumen (Fuerza e Hipertrofia)",
-    description:
-      "Programación de hipertrofia estructurada con énfasis en palancas, progresión lineal y capacidad neural.",
-  },
-];
+const objectiveDescriptions = {
+  "Pérdida de Grasa (Fuerza y Resistencia)":
+    "Sesiones de fuerza metabolizada con bloques de conditioning y control de cargas para optimizar la recomposición.",
+  "Volumen (Fuerza e Hipertrofia)":
+    "Programación de hipertrofia estructurada con énfasis en palancas, progresión lineal y capacidad neural.",
+};
 
-function GoalSelector({ selectedGoal, onSelect, readyForRoutines }) {
+function GoalSelector({
+  objectives = [],
+  selectedGoal,
+  onSelect,
+  readyForRoutines,
+}) {
+  const options = useMemo(() => {
+    const normalized = ["Todos", ...objectives];
+    return Array.from(new Set(normalized.filter(Boolean)));
+  }, [objectives]);
+
+  const cards = useMemo(
+    () =>
+      options
+        .filter((option) => option !== "Todos")
+        .map((option) => ({
+          id: option,
+          title: option,
+          description:
+            objectiveDescriptions[option] ||
+            "Personalizamos los bloques semanales y la densidad de trabajo según tu misión principal.",
+        })),
+    [options],
+  );
+
+  const motionProps = {
+    initial: { opacity: 0, y: 20 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.2 },
+    transition: { duration: 0.5, ease: "easeOut" },
+  };
+
   return (
     <section id="objetivo" className="mt-16 flex flex-col gap-8">
       <FadeIn className="flex flex-col gap-3 text-left">
@@ -34,10 +58,39 @@ function GoalSelector({ selectedGoal, onSelect, readyForRoutines }) {
         </p>
       </FadeIn>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        {goals.map((goal, index) => (
-          <FadeIn key={goal.id} delay={index * 80}>
-            <button
+      <div className="flex flex-col gap-4 rounded-2xl border border-[#2E2E2E] bg-[#0E0E0E] p-4 md:flex-row md:items-end md:justify-between md:p-6">
+        <label className="flex w-full flex-col gap-2 text-sm font-medium text-gray-200 md:max-w-xs">
+          <span className="text-xs uppercase tracking-[0.3em] text-[#B5FF00]">
+            Objetivo
+          </span>
+          <div className="relative">
+            <select
+              className="w-full rounded-md border border-lime-400 bg-neutral-950 px-3 py-2 text-sm font-medium text-lime-400 shadow-[0_0_0_1px_rgba(181,255,0,0.2)] focus:outline-none focus:ring-2 focus:ring-lime-400 focus:ring-offset-2 focus:ring-offset-neutral-900 z-50"
+              value={selectedGoal}
+              onChange={(event) => onSelect(event.target.value)}
+            >
+              {options.map((option) => (
+                <option key={option} value={option} className="bg-neutral-950 text-lime-400">
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+        </label>
+
+        <p className="text-xs text-gray-500 md:text-sm">
+          El desplegable toma los objetivos vigentes del catálogo del entrenador
+          para garantizar coherencia entre filtros y rutinas publicadas.
+        </p>
+      </div>
+
+      {cards.length > 0 && (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {cards.map((goal, index) => (
+            <motion.button
+              {...motionProps}
+              transition={{ ...motionProps.transition, delay: index * 0.08 }}
+              key={goal.id}
               type="button"
               onClick={() => onSelect(goal.id)}
               className={cn(
@@ -51,10 +104,10 @@ function GoalSelector({ selectedGoal, onSelect, readyForRoutines }) {
                 {goal.title}
               </h3>
               <p className="mt-3 text-sm text-gray-400">{goal.description}</p>
-            </button>
-          </FadeIn>
-        ))}
-      </div>
+            </motion.button>
+          ))}
+        </div>
+      )}
 
       {readyForRoutines && (
         <FadeIn delay={200} className="flex justify-center">
