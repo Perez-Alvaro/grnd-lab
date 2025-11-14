@@ -1,18 +1,25 @@
 import React, { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FadeIn } from "../Shared/reactbits/index.js";
 import { useAppContext } from "../../context/AppContext.jsx";
+import { useClientAuth } from "../../context/ClientAuthContext.jsx";
+import { processPurchase } from "../../services/purchaseService.js";
 import { mockProcessPayment } from "../../utils/mockApi.js";
 
 function PaymentSection({ routine }) {
+  const navigate = useNavigate();
   const { dispatch } = useAppContext();
+  const { user, profile } = useClientAuth();
+
   const [formData, setFormData] = useState({
-    email: "",
+    email: user?.email || "",
     firstName: "",
     lastName: "",
   });
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
 
   const formatWeeks = (value) => {
     if (!value && value !== 0) return "—";
@@ -51,14 +58,71 @@ function PaymentSection({ routine }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!routine || !plan) return;
+
+    // Verificar que el usuario esté logueado
+    if (!user || !profile) {
+      // Guardar la rutina seleccionada en localStorage
+      localStorage.setItem('pending_purchase', JSON.stringify(routine));
+      // Redirigir a registro/login
+      navigate('/login');
+      return;
+    }
+
     setProcessing(true);
+    setError("");
 
-    const { user, sale } = await mockProcessPayment(formData, routine, plan);
-    dispatch({ type: "ADD_USER", payload: user });
-    dispatch({ type: "ADD_SALE", payload: sale });
+    try {
+      // Simular respuesta de Mercado Pago (en producción será real)
+      const paymentData = {
+        id: `MP-${Date.now()}`,
+        status: 'approved',
+        payment_method: 'mercadopago',
+      };
 
-    setProcessing(false);
-    setSuccess(true);
+      // Procesar la compra completa
+      const result = await processPurchase({
+        userId: user.id,
+        userEmail: user.email,
+        userName: `${formData.firstName} ${formData.lastName}`,
+        routine,
+        paymentData,
+      });
+
+      console.log('✅ Compra procesada:', result);
+
+      // Actualizar estado local (opcional, para métricas del admin)
+      const mockUser = {
+        id: user.id,
+        name: `${formData.firstName} ${formData.lastName}`,
+        email: user.email,
+        joined: new Date().toISOString(),
+      };
+
+      const mockSale = {
+        id: result.sale.id,
+        user: user.email,
+        routine: routine.name,
+        amount: routine.price,
+        date: new Date().toISOString(),
+        status: 'completed',
+      };
+
+      dispatch({ type: "ADD_USER", payload: mockUser });
+      dispatch({ type: "ADD_SALE", payload: mockSale });
+
+      setSuccess(true);
+
+      // Redirigir al dashboard del cliente después de 3 segundos
+      setTimeout(() => {
+        navigate('/client/dashboard');
+      }, 3000);
+
+    } catch (err) {
+      console.error('❌ Error procesando compra:', err);
+      setError(err.message || 'Error al procesar la compra. Por favor intenta nuevamente.');
+    } finally {
+      setProcessing(false);
+    }
   };
 
   const sectionClasses = "mt-16 flex flex-col gap-6 p-6 md:p-10";
@@ -123,17 +187,16 @@ function PaymentSection({ routine }) {
                 ¡Listo!<br className="hidden md:block" /> Pago acreditado
               </h3>
               <p className="text-sm text-gray-400">
-                Enviamos <span className="text-white">{routine.name}</span> a{" "}
-                <span className="text-white">{formData.email}</span>. También
-                recibirás seguimiento técnico y actualizaciones automáticas.
+                Tu rutina <span className="text-white">{routine.name}</span> ya está disponible en tu dashboard.
+                Redirigiendo en 3 segundos...
               </p>
             </div>
             <button
               type="button"
               className="w-full rounded-full bg-[#B5FF00] px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-[#D0FF4D] md:w-auto"
-              onClick={() => window.location.assign("/")}
+              onClick={() => navigate('/client/dashboard')}
             >
-              Volver al inicio
+              Ir a Mi Dashboard
             </button>
           </div>
         </FadeIn>
@@ -244,6 +307,12 @@ function PaymentSection({ routine }) {
             </p>
           </div>
 
+          {error && (
+            <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
+              <p className="text-sm text-red-400">{error}</p>
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={processing}
@@ -251,7 +320,7 @@ function PaymentSection({ routine }) {
           >
             {processing
               ? "Procesando..."
-              : `Proceder al pago - $${routine.price.toLocaleString("es-AR")}`}
+              : user ? `Proceder al pago - $${routine.price.toLocaleString("es-AR")}` : "Iniciar sesión para comprar"}
           </button>
         </form>
       </motion.div>

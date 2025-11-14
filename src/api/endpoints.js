@@ -1,13 +1,21 @@
+import SupabaseAPI from '@/api/supabaseAPI.js';
 import {
   mockStore,
   buildMockMetrics,
 } from "@/mock/mockData.js";
 
+// Configuración: cambiar a false para usar datos mock
+const USE_SUPABASE = true;
+
 const delay = (ms = 150) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
 
-export const API = {
+// ===================================
+// API MOCK (ORIGINAL)
+// ===================================
+
+const MockAPI = {
   async getRoutines() {
     await delay();
     return clone(mockStore.routines);
@@ -70,5 +78,11 @@ export const API = {
     });
   },
 };
+
+// ===================================
+// EXPORTAR API (SUPABASE O MOCK)
+// ===================================
+
+export const API = USE_SUPABASE ? SupabaseAPI : MockAPI;
 
 export default API;
