@@ -21,7 +21,7 @@ function RoutineCarousel({ routines, onPreview, onSelect }) {
   return (
     <section className="mt-16 flex flex-col gap-8">
       <FadeIn className="flex flex-col gap-3 text-left">
-        <span className="text-xs uppercase tracking-[0.4em] text-[#B5FF00]">
+        <span className="text-xs uppercase tracking-[0.4em] text-accent">
           Paso 03
         </span>
         <h2 className="text-3xl font-semibold uppercase text-white md:text-4xl">

@@ -23,7 +23,7 @@ const PlanMetadataForm = memo(() => {
 
   const labelClasses = "text-sm font-medium text-gray-300";
   const inputClasses =
-    "w-full rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white shadow-sm transition-colors focus:border-[#B5FF00] focus:outline-none focus:ring-0";
+    "w-full rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white shadow-sm transition-colors focus:border-accent focus:outline-none focus:ring-0";
 
   const frequencyOptions = ["2", "3", "4", "5"];
   const durationOptions = ["1", "2", "3", "4", "6", "8", "12"];
@@ -42,7 +42,7 @@ const PlanMetadataForm = memo(() => {
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <ChevronRight className="h-5 w-5 text-[#B5FF00]" />
+          <ChevronRight className="h-5 w-5 text-accent" />
           <h2 className="text-lg font-semibold text-white">
             Datos de la plantilla
           </h2>

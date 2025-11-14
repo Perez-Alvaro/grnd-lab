@@ -96,7 +96,7 @@ const WeekEditor = memo(
                 key={week.id}
                 type="button"
                 onClick={() => onNavigateWeek?.(week.id)}
-                className="group flex flex-col gap-1 rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-left transition-colors hover:border-[#B5FF00] hover:bg-[#101010]"
+                className="group flex flex-col gap-1 rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-left transition-colors hover:border-accent hover:bg-[#101010]"
               >
                 <span className="text-xs uppercase tracking-wide text-gray-500">
                   Semana {index + 1}
@@ -112,7 +112,7 @@ const WeekEditor = memo(
             <button
               type="button"
               onClick={handleAddWeek}
-              className="flex items-center justify-center gap-2 rounded-lg border border-dashed border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm font-semibold text-[#B5FF00] transition-colors hover:border-[#B5FF00] hover:bg-[#101010]"
+              className="flex items-center justify-center gap-2 rounded-lg border border-dashed border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm font-semibold text-accent transition-colors hover:border-accent hover:bg-[#101010]"
             >
               <Plus className="h-4 w-4" /> Agregar semana
             </button>
@@ -140,7 +140,7 @@ const WeekEditor = memo(
                 <button
                   type="button"
                   onClick={() => handleDuplicateWeek(week.id)}
-                  className="inline-flex items-center gap-2 rounded-lg border border-[#2E2E2E] px-3 py-2 text-sm font-medium text-[#B5FF00] transition-colors hover:border-[#B5FF00] hover:bg-[#101010]"
+                  className="inline-flex items-center gap-2 rounded-lg border border-[#2E2E2E] px-3 py-2 text-sm font-medium text-accent transition-colors hover:border-accent hover:bg-[#101010]"
                 >
                   <Copy className="h-4 w-4" /> Duplicar semana
                 </button>
@@ -164,7 +164,7 @@ const WeekEditor = memo(
                   value={week.title}
                   onChange={handleWeekFieldChange(week.id, "title")}
                   placeholder={`Semana ${index + 1}`}
-                  className="w-full rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white transition-colors focus:border-[#B5FF00] focus:outline-none focus:ring-0"
+                  className="w-full rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white transition-colors focus:border-accent focus:outline-none focus:ring-0"
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -176,7 +176,7 @@ const WeekEditor = memo(
                   value={week.summary}
                   onChange={handleWeekFieldChange(week.id, "summary")}
                   placeholder="Descripción corta del enfoque semanal"
-                  className="w-full rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white transition-colors focus:border-[#B5FF00] focus:outline-none focus:ring-0"
+                  className="w-full rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white transition-colors focus:border-accent focus:outline-none focus:ring-0"
                 />
               </div>
               <div className="md:col-span-2 flex flex-col gap-2">
@@ -188,7 +188,7 @@ const WeekEditor = memo(
                   value={week.notes}
                   onChange={handleWeekFieldChange(week.id, "notes")}
                   placeholder="Notas generales, recordatorios o mensajes clave de la semana"
-                  className="min-h-[100px] w-full resize-none rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white transition-colors focus:border-[#B5FF00] focus:outline-none focus:ring-0"
+                  className="min-h-[100px] w-full resize-none rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white transition-colors focus:border-accent focus:outline-none focus:ring-0"
                 />
               </div>
             </div>
@@ -201,7 +201,7 @@ const WeekEditor = memo(
                 <button
                   type="button"
                   onClick={() => addDay(week.id)}
-                  className="inline-flex items-center gap-2 rounded-lg border border-dashed border-[#2E2E2E] px-3 py-2 text-sm font-semibold text-[#B5FF00] transition-colors hover:border-[#B5FF00] hover:bg-[#101010]"
+                  className="inline-flex items-center gap-2 rounded-lg border border-dashed border-[#2E2E2E] px-3 py-2 text-sm font-semibold text-accent transition-colors hover:border-accent hover:bg-[#101010]"
                 >
                   <Plus className="h-4 w-4" /> Agregar día
                 </button>

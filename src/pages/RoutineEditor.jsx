@@ -169,7 +169,7 @@ export default function RoutineEditorPage() {
               <button
                 type="button"
                 onClick={handleBack}
-                className="inline-flex items-center gap-2 rounded-full border border-[#B5FF00] px-4 py-2 text-sm font-medium text-[#B5FF00] transition-colors hover:bg-[#B5FF00]/10"
+                className="inline-flex items-center gap-2 rounded-full border border-accent px-4 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent/10"
               >
                 <ArrowLeft className="h-4 w-4" /> Volver
               </button>
@@ -181,7 +181,7 @@ export default function RoutineEditorPage() {
               <button
                 type="button"
                 onClick={handleSave}
-                className="inline-flex items-center gap-2 rounded-full bg-[#B5FF00] px-4 py-2 text-sm font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-[#D0FF4D]"
+                className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong"
               >
                 <Save className="h-4 w-4" />
                 {isEditing ? "Actualizar plantilla" : "Guardar plantilla"}
@@ -189,7 +189,7 @@ export default function RoutineEditorPage() {
               <button
                 type="button"
                 onClick={handleExportPdf}
-                className="inline-flex items-center gap-2 rounded-full border border-[#2E2E2E] px-4 py-2 text-sm font-medium text-gray-200 transition-colors hover:border-[#B5FF00]/60 hover:text-white"
+                className="inline-flex items-center gap-2 rounded-full border border-[#2E2E2E] px-4 py-2 text-sm font-medium text-gray-200 transition-colors hover:border-accent/60 hover:text-white"
               >
                 <FileDown className="h-4 w-4" /> Exportar PDF
               </button>

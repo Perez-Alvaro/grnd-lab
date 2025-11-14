@@ -733,6 +733,7 @@ export const mockSales = [
     routineId: 1,
     userEmail: "carlos.rodriguez@example.com",
     plan: "Premium",
+    planType: "premium",
     amount: 18500,
     date: "2025-11-01",
     status: "completed",
@@ -742,6 +743,7 @@ export const mockSales = [
     routineId: 2,
     userEmail: "maria.perez@example.com",
     plan: "Essential",
+    planType: "essential",
     amount: 12200,
     date: "2025-11-04",
     status: "completed",
@@ -751,6 +753,7 @@ export const mockSales = [
     routineId: 3,
     userEmail: "juan.gonzalez@example.com",
     plan: "Premium",
+    planType: "premium",
     amount: 17200,
     date: "2025-11-08",
     status: "completed",
@@ -760,6 +763,7 @@ export const mockSales = [
     routineId: 4,
     userEmail: "andrea.lopez@example.com",
     plan: "Basic",
+    planType: "basic",
     amount: 9900,
     date: "2025-11-12",
     status: "completed",
@@ -769,6 +773,7 @@ export const mockSales = [
     routineId: 5,
     userEmail: "federico.sanchez@example.com",
     plan: "Essential",
+    planType: "essential",
     amount: 13000,
     date: "2025-11-16",
     status: "completed",
@@ -778,6 +783,7 @@ export const mockSales = [
     routineId: 6,
     userEmail: "laura.martinez@example.com",
     plan: "Premium",
+    planType: "premium",
     amount: 19000,
     date: "2025-11-20",
     status: "completed",
@@ -787,6 +793,7 @@ export const mockSales = [
     routineId: 1,
     userEmail: "esteban.ramos@example.com",
     plan: "Premium",
+    planType: "premium",
     amount: 16800,
     date: "2025-11-25",
     status: "completed",
@@ -796,6 +803,7 @@ export const mockSales = [
     routineId: 2,
     userEmail: "luisa.garcia@example.com",
     plan: "Essential",
+    planType: "essential",
     amount: 11800,
     date: "2025-10-24",
     status: "completed",
@@ -805,6 +813,7 @@ export const mockSales = [
     routineId: 3,
     userEmail: "fernando.alvarez@example.com",
     plan: "Premium",
+    planType: "premium",
     amount: 16000,
     date: "2025-10-18",
     status: "completed",
@@ -814,6 +823,7 @@ export const mockSales = [
     routineId: 5,
     userEmail: "sofia.navarro@example.com",
     plan: "Essential",
+    planType: "essential",
     amount: 12500,
     date: "2025-10-11",
     status: "completed",
@@ -1030,10 +1040,19 @@ export const buildMockMetrics = (
 
 export const mockMetrics = buildMockMetrics();
 
+export const mockCommunityMembers = [
+  {
+    nombre: "Carlos Rodríguez",
+    email: "carlos@example.com",
+    telefono: "+5493515555555",
+  },
+];
+
 export const mockStore = {
   routines: mockRoutines,
   sales: mockSales,
   users: mockUsers,
+  communityMembers: mockCommunityMembers,
 };
 
 export default mockStore;
