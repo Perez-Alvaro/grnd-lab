@@ -4,12 +4,24 @@ export default {
   theme: {
     extend: {
       colors: {
-        gray: "#787878",
-        jet: "#2D2D2D",
-        "eerie-black": "#202020",
-        lime: "#CBFF00",
-        chartreuse: "#DBFE52",
-        mindaro: "#F8FE9F",
+        base: "var(--color-bg)",
+        surface: "var(--color-surface)",
+        "surface-alt": "var(--color-surface-alt)",
+        "brand-border": "var(--color-border)",
+        "brand-border-strong": "var(--color-border-strong)",
+        accent: "var(--color-accent)",
+        "accent-strong": "var(--color-accent-strong)",
+        "accent-dark": "var(--color-accent-dark)",
+        muted: "var(--color-muted)",
+        neutral: {
+          950: "var(--color-bg)",
+          900: "var(--color-surface)",
+          800: "var(--color-border)",
+          700: "var(--color-border-strong)",
+        },
+        lime: {
+          400: "var(--color-accent)",
+        },
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],

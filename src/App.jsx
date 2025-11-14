@@ -12,7 +12,7 @@ function App() {
   return (
     <AppProvider>
       <Router>
-        <div className="min-h-screen bg-neutral-950 text-white font-sans">
+        <div className="min-h-screen bg-base text-white font-sans">
           <Header />
           <main>
             <Routes>

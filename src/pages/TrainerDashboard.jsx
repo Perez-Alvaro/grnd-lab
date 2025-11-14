@@ -28,9 +28,9 @@ import TemplateCard from "../components/Trainer/TemplateCard.jsx";
 import { TRAINING_GOAL_LABELS } from "../constants/objectives.js";
 
 const PLAN_VARIANTS = {
-  premium: { label: "Premium", className: "text-lime-400" },
-  essential: { label: "Essential", className: "text-yellow-400" },
-  basic: { label: "Basic", className: "text-gray-400" },
+  premium: { label: "Premium", className: "text-accent" },
+  essential: { label: "Essential", className: "text-gray-400" },
+  basic: { label: "Basic", className: "text-gray-500" },
 };
 
 const PLAN_ORDER = ["premium", "essential", "basic"];
@@ -72,9 +72,9 @@ const formatVariation = (value) => {
 };
 
 const DashboardHeader = ({ onCreateTemplate, onGoToTemplates }) => (
-  <header className="flex flex-col gap-6 rounded-3xl border border-[#2E2E2E] bg-[#0E0E0E] p-8 shadow-[0_40px_120px_-60px_rgba(0,0,0,0.85)] md:flex-row md:items-center md:justify-between">
+  <header className="flex flex-col gap-6 rounded-3xl border border-brand-border bg-surface p-8 shadow-[0_40px_120px_-60px_rgba(0,0,0,0.85)] md:flex-row md:items-center md:justify-between">
     <div className="space-y-3">
-      <span className="inline-flex items-center gap-2 rounded-full border border-[#2E2E2E] px-4 py-1 text-xs uppercase tracking-[0.3em] text-gray-400">
+      <span className="inline-flex items-center gap-2 rounded-full border border-brand-border px-4 py-1 text-xs uppercase tracking-[0.3em] text-gray-400">
         Panel Fitter
       </span>
       <h1 className="text-3xl font-semibold text-white md:text-4xl">
@@ -88,14 +88,14 @@ const DashboardHeader = ({ onCreateTemplate, onGoToTemplates }) => (
     <div className="flex flex-wrap items-center gap-3">
       <button
         onClick={onGoToTemplates}
-        className="inline-flex items-center gap-2 rounded-full border border-[#2E2E2E] bg-[#1A1A1A] px-4 py-2 text-sm font-medium text-gray-200 transition-colors hover:border-[#B5FF00]/60 hover:text-white"
+        className="inline-flex items-center gap-2 rounded-full border border-brand-border bg-surface-alt px-4 py-2 text-sm font-medium text-gray-200 transition-colors hover:border-accent/60 hover:text-white"
       >
-        <FileText className="h-4 w-4 text-[#B5FF00]" />
+        <FileText className="h-4 w-4 text-accent" />
         Gestionar plantillas
       </button>
       <button
         onClick={onCreateTemplate}
-        className="inline-flex items-center gap-2 rounded-full bg-[#B5FF00] px-4 py-2 text-sm font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-[#D0FF4D]"
+        className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong"
       >
         <Plus className="h-4 w-4" />
         Nueva plantilla
@@ -105,14 +105,14 @@ const DashboardHeader = ({ onCreateTemplate, onGoToTemplates }) => (
 );
 
 const MetricCard = ({ title, value, subtitle, icon: Icon }) => (
-  <article className="rounded-2xl border border-[#2E2E2E] bg-[#1A1A1A] p-5 shadow-[0_30px_90px_-60px_rgba(0,0,0,0.8)]">
+  <article className="rounded-2xl border border-brand-border bg-surface-alt p-5 shadow-[0_30px_90px_-60px_rgba(0,0,0,0.8)]">
     <div className="flex items-start justify-between">
       <div className="space-y-2">
         <p className="text-sm text-gray-400">{title}</p>
         <p className="text-2xl font-semibold text-white">{value}</p>
         {subtitle && <p className="text-xs text-gray-500">{subtitle}</p>}
       </div>
-      <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#2E2E2E] bg-[#0E0E0E] text-[#B5FF00]">
+      <span className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border bg-surface text-accent">
         <Icon className="h-5 w-5" />
       </span>
     </div>
@@ -126,7 +126,7 @@ const DashboardCharts = ({
   downloadsVariation,
 }) => (
   <div className="flex flex-col gap-6">
-    <div className="rounded-2xl border border-[#2E2E2E] bg-[#0E0E0E] p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
+    <div className="rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-white">
@@ -136,14 +136,14 @@ const DashboardCharts = ({
             Últimos 6 meses • Variación {formatVariation(monthlyVariation)}
           </p>
         </div>
-        <span className="rounded-full border border-[#B5FF00]/40 bg-[#1A1A1A] px-4 py-1 text-xs font-semibold text-[#B5FF00]">
+        <span className="rounded-full border border-accent/40 bg-surface-alt px-4 py-1 text-xs font-semibold text-accent">
           {formatVariation(monthlyVariation)}
         </span>
       </div>
       <div className="mt-4 h-[280px]">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={monthlyRevenueData}>
-            <CartesianGrid stroke="#2E2E2E" />
+            <CartesianGrid stroke="var(--color-border)" />
             <XAxis
               dataKey="month"
               stroke="#BDBDBD"
@@ -160,7 +160,7 @@ const DashboardCharts = ({
               contentStyle={{
                 backgroundColor: "#0E0E0E",
                 borderRadius: "0.75rem",
-                border: "1px solid #2E2E2E",
+                border: "1px solid var(--color-border)",
                 color: "#FFFFFF",
               }}
               formatter={(value) => formatCurrency(value)}
@@ -169,15 +169,15 @@ const DashboardCharts = ({
             <Line
               type="monotone"
               dataKey="revenue"
-              stroke="#B5FF00"
+              stroke="var(--color-accent)"
               strokeWidth={2}
-              dot={{ stroke: "#B5FF00", r: 4 }}
+              dot={{ stroke: "var(--color-accent)", r: 4 }}
             />
           </LineChart>
         </ResponsiveContainer>
       </div>
     </div>
-    <div className="rounded-2xl border border-[#2E2E2E] bg-[#0E0E0E] p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
+    <div className="rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-white">
@@ -185,7 +185,7 @@ const DashboardCharts = ({
           </h3>
           <p className="text-sm text-gray-400">Top 5 por descargas</p>
         </div>
-        <span className="rounded-full border border-[#B5FF00]/40 bg-[#1A1A1A] px-4 py-1 text-xs font-semibold text-[#B5FF00]">
+        <span className="rounded-full border border-accent/40 bg-surface-alt px-4 py-1 text-xs font-semibold text-accent">
           {formatVariation(downloadsVariation)}
         </span>
       </div>
@@ -196,7 +196,7 @@ const DashboardCharts = ({
             layout="vertical"
             margin={{ top: 20, right: 20, bottom: 10, left: 10 }}
           >
-            <CartesianGrid stroke="#2E2E2E" />
+            <CartesianGrid stroke="var(--color-border)" />
             <XAxis
               type="number"
               stroke="#BDBDBD"
@@ -216,13 +216,13 @@ const DashboardCharts = ({
               contentStyle={{
                 backgroundColor: "#0E0E0E",
                 borderRadius: "0.75rem",
-                border: "1px solid #2E2E2E",
+                border: "1px solid var(--color-border)",
                 color: "#FFFFFF",
               }}
             />
             <Bar
               dataKey="sales"
-              fill="#B5FF00"
+              fill="var(--color-accent)"
               barSize={25}
               radius={[6, 6, 6, 6]}
             />
@@ -299,7 +299,7 @@ const DashboardSales = ({ sales }) => {
   };
 
   return (
-    <section className="flex h-full flex-col gap-6 rounded-2xl border border-neutral-800 bg-neutral-950 p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
+    <section className="flex h-full flex-col gap-6 rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-white">
@@ -316,7 +316,7 @@ const DashboardSales = ({ sales }) => {
               setPage(0);
               setPlanFilter(event.target.value);
             }}
-            className="rounded-full border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm text-gray-200 transition-colors focus:border-lime-400 focus:outline-none"
+            className="rounded-full border border-brand-border bg-base px-4 py-2 text-sm text-gray-200 transition-colors focus:border-accent focus:outline-none"
           >
             <option value="all">Todos los planes</option>
             {planOptions.map((option) => (
@@ -328,19 +328,19 @@ const DashboardSales = ({ sales }) => {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-neutral-800">
+      <div className="overflow-hidden rounded-2xl border border-brand-border">
         <table className="min-w-full divide-y divide-neutral-800 text-sm">
-          <thead className="bg-neutral-950 text-xs uppercase tracking-wide text-gray-500">
+          <thead className="bg-base text-xs uppercase tracking-wide text-gray-500">
             <tr>
               <th className="px-4 py-3 text-left font-medium">Cliente</th>
               <th className="px-4 py-3 text-left font-medium">Email</th>
-              <th className="px-4 py-3 text-left font-medium">Plan</th>
+              <th className="px-4 py-3 text-left font-medium">Tipo de plan</th>
               <th className="px-4 py-3 text-left font-medium">Rutina</th>
               <th className="px-4 py-3 text-left font-medium">
                 <button
                   type="button"
                   onClick={() => handleSort("amount")}
-                  className="inline-flex items-center gap-1 text-gray-400 transition-colors hover:text-lime-400"
+                  className="inline-flex items-center gap-1 text-gray-400 transition-colors hover:text-accent"
                 >
                   Monto
                 </button>
@@ -349,22 +349,22 @@ const DashboardSales = ({ sales }) => {
                 <button
                   type="button"
                   onClick={() => handleSort("date")}
-                  className="inline-flex items-center gap-1 text-gray-400 transition-colors hover:text-lime-400"
+                  className="inline-flex items-center gap-1 text-gray-400 transition-colors hover:text-accent"
                 >
                   Fecha
                 </button>
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-neutral-800 bg-neutral-950 text-gray-300">
+          <tbody className="divide-y divide-neutral-800 bg-surface text-gray-300">
             {paginatedSales.map((sale) => (
               <tr
                 key={sale.id}
-                className="transition-colors hover:bg-neutral-900"
+                className="transition-colors hover:bg-surface-alt"
               >
                 <td className="px-4 py-3 text-white">{sale.clientName}</td>
                 <td className="px-4 py-3">{sale.email}</td>
-                <td className={`px-4 py-3 capitalize ${sale.planClass}`}>
+                <td className={`px-4 py-3 font-semibold capitalize ${sale.planClass}`}>
                   {sale.planLabel}
                 </td>
                 <td className="px-4 py-3 text-white">{sale.routineName}</td>
@@ -385,7 +385,7 @@ const DashboardSales = ({ sales }) => {
         </table>
       </div>
 
-      <div className="flex flex-col gap-4 border-t border-neutral-800 pt-4 text-sm text-gray-400 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-4 border-t border-brand-border pt-4 text-sm text-gray-400 md:flex-row md:items-center md:justify-between">
         <p>
           Total filtrado:{" "}
           <span className="font-semibold text-white">
@@ -397,7 +397,7 @@ const DashboardSales = ({ sales }) => {
           <button
             type="button"
             onClick={() => setPage((prev) => Math.max(0, prev - 1))}
-            className="rounded-full border border-neutral-800 px-4 py-2 text-xs uppercase tracking-[0.2em] text-gray-400 transition-colors hover:border-lime-400/60 hover:text-white"
+            className="rounded-full border border-brand-border px-4 py-2 text-xs uppercase tracking-[0.2em] text-gray-400 transition-colors hover:border-accent/60 hover:text-white"
           >
             Anterior
           </button>
@@ -407,7 +407,7 @@ const DashboardSales = ({ sales }) => {
           <button
             type="button"
             onClick={() => setPage((prev) => Math.min(pageCount - 1, prev + 1))}
-            className="rounded-full border border-neutral-800 px-4 py-2 text-xs uppercase tracking-[0.2em] text-gray-400 transition-colors hover:border-lime-400/60 hover:text-white"
+            className="rounded-full border border-brand-border px-4 py-2 text-xs uppercase tracking-[0.2em] text-gray-400 transition-colors hover:border-accent/60 hover:text-white"
           >
             Siguiente
           </button>
@@ -485,7 +485,7 @@ const DashboardTemplates = ({
     setFilters({ tag: "", gender: "", objective: "" });
 
   return (
-    <section className="flex flex-col gap-6 rounded-2xl border border-[#2E2E2E] bg-[#0E0E0E] p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
+    <section className="flex flex-col gap-6 rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-xs uppercase tracking-[0.3em] text-gray-500">
@@ -501,13 +501,13 @@ const DashboardTemplates = ({
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={resetFilters}
-            className="rounded-full border border-[#2E2E2E] px-4 py-2 text-xs uppercase tracking-[0.2em] text-gray-400 transition-colors hover:border-[#B5FF00]/60 hover:text-white"
+            className="rounded-full border border-brand-border px-4 py-2 text-xs uppercase tracking-[0.2em] text-gray-400 transition-colors hover:border-accent/60 hover:text-white"
           >
             Limpiar filtros
           </button>
           <button
             onClick={onCreate}
-            className="inline-flex items-center gap-2 rounded-full bg-[#B5FF00] px-4 py-2 text-sm font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-[#D0FF4D]"
+            className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong"
           >
             <Plus className="h-4 w-4" />
             Nueva plantilla
@@ -521,7 +521,7 @@ const DashboardTemplates = ({
           <select
             value={filters.tag}
             onChange={(event) => handleFilterChange("tag", event.target.value)}
-            className="rounded-lg border border-[#2E2E2E] bg-[#1A1A1A] px-3 py-2 text-sm text-gray-200 focus:border-[#B5FF00] focus:outline-none"
+            className="rounded-lg border border-brand-border bg-surface-alt px-3 py-2 text-sm text-gray-200 focus:border-accent focus:outline-none"
           >
             <option value="">Todas</option>
             {availableTags.map((tag) => (
@@ -538,7 +538,7 @@ const DashboardTemplates = ({
             onChange={(event) =>
               handleFilterChange("gender", event.target.value)
             }
-            className="rounded-lg border border-[#2E2E2E] bg-[#1A1A1A] px-3 py-2 text-sm text-gray-200 focus:border-[#B5FF00] focus:outline-none"
+            className="rounded-lg border border-brand-border bg-surface-alt px-3 py-2 text-sm text-gray-200 focus:border-accent focus:outline-none"
           >
             <option value="">Todos</option>
             <option value="Masculino">Masculino</option>
@@ -552,7 +552,7 @@ const DashboardTemplates = ({
             onChange={(event) =>
               handleFilterChange("objective", event.target.value)
             }
-            className="rounded-lg border border-[#2E2E2E] bg-[#1A1A1A] px-3 py-2 text-sm text-gray-200 focus:border-[#B5FF00] focus:outline-none"
+            className="rounded-lg border border-brand-border bg-surface-alt px-3 py-2 text-sm text-gray-200 focus:border-accent focus:outline-none"
           >
             <option value="">Todos</option>
             {availableObjectives.map((goalKey) => (
@@ -578,7 +578,7 @@ const DashboardTemplates = ({
       </div>
 
       {filteredRoutines.length === 0 && (
-        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-[#2E2E2E] bg-[#101010] py-12 text-center text-sm text-gray-500">
+        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-brand-border bg-base py-12 text-center text-sm text-gray-500">
           No hay plantillas para los filtros seleccionados.
         </div>
       )}
@@ -587,10 +587,10 @@ const DashboardTemplates = ({
 };
 
 const DashboardMailExport = ({ onExport, emailCount }) => (
-  <section className="rounded-2xl border border-[#2E2E2E] bg-[#0E0E0E] p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
+  <section className="rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div>
-        <h3 className="text-lg font-semibold text-[#B5FF00]">
+        <h3 className="text-lg font-semibold text-accent">
           Exportar correos de clientes
         </h3>
         <p className="text-sm text-gray-400">
@@ -603,7 +603,7 @@ const DashboardMailExport = ({ onExport, emailCount }) => (
       </div>
       <button
         onClick={onExport}
-        className="inline-flex items-center gap-2 rounded-full bg-[#B5FF00] px-6 py-3 text-sm font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-[#D0FF4D]"
+        className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong"
       >
         <Mail className="h-4 w-4" />
         Descargar (.txt)
@@ -611,6 +611,84 @@ const DashboardMailExport = ({ onExport, emailCount }) => (
     </div>
   </section>
 );
+
+const DashboardEbookManager = () => {
+  const [ebookFile, setEbookFile] = useState(null);
+  const [coverFile, setCoverFile] = useState(null);
+  const [coverPreview, setCoverPreview] = useState(null);
+
+  const handlePdfUpload = (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setEbookFile(file);
+    }
+  };
+
+  const handleCoverUpload = (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setCoverFile(file);
+      setCoverPreview(URL.createObjectURL(file));
+    }
+  };
+
+  return (
+    <section className="rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
+      <h2 className="text-lg font-semibold text-accent">📘 Ebook de Nutrición</h2>
+      <p className="mt-1 text-sm text-gray-400">
+        Administrá el PDF oficial y la portada que se entregarán junto al Plan Premium.
+      </p>
+      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="space-y-4">
+          <div>
+            <label className="text-sm text-gray-400">Archivo PDF</label>
+            <input
+              type="file"
+              accept="application/pdf"
+              onChange={handlePdfUpload}
+              className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-gray-200 file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-accent file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black"
+            />
+            {ebookFile && (
+              <p className="mt-2 text-xs text-gray-500">
+                Archivo cargado: <span className="text-white">{ebookFile.name}</span>
+              </p>
+            )}
+          </div>
+          <div>
+            <label className="text-sm text-gray-400">Imagen de portada</label>
+            <input
+              type="file"
+              accept="image/png, image/jpeg"
+              onChange={handleCoverUpload}
+              className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-gray-200 file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-accent file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black"
+            />
+            {coverFile && (
+              <p className="mt-2 text-xs text-gray-500">
+                Portada cargada: <span className="text-white">{coverFile.name}</span>
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-brand-border bg-base p-6 text-center">
+          {coverPreview ? (
+            <img
+              src={coverPreview}
+              alt="Portada Ebook"
+              className="w-48 rounded-md border border-brand-border"
+            />
+          ) : (
+            <div className="flex h-40 w-full items-center justify-center rounded-lg border border-dashed border-brand-border text-sm text-gray-500">
+              Vista previa disponible al subir la portada.
+            </div>
+          )}
+          <p className="text-xs text-gray-500">
+            Los archivos se almacenan temporalmente (mock) como <strong>ebook.pdf</strong> y <strong>ebookCover.jpg</strong>.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const downloadTextFile = (filename, content) => {
   const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
@@ -667,7 +745,7 @@ function AdminDashboard() {
       const clientName = user
         ? `${user.firstName} ${user.lastName}`.trim()
         : sale.userEmail;
-      const planKey = (sale.plan || "").toLowerCase();
+      const planKey = (sale.planType || sale.plan || "").toLowerCase();
       const planInfo = PLAN_VARIANTS[planKey] || {
         label: sale.plan,
         className: "text-gray-400",
@@ -680,6 +758,7 @@ function AdminDashboard() {
         planKey,
         planLabel: planInfo.label || sale.plan,
         planClass: planInfo.className,
+        planType: planKey,
         routineName: routine ? routine.name || routine.title : "Sin rutina",
         routineObjective: routine?.objective,
         date: sale.date,
@@ -887,7 +966,7 @@ function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0E0E0E] text-gray-200">
+    <div className="min-h-screen bg-base text-gray-200">
       <div className="mx-auto flex max-w-7xl flex-col gap-10 px-6 py-10">
         <DashboardHeader
           onCreateTemplate={handleCreateTemplate}
@@ -953,6 +1032,8 @@ function AdminDashboard() {
           onExport={handleExportEmails}
           emailCount={uniqueEmails.length}
         />
+
+        <DashboardEbookManager />
       </div>
     </div>
   );

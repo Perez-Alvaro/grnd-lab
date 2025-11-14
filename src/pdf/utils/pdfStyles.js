@@ -1,12 +1,13 @@
 import { StyleSheet } from "@react-pdf/renderer";
+import { themeColors } from "@/styles/theme.js";
 
 export const palette = {
-  background: "#202020",
-  card: "#2D2D2D",
+  background: themeColors.surfaceAlt,
+  card: themeColors.surface,
   neutral: "#787878",
-  accent: "#B5FF00",
-  secondary: "#DBFE52",
-  text: "#FFFFFF",
+  accent: themeColors.accent,
+  secondary: themeColors.accentStrong,
+  text: themeColors.text,
 };
 
 export const spacing = {

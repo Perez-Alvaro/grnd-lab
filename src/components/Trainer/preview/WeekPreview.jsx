@@ -17,7 +17,7 @@ const DayPreview = ({ day }) => {
           className={`text-xs font-semibold px-3 py-1 rounded-full ${
             isRest
               ? "bg-[#787878]/20 text-[#A1A1A1]"
-              : "bg-[#B5FF00]/20 text-[#B5FF00]"
+              : "bg-accent/20 text-accent"
           }`}
         >
           {day.type}
@@ -91,7 +91,7 @@ const DayPreview = ({ day }) => {
                               target="_blank"
                               rel="noopener noreferrer"
                               aria-label="Ver video del ejercicio"
-                              className="text-sm font-semibold text-[#B5FF00] hover:underline"
+                              className="text-sm font-semibold text-accent hover:underline"
                             >
                               Ver
                             </a>
@@ -148,7 +148,7 @@ const WeekPreview = memo(({ week, index, collapsed, onToggle }) => {
             <p className="text-sm text-[#C9C9C9] mt-1">{week.summary}</p>
           )}
         </div>
-        <span className="rounded-full bg-[#1A1A1A] p-2 text-[#B5FF00]">
+        <span className="rounded-full bg-[#1A1A1A] p-2 text-accent">
           {collapsed ? (
             <ChevronRight className="h-5 w-5" />
           ) : (

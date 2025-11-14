@@ -25,11 +25,11 @@ export default function TemplateCard({
     meta.push(`Etiquetas: ${template.tags.join(", ")}`);
 
   return (
-    <div className="rounded-2xl border border-[#2E2E2E] bg-[#1A1A1A] p-4 shadow-[0_25px_70px_-45px_rgba(0,0,0,0.8)] transition-colors hover:border-[#B5FF00]/60 md:p-5">
+    <div className="rounded-2xl border border-[#2E2E2E] bg-[#1A1A1A] p-4 shadow-[0_25px_70px_-45px_rgba(0,0,0,0.8)] transition-colors hover:border-accent/60 md:p-5">
       <div className="flex items-start justify-between">
         <div>
           <button onClick={onEdit} className="text-left">
-            <h4 className="text-lg font-semibold text-white transition-colors hover:text-[#B5FF00] md:text-xl">
+            <h4 className="text-lg font-semibold text-white transition-colors hover:text-accent md:text-xl">
               {template.name}
             </h4>
           </button>

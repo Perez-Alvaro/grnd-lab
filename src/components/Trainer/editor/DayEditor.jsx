@@ -57,7 +57,7 @@ const DayEditor = memo(
 
     const labelClasses = "text-sm font-medium text-gray-400";
     const inputClasses =
-      "w-full rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white transition-colors focus:border-[#B5FF00] focus:outline-none focus:ring-0";
+      "w-full rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white transition-colors focus:border-accent focus:outline-none focus:ring-0";
 
     return (
       <div
@@ -102,7 +102,7 @@ const DayEditor = memo(
                 <button
                   type="button"
                   onClick={handleDuplicateDay}
-                  className="inline-flex items-center gap-2 rounded-lg border border-[#2E2E2E] px-3 py-2 text-xs font-semibold text-[#B5FF00] transition-colors hover:border-[#B5FF00] hover:bg-[#101010]"
+                  className="inline-flex items-center gap-2 rounded-lg border border-[#2E2E2E] px-3 py-2 text-xs font-semibold text-accent transition-colors hover:border-accent hover:bg-[#101010]"
                 >
                   <Copy className="h-4 w-4" /> Duplicar
                 </button>
@@ -175,7 +175,7 @@ const DayEditor = memo(
                       <button
                         type="button"
                         onClick={handleAddExercise}
-                        className="inline-flex items-center gap-2 rounded-lg border border-dashed border-[#2E2E2E] px-3 py-2 text-xs font-semibold text-[#B5FF00] transition-colors hover:border-[#B5FF00] hover:bg-[#101010]"
+                        className="inline-flex items-center gap-2 rounded-lg border border-dashed border-[#2E2E2E] px-3 py-2 text-xs font-semibold text-accent transition-colors hover:border-accent hover:bg-[#101010]"
                       >
                         <Plus className="h-4 w-4" /> Agregar ejercicio
                       </button>

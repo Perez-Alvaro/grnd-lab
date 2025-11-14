@@ -21,7 +21,7 @@ function GenderSelector({ selectedGender, onSelect }) {
   return (
     <section id="genero" className="flex flex-col gap-8">
       <FadeIn className="flex flex-col gap-3 text-left">
-        <span className="text-xs uppercase tracking-[0.4em] text-[#B5FF00]">
+        <span className="text-xs uppercase tracking-[0.4em] text-accent">
           Paso 01
         </span>
         <h2 className="text-3xl font-semibold uppercase text-white md:text-4xl">
@@ -41,9 +41,9 @@ function GenderSelector({ selectedGender, onSelect }) {
               onClick={() => onSelect(card.id)}
               className={cn(
                 "group flex w-full flex-col justify-center rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] p-6 text-left transition-all duration-150 md:min-h-[220px] md:p-8",
-                "hover:border-[#B5FF00] hover:shadow-[0_0_20px_-12px_rgba(181,255,0,0.6)] hover:-translate-y-0.5",
+                "hover:border-accent hover:shadow-[0_0_20px_-12px_rgba(181,255,0,0.6)] hover:-translate-y-0.5",
                 selectedGender === card.id &&
-                  "border-[#B5FF00] ring-1 ring-[#B5FF00]",
+                  "border-accent ring-1 ring-accent",
               )}
             >
               <h3 className="text-xl font-semibold text-white md:text-2xl">

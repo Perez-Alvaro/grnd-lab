@@ -4,15 +4,22 @@ import { FadeIn } from "../Shared/reactbits/index.js";
 import { useAppContext } from "../../context/AppContext.jsx";
 import { mockProcessPayment } from "../../utils/mockApi.js";
 
-function PaymentSection({ routine }) {
+function PaymentSection({
+  routine,
+  planType = "essential",
+  premiumAddonPrice = 6000,
+}) {
   const { dispatch } = useAppContext();
   const [formData, setFormData] = useState({
     email: "",
     firstName: "",
     lastName: "",
+    phone: "",
   });
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
+  const isPremium = planType === "premium";
+  const planLabel = isPremium ? "Plan Premium MZ" : "Plan Essential";
 
   const formatWeeks = (value) => {
     if (!value && value !== 0) return "—";
@@ -32,16 +39,24 @@ function PaymentSection({ routine }) {
     return value;
   };
 
+  const totalPrice = useMemo(() => {
+    if (!routine) return 0;
+    return isPremium ? routine.price + premiumAddonPrice : routine.price;
+  }, [isPremium, premiumAddonPrice, routine]);
+
   const plan = useMemo(
     () =>
       routine
         ? {
             id: `routine-${routine.id}`,
             name: routine.name,
-            price: routine.price,
+            price: totalPrice,
+            label: planLabel,
+            type: planType,
+            premiumAddonPrice,
           }
         : null,
-    [routine],
+    [planLabel, planType, premiumAddonPrice, routine, totalPrice],
   );
 
   const handleChange = (field, value) => {
@@ -53,7 +68,8 @@ function PaymentSection({ routine }) {
     if (!routine || !plan) return;
     setProcessing(true);
 
-    const { user, sale } = await mockProcessPayment(formData, routine, plan);
+    const payload = { ...formData, planType };
+    const { user, sale } = await mockProcessPayment(payload, routine, plan);
     dispatch({ type: "ADD_USER", payload: user });
     dispatch({ type: "ADD_SALE", payload: sale });
 
@@ -74,7 +90,7 @@ function PaymentSection({ routine }) {
     return (
       <section id="checkout-section" className={sectionClasses}>
         <header className={headerClasses}>
-          <h4 className="text-xs uppercase tracking-[0.4em] text-[#B5FF00]">
+          <h4 className="text-xs uppercase tracking-[0.4em] text-accent">
             Paso 04
           </h4>
           <h2 className="text-3xl font-semibold text-white md:text-4xl">
@@ -85,7 +101,7 @@ function PaymentSection({ routine }) {
           </p>
         </header>
 
-        <FadeIn className="rounded-2xl border border-dashed border-[#2E2E2E] bg-[#0E0E0E] p-10 text-center">
+        <FadeIn className="rounded-2xl border border-dashed border-brand-border bg-surface p-10 text-center">
           <h3 className="text-2xl font-semibold uppercase text-gray-300">
             Seleccioná una rutina
           </h3>
@@ -102,7 +118,7 @@ function PaymentSection({ routine }) {
     return (
       <section id="checkout-section" className={sectionClasses}>
         <header className={headerClasses}>
-          <h4 className="text-xs uppercase tracking-[0.4em] text-[#B5FF00]">
+          <h4 className="text-xs uppercase tracking-[0.4em] text-accent">
             Paso 04
           </h4>
           <h2 className="text-3xl font-semibold text-white md:text-4xl">
@@ -113,9 +129,9 @@ function PaymentSection({ routine }) {
           </p>
         </header>
 
-        <FadeIn className="rounded-2xl border border-[#B5FF00]/40 bg-[#0E0E0E] p-10 text-center">
+        <FadeIn className="rounded-2xl border border-accent/40 bg-surface p-10 text-center">
           <div className="mx-auto flex max-w-xl flex-col items-center gap-6">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full border border-[#B5FF00] text-3xl">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full border border-accent text-3xl">
               ✅
             </div>
             <div className="space-y-3">
@@ -123,14 +139,17 @@ function PaymentSection({ routine }) {
                 ¡Listo!<br className="hidden md:block" /> Pago acreditado
               </h3>
               <p className="text-sm text-gray-400">
-                Enviamos <span className="text-white">{routine.name}</span> a{" "}
-                <span className="text-white">{formData.email}</span>. También
-                recibirás seguimiento técnico y actualizaciones automáticas.
+                Enviamos <span className="text-white">{plan?.label}</span> y tu
+                rutina <span className="text-white">{routine.name}</span> a{" "}
+                <span className="text-white">{formData.email}</span>.
+                {isPremium
+                  ? " Incluimos el ebook nutricional y la invitación a la Comunidad MZ."
+                  : " Recordá que podés mejorar a Premium más adelante."}
               </p>
             </div>
             <button
               type="button"
-              className="w-full rounded-full bg-[#B5FF00] px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-[#D0FF4D] md:w-auto"
+              className="w-full rounded-full bg-accent px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong md:w-auto"
               onClick={() => window.location.assign("/")}
             >
               Volver al inicio
@@ -144,7 +163,7 @@ function PaymentSection({ routine }) {
   return (
     <section id="checkout-section" className={sectionClasses}>
       <header className={headerClasses}>
-        <h4 className="text-xs uppercase tracking-[0.4em] text-[#B5FF00]">
+        <h4 className="text-xs uppercase tracking-[0.4em] text-accent">
           Paso 04
         </h4>
         <h2 className="text-3xl font-semibold text-white md:text-4xl">
@@ -156,11 +175,11 @@ function PaymentSection({ routine }) {
       </header>
 
       <motion.div
-        className="rounded-2xl border border-[#2E2E2E] bg-[#0E0E0E] p-6 shadow-[0_0_35px_-20px_rgba(181,255,0,0.35)] md:p-10"
+        className="rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_0_35px_-20px_rgba(181,255,0,0.35)] md:p-10"
         {...motionCardProps}
       >
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <div className="space-y-2 text-center md:text-left">
+          <div className="space-y-3 text-center md:text-left">
             <span className="text-xs uppercase tracking-[0.3em] text-gray-500">
               Plan seleccionado
             </span>
@@ -173,13 +192,27 @@ function PaymentSection({ routine }) {
                 ? ` • Nivel ${routine.level}`
                 : ""}
             </p>
+            <span
+              className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${
+                isPremium
+                  ? "border border-accent/60 bg-accent/10 text-accent"
+                  : "border border-brand-border text-gray-300"
+              }`}
+            >
+              {planLabel}
+            </span>
           </div>
           <div className="flex flex-col items-center text-center md:items-end md:text-right">
             <span className="text-xs uppercase tracking-[0.3em] text-gray-500">
               Inversión
             </span>
-            <p className="text-3xl font-bold text-[#B5FF00] md:text-4xl">
-              ${routine.price.toLocaleString("es-AR")}
+            <p className="text-3xl font-bold text-accent md:text-4xl">
+              ${totalPrice.toLocaleString("es-AR")}
+            </p>
+            <p className="text-xs text-gray-500">
+              {isPremium
+                ? `Incluye +$${premiumAddonPrice.toLocaleString("es-AR")} por ebook y comunidad.`
+                : "Puedes sumar el ebook antes de confirmar el pago."}
             </p>
           </div>
         </div>
@@ -194,7 +227,7 @@ function PaymentSection({ routine }) {
                 onChange={(event) =>
                   handleChange("firstName", event.target.value)
                 }
-                className="rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none"
+                className="rounded-lg border border-brand-border bg-base px-4 py-3 text-sm text-white focus:border-accent focus:outline-none"
                 placeholder="Tu nombre"
               />
             </label>
@@ -206,7 +239,7 @@ function PaymentSection({ routine }) {
                 onChange={(event) =>
                   handleChange("lastName", event.target.value)
                 }
-                className="rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none"
+                className="rounded-lg border border-brand-border bg-base px-4 py-3 text-sm text-white focus:border-accent focus:outline-none"
                 placeholder="Tu apellido"
               />
             </label>
@@ -219,7 +252,7 @@ function PaymentSection({ routine }) {
               type="email"
               value={formData.email}
               onChange={(event) => handleChange("email", event.target.value)}
-              className="rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none"
+              className="rounded-lg border border-brand-border bg-base px-4 py-3 text-sm text-white focus:border-accent focus:outline-none"
               placeholder="tuemail@example.com"
             />
             <span className="text-xs text-gray-500">
@@ -227,8 +260,25 @@ function PaymentSection({ routine }) {
             </span>
           </label>
 
-          <div className="flex flex-col items-center gap-4 rounded-xl border border-[#2E2E2E] bg-[#0A0A0A] p-6 text-center">
-            <span className="text-sm font-semibold uppercase tracking-[0.3em] text-[#B5FF00]">
+          <label className="flex flex-col gap-2 text-sm font-medium text-gray-200">
+            Teléfono
+            <input
+              required
+              type="tel"
+              name="telefono"
+              value={formData.phone}
+              onChange={(event) => handleChange("phone", event.target.value)}
+              className="w-full rounded-lg border border-accent text-accent bg-neutral-950 px-4 py-3 text-sm focus:ring-2 focus:ring-accent"
+              placeholder="Tu número de teléfono"
+            />
+            <span className="text-xs text-gray-500">
+              Utilizamos este canal para enviarte novedades del plan y acceso a
+              la comunidad MZ.
+            </span>
+          </label>
+
+          <div className="flex flex-col items-center gap-4 rounded-xl border border-brand-border bg-base p-6 text-center">
+            <span className="text-sm font-semibold uppercase tracking-[0.3em] text-accent">
               Método de pago
             </span>
             <div className="flex items-center justify-center">
@@ -247,11 +297,11 @@ function PaymentSection({ routine }) {
           <button
             type="submit"
             disabled={processing}
-            className="w-full rounded-full bg-[#B5FF00] px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-[#D0FF4D] disabled:cursor-not-allowed disabled:bg-[#2E2E2E] disabled:text-gray-500"
+            className="w-full rounded-full bg-accent px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong disabled:cursor-not-allowed disabled:bg-brand-border disabled:text-gray-500"
           >
             {processing
               ? "Procesando..."
-              : `Proceder al pago - $${routine.price.toLocaleString("es-AR")}`}
+              : `Proceder al pago - $${totalPrice.toLocaleString("es-AR")}`}
           </button>
         </form>
       </motion.div>
