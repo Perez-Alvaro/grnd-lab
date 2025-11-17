@@ -16,6 +16,7 @@ export function UnifiedAuthProvider({ children }) {
     isMountedRef.current = true
     let loadingTimeout = null
     let isInitializing = false
+    const abortController = new AbortController()
 
     // Safety timeout: Si después de 10s sigue loading, forzar a false
     loadingTimeout = setTimeout(() => {
@@ -93,7 +94,7 @@ export function UnifiedAuthProvider({ children }) {
       setSession(currentSession)
 
       if (currentSession?.user) {
-        await loadUserProfile(currentSession.user)
+        await loadUserProfile(currentSession.user, abortController.signal)
       } else {
         setUser(null)
         setProfile(null)
@@ -104,6 +105,7 @@ export function UnifiedAuthProvider({ children }) {
     return () => {
       console.log('🛑 UnifiedAuthContext - Cleanup')
       isMountedRef.current = false
+      abortController.abort() // ✅ Cancelar queries pendientes
       if (loadingTimeout) {
         clearTimeout(loadingTimeout)
       }
@@ -111,24 +113,60 @@ export function UnifiedAuthProvider({ children }) {
     }
   }, [])
 
-  const loadUserProfile = async (authUser) => {
+  const loadUserProfile = async (authUser, abortSignal) => {
     console.log('🔍 UnifiedAuthContext - Loading profile for:', authUser?.email)
     console.log('🔍 UnifiedAuthContext - User ID:', authUser?.id)
 
     try {
       console.log('🔍 UnifiedAuthContext - Querying profiles table...')
+      console.log('🔍 Auth user ID:', authUser.id)
 
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', authUser.id)
-        .single()
+      // BYPASS: Usar fetch directo en lugar del cliente de Supabase
+      console.log('🔍 Using direct fetch to bypass Supabase client...')
 
-      console.log('🔍 UnifiedAuthContext - Query completed:', { hasData: !!profileData, hasError: !!profileError })
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-      // Verificar si el componente sigue montado antes de continuar
-      if (!isMountedRef.current) {
-        console.log('⚠️ UnifiedAuthContext - Component unmounted during profile load, aborting setState')
+      const response = await fetch(
+        `${supabaseUrl}/rest/v1/profiles?id=eq.${authUser.id}&select=*`,
+        {
+          method: 'GET',
+          headers: {
+            'apikey': supabaseKey,
+            'Authorization': `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          }
+        }
+      );
+
+      console.log('🔍 Fetch response status:', response.status);
+      console.log('🔍 Fetch response ok:', response.ok);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Fetch error:', errorText);
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
+
+      const data = await response.json();
+      console.log('🔍 Fetched data:', data);
+
+      const profileData = Array.isArray(data) && data.length > 0 ? data[0] : null;
+      const profileError = !profileData ? { code: 'PGRST116', message: 'No profile found' } : null;
+
+      console.log('🔍 UnifiedAuthContext - Raw result:', { data: profileData, error: profileError })
+
+      console.log('🔍 UnifiedAuthContext - Query completed:', {
+        hasData: !!profileData,
+        hasError: !!profileError,
+        errorCode: profileError?.code,
+        errorMessage: profileError?.message
+      })
+
+      // Verificar si fue abortado o si el componente se desmontó
+      if (abortSignal?.aborted || !isMountedRef.current) {
+        console.log('⚠️ UnifiedAuthContext - Query aborted or component unmounted, aborting setState')
         return
       }
 
@@ -151,9 +189,15 @@ export function UnifiedAuthProvider({ children }) {
       setError(null)
     } catch (err) {
       console.error('❌ UnifiedAuthContext - Error loading profile:', err)
+      console.error('❌ Error details:', {
+        message: err.message,
+        code: err.code,
+        hint: err.hint,
+        details: err.details
+      })
 
       // Verificar si el componente sigue montado antes de hacer setState
-      if (isMountedRef.current) {
+      if (isMountedRef.current && !abortSignal?.aborted) {
         setError(err)
         setUser(null)
         setProfile(null)
