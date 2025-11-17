@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '@/context/AuthContext'
+import { useAdminAuth } from '@/context/UnifiedAuthContext'
 import { Shield, ShieldCheck, ShieldOff, AlertCircle, Check, X } from 'lucide-react'
 
 export default function MFAManagement() {
@@ -10,7 +10,7 @@ export default function MFAManagement() {
   const [error, setError] = useState('')
   const [showConfirmDisable, setShowConfirmDisable] = useState(false)
   const navigate = useNavigate()
-  const { user, getMFAFactors, unenrollMFA } = useAuth()
+  const { user, getMFAFactors, unenrollMFA } = useAdminAuth()
 
   useEffect(() => {
     if (!user) {

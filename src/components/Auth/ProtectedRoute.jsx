@@ -1,63 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
-import { useAuth } from '@/context/AuthContext'
+import { useAdminAuth } from '@/context/UnifiedAuthContext'
 
 export function ProtectedRoute({ children }) {
-  const { user, profile, loading, getAssuranceLevel, getMFAFactors } = useAuth()
-  const [checking, setChecking] = useState(true)
-  const [needsMFA, setNeedsMFA] = useState(false)
+  const { user, profile, loading } = useAdminAuth()
   const location = useLocation()
 
-  useEffect(() => {
-    const checkMFAStatus = async () => {
-      if (loading) {
-        setChecking(true)
-        return
-      }
-
-      if (!user) {
-        setChecking(false)
-        return
-      }
-
-      try {
-        // Verificar si tiene MFA habilitado
-        const { data: factorsData } = await getMFAFactors()
-        const hasMFAEnabled = factorsData?.totp && factorsData.totp.length > 0
-
-        if (hasMFAEnabled) {
-          // Si tiene MFA, verificar el nivel de assurance
-          const { data: aalData } = await getAssuranceLevel()
-          
-          console.log('🔐 ProtectedRoute - MFA Check:', {
-            hasMFA: hasMFAEnabled,
-            currentAAL: aalData?.currentLevel,
-            nextAAL: aalData?.nextLevel,
-            path: location.pathname
-          })
-
-          // Si está en AAL1 y necesita AAL2, necesita completar MFA
-          if (aalData?.currentLevel === 'aal1' && aalData?.nextLevel === 'aal2') {
-            console.log('⚠️ MFA requerido pero no completado')
-            setNeedsMFA(true)
-          } else {
-            setNeedsMFA(false)
-          }
-        } else {
-          setNeedsMFA(false)
-        }
-      } catch (error) {
-        console.error('❌ Error checking MFA status:', error)
-      } finally {
-        setChecking(false)
-      }
-    }
-
-    checkMFAStatus()
-  }, [user, loading, getAssuranceLevel, getMFAFactors, location.pathname])
+  console.log('🔐 ProtectedRoute - Estado:', {
+    hasUser: !!user,
+    hasProfile: !!profile,
+    role: profile?.role,
+    loading
+  })
 
   // Mostrar loading mientras verifica
-  if (loading || checking) {
+  if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-950">
         <div className="text-center">
@@ -74,13 +31,8 @@ export function ProtectedRoute({ children }) {
     return <Navigate to="/mz-admin-access" replace state={{ from: location }} />
   }
 
-  // Si necesita MFA, redirigir al login para completar 2FA
-  if (needsMFA) {
-    console.log('🔐 MFA required, redirecting to login')
-    return <Navigate to="/mz-admin-access" replace state={{ from: location, requiresMFA: true }} />
-  }
-
   // Todo OK, mostrar contenido protegido
+  console.log('✅ ProtectedRoute - Access granted')
   return children
 }
 

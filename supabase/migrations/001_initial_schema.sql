@@ -24,8 +24,9 @@ CREATE TYPE product_type AS ENUM ('routine', 'book', 'bundle');
 -- Estado de venta
 CREATE TYPE sale_status AS ENUM ('pending', 'completed', 'failed', 'refunded');
 
--- Método de pago
-CREATE TYPE payment_method AS ENUM ('mercadopago', 'stripe', 'manual');
+-- Método de pago ESTO NO ES NECESARIO YA QUE SOLO SERA MERCADOPAGO O TRANSFERENCIA
+CREATE TYPE payment_method AS ENUM ('mercadopago', 'transferencia');
+-- CREATE TYPE payment_method AS ENUM ('mercadopago', 'stripe', 'manual');
 
 -- Género de rutina
 CREATE TYPE routine_gender AS ENUM ('male', 'female', 'unisex');
@@ -280,9 +281,38 @@ CREATE INDEX idx_email_logs_recipient ON email_logs(recipient_email);
 CREATE INDEX idx_email_logs_type ON email_logs(email_type);
 CREATE INDEX idx_email_logs_sale_id ON email_logs(sale_id);
 CREATE INDEX idx_email_logs_sent_at ON email_logs(sent_at);
+-- =====================================================
+-- FITTER - FIX PARA RLS RECURSIVAS (DESDE PASO 14)
+-- Versión: 1.1
+-- Fecha: 2025-01-15
+-- Descripción: Corrección completa de políticas RLS recursivas
+-- =====================================================
+
+-- IMPORTANTE: Este archivo reemplaza TODO desde el paso 14 en adelante
+-- Si ya ejecutaste el schema hasta el paso 13, ejecuta este archivo para corregir RLS
 
 -- =====================================================
--- 14. FUNCIONES Y TRIGGERS
+-- PASO 14A: FUNCIÓN HELPER PARA EVITAR RECURSIÓN
+-- =====================================================
+
+-- Esta función es la CLAVE para evitar recursión infinita
+-- Se ejecuta con SECURITY DEFINER para poder leer profiles sin problemas
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role = 'admin'
+  );
+$$;
+
+-- CRÍTICO: Asignar owner a postgres para que funcione correctamente
+ALTER FUNCTION public.is_admin() OWNER TO postgres;
+
+-- =====================================================
+-- PASO 14B: FUNCIONES Y TRIGGERS
 -- =====================================================
 
 -- Función: Actualizar updated_at automáticamente
@@ -294,27 +324,34 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Triggers para updated_at
-CREATE TRIGGER update_profiles_updated_at BEFORE UPDATE ON profiles
+-- Triggers para updated_at en todas las tablas necesarias
+CREATE TRIGGER update_profiles_updated_at
+  BEFORE UPDATE ON profiles
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_products_updated_at BEFORE UPDATE ON products
+CREATE TRIGGER update_products_updated_at
+  BEFORE UPDATE ON products
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_routines_updated_at BEFORE UPDATE ON routines
+CREATE TRIGGER update_routines_updated_at
+  BEFORE UPDATE ON routines
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_books_updated_at BEFORE UPDATE ON books
+CREATE TRIGGER update_books_updated_at
+  BEFORE UPDATE ON books
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_sales_updated_at BEFORE UPDATE ON sales
+CREATE TRIGGER update_sales_updated_at
+  BEFORE UPDATE ON sales
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- Función: Crear profile automáticamente al registrarse
 CREATE OR REPLACE FUNCTION create_profile_on_signup()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+SECURITY DEFINER
+AS $$
 BEGIN
-  INSERT INTO profiles (id, role, first_name, last_name)
+  INSERT INTO public.profiles (id, role, first_name, last_name)
   VALUES (
     NEW.id,
     'customer', -- Por defecto todos son customers
@@ -323,9 +360,12 @@ BEGIN
   );
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql;
 
--- Trigger: Crear profile al registrarse
+-- Asegurar owner para evitar problemas con RLS
+ALTER FUNCTION create_profile_on_signup() OWNER TO postgres;
+
+-- Trigger: Crear profile al registrarse en auth.users
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION create_profile_on_signup();
@@ -342,16 +382,20 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Trigger: Incrementar contador al descargar
-CREATE TRIGGER on_download_increment AFTER INSERT ON downloads
+-- Trigger: Incrementar contador al insertar descarga
+CREATE TRIGGER on_download_increment
+  AFTER INSERT ON downloads
   FOR EACH ROW EXECUTE FUNCTION increment_download_count();
 
 -- Función: Logging automático de ventas completadas
 CREATE OR REPLACE FUNCTION log_sale_completed()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+SECURITY DEFINER
+AS $$
 BEGIN
-  IF NEW.status = 'completed' AND OLD.status != 'completed' THEN
-    INSERT INTO activity_logs (user_id, user_email, action, entity_type, entity_id, details)
+  -- Solo insertar log si el status cambió a 'completed'
+  IF NEW.status = 'completed' AND OLD.status IS DISTINCT FROM 'completed' THEN
+    INSERT INTO public.activity_logs (user_id, user_email, action, entity_type, entity_id, details)
     VALUES (
       NEW.user_id,
       NEW.user_email,
@@ -369,12 +413,19 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Trigger: Log al completar venta
-CREATE TRIGGER on_sale_completed AFTER UPDATE ON sales
-  FOR EACH ROW EXECUTE FUNCTION log_sale_completed();
+-- Asegurar owner para permitir insert en activity_logs
+ALTER FUNCTION log_sale_completed() OWNER TO postgres;
+
+-- Trigger: Solo se dispara cuando cambia el status (optimizado)
+DROP TRIGGER IF EXISTS on_sale_completed ON sales;
+CREATE TRIGGER on_sale_completed
+  AFTER UPDATE OF status ON sales
+  FOR EACH ROW
+  WHEN (NEW.status = 'completed' AND OLD.status IS DISTINCT FROM 'completed')
+  EXECUTE FUNCTION log_sale_completed();
 
 -- =====================================================
--- 15. ROW LEVEL SECURITY (RLS)
+-- PASO 15: ROW LEVEL SECURITY (RLS) - SIN RECURSIÓN
 -- =====================================================
 
 -- Habilitar RLS en todas las tablas
@@ -390,174 +441,238 @@ ALTER TABLE downloads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE activity_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE email_logs ENABLE ROW LEVEL SECURITY;
 
--- Políticas para PROFILES
+-- =====================================================
+-- POLÍTICAS PARA: PROFILES
+-- =====================================================
+
+-- Eliminar políticas viejas si existen
+DROP POLICY IF EXISTS "Usuarios pueden ver su propio perfil" ON profiles;
+DROP POLICY IF EXISTS "Usuarios pueden actualizar su propio perfil" ON profiles;
+DROP POLICY IF EXISTS "Admins pueden ver todos los perfiles" ON profiles;
+DROP POLICY IF EXISTS "Admins gestionan perfiles" ON profiles;
+
+-- Usuario puede ver su propio perfil
 CREATE POLICY "Usuarios pueden ver su propio perfil"
   ON profiles FOR SELECT
   USING (auth.uid() = id);
 
+-- Usuario puede actualizar su propio perfil
 CREATE POLICY "Usuarios pueden actualizar su propio perfil"
   ON profiles FOR UPDATE
-  USING (auth.uid() = id);
+  USING (auth.uid() = id)
+  WITH CHECK (auth.uid() = id);
 
+-- Admins pueden ver todos los perfiles (usa is_admin() - SIN RECURSIÓN)
 CREATE POLICY "Admins pueden ver todos los perfiles"
   ON profiles FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  USING (public.is_admin());
 
--- Políticas para PRODUCTS (públicos para lectura)
+-- Admins pueden gestionar todos los perfiles (INSERT/UPDATE/DELETE)
+CREATE POLICY "Admins gestionan perfiles"
+  ON profiles FOR ALL
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
+
+-- =====================================================
+-- POLÍTICAS PARA: PRODUCTS
+-- =====================================================
+
+DROP POLICY IF EXISTS "Productos activos son públicos" ON products;
+DROP POLICY IF EXISTS "Admins pueden gestionar productos" ON products;
+
+-- Productos activos son visibles públicamente (catálogo)
 CREATE POLICY "Productos activos son públicos"
   ON products FOR SELECT
   USING (active = true);
 
+-- Admins pueden gestionar productos
 CREATE POLICY "Admins pueden gestionar productos"
   ON products FOR ALL
-  USING (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
 
--- Políticas para ROUTINES (públicas si el producto está activo)
-CREATE POLICY "Rutinas activas son públicas"
+-- =====================================================
+-- POLÍTICAS PARA: ROUTINES (CONTENIDO PROTEGIDO)
+-- =====================================================
+
+DROP POLICY IF EXISTS "Rutinas activas son públicas" ON routines;
+DROP POLICY IF EXISTS "Admins pueden gestionar rutinas" ON routines;
+DROP POLICY IF EXISTS "Rutinas: acceso solo si comprado o admin" ON routines;
+
+-- Solo pueden ver rutinas: admins O usuarios que la compraron
+CREATE POLICY "Rutinas: acceso solo si comprado o admin"
   ON routines FOR SELECT
   USING (
-    EXISTS (
-      SELECT 1 FROM products
-      WHERE products.id = routines.id AND products.active = true
+    public.is_admin()
+    OR EXISTS (
+      SELECT 1
+      FROM sale_items si
+      JOIN sales s ON s.id = si.sale_id
+      WHERE si.product_id = routines.id
+        AND s.user_id = auth.uid()
+        AND s.status = 'completed'
     )
   );
 
+-- Admins pueden gestionar rutinas
 CREATE POLICY "Admins pueden gestionar rutinas"
   ON routines FOR ALL
-  USING (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
 
--- Políticas para BOOKS
-CREATE POLICY "Libros activos son públicos (metadata)"
+-- =====================================================
+-- POLÍTICAS PARA: BOOKS (CONTENIDO PROTEGIDO)
+-- =====================================================
+
+DROP POLICY IF EXISTS "Libros activos son públicos (metadata)" ON books;
+DROP POLICY IF EXISTS "Admins pueden gestionar libros" ON books;
+DROP POLICY IF EXISTS "Books: acceso solo si comprado o admin" ON books;
+
+-- Solo pueden ver books: admins O usuarios que lo compraron
+CREATE POLICY "Books: acceso solo si comprado o admin"
   ON books FOR SELECT
   USING (
-    EXISTS (
-      SELECT 1 FROM products
-      WHERE products.id = books.id AND products.active = true
+    public.is_admin()
+    OR EXISTS (
+      SELECT 1
+      FROM sale_items si
+      JOIN sales s ON s.id = si.sale_id
+      WHERE si.product_id = books.id
+        AND s.user_id = auth.uid()
+        AND s.status = 'completed'
     )
   );
 
+-- Admins pueden gestionar libros
 CREATE POLICY "Admins pueden gestionar libros"
   ON books FOR ALL
-  USING (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
 
--- Políticas para SALES
+-- =====================================================
+-- POLÍTICAS PARA: PRODUCT_BUNDLES
+-- =====================================================
+
+DROP POLICY IF EXISTS "Admins pueden gestionar bundles" ON product_bundles;
+
+-- Solo admins gestionan bundles
+CREATE POLICY "Admins pueden gestionar bundles"
+  ON product_bundles FOR ALL
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
+
+-- =====================================================
+-- POLÍTICAS PARA: SALES
+-- =====================================================
+
+DROP POLICY IF EXISTS "Usuarios pueden ver sus propias ventas" ON sales;
+DROP POLICY IF EXISTS "Admins pueden ver todas las ventas" ON sales;
+
+-- Usuarios ven sus propias ventas
 CREATE POLICY "Usuarios pueden ver sus propias ventas"
   ON sales FOR SELECT
   USING (auth.uid() = user_id);
 
+-- Admins ven todas las ventas
 CREATE POLICY "Admins pueden ver todas las ventas"
   ON sales FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  USING (public.is_admin());
 
--- Políticas para SALE_ITEMS
+-- =====================================================
+-- POLÍTICAS PARA: SALE_ITEMS
+-- =====================================================
+
+DROP POLICY IF EXISTS "Usuarios pueden ver items de sus ventas" ON sale_items;
+DROP POLICY IF EXISTS "Admins pueden ver todos los items" ON sale_items;
+
+-- Usuarios ven items de sus propias ventas
 CREATE POLICY "Usuarios pueden ver items de sus ventas"
   ON sale_items FOR SELECT
   USING (
     EXISTS (
-      SELECT 1 FROM sales
-      WHERE sales.id = sale_items.sale_id
-      AND sales.user_id = auth.uid()
+      SELECT 1 FROM sales s
+      WHERE s.id = sale_items.sale_id
+        AND s.user_id = auth.uid()
     )
   );
 
+-- Admins ven todos los items
 CREATE POLICY "Admins pueden ver todos los items"
   ON sale_items FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  USING (public.is_admin());
 
--- Políticas para GENERATED_FILES
+-- =====================================================
+-- POLÍTICAS PARA: GENERATED_FILES
+-- =====================================================
+
+DROP POLICY IF EXISTS "Usuarios pueden ver archivos de sus compras" ON generated_files;
+DROP POLICY IF EXISTS "Admins pueden ver todos los archivos" ON generated_files;
+
+-- Usuarios ven archivos de productos que compraron
 CREATE POLICY "Usuarios pueden ver archivos de sus compras"
   ON generated_files FOR SELECT
   USING (
-    EXISTS (
-      SELECT 1 FROM sale_items si
+    public.is_admin()
+    OR EXISTS (
+      SELECT 1
+      FROM sale_items si
       JOIN sales s ON s.id = si.sale_id
-      WHERE si.id = generated_files.sale_item_id
-      AND s.user_id = auth.uid()
+      WHERE (si.id = generated_files.sale_item_id OR si.product_id = generated_files.product_id)
+        AND s.user_id = auth.uid()
+        AND s.status = 'completed'
     )
   );
 
-CREATE POLICY "Admins pueden ver todos los archivos"
-  ON generated_files FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+-- =====================================================
+-- POLÍTICAS PARA: DOWNLOADS
+-- =====================================================
 
--- Políticas para DOWNLOADS
+DROP POLICY IF EXISTS "Usuarios pueden ver su historial de descargas" ON downloads;
+DROP POLICY IF EXISTS "Usuarios pueden registrar sus descargas" ON downloads;
+DROP POLICY IF EXISTS "Admins pueden ver todas las descargas" ON downloads;
+
+-- Usuarios ven su historial de descargas
 CREATE POLICY "Usuarios pueden ver su historial de descargas"
   ON downloads FOR SELECT
-  USING (auth.uid() = user_id);
+  USING (auth.uid() = user_id OR public.is_admin());
 
+-- Usuarios pueden registrar descargas (solo si es su user_id)
 CREATE POLICY "Usuarios pueden registrar sus descargas"
   ON downloads FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
-CREATE POLICY "Admins pueden ver todas las descargas"
-  ON downloads FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+-- =====================================================
+-- POLÍTICAS PARA: ACTIVITY_LOGS
+-- =====================================================
 
--- Políticas para ACTIVITY_LOGS (solo lectura para admins)
+DROP POLICY IF EXISTS "Admins pueden ver todos los logs" ON activity_logs;
+DROP POLICY IF EXISTS "Admins pueden insertar logs (opc)" ON activity_logs;
+
+-- Solo admins pueden ver logs
 CREATE POLICY "Admins pueden ver todos los logs"
   ON activity_logs FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+  USING (public.is_admin());
 
--- Políticas para EMAIL_LOGS (solo lectura para admins)
-CREATE POLICY "Admins pueden ver todos los emails"
-  ON email_logs FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+-- Permitir INSERT desde triggers (con SECURITY DEFINER)
+-- No necesitamos política INSERT explícita porque los triggers usan SECURITY DEFINER
 
 -- =====================================================
--- 16. VISTAS ÚTILES
+-- POLÍTICAS PARA: EMAIL_LOGS
+-- =====================================================
+
+DROP POLICY IF EXISTS "Admins pueden ver todos los emails" ON email_logs;
+
+-- Solo admins pueden ver logs de emails
+CREATE POLICY "Admins pueden ver todos los emails"
+  ON email_logs FOR SELECT
+  USING (public.is_admin());
+
+-- =====================================================
+-- PASO 16: VISTAS ÚTILES
 -- =====================================================
 
 -- Vista: Ventas con detalles completos
+DROP VIEW IF EXISTS sales_detailed;
 CREATE VIEW sales_detailed AS
 SELECT
   s.id,
@@ -586,6 +701,7 @@ LEFT JOIN sale_items si ON si.sale_id = s.id
 GROUP BY s.id, p.first_name, p.last_name;
 
 -- Vista: Productos más vendidos
+DROP VIEW IF EXISTS top_selling_products;
 CREATE VIEW top_selling_products AS
 SELECT
   p.id,
@@ -602,6 +718,7 @@ GROUP BY p.id
 ORDER BY total_sales DESC;
 
 -- Vista: Estadísticas de descargas por producto
+DROP VIEW IF EXISTS download_stats;
 CREATE VIEW download_stats AS
 SELECT
   p.id AS product_id,
@@ -615,7 +732,7 @@ LEFT JOIN downloads d ON d.product_id = p.id
 GROUP BY p.id;
 
 -- =====================================================
--- 17. COMENTARIOS
+-- PASO 17: COMENTARIOS
 -- =====================================================
 
 COMMENT ON TABLE profiles IS 'Perfiles de usuarios (extiende auth.users)';
@@ -629,6 +746,10 @@ COMMENT ON TABLE downloads IS 'Tracking completo de todas las descargas';
 COMMENT ON TABLE activity_logs IS 'Logs de auditoría de todas las acciones del sistema';
 COMMENT ON TABLE email_logs IS 'Tracking de todos los emails enviados';
 
+COMMENT ON FUNCTION is_admin() IS 'Helper function para verificar si el usuario actual es admin (evita recursión RLS)';
+
 -- =====================================================
--- FIN DEL SCHEMA
+-- FIN DEL FIX
 -- =====================================================
+
+-- ✅ SCHEMA CORREGIDO - SIN RECURSIÓN RLS

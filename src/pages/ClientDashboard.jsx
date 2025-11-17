@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useClientAuth } from '@/context/ClientAuthContext';
+import { useClientAuth } from '@/context/UnifiedAuthContext';
 import { supabase } from '@/lib/supabase';
 import { downloadPurchasedFile } from '@/services/purchaseService';
 import {

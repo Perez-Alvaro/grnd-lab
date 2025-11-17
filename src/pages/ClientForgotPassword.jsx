@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Dumbbell, Mail, AlertCircle, CheckCircle2, ArrowLeft } from 'lucide-react';
-import { useClientAuth } from '@/context/ClientAuthContext';
+import { useClientAuth } from '@/context/UnifiedAuthContext';
 
 function ClientForgotPassword() {
   const { resetPassword } = useClientAuth();

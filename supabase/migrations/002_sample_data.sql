@@ -24,7 +24,7 @@ VALUES (
 INSERT INTO routines (id, gender, objective, level, frequency, duration_weeks, weeks)
 VALUES (
   'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
-  'masculino',
+  'male',
   'muscle_gain',
   'intermediate',
   5,
@@ -243,7 +243,7 @@ VALUES (
 INSERT INTO routines (id, gender, objective, level, frequency, duration_weeks, weeks)
 VALUES (
   'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22',
-  'femenino',
+  'female',
   'fat_loss',
   'beginner',
   3,

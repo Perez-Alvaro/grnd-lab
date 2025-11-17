@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { useAuth } from '@/context/AuthContext'
+import { useAuth } from '@/context/UnifiedAuthContext'
 import { Bug, RefreshCw, Trash2, CheckCircle, XCircle } from 'lucide-react'
 
 /**
  * Panel de depuración para autenticación
  * Solo visible en desarrollo
- * 
+ *
  * Para usar: Agregar <DebugAuthPanel /> en App.jsx (solo en dev)
  */
 export function DebugAuthPanel() {

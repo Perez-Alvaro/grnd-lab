@@ -8,8 +8,8 @@ const formatRoutineFromDB = (product, routine) => {
     id: product.id,
     name: product.name,
     title: product.name,
-    genre: routine.gender === 'masculino' ? 'Masculino' : routine.gender === 'femenino' ? 'Femenino' : 'Unisex',
-    gender: routine.gender === 'masculino' ? 'Masculino' : routine.gender === 'femenino' ? 'Femenino' : 'Unisex',
+    genre: formatGender(routine.gender),
+    gender: formatGender(routine.gender),
     objective: formatObjective(routine.objective),
     description: product.description,
     frequency: routine.frequency,
@@ -17,7 +17,7 @@ const formatRoutineFromDB = (product, routine) => {
     level: formatLevel(routine.level),
     price: parseFloat(product.price),
     image: product.image_url || '',
-    tags: product.tags || [],
+    tags: routine.tags || [],
     active: product.active,
     featured: product.featured,
     weeks: routine.weeks || [],
@@ -25,6 +25,18 @@ const formatRoutineFromDB = (product, routine) => {
     createdAt: product.created_at,
     updatedAt: product.updated_at,
   };
+};
+
+const formatGender = (gender) => {
+  const genders = {
+    male: 'Masculino',
+    female: 'Femenino',
+    unisex: 'Unisex',
+    // Por compatibilidad con datos antiguos
+    masculino: 'Masculino',
+    femenino: 'Femenino',
+  };
+  return genders[gender] || 'Unisex';
 };
 
 const formatObjective = (objective) => {
@@ -67,15 +79,24 @@ const formatRoutineForDB = (routine) => {
   };
 
   const routineData = {
-    gender: routine.gender?.toLowerCase() || routine.genre?.toLowerCase() || 'unisex',
+    gender: parseGender(routine.gender || routine.genre),
     objective: parseObjective(routine.objective),
     level: parseLevel(routine.level),
     frequency: routine.frequency || 3,
     duration_weeks: routine.durationWeeks || 4,
     weeks: routine.weeks || buildWeeksFromDays(routine.days),
+    tags: routine.tags || [],
   };
 
   return { product, routineData };
+};
+
+const parseGender = (gender) => {
+  if (!gender) return 'unisex';
+  const normalized = gender.toLowerCase();
+  if (normalized.includes('masculino') || normalized === 'male') return 'male';
+  if (normalized.includes('femenino') || normalized === 'female') return 'female';
+  return 'unisex';
 };
 
 const parseObjective = (objective) => {
@@ -115,7 +136,7 @@ export const SupabaseAPI = {
 
   async getRoutines() {
     try {
-      const { data: products, error } = await supabase
+      const { data, error } = await supabase
         .from('products')
         .select(`
           *,
@@ -127,9 +148,10 @@ export const SupabaseAPI = {
 
       if (error) throw error;
 
-      return products.map((product) =>
-        formatRoutineFromDB(product, product.routines?.[0])
-      ).filter(Boolean);
+      // routines es un objeto, no un array (relación 1:1)
+      return data.map((product) => {
+        return formatRoutineFromDB(product, product.routines);
+      }).filter(Boolean);
     } catch (error) {
       console.error('Error fetching routines:', error);
       throw error;
@@ -150,7 +172,8 @@ export const SupabaseAPI = {
 
       if (error) throw error;
 
-      return formatRoutineFromDB(product, product.routines?.[0]);
+      // routines es un objeto, no un array (relación 1:1)
+      return formatRoutineFromDB(product, product.routines);
     } catch (error) {
       console.error('Error fetching routine:', error);
       throw error;
@@ -247,21 +270,51 @@ export const SupabaseAPI = {
         .from('sales')
         .select(`
           *,
-          sale_items (*)
+          sale_items (
+            *,
+            products (
+              id,
+              name,
+              type,
+              price,
+              metadata
+            )
+          )
         `)
+        .eq('status', 'completed')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
+      // Helper: derivar plan desde metadata o precio
+      const derivePlan = (product) => {
+        // 1. Intentar desde metadata
+        if (product?.metadata?.plan) {
+          return product.metadata.plan;
+        }
+
+        // 2. Derivar desde precio
+        const price = parseFloat(product?.price || 0);
+        if (price >= 17000) return 'Premium';
+        if (price >= 12000) return 'Essential';
+        return 'Basic';
+      };
+
       // Formatear al formato esperado por el frontend
-      return data.map((sale) => ({
-        id: sale.id,
-        user: sale.user_email,
-        routine: sale.sale_items[0]?.product_name || 'Producto',
-        amount: parseFloat(sale.total_amount),
-        date: sale.created_at,
-        status: sale.status,
-      }));
+      return data.map((sale) => {
+        const firstItem = sale.sale_items[0];
+        const product = firstItem?.products;
+
+        return {
+          id: sale.id,
+          userEmail: sale.user_email,
+          routineId: firstItem?.product_id || null,
+          plan: derivePlan(product),
+          amount: parseFloat(sale.total_amount),
+          date: sale.created_at.split('T')[0],
+          status: sale.status,
+        };
+      });
     } catch (error) {
       console.error('Error fetching sales:', error);
       return []; // Devolver array vacío en caso de error para no romper la UI
@@ -274,19 +327,46 @@ export const SupabaseAPI = {
 
   async getUsers() {
     try {
-      const { data, error } = await supabase
+      // Obtener perfiles de clientes
+      const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('*')
         .eq('role', 'customer')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (profilesError) throw profilesError;
 
-      // Formatear al formato esperado
-      return data.map((profile) => ({
+      // Obtener emails desde sales (donde sí tenemos user_email)
+      const { data: sales, error: salesError } = await supabase
+        .from('sales')
+        .select('user_id, user_email')
+        .not('user_id', 'is', null);
+
+      if (salesError) {
+        // Si falla, devolver perfiles sin emails
+        return profiles.map((profile) => ({
+          id: profile.id,
+          firstName: profile.first_name || 'Cliente',
+          lastName: profile.last_name || '',
+          email: '',
+          joined: profile.created_at,
+        }));
+      }
+
+      // Crear mapa de user_id -> email (último email conocido)
+      const emailMap = new Map();
+      sales.forEach((sale) => {
+        if (sale.user_id && sale.user_email) {
+          emailMap.set(sale.user_id, sale.user_email);
+        }
+      });
+
+      // Formatear usuarios con emails
+      return profiles.map((profile) => ({
         id: profile.id,
-        name: profile.full_name || 'Cliente',
-        email: profile.id, // No tenemos email directo en profiles
+        firstName: profile.first_name || 'Cliente',
+        lastName: profile.last_name || '',
+        email: emailMap.get(profile.id) || '',
         joined: profile.created_at,
       }));
     } catch (error) {

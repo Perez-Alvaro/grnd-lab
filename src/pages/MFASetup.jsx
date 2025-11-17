@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '@/context/AuthContext'
+import { useAdminAuth } from '@/context/UnifiedAuthContext'
 import { Shield, Check, AlertCircle, Smartphone, Copy, CheckCircle2 } from 'lucide-react'
 import QRCode from 'qrcode'
 
@@ -14,7 +14,7 @@ export default function MFASetup() {
   const [loading, setLoading] = useState(false)
   const [copied, setCopied] = useState(false)
   const navigate = useNavigate()
-  const { enrollMFA, verifyMFAEnrollment, user } = useAuth()
+  const { enrollMFA, verifyMFAEnrollment, user } = useAdminAuth()
 
   useEffect(() => {
     if (!user) {

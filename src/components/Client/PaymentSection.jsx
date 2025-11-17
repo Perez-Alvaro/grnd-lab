@@ -1,11 +1,13 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FadeIn } from "../Shared/reactbits/index.js";
 import { useAppContext } from "../../context/AppContext.jsx";
-import { useClientAuth } from "../../context/ClientAuthContext.jsx";
-import { processPurchase } from "../../services/purchaseService.js";
-import { mockProcessPayment } from "../../utils/mockApi.js";
+import { useClientAuth } from "../../context/UnifiedAuthContext.jsx";
+import { mercadoPagoService } from "../../services/mercadoPagoService.js";
+import { bundleService } from "../../services/bundleService.js";
+import { validateCheckoutForm } from "../../utils/validation.js";
+import logger from "../../utils/logger.js";
 
 function PaymentSection({ routine }) {
   const navigate = useNavigate();
@@ -20,6 +22,9 @@ function PaymentSection({ routine }) {
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [isBundle, setIsBundle] = useState(false);
+  const [bundleInfo, setBundleInfo] = useState(null);
+  const [validationErrors, setValidationErrors] = useState({});
 
   const formatWeeks = (value) => {
     if (!value && value !== 0) return "—";
@@ -51,76 +56,104 @@ function PaymentSection({ routine }) {
     [routine],
   );
 
+  // Detectar si es bundle al montar el componente
+  useEffect(() => {
+    const checkIfBundle = async () => {
+      if (!routine) return;
+
+      try {
+        const isBundleProduct = await bundleService.isBundleProduct(routine.id);
+        setIsBundle(isBundleProduct);
+
+        if (isBundleProduct) {
+          const info = await bundleService.getBundleInfo(routine.id);
+          setBundleInfo(info);
+          logger.info('Bundle detected', { bundleId: routine.id, products: info.products.length });
+        }
+      } catch (error) {
+        logger.error('Error checking bundle', error);
+      }
+    };
+
+    checkIfBundle();
+  }, [routine]);
+
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+    // Limpiar error de validación al escribir
+    if (validationErrors[field]) {
+      setValidationErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!routine || !plan) return;
 
+    // Validar formulario
+    const validation = validateCheckoutForm(formData);
+    if (!validation.valid) {
+      setValidationErrors(validation.errors);
+      setError('Por favor completa todos los campos correctamente');
+      return;
+    }
+
     // Verificar que el usuario esté logueado
     if (!user || !profile) {
-      // Guardar la rutina seleccionada en localStorage
+      logger.info('User not logged in, redirecting to login');
       localStorage.setItem('pending_purchase', JSON.stringify(routine));
-      // Redirigir a registro/login
       navigate('/login');
       return;
     }
 
     setProcessing(true);
     setError("");
+    setValidationErrors({});
+
+    const timer = logger.createTimer('create_mp_preference');
 
     try {
-      // Simular respuesta de Mercado Pago (en producción será real)
-      const paymentData = {
-        id: `MP-${Date.now()}`,
-        status: 'approved',
-        payment_method: 'mercadopago',
-      };
-
-      // Procesar la compra completa
-      const result = await processPurchase({
-        userId: user.id,
-        userEmail: user.email,
-        userName: `${formData.firstName} ${formData.lastName}`,
-        routine,
-        paymentData,
+      logger.info('Creating Mercado Pago preference', {
+        routineId: routine.id,
+        isBundle,
+        userEmail: user.email
       });
 
-      console.log('✅ Compra procesada:', result);
+      // Crear preferencia de pago en Mercado Pago
+      const { preferenceId, initPoint } = await mercadoPagoService.createPreference(
+        routine,
+        {
+          email: formData.email,
+          firstName: formData.firstName,
+          lastName: formData.lastName
+        }
+      );
 
-      // Actualizar estado local (opcional, para métricas del admin)
-      const mockUser = {
-        id: user.id,
-        name: `${formData.firstName} ${formData.lastName}`,
-        email: user.email,
-        joined: new Date().toISOString(),
-      };
+      timer.end();
 
-      const mockSale = {
-        id: result.sale.id,
-        user: user.email,
-        routine: routine.name,
-        amount: routine.price,
-        date: new Date().toISOString(),
-        status: 'completed',
-      };
+      logger.info('Preference created, redirecting to MP', {
+        preferenceId,
+        isBundle
+      });
 
-      dispatch({ type: "ADD_USER", payload: mockUser });
-      dispatch({ type: "ADD_SALE", payload: mockSale });
-
-      setSuccess(true);
-
-      // Redirigir al dashboard del cliente después de 3 segundos
-      setTimeout(() => {
-        navigate('/client/dashboard');
-      }, 3000);
+      // Redirigir al Checkout Pro de Mercado Pago
+      window.location.href = initPoint;
 
     } catch (err) {
-      console.error('❌ Error procesando compra:', err);
-      setError(err.message || 'Error al procesar la compra. Por favor intenta nuevamente.');
-    } finally {
+      console.error('❌ Error creando preferencia:', err);
+      logger.paymentError('unknown', err.message, {
+        routineId: routine.id,
+        userEmail: user.email
+      });
+
+      setError(
+        err.message ||
+        'Error al conectar con Mercado Pago. Por favor intenta nuevamente o contacta a soporte.'
+      );
       setProcessing(false);
     }
   };
@@ -236,6 +269,13 @@ function PaymentSection({ routine }) {
                 ? ` • Nivel ${routine.level}`
                 : ""}
             </p>
+            {isBundle && bundleInfo && (
+              <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-[#B5FF00]/10 px-3 py-1">
+                <span className="text-xs font-semibold text-[#B5FF00]">
+                  📦 Bundle: {bundleInfo.products.length} productos
+                </span>
+              </div>
+            )}
           </div>
           <div className="flex flex-col items-center text-center md:items-end md:text-right">
             <span className="text-xs uppercase tracking-[0.3em] text-gray-500">
@@ -257,9 +297,12 @@ function PaymentSection({ routine }) {
                 onChange={(event) =>
                   handleChange("firstName", event.target.value)
                 }
-                className="rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none"
+                className={`rounded-lg border ${validationErrors.firstName ? 'border-red-500' : 'border-[#2E2E2E]'} bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none`}
                 placeholder="Tu nombre"
               />
+              {validationErrors.firstName && (
+                <span className="text-xs text-red-400">{validationErrors.firstName}</span>
+              )}
             </label>
             <label className="flex flex-col gap-2 text-sm font-medium text-gray-200">
               Apellido
@@ -269,9 +312,12 @@ function PaymentSection({ routine }) {
                 onChange={(event) =>
                   handleChange("lastName", event.target.value)
                 }
-                className="rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none"
+                className={`rounded-lg border ${validationErrors.lastName ? 'border-red-500' : 'border-[#2E2E2E]'} bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none`}
                 placeholder="Tu apellido"
               />
+              {validationErrors.lastName && (
+                <span className="text-xs text-red-400">{validationErrors.lastName}</span>
+              )}
             </label>
           </div>
 
@@ -282,12 +328,16 @@ function PaymentSection({ routine }) {
               type="email"
               value={formData.email}
               onChange={(event) => handleChange("email", event.target.value)}
-              className="rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none"
+              className={`rounded-lg border ${validationErrors.email ? 'border-red-500' : 'border-[#2E2E2E]'} bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none`}
               placeholder="tuemail@example.com"
             />
-            <span className="text-xs text-gray-500">
-              Enviaremos la rutina, seguimiento y comprobante a este correo.
-            </span>
+            {validationErrors.email ? (
+              <span className="text-xs text-red-400">{validationErrors.email}</span>
+            ) : (
+              <span className="text-xs text-gray-500">
+                Enviaremos {isBundle ? 'tus archivos' : 'la rutina'}, seguimiento y comprobante a este correo.
+              </span>
+            )}
           </label>
 
           <div className="flex flex-col items-center gap-4 rounded-xl border border-[#2E2E2E] bg-[#0A0A0A] p-6 text-center">
@@ -319,7 +369,7 @@ function PaymentSection({ routine }) {
             className="w-full rounded-full bg-[#B5FF00] px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-[#D0FF4D] disabled:cursor-not-allowed disabled:bg-[#2E2E2E] disabled:text-gray-500"
           >
             {processing
-              ? "Procesando..."
+              ? "Redirigiendo a Mercado Pago..."
               : user ? `Proceder al pago - $${routine.price.toLocaleString("es-AR")}` : "Iniciar sesión para comprar"}
           </button>
         </form>

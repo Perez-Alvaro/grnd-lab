@@ -1,16 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Dumbbell, Settings, Shield, LogOut, User, ChevronDown, Home } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
-import { useClientAuth } from "@/context/ClientAuthContext";
-import { MFAModal } from "@/components/Trainer/SecuritySection";
+import { useAdminAuth, useClientAuth } from "@/context/UnifiedAuthContext";
+// import { MFAModal } from "@/components/Trainer/SecuritySection"; // TODO: Crear componente MFAModal
 
 function Header() {
   const location = useLocation();
   const navigate = useNavigate();
 
   // Admin auth context
-  const { user: adminUser, signOut: adminSignOut, getMFAFactors } = useAuth();
+  const { user: adminUser, signOut: adminSignOut, getMFAFactors } = useAdminAuth();
 
   // Client auth context
   const { user: clientUser, profile: clientProfile, signOut: clientSignOut } = useClientAuth();
@@ -54,13 +53,42 @@ function Header() {
   };
 
   const handleAdminLogout = async () => {
-    await adminSignOut();
-    navigate("/");
+    setShowDropdown(false);
+    try {
+      const { error } = await adminSignOut();
+      if (error) {
+        console.error('Error al cerrar sesión:', error);
+        // Intentar limpiar manualmente si hay error
+        localStorage.clear();
+        sessionStorage.clear();
+      }
+      // Redirigir al login de admin
+      navigate('/mz-admin-access', { replace: true });
+    } catch (error) {
+      console.error('Error inesperado al cerrar sesión:', error);
+      // Limpiar storage en caso de error
+      localStorage.clear();
+      sessionStorage.clear();
+      navigate('/mz-admin-access', { replace: true });
+    }
   };
 
   const handleClientLogout = async () => {
-    await clientSignOut();
-    navigate("/");
+    setShowDropdown(false);
+    try {
+      const { error } = await clientSignOut();
+      if (error) {
+        console.error('Error al cerrar sesión:', error);
+      }
+      // Limpiar storage local
+      localStorage.removeItem('supabase.auth.token');
+      sessionStorage.clear();
+      // Redirigir al home
+      navigate('/', { replace: true });
+    } catch (error) {
+      console.error('Error inesperado al cerrar sesión:', error);
+      navigate('/', { replace: true });
+    }
   };
 
   const handleSettings = () => {
@@ -234,12 +262,13 @@ function Header() {
       </div>
 
       {/* MFA Modal */}
-      <MFAModal
+      {/* TODO: Crear componente MFAModal */}
+      {/* <MFAModal
         isOpen={showMFAModal}
         onClose={handleMFAModalClose}
         mfaEnabled={mfaEnabled}
         onStatusChange={checkMFAStatus}
-      />
+      /> */}
     </header>
   );
 }

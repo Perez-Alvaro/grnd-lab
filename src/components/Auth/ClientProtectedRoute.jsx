@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useClientAuth } from '@/context/ClientAuthContext';
+import { useClientAuth } from '@/context/UnifiedAuthContext';
 
 function ClientProtectedRoute({ children }) {
   const { user, profile, loading } = useClientAuth();

@@ -1,8 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AppProvider } from "./context/AppContext.jsx";
-import { AuthProvider } from "./context/AuthContext.jsx";
-import { ClientAuthProvider } from "./context/ClientAuthContext.jsx";
+import { UnifiedAuthProvider } from "./context/UnifiedAuthContext.jsx";
 import { ProtectedRoute } from "./components/Auth/ProtectedRoute.jsx";
 import ClientProtectedRoute from "./components/Auth/ClientProtectedRoute.jsx";
 import { DebugAuthPanel } from "./components/Auth/DebugAuthPanel.jsx";
@@ -10,6 +9,8 @@ import Header from "./components/Shared/Header.jsx";
 import ClientHome from "./pages/ClientHome.jsx";
 import TrainerDashboard from "./pages/TrainerDashboard.jsx";
 import PaymentSuccess from "./pages/PaymentSuccess.jsx";
+import PaymentFailure from "./pages/PaymentFailure.jsx";
+import PaymentPending from "./pages/PaymentPending.jsx";
 import RoutineEditor from "./pages/RoutineEditor.jsx";
 import RoutinePreview from "./pages/RoutinePreview.jsx";
 import AdminLogin from "./pages/AdminLogin.jsx";
@@ -22,10 +23,9 @@ import ClientDashboard from "./pages/ClientDashboard.jsx";
 
 function App() {
   return (
-    <AuthProvider>
-      <ClientAuthProvider>
-        <AppProvider>
-          <Router>
+    <UnifiedAuthProvider>
+      <AppProvider>
+        <Router>
             <div className="min-h-screen bg-neutral-950 text-white font-sans">
               <Routes>
                 {/* Rutas públicas */}
@@ -41,12 +41,14 @@ function App() {
                     <main><RoutinePreview /></main>
                   </>
                 } />
-                <Route path="/success" element={
-                  <>
-                    <Header />
-                    <main><PaymentSuccess /></main>
-                  </>
-                } />
+
+                {/* Rutas de resultado de pago Mercado Pago */}
+                <Route path="/payment/success" element={<PaymentSuccess />} />
+                <Route path="/payment/failure" element={<PaymentFailure />} />
+                <Route path="/payment/pending" element={<PaymentPending />} />
+
+                {/* Ruta legacy de success (redirect a la nueva) */}
+                <Route path="/success" element={<PaymentSuccess />} />
 
                 {/* Rutas de autenticación de clientes */}
                 <Route path="/register" element={<ClientRegister />} />
@@ -129,8 +131,7 @@ function App() {
             </div>
           </Router>
         </AppProvider>
-      </ClientAuthProvider>
-    </AuthProvider>
+    </UnifiedAuthProvider>
   );
 }
 

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
-import { useAuth } from '@/context/AuthContext'
+import { useNavigate } from 'react-router-dom'
+import { useAdminAuth } from '@/context/UnifiedAuthContext'
 import { TOTPVerification } from '@/components/Auth/TOTPVerification'
 import { Shield, Eye, EyeOff, AlertCircle } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('')
@@ -12,125 +13,129 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false)
   const [needsMFA, setNeedsMFA] = useState(false)
   const [mfaFactorId, setMfaFactorId] = useState(null)
-  const [checkingSession, setCheckingSession] = useState(true)
+  const [mfaChallengeId, setMfaChallengeId] = useState(null) // Para almacenar el challenge ID
+  const [currentUserData, setCurrentUserData] = useState(null) // Para almacenar datos de login temporal
+  const [isLoginInProgress, setIsLoginInProgress] = useState(false) // Flag para prevenir redireccionamiento automático durante 2FA
   const navigate = useNavigate()
-  const location = useLocation()
-  const { signIn, user, getMFAFactors, verifyMFAChallenge, getAssuranceLevel, loading: authLoading } = useAuth()
+  const { user, profile, loading: authLoading } = useAdminAuth()
 
-  // Verificar si ya hay una sesión activa y su estado de MFA
+  // Redirigir si ya está autenticado (pero NO si estamos en el flujo de login con 2FA)
   useEffect(() => {
-    const checkExistingSession = async () => {
-      console.log('🔍 AdminLogin - Checking existing session:', { 
-        user: !!user, 
-        authLoading,
-        needsMFA,
-        requiresMFAFromState: location.state?.requiresMFA
-      })
-
-      if (authLoading) {
-        return // Esperar a que AuthContext termine de cargar
-      }
-
-      if (!user) {
-        // No hay sesión, mostrar formulario de login
-        setCheckingSession(false)
-        setNeedsMFA(false)
-        return
-      }
-
-      try {
-        // Hay usuario, verificar si necesita MFA
-        const { data: factorsData } = await getMFAFactors()
-        const hasMFAEnabled = factorsData?.totp && factorsData.totp.length > 0
-
-        if (!hasMFAEnabled) {
-          // Sin MFA, redirigir directamente al admin
-          console.log('✅ Usuario sin MFA, redirigiendo...')
-          navigate('/admin', { replace: true })
-          return
-        }
-
-        // Tiene MFA, verificar nivel de assurance
-        const { data: aalData } = await getAssuranceLevel()
-
-        console.log('🔐 Session AAL Status:', {
-          currentAAL: aalData?.currentLevel,
-          nextAAL: aalData?.nextLevel,
-          hasMFA: hasMFAEnabled
-        })
-
-        if (aalData?.currentLevel === 'aal2') {
-          // Ya completó 2FA, redirigir al admin
-          console.log('✅ AAL2 activo, redirigiendo al dashboard...')
-          navigate('/admin', { replace: true })
-        } else if (aalData?.currentLevel === 'aal1' && aalData?.nextLevel === 'aal2') {
-          // Necesita completar 2FA
-          console.log('⚠️ Requiere 2FA, mostrando pantalla de verificación')
-          setMfaFactorId(factorsData.totp[0].id)
-          setNeedsMFA(true)
-        }
-      } catch (error) {
-        console.error('❌ Error checking session:', error)
-      } finally {
-        setCheckingSession(false)
-      }
+    if (!authLoading && !isLoginInProgress && user && profile?.role === 'admin') {
+      console.log('🔐 AdminLogin - useEffect: User is authenticated, redirecting to /admin')
+      navigate('/admin', { replace: true })
     }
-
-    checkExistingSession()
-  }, [user, authLoading, navigate, getAssuranceLevel, getMFAFactors, location.state])
+  }, [user, profile, authLoading, navigate, isLoginInProgress])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
     setLoading(true)
+    setIsLoginInProgress(true) // Prevenir que useEffect redirija a /admin
 
     if (!email || !password) {
       setError('Por favor completa todos los campos')
       setLoading(false)
+      setIsLoginInProgress(false)
       return
     }
 
-    const { data, error: signInError } = await signIn(email, password)
+    // ⚠️ IMPORTANTE: Limpiar sesión anterior antes de intentar login
+    // Esto previene race conditions con sesiones guardadas en localStorage
+    console.log('🔐 AdminLogin - Clearing previous session...')
+    await supabase.auth.signOut()
 
-    console.log('📧 Login result:', { data, error: signInError })
+    // Pequeño delay para asegurar que la sesión se limpió completamente
+    await new Promise(resolve => setTimeout(resolve, 500))
+
+    // Usar supabase directamente para tener control total sobre el flujo
+    console.log('🔐 AdminLogin - Attempting signInWithPassword...')
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+
+    console.log('🔐 AdminLogin - signIn result:', { hasData: !!data, hasError: !!signInError, error: signInError?.message })
 
     if (signInError) {
       setError(signInError.message || 'Credenciales incorrectas')
       setLoading(false)
+      setIsLoginInProgress(false)
       return
     }
 
-    // Verificar el nivel de assurance (AAL)
-    const { data: assuranceData, error: aalError } = await getAssuranceLevel()
+    if (!data?.user) {
+      setError('Error al iniciar sesión. Intenta nuevamente.')
+      setLoading(false)
+      setIsLoginInProgress(false)
+      return
+    }
 
-    console.log('🔐 Assurance Level:', { assuranceData, aalError })
+    // Guardar los datos del usuario temporalmente (no permitir que AuthContext lo maneje aún)
+    setCurrentUserData(data.user)
+    console.log('🔐 AdminLogin - User data stored temporarily:', data.user.email)
 
-    // Verificar factores de MFA
-    const { data: factorsData, error: factorsError } = await getMFAFactors()
-    console.log('🔑 MFA Factors:', { factorsData, factorsError })
+    // Verificar si el usuario es admin desde la base de datos
+    const { data: profileData, error: profileError } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', data.user.id)
+      .single()
 
-    // Verificar si el usuario tiene factores TOTP (2FA) activos
-    const hasActiveMFA = factorsData?.totp && factorsData.totp.length > 0
-    const needsAAL2 = assuranceData?.currentLevel === 'aal1' && assuranceData?.nextLevel === 'aal2'
+    if (profileError || !profileData) {
+      setError('Acceso denegado: No se encontró perfil de usuario.')
+      setLoading(false)
+      setIsLoginInProgress(false)
+      await supabase.auth.signOut()
+      return
+    }
 
-    console.log('🎯 Decision:', {
-      hasActiveMFA,
-      needsAAL2,
-      currentAAL: assuranceData?.currentLevel,
-      nextAAL: assuranceData?.nextLevel
-    })
+    if (profileData.role !== 'admin') {
+      setError('Acceso denegado: No tienes permisos de administrador.')
+      setLoading(false)
+      setIsLoginInProgress(false)
+      await supabase.auth.signOut()
+      return
+    }
 
-    // Si el usuario tiene 2FA habilitado Y el nivel de assurance requiere AAL2
-    if (hasActiveMFA && needsAAL2) {
-      console.log('✅ 2FA detectado, mostrando pantalla de verificación')
-      setMfaFactorId(factorsData.totp[0].id)
+    // Verificar si el usuario tiene 2FA habilitado
+    // data.user.factors ya viene en la respuesta de signInWithPassword
+    console.log('🔐 AdminLogin - User factors:', data.user?.factors)
+
+    const totpFactor = data.user?.factors?.find(
+      (factor) => factor.factor_type === 'totp' && factor.status === 'verified'
+    )
+
+    console.log('🔐 AdminLogin - TOTP Factor found:', !!totpFactor)
+
+    if (totpFactor) {
+      // Usuario tiene 2FA habilitado
+      // ⚠️ NO hacer signOut. Mantener la sesión semi-autenticada (aal1)
+      // Simplemente mostrar pantalla de 2FA
+      console.log('🔐 AdminLogin - 2FA required, creating challenge...')
+
+      // Crear el desafío MFA
+      const { data: challengeData, error: challengeError } = await supabase.auth.mfa.challenge({
+        factorId: totpFactor.id,
+      })
+
+      if (challengeError) {
+        console.error('🔐 AdminLogin - Challenge creation error:', challengeError)
+        setError('Error al configurar 2FA. Intenta nuevamente.')
+        setLoading(false)
+        setIsLoginInProgress(false)
+        return
+      }
+
+      console.log('🔐 AdminLogin - Challenge created:', challengeData.id)
+      setMfaFactorId(totpFactor.id)
+      setMfaChallengeId(challengeData.id) // Guardar challenge ID para verificación
       setNeedsMFA(true)
       setLoading(false)
-    } else if (data?.user) {
-      // No tiene 2FA, redirigir directamente
-      console.log('ℹ️ Sin 2FA, redirigiendo a /admin')
-      navigate('/admin', { replace: true })
     } else {
+      // Usuario NO tiene 2FA, redirigir directamente
+      console.log('🔐 AdminLogin - No 2FA detected, allowing useEffect to redirect to admin')
+      setIsLoginInProgress(false) // Permitir que useEffect redirija a /admin
       setLoading(false)
     }
   }
@@ -139,45 +144,61 @@ export default function AdminLogin() {
     setError('')
     setLoading(true)
 
+    console.log('🔐 AdminLogin - Verifying MFA code for factor:', mfaFactorId)
+
     if (!code || code.length !== 6) {
       setError('Ingresa un código de 6 dígitos')
       setLoading(false)
       return
     }
 
-    const { data, error: verifyError } = await verifyMFAChallenge(mfaFactorId, code)
+    // ✅ Verificar directamente con Supabase (sin crear nuevo challenge)
+    // Ya tenemos una sesión semi-autenticada (aal1) y un challenge activo
+    console.log('🔐 AdminLogin - Verifying TOTP code directly...')
+
+    const { data: verifyData, error: verifyError } = await supabase.auth.mfa.verify({
+      factorId: mfaFactorId,
+      challengeId: mfaChallengeId, // Usar el challenge ID que creamos antes
+      code,
+    })
 
     if (verifyError) {
-      console.error('❌ Error al verificar 2FA:', verifyError)
+      console.error('🔐 AdminLogin - MFA verification error:', verifyError)
       setError('Código incorrecto. Intenta nuevamente.')
       setLoading(false)
       return
     }
 
-    console.log('✅ 2FA verificado correctamente:', data)
+    console.log('🔐 AdminLogin - MFA verification successful! verifyData:', verifyData)
 
-    // Verificar que el nivel de assurance subió a AAL2
-    const { data: assuranceData } = await getAssuranceLevel()
-    console.log('🔐 Nuevo Assurance Level:', assuranceData)
+    // ✅ Si no hay error, el token ya está actualizado a aal2
+    // El onAuthStateChange se dispara con MFA_CHALLENGE_VERIFIED
+    // AuthContext se actualiza automáticamente
 
-    if (assuranceData?.currentLevel === 'aal2') {
-      console.log('🎯 AAL2 alcanzado, redirigiendo...')
-      setNeedsMFA(false)
-      navigate('/admin', { replace: true })
-    } else {
-      setError('Error al completar autenticación. Intenta nuevamente.')
-      setLoading(false)
-    }
+    console.log('🔐 AdminLogin - MFA verified, waiting for session update...')
+    setNeedsMFA(false)
+    setIsLoginInProgress(false) // Permitir que useEffect redirija a /admin
+    setLoading(false)
+
+    // Pequeño delay para asegurar que onAuthStateChange se disparó
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
+    console.log('🔐 AdminLogin - Now navigating to admin')
+    navigate('/admin', { replace: true })
   }
 
-  const handleMFACancel = () => {
+  const handleMFACancel = async () => {
+    console.log('🔐 AdminLogin - MFA cancelled by user')
     setNeedsMFA(false)
     setMfaFactorId(null)
+    setMfaChallengeId(null)
     setPassword('')
+    setIsLoginInProgress(false)
+    await supabase.auth.signOut()
   }
 
   // Mostrar loading mientras verifica sesión existente
-  if (checkingSession || authLoading) {
+  if (authLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-950">
         <div className="text-center">
@@ -208,96 +229,96 @@ export default function AdminLogin() {
 
             {/* Formulario */}
             <div className="rounded-2xl border border-neutral-800 bg-neutral-900/50 p-8 backdrop-blur">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email */}
-            <div>
-              <label
-                htmlFor="email"
-                className="mb-2 block text-sm font-medium text-neutral-300"
-              >
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-lg border border-neutral-700 bg-neutral-800 px-4 py-3 text-white placeholder-neutral-500 outline-none transition-colors focus:border-[#B5FF00] focus:ring-2 focus:ring-[#B5FF00]/20"
-                placeholder="admin@fitter.com"
-                autoComplete="email"
-                disabled={loading}
-              />
-            </div>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Email */}
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="mb-2 block text-sm font-medium text-neutral-300"
+                  >
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full rounded-lg border border-neutral-700 bg-neutral-800 px-4 py-3 text-white placeholder-neutral-500 outline-none transition-colors focus:border-[#B5FF00] focus:ring-2 focus:ring-[#B5FF00]/20"
+                    placeholder="admin@fitter.com"
+                    autoComplete="email"
+                    disabled={loading}
+                  />
+                </div>
 
-            {/* Password */}
-            <div>
-              <label
-                htmlFor="password"
-                className="mb-2 block text-sm font-medium text-neutral-300"
-              >
-                Contraseña
-              </label>
-              <div className="relative">
-                <input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-lg border border-neutral-700 bg-neutral-800 px-4 py-3 pr-12 text-white placeholder-neutral-500 outline-none transition-colors focus:border-[#B5FF00] focus:ring-2 focus:ring-[#B5FF00]/20"
-                  placeholder="••••••••"
-                  autoComplete="current-password"
-                  disabled={loading}
-                />
+                {/* Password */}
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="mb-2 block text-sm font-medium text-neutral-300"
+                  >
+                    Contraseña
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full rounded-lg border border-neutral-700 bg-neutral-800 px-4 py-3 pr-12 text-white placeholder-neutral-500 outline-none transition-colors focus:border-[#B5FF00] focus:ring-2 focus:ring-[#B5FF00]/20"
+                      placeholder="••••••••"
+                      autoComplete="current-password"
+                      disabled={loading}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 transition-colors hover:text-neutral-200"
+                      disabled={loading}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-5 w-5" />
+                      ) : (
+                        <Eye className="h-5 w-5" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Error */}
+                {error && (
+                  <div className="flex items-start gap-3 rounded-lg border border-red-500/20 bg-red-500/10 p-4">
+                    <AlertCircle className="h-5 w-5 flex-shrink-0 text-red-500" />
+                    <p className="text-sm text-red-400">{error}</p>
+                  </div>
+                )}
+
+                {/* Submit */}
                 <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 transition-colors hover:text-neutral-200"
+                  type="submit"
                   disabled={loading}
+                  className="w-full rounded-lg bg-[#B5FF00] px-6 py-3 font-semibold text-black transition-all hover:bg-[#a0e600] disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
+                  {loading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-black border-t-transparent"></div>
+                      Verificando...
+                    </span>
                   ) : (
-                    <Eye className="h-5 w-5" />
+                    'Iniciar Sesión'
                   )}
+                </button>
+              </form>
+
+              {/* Volver */}
+              <div className="mt-6 text-center">
+                <button
+                  onClick={() => navigate('/')}
+                  className="text-sm text-neutral-400 transition-colors hover:text-[#B5FF00]"
+                >
+                  ← Volver al inicio
                 </button>
               </div>
             </div>
-
-            {/* Error */}
-            {error && (
-              <div className="flex items-start gap-3 rounded-lg border border-red-500/20 bg-red-500/10 p-4">
-                <AlertCircle className="h-5 w-5 flex-shrink-0 text-red-500" />
-                <p className="text-sm text-red-400">{error}</p>
-              </div>
-            )}
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-lg bg-[#B5FF00] px-6 py-3 font-semibold text-black transition-all hover:bg-[#a0e600] disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-black border-t-transparent"></div>
-                  Verificando...
-                </span>
-              ) : (
-                'Iniciar Sesión'
-              )}
-            </button>
-          </form>
-
-          {/* Volver */}
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => navigate('/')}
-              className="text-sm text-neutral-400 transition-colors hover:text-[#B5FF00]"
-            >
-              ← Volver al inicio
-            </button>
-          </div>
-        </div>
 
             {/* Security Notice */}
             <div className="mt-6 text-center text-xs text-neutral-600">

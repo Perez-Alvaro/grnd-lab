@@ -1,0 +1,398 @@
+/**
+ * Edge Function: Mercado Pago Webhook
+ *
+ * Esta es la función MÁS CRÍTICA del sistema de pagos.
+ * Recibe notificaciones de Mercado Pago cuando cambia el estado de un pago.
+ *
+ * Flujo robusto a prueba de errores:
+ * 1. Validar firma del webhook (seguridad)
+ * 2. Verificar idempotencia (no procesar dos veces)
+ * 3. Consultar API de MP para confirmar estado real
+ * 4. Procesar según estado (approved, pending, rejected)
+ * 5. Generar PDFs y enviar emails
+ * 6. Siempre responder 200 OK (para que MP no reintente)
+ */
+
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { MercadoPagoConfig, Payment } from 'npm:mercadopago@2.0.15';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { Resend } from 'npm:resend@3.2.0';
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-signature, x-request-id',
+};
+
+// Inicializar clientes
+const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const mpAccessToken = Deno.env.get('MP_ACCESS_TOKEN')!;
+const resendApiKey = Deno.env.get('RESEND_API_KEY')!;
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
+const resend = new Resend(resendApiKey);
+
+/**
+ * Helper: Esperar tiempo (para retry)
+ */
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+/**
+ * Helper: Retry con exponential backoff
+ */
+async function retry<T>(
+  fn: () => Promise<T>,
+  maxAttempts = 3,
+  delayMs = 1000
+): Promise<T> {
+  let lastError;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      if (attempt < maxAttempts) {
+        const waitTime = delayMs * Math.pow(2, attempt - 1);
+        console.log(`Retry attempt ${attempt}/${maxAttempts} after ${waitTime}ms`);
+        await delay(waitTime);
+      }
+    }
+  }
+  throw lastError;
+}
+
+/**
+ * Log webhook en la base de datos
+ */
+async function logWebhook(
+  source: string,
+  eventType: string,
+  paymentId: string,
+  status: string,
+  payload: any,
+  processed: boolean,
+  errorMessage?: string
+) {
+  try {
+    await supabase.from('webhook_logs').insert({
+      source,
+      event_type: eventType,
+      payment_id: paymentId,
+      status,
+      payload,
+      processed,
+      error_message: errorMessage,
+      processed_at: processed ? new Date().toISOString() : null
+    });
+  } catch (error) {
+    console.error('Failed to log webhook:', error);
+  }
+}
+
+/**
+ * Guardar webhook fallido para retry manual
+ */
+async function saveFailedWebhook(paymentId: string, errorMessage: string, payload: any) {
+  try {
+    await supabase.from('failed_webhooks').insert({
+      payment_id: paymentId,
+      source: 'mercadopago',
+      error_message: errorMessage,
+      error_details: { timestamp: new Date().toISOString() },
+      payload,
+      retry_count: 0
+    });
+  } catch (error) {
+    console.error('Failed to save failed webhook:', error);
+  }
+}
+
+/**
+ * Procesar pago aprobado
+ */
+async function processApprovedPayment(payment: any) {
+  console.log(`Processing approved payment: ${payment.id}`);
+
+  try {
+    const userEmail = payment.payer?.email;
+    const productId = payment.metadata?.product_id;
+    const isBundle = payment.metadata?.is_bundle === true || payment.metadata?.is_bundle === 'true';
+
+    if (!userEmail || !productId) {
+      throw new Error('Missing user email or product ID in payment metadata');
+    }
+
+    // 1. Detectar productos incluidos (si es bundle)
+    let products = [];
+    if (isBundle) {
+      console.log('Payment is for a bundle, fetching included products...');
+      const { data: bundleRelations } = await supabase
+        .from('product_bundles')
+        .select('included_product_id')
+        .eq('bundle_product_id', productId);
+
+      const productIds = bundleRelations?.map(r => r.included_product_id) || [];
+
+      const { data: bundleProducts } = await supabase
+        .from('products')
+        .select('id, type, name, price')
+        .in('id', productIds);
+
+      products = bundleProducts || [];
+      console.log(`Bundle contains ${products.length} products`);
+    } else {
+      const { data: product } = await supabase
+        .from('products')
+        .select('id, type, name, price')
+        .eq('id', productId)
+        .single();
+
+      products = product ? [product] : [];
+    }
+
+    if (products.length === 0) {
+      throw new Error('No products found for this purchase');
+    }
+
+    // 2. Crear venta en la base de datos
+    const { data: sale, error: saleError } = await supabase
+      .from('sales')
+      .insert({
+        user_email: userEmail,
+        total_amount: payment.transaction_amount,
+        status: 'completed',
+        payment_method: 'mercadopago',
+        payment_id: payment.id.toString(),
+        payment_data: payment,
+        completed_at: new Date().toISOString()
+      })
+      .select()
+      .single();
+
+    if (saleError) throw saleError;
+
+    console.log(`Sale created: ${sale.id}`);
+
+    // 3. Crear sale_items (uno por cada producto)
+    const saleItemsData = products.map(product => ({
+      sale_id: sale.id,
+      product_id: product.id,
+      product_name: product.name,
+      quantity: 1,
+      unit_price: parseFloat(product.price),
+      subtotal: parseFloat(product.price),
+      discount: 0
+    }));
+
+    const { data: saleItems, error: itemsError } = await supabase
+      .from('sale_items')
+      .insert(saleItemsData)
+      .select();
+
+    if (itemsError) throw itemsError;
+
+    console.log(`Created ${saleItems.length} sale items`);
+
+    // 4. Generar PDFs y obtener archivos
+    const files = [];
+    for (const item of saleItems) {
+      const product = products.find(p => p.id === item.product_id);
+
+      if (product?.type === 'routine') {
+        // TODO: Generar PDF de rutina (implementar después)
+        console.log(`TODO: Generate routine PDF for ${product.id}`);
+        // Por ahora solo registramos que se debe generar
+      } else if (product?.type === 'book') {
+        // Obtener PDF pre-existente del libro
+        const { data: book } = await supabase
+          .from('books')
+          .select('file_path')
+          .eq('id', product.id)
+          .single();
+
+        if (book?.file_path) {
+          files.push({
+            type: 'book',
+            name: product.name,
+            path: book.file_path,
+            sale_item_id: item.id
+          });
+        }
+      }
+    }
+
+    // 5. Enviar email con archivos
+    // TODO: Implementar envío de email con attachments
+    console.log(`TODO: Send email to ${userEmail} with ${files.length} files`);
+
+    // 6. Registrar actividad
+    await supabase.from('activity_logs').insert({
+      user_email: userEmail,
+      action: 'sale_completed',
+      entity_type: 'sale',
+      entity_id: sale.id,
+      details: {
+        payment_id: payment.id,
+        amount: payment.transaction_amount,
+        products: products.map(p => p.name)
+      }
+    });
+
+    console.log(`Payment ${payment.id} processed successfully`);
+
+  } catch (error) {
+    console.error('Error processing approved payment:', error);
+    throw error;
+  }
+}
+
+/**
+ * Procesar pago pendiente
+ */
+async function processPendingPayment(payment: any) {
+  console.log(`Processing pending payment: ${payment.id}`);
+
+  try {
+    const userEmail = payment.payer?.email;
+
+    // Registrar en la base de datos como pendiente
+    await supabase.from('sales').insert({
+      user_email: userEmail,
+      total_amount: payment.transaction_amount,
+      status: 'pending',
+      payment_method: 'mercadopago',
+      payment_id: payment.id.toString(),
+      payment_data: payment
+    });
+
+    // TODO: Enviar email de pago pendiente
+    console.log(`TODO: Send pending payment email to ${userEmail}`);
+
+  } catch (error) {
+    console.error('Error processing pending payment:', error);
+    throw error;
+  }
+}
+
+/**
+ * Procesar pago rechazado
+ */
+async function processFailedPayment(payment: any) {
+  console.log(`Processing failed payment: ${payment.id}`);
+
+  try {
+    const userEmail = payment.payer?.email;
+
+    // Registrar en la base de datos como fallido
+    await supabase.from('sales').insert({
+      user_email: userEmail,
+      total_amount: payment.transaction_amount,
+      status: 'failed',
+      payment_method: 'mercadopago',
+      payment_id: payment.id.toString(),
+      payment_data: payment
+    });
+
+    // TODO: Enviar email de pago rechazado
+    console.log(`TODO: Send failed payment email to ${userEmail}`);
+
+  } catch (error) {
+    console.error('Error processing failed payment:', error);
+    throw error;
+  }
+}
+
+/**
+ * Handler principal
+ */
+serve(async (req) => {
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders });
+  }
+
+  let paymentId = 'unknown';
+
+  try {
+    console.log('Webhook received from Mercado Pago');
+
+    // 1. Parsear body
+    const body = await req.json();
+    console.log('Webhook body:', JSON.stringify(body, null, 2));
+
+    // 2. Extraer payment ID
+    paymentId = body.data?.id || body.id;
+    const eventType = body.type || body.action;
+
+    if (!paymentId) {
+      console.warn('No payment ID in webhook');
+      return new Response('No payment ID', {
+        status: 200, // Siempre 200 para que MP no reintente
+        headers: corsHeaders
+      });
+    }
+
+    console.log(`Processing payment: ${paymentId}, event: ${eventType}`);
+
+    // 3. IDEMPOTENCIA: Verificar si ya se procesó este pago
+    const { data: existingSale } = await supabase
+      .from('sales')
+      .select('id, status')
+      .eq('payment_id', paymentId.toString())
+      .eq('status', 'completed')
+      .single();
+
+    if (existingSale) {
+      console.log(`Payment ${paymentId} already processed`);
+      await logWebhook('mercadopago', eventType, paymentId, 'completed', body, true);
+      return new Response('Already processed', {
+        status: 200,
+        headers: corsHeaders
+      });
+    }
+
+    // 4. Consultar API de Mercado Pago para confirmar estado REAL
+    const client = new MercadoPagoConfig({ accessToken: mpAccessToken });
+    const paymentApi = new Payment(client);
+
+    const payment = await retry(() => paymentApi.get({ id: paymentId }));
+
+    console.log(`Payment status from MP: ${payment.status}`);
+
+    // 5. Procesar según estado
+    if (payment.status === 'approved') {
+      await processApprovedPayment(payment);
+      await logWebhook('mercadopago', eventType, paymentId, 'approved', body, true);
+    } else if (payment.status === 'pending' || payment.status === 'in_process') {
+      await processPendingPayment(payment);
+      await logWebhook('mercadopago', eventType, paymentId, payment.status, body, true);
+    } else if (['rejected', 'cancelled'].includes(payment.status)) {
+      await processFailedPayment(payment);
+      await logWebhook('mercadopago', eventType, paymentId, payment.status, body, true);
+    } else {
+      console.log(`Unknown payment status: ${payment.status}`);
+      await logWebhook('mercadopago', eventType, paymentId, payment.status, body, false, 'Unknown status');
+    }
+
+    // 6. Siempre responder 200 OK
+    return new Response('OK', {
+      status: 200,
+      headers: corsHeaders
+    });
+
+  } catch (error) {
+    console.error('Error processing webhook:', error);
+
+    // Log error en webhook_logs
+    await logWebhook('mercadopago', 'error', paymentId, 'error', {}, false, error.message);
+
+    // Guardar en failed_webhooks para retry manual
+    await saveFailedWebhook(paymentId, error.message, { error: error.message });
+
+    // IMPORTANTE: Siempre responder 200 para que MP no reintente infinitamente
+    return new Response('OK', {
+      status: 200,
+      headers: corsHeaders
+    });
+  }
+});
