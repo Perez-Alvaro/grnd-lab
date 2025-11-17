@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { toUIObjective, toDBObjective } from '@/constants/objectives.js';
 
 // Helper para formatear rutinas desde Supabase al formato esperado por el frontend
 const formatRoutineFromDB = (product, routine) => {
@@ -40,13 +41,8 @@ const formatGender = (gender) => {
 };
 
 const formatObjective = (objective) => {
-  const objectives = {
-    muscle_gain: 'Volumen (Fuerza e Hipertrofia)',
-    fat_loss: 'Pérdida de Grasa (Fuerza y Resistencia)',
-    strength: 'Fuerza',
-    endurance: 'Resistencia',
-  };
-  return objectives[objective] || objective;
+  // Usar helper centralizado para conversión DB → UI
+  return toUIObjective(objective);
 };
 
 const formatLevel = (level) => {
@@ -100,12 +96,8 @@ const parseGender = (gender) => {
 };
 
 const parseObjective = (objective) => {
-  if (!objective) return 'muscle_gain';
-  if (objective.includes('Volumen')) return 'muscle_gain';
-  if (objective.includes('Grasa')) return 'fat_loss';
-  if (objective.includes('Fuerza')) return 'strength';
-  if (objective.includes('Resistencia')) return 'endurance';
-  return 'muscle_gain';
+  // Usar helper centralizado para conversión UI → DB
+  return toDBObjective(objective);
 };
 
 const parseLevel = (level) => {

@@ -2,13 +2,13 @@ import React, { useMemo } from "react";
 import { motion } from "framer-motion";
 import { FadeIn } from "../Shared/reactbits/index.js";
 import { cn } from "../../utils/cn.js";
+import { OBJECTIVE_MAPPING, OBJECTIVE_DESCRIPTIONS } from "../../constants/objectives.js";
 
-const objectiveDescriptions = {
-  "Pérdida de Grasa (Fuerza y Resistencia)":
-    "Sesiones de fuerza metabolizada con bloques de conditioning y control de cargas para optimizar la recomposición.",
-  "Volumen (Fuerza e Hipertrofia)":
-    "Programación de hipertrofia estructurada con énfasis en palancas, progresión lineal y capacidad neural.",
-};
+// Crear mapeo de UI labels a descripciones usando los valores del mapping
+const objectiveDescriptions = Object.entries(OBJECTIVE_MAPPING).reduce((acc, [dbValue, label]) => {
+  acc[label] = OBJECTIVE_DESCRIPTIONS[dbValue];
+  return acc;
+}, {});
 
 function GoalSelector({
   objectives = [],
