@@ -93,10 +93,10 @@ function PaymentSection({
           <h4 className="text-xs uppercase tracking-[0.4em] text-accent">
             Paso 04
           </h4>
-          <h2 className="text-3xl font-semibold text-white md:text-4xl">
+          <h2 className="text-3xl font-semibold text-white md:text-4xl break-words whitespace-normal">
             Checkout Mercado Pago
           </h2>
-          <p className="text-sm text-gray-400 md:text-base">
+          <p className="text-sm text-gray-400 md:text-base break-words whitespace-normal">
             Confirmá tus datos y ejecutá el pago seguro con Mercado Pago.
           </p>
         </header>
@@ -135,13 +135,13 @@ function PaymentSection({
               ✅
             </div>
             <div className="space-y-3">
-              <h3 className="text-3xl font-semibold uppercase text-white">
-                ¡Listo!<br className="hidden md:block" /> Pago acreditado
-              </h3>
-              <p className="text-sm text-gray-400">
-                Enviamos <span className="text-white">{plan?.label}</span> y tu
-                rutina <span className="text-white">{routine.name}</span> a{" "}
-                <span className="text-white">{formData.email}</span>.
+            <h3 className="text-3xl font-semibold uppercase text-white break-words whitespace-normal">
+              ¡Listo!<br className="hidden md:block" /> Pago acreditado
+            </h3>
+            <p className="text-sm text-gray-400 break-words whitespace-normal">
+              Enviamos <span className="text-white">{plan?.label}</span> y tu
+              rutina <span className="text-white">{routine.name}</span> a{" "}
+              <span className="text-white">{formData.email}</span>.
                 {isPremium
                   ? " Incluimos el ebook nutricional y la invitación a la Comunidad MZ."
                   : " Recordá que podés mejorar a Premium más adelante."}
@@ -166,10 +166,10 @@ function PaymentSection({
         <h4 className="text-xs uppercase tracking-[0.4em] text-accent">
           Paso 04
         </h4>
-        <h2 className="text-3xl font-semibold text-white md:text-4xl">
+        <h2 className="text-3xl font-semibold text-white md:text-4xl break-words whitespace-normal">
           Checkout Mercado Pago
         </h2>
-        <p className="text-sm text-gray-400 md:text-base">
+        <p className="text-sm text-gray-400 md:text-base break-words whitespace-normal">
           Confirmá tus datos y ejecutá el pago seguro con Mercado Pago.
         </p>
       </header>
@@ -183,10 +183,10 @@ function PaymentSection({
             <span className="text-xs uppercase tracking-[0.3em] text-gray-500">
               Plan seleccionado
             </span>
-            <h3 className="text-2xl font-semibold text-white md:text-3xl">
+            <h3 className="text-2xl font-semibold text-white md:text-3xl break-words whitespace-normal">
               {routine.name}
             </h3>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-gray-400 break-words whitespace-normal">
               {formatWeeks(routine.duration)} • {formatFrequency(routine.frequency)}
               {routine.level && routine.level !== ""
                 ? ` • Nivel ${routine.level}`

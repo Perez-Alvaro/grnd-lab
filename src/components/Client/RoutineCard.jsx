@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import { getReadableTextColor } from "../../utils/color.js";
 
 function RoutineCard({ routine, onPreview }) {
   const fallbackImage = useMemo(
@@ -33,8 +34,14 @@ function RoutineCard({ routine, onPreview }) {
     (Array.isArray(routine.days) ? `${routine.days.length}x/semana` : "—");
   const level = routine.level || routine.difficulty || "—";
 
+  const cardBackground = routine.cardColor || "#111111";
+  const readableTextColor = getReadableTextColor(cardBackground);
+
   return (
-    <article className="group flex w-full sm:w-[380px] md:w-[440px] flex-col overflow-hidden rounded-2xl bg-neutral-900 text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-[0.97]">
+    <article
+      className="group flex w-full sm:w-[380px] md:w-[440px] flex-col overflow-hidden rounded-2xl bg-neutral-900 text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-[0.97]"
+      style={{ backgroundColor: cardBackground, color: readableTextColor }}
+    >
       <div className="relative w-full h-[220px] md:h-[260px] overflow-hidden">
         <img
           src={routine.image || fallbackImage}
@@ -46,11 +53,11 @@ function RoutineCard({ routine, onPreview }) {
 
       <div className="flex flex-col justify-between p-4 gap-3 sm:p-5">
         <div className="flex flex-col gap-2">
-          <h3 className="text-lg md:text-xl font-bold text-white leading-tight line-clamp-2">
+          <h3 className="text-lg md:text-xl font-bold text-white leading-tight line-clamp-2 break-words whitespace-normal">
             {title}
           </h3>
           {shortDescription && (
-            <p className="text-gray-400 text-sm md:text-base leading-relaxed line-clamp-2">
+            <p className="text-gray-400 text-sm md:text-base leading-relaxed line-clamp-2 break-words whitespace-normal">
               {shortDescription}
             </p>
           )}
@@ -58,16 +65,16 @@ function RoutineCard({ routine, onPreview }) {
 
         <div className="grid grid-cols-3 gap-2 mt-1">
           <div className="border border-neutral-700 rounded-lg py-2 text-center">
-            <p className="text-xs text-gray-500 uppercase tracking-wide">Duración</p>
-            <p className="text-white font-semibold text-sm md:text-base">{duration}</p>
+            <p className="text-xs text-gray-500 uppercase tracking-wide break-words whitespace-normal">Duración</p>
+            <p className="text-white font-semibold text-sm md:text-base break-words whitespace-normal">{duration}</p>
           </div>
           <div className="border border-neutral-700 rounded-lg py-2 text-center">
-            <p className="text-xs text-gray-500 uppercase tracking-wide">Frecuencia</p>
-            <p className="text-white font-semibold text-sm md:text-base">{frequency}</p>
+            <p className="text-xs text-gray-500 uppercase tracking-wide break-words whitespace-normal">Frecuencia</p>
+            <p className="text-white font-semibold text-sm md:text-base break-words whitespace-normal">{frequency}</p>
           </div>
           <div className="border border-neutral-700 rounded-lg py-2 text-center">
-            <p className="text-xs text-gray-500 uppercase tracking-wide">Nivel</p>
-            <p className="text-white font-semibold text-sm md:text-base">{level}</p>
+            <p className="text-xs text-gray-500 uppercase tracking-wide break-words whitespace-normal">Nivel</p>
+            <p className="text-white font-semibold text-sm md:text-base break-words whitespace-normal">{level}</p>
           </div>
         </div>
 

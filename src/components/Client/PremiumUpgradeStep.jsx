@@ -22,9 +22,19 @@ function PremiumUpgradeStep({
     : "border-accent text-accent";
   const premiumAddonLabel = premiumAddonPrice.toLocaleString("es-AR");
 
+  const goToCheckout = (selectedPlan) => {
+    onSelectPlan(selectedPlan);
+    const checkoutSection = document.getElementById("checkout-section");
+    if (checkoutSection) {
+      checkoutSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      checkoutSection.classList.add("animate-glow");
+      setTimeout(() => checkoutSection.classList.remove("animate-glow"), 1000);
+    }
+  };
+
   return (
-    <section className="mt-12 flex flex-col gap-5 rounded-3xl border border-brand-border bg-surface p-6 text-white shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)] md:p-10">
-      <header className="text-center md:text-left">
+    <section className="mt-12 flex flex-col gap-6 rounded-3xl border border-brand-border bg-surface p-6 text-white shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)] md:p-10">
+      <header className="text-center md:text-left space-y-2 md:space-y-3">
         <p className="text-xs uppercase tracking-[0.4em] text-accent">
           Paso 03.5
         </p>
@@ -37,7 +47,7 @@ function PremiumUpgradeStep({
         </p>
       </header>
 
-      <FadeIn className="grid gap-6 rounded-2xl border border-brand-border bg-base p-6 md:grid-cols-[1.2fr_0.8fr] md:p-8">
+      <FadeIn className="grid gap-6 rounded-2xl border border-brand-border bg-base p-6 md:grid-cols-[1.2fr_0.8fr] md:gap-8 md:p-8">
         <div className="space-y-4">
           <p className="text-sm text-gray-300">
             Entrená con un plan integral que combina tu rutina personalizada con
@@ -63,14 +73,14 @@ function PremiumUpgradeStep({
           <div className="flex w-full flex-col gap-3">
             <button
               type="button"
-              onClick={() => onSelectPlan("premium")}
+              onClick={() => goToCheckout("premium")}
               className={`w-full rounded-full px-5 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 ${upgradeButtonClasses}`}
             >
               {`Mejorar a Plan Premium (+$${premiumAddonLabel})`}
             </button>
             <button
               type="button"
-              onClick={() => onSelectPlan("essential")}
+              onClick={() => goToCheckout("essential")}
               className={`w-full rounded-full border px-5 py-3 text-sm font-semibold uppercase tracking-wide transition-all hover:-translate-y-0.5 ${continueButtonClasses}`}
             >
               Continuar con Plan Essential
