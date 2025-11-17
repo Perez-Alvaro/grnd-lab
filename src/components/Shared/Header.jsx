@@ -106,11 +106,11 @@ function Header() {
       <div className="container mx-auto px-4 py-4 text-white">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-3 group">
-            <div className="rounded-xl bg-[#B5FF00] p-2 transition-transform group-hover:scale-105">
+            <div className="rounded-xl bg-accent p-2 transition-transform group-hover:scale-105">
               <Dumbbell className="h-6 w-6 text-black" />
             </div>
             <h1 className="text-2xl font-bold text-white">
-              Fit<span className="text-[#B5FF00]">ter</span>
+              Fit<span className="text-accent">ter</span>
             </h1>
           </Link>
 

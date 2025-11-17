@@ -18,6 +18,7 @@ function PaymentSection({ routine }) {
     email: user?.email || "",
     firstName: "",
     lastName: "",
+    phone: "",
   });
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -44,16 +45,24 @@ function PaymentSection({ routine }) {
     return value;
   };
 
+  const totalPrice = useMemo(() => {
+    if (!routine) return 0;
+    return isPremium ? routine.price + premiumAddonPrice : routine.price;
+  }, [isPremium, premiumAddonPrice, routine]);
+
   const plan = useMemo(
     () =>
       routine
         ? {
             id: `routine-${routine.id}`,
             name: routine.name,
-            price: routine.price,
+            price: totalPrice,
+            label: planLabel,
+            type: planType,
+            premiumAddonPrice,
           }
         : null,
-    [routine],
+    [planLabel, planType, premiumAddonPrice, routine, totalPrice],
   );
 
   // Detectar si es bundle al montar el componente
@@ -171,7 +180,7 @@ function PaymentSection({ routine }) {
     return (
       <section id="checkout-section" className={sectionClasses}>
         <header className={headerClasses}>
-          <h4 className="text-xs uppercase tracking-[0.4em] text-[#B5FF00]">
+          <h4 className="text-xs uppercase tracking-[0.4em] text-accent">
             Paso 04
           </h4>
           <h2 className="text-3xl font-semibold text-white md:text-4xl">
@@ -182,7 +191,7 @@ function PaymentSection({ routine }) {
           </p>
         </header>
 
-        <FadeIn className="rounded-2xl border border-dashed border-[#2E2E2E] bg-[#0E0E0E] p-10 text-center">
+        <FadeIn className="rounded-2xl border border-dashed border-brand-border bg-surface p-10 text-center">
           <h3 className="text-2xl font-semibold uppercase text-gray-300">
             Seleccioná una rutina
           </h3>
@@ -199,7 +208,7 @@ function PaymentSection({ routine }) {
     return (
       <section id="checkout-section" className={sectionClasses}>
         <header className={headerClasses}>
-          <h4 className="text-xs uppercase tracking-[0.4em] text-[#B5FF00]">
+          <h4 className="text-xs uppercase tracking-[0.4em] text-accent">
             Paso 04
           </h4>
           <h2 className="text-3xl font-semibold text-white md:text-4xl">
@@ -210,9 +219,9 @@ function PaymentSection({ routine }) {
           </p>
         </header>
 
-        <FadeIn className="rounded-2xl border border-[#B5FF00]/40 bg-[#0E0E0E] p-10 text-center">
+        <FadeIn className="rounded-2xl border border-accent/40 bg-surface p-10 text-center">
           <div className="mx-auto flex max-w-xl flex-col items-center gap-6">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full border border-[#B5FF00] text-3xl">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full border border-accent text-3xl">
               ✅
             </div>
             <div className="space-y-3">
@@ -240,7 +249,7 @@ function PaymentSection({ routine }) {
   return (
     <section id="checkout-section" className={sectionClasses}>
       <header className={headerClasses}>
-        <h4 className="text-xs uppercase tracking-[0.4em] text-[#B5FF00]">
+        <h4 className="text-xs uppercase tracking-[0.4em] text-accent">
           Paso 04
         </h4>
         <h2 className="text-3xl font-semibold text-white md:text-4xl">
@@ -252,11 +261,11 @@ function PaymentSection({ routine }) {
       </header>
 
       <motion.div
-        className="rounded-2xl border border-[#2E2E2E] bg-[#0E0E0E] p-6 shadow-[0_0_35px_-20px_rgba(181,255,0,0.35)] md:p-10"
+        className="rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_0_35px_-20px_rgba(181,255,0,0.35)] md:p-10"
         {...motionCardProps}
       >
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <div className="space-y-2 text-center md:text-left">
+          <div className="space-y-3 text-center md:text-left">
             <span className="text-xs uppercase tracking-[0.3em] text-gray-500">
               Plan seleccionado
             </span>
@@ -276,13 +285,27 @@ function PaymentSection({ routine }) {
                 </span>
               </div>
             )}
+            <span
+              className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${
+                isPremium
+                  ? "border border-accent/60 bg-accent/10 text-accent"
+                  : "border border-brand-border text-gray-300"
+              }`}
+            >
+              {planLabel}
+            </span>
           </div>
           <div className="flex flex-col items-center text-center md:items-end md:text-right">
             <span className="text-xs uppercase tracking-[0.3em] text-gray-500">
               Inversión
             </span>
-            <p className="text-3xl font-bold text-[#B5FF00] md:text-4xl">
-              ${routine.price.toLocaleString("es-AR")}
+            <p className="text-3xl font-bold text-accent md:text-4xl">
+              ${totalPrice.toLocaleString("es-AR")}
+            </p>
+            <p className="text-xs text-gray-500">
+              {isPremium
+                ? `Incluye +$${premiumAddonPrice.toLocaleString("es-AR")} por ebook y comunidad.`
+                : "Puedes sumar el ebook antes de confirmar el pago."}
             </p>
           </div>
         </div>
@@ -298,6 +321,7 @@ function PaymentSection({ routine }) {
                   handleChange("firstName", event.target.value)
                 }
                 className={`rounded-lg border ${validationErrors.firstName ? 'border-red-500' : 'border-[#2E2E2E]'} bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none`}
+                className="rounded-lg border border-brand-border bg-base px-4 py-3 text-sm text-white focus:border-accent focus:outline-none"
                 placeholder="Tu nombre"
               />
               {validationErrors.firstName && (
@@ -313,6 +337,7 @@ function PaymentSection({ routine }) {
                   handleChange("lastName", event.target.value)
                 }
                 className={`rounded-lg border ${validationErrors.lastName ? 'border-red-500' : 'border-[#2E2E2E]'} bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none`}
+                className="rounded-lg border border-brand-border bg-base px-4 py-3 text-sm text-white focus:border-accent focus:outline-none"
                 placeholder="Tu apellido"
               />
               {validationErrors.lastName && (
@@ -329,6 +354,7 @@ function PaymentSection({ routine }) {
               value={formData.email}
               onChange={(event) => handleChange("email", event.target.value)}
               className={`rounded-lg border ${validationErrors.email ? 'border-red-500' : 'border-[#2E2E2E]'} bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none`}
+              className="rounded-lg border border-brand-border bg-base px-4 py-3 text-sm text-white focus:border-accent focus:outline-none"
               placeholder="tuemail@example.com"
             />
             {validationErrors.email ? (
@@ -366,11 +392,13 @@ function PaymentSection({ routine }) {
           <button
             type="submit"
             disabled={processing}
-            className="w-full rounded-full bg-[#B5FF00] px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-[#D0FF4D] disabled:cursor-not-allowed disabled:bg-[#2E2E2E] disabled:text-gray-500"
+            className="w-full rounded-full bg-accent px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong disabled:cursor-not-allowed disabled:bg-brand-border disabled:text-gray-500"
           >
             {processing
               ? "Redirigiendo a Mercado Pago..."
               : user ? `Proceder al pago - $${routine.price.toLocaleString("es-AR")}` : "Iniciar sesión para comprar"}
+              ? "Procesando..."
+              : `Proceder al pago - $${totalPrice.toLocaleString("es-AR")}`}
           </button>
         </form>
       </motion.div>

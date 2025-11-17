@@ -30,26 +30,26 @@ export const Button = forwardRef(function Button(
   const palette = {
     primary: {
       solid:
-        "bg-[#B5FF00] text-black hover:bg-[#D0FF4D] focus-visible:ring-[#B5FF00]/60",
+        "bg-accent text-black hover:bg-accent-strong focus-visible:ring-accent/60",
       outline:
-        "border-2 border-[#B5FF00] text-[#B5FF00] hover:bg-[#B5FF00]/10 focus-visible:ring-[#B5FF00]/40",
+        "border-2 border-accent text-accent hover:bg-accent/10 focus-visible:ring-accent/40",
       ghost:
-        "text-[#B5FF00] hover:bg-[#B5FF00]/10 focus-visible:ring-[#B5FF00]/40",
+        "text-accent hover:bg-accent/10 focus-visible:ring-accent/40",
     },
     lime: {
       solid:
-        "bg-[#B5FF00] text-black hover:bg-[#D0FF4D] focus-visible:ring-[#B5FF00]/60",
+        "bg-accent text-black hover:bg-accent-strong focus-visible:ring-accent/60",
       outline:
-        "border-2 border-[#B5FF00] text-[#B5FF00] hover:bg-[#B5FF00]/10 focus-visible:ring-[#B5FF00]/40",
+        "border-2 border-accent text-accent hover:bg-accent/10 focus-visible:ring-accent/40",
       ghost:
-        "text-[#B5FF00] hover:bg-[#B5FF00]/10 focus-visible:ring-[#B5FF00]/40",
+        "text-accent hover:bg-accent/10 focus-visible:ring-accent/40",
     },
     neutral: {
       solid:
-        "bg-[#1A1A1A] text-gray-200 hover:bg-[#222] focus-visible:ring-[#B5FF00]/20",
+        "bg-[#1A1A1A] text-gray-200 hover:bg-[#222] focus-visible:ring-accent/20",
       outline:
-        "border border-[#2E2E2E] text-gray-200 hover:bg-[#1A1A1A] focus-visible:ring-[#B5FF00]/20",
-      ghost: "text-gray-400 hover:bg-[#1A1A1A] focus-visible:ring-[#B5FF00]/20",
+        "border border-[#2E2E2E] text-gray-200 hover:bg-[#1A1A1A] focus-visible:ring-accent/20",
+      ghost: "text-gray-400 hover:bg-[#1A1A1A] focus-visible:ring-accent/20",
     },
   };
 

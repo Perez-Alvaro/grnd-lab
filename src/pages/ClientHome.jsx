@@ -12,7 +12,10 @@ import GoalSelector from "../components/Client/GoalSelector.jsx";
 import RoutineCarousel from "../components/Client/RoutineCarousel.jsx";
 import RoutinePreviewModal from "../components/Client/RoutinePreviewModal.jsx";
 import PaymentSection from "../components/Client/PaymentSection.jsx";
+import PremiumUpgradeStep from "../components/Client/PremiumUpgradeStep.jsx";
 import { useAppContext } from "../context/AppContext.jsx";
+
+const PREMIUM_UPGRADE_PRICE = 6000;
 
 function ClientHome() {
   const { state } = useAppContext();
@@ -23,6 +26,7 @@ function ClientHome() {
   const [filteredRoutines, setFilteredRoutines] = useState([]);
   const [previewRoutine, setPreviewRoutine] = useState(null);
   const [selectedRoutine, setSelectedRoutine] = useState(null);
+  const [planType, setPlanType] = useState("essential");
 
   const trainerRoutines = useMemo(() => {
     return (state.routines || []).map((routine) => ({
@@ -84,6 +88,12 @@ function ClientHome() {
     }
   }, [filteredRoutines, selectedRoutine]);
 
+  useEffect(() => {
+    if (!selectedRoutine) {
+      setPlanType("essential");
+    }
+  }, [selectedRoutine]);
+
   const readyForRoutines = useMemo(
     () => Boolean(selectedGender && (selectedGoal || selectedGoal === "Todos")),
     [selectedGender, selectedGoal],
@@ -95,6 +105,7 @@ function ClientHome() {
 
   const handleSelectRoutine = useCallback((routine) => {
     setSelectedRoutine(routine);
+    setPlanType("essential");
     document
       .getElementById("checkout-section")
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -108,7 +119,7 @@ function ClientHome() {
   };
 
   return (
-    <div className="flex w-full flex-col items-center bg-neutral-950 text-white">
+    <div className="flex w-full flex-col items-center bg-base text-white">
       <section className="w-full max-w-6xl px-4 py-12 sm:px-6 md:py-16">
         <div
           ref={heroRef}
@@ -119,10 +130,10 @@ function ClientHome() {
           </div>
           <div className="relative z-10 flex flex-col items-start gap-6 px-8 py-16 md:px-16 md:py-20">
             <FadeIn className="flex w-full flex-col gap-6 text-left">
-              <div className="flex items-center gap-3 text-sm uppercase tracking-[0.4em] text-[#B5FF00]">
-                <span className="h-px flex-1 bg-[#B5FF00]/40" />
+              <div className="flex items-center gap-3 text-sm uppercase tracking-[0.4em] text-accent">
+                <span className="h-px flex-1 bg-accent/40" />
                 <span>Gateway Cliente</span>
-                <span className="h-px flex-1 bg-[#B5FF00]/40" />
+                <span className="h-px flex-1 bg-accent/40" />
               </div>
               <h1 className="text-4xl font-bold uppercase leading-tight text-white md:text-6xl">
                 Elegí tu entrenamiento. Superá tus límites.
@@ -136,7 +147,7 @@ function ClientHome() {
                 <Button
                   size="lg"
                   rounded="full"
-                  className="bg-[#B5FF00] px-8 py-4 text-base font-semibold uppercase tracking-wide text-black transition-transform hover:-translate-y-0.5 hover:bg-[#c7ff3d]"
+                  className="bg-accent px-8 py-4 text-base font-semibold uppercase tracking-wide text-black transition-transform hover:-translate-y-0.5 hover:bg-accent-strong"
                   onClick={handleStart}
                 >
                   Comenzar selección
@@ -170,8 +181,23 @@ function ClientHome() {
           />
         </motion.div>
 
+        {selectedRoutine && (
+          <motion.div id="premium-offer" {...sectionMotionProps}>
+            <PremiumUpgradeStep
+              routine={selectedRoutine}
+              planType={planType}
+              onSelectPlan={setPlanType}
+              premiumAddonPrice={PREMIUM_UPGRADE_PRICE}
+            />
+          </motion.div>
+        )}
+
         <motion.div id="pago" {...sectionMotionProps}>
-          <PaymentSection routine={selectedRoutine} />
+          <PaymentSection
+            routine={selectedRoutine}
+            planType={planType}
+            premiumAddonPrice={PREMIUM_UPGRADE_PRICE}
+          />
         </motion.div>
       </section>
 
