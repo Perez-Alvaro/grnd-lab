@@ -77,10 +77,12 @@ function GoalSelector({
                   "border-accent ring-1 ring-accent",
               )}
             >
-              <h3 className="text-xl font-semibold text-white md:text-2xl">
+              <h3 className="text-xl font-semibold text-white md:text-2xl break-words whitespace-normal">
                 {goal.title}
               </h3>
-              <p className="mt-3 text-sm text-gray-400">{goal.description}</p>
+              <p className="mt-3 text-sm text-gray-400 break-words whitespace-normal">
+                {goal.description}
+              </p>
             </motion.button>
           ))}
         </div>

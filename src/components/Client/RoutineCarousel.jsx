@@ -34,11 +34,11 @@ function RoutineCarousel({ routines, onPreview, onSelect }) {
       </FadeIn>
 
       <div className="rounded-2xl border border-[#2E2E2E] bg-[#0E0E0E] p-4 sm:p-6 md:p-8">
-        <div className="flex flex-col items-center gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+        <div className="flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-center items-stretch px-4 sm:px-8">
           {routines.map((routine, index) => (
             <motion.div
               key={routine.id}
-              className="flex w-full max-w-[340px]"
+              className="flex w-full"
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.08 }}
