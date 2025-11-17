@@ -674,7 +674,7 @@ export const useRoutineEditor = ({
       description: plan.metadata.description,
       notes: plan.metadata.notes,
       author: plan.metadata.author,
-      duration: plan.metadata.durationWeeks,
+      durationWeeks: Number(plan.metadata.durationWeeks) || 1, // ✅ Cambiado de "duration" a "durationWeeks"
       image: plan.metadata.image,
       price:
         plan.metadata.price && !Number.isNaN(Number(plan.metadata.price))
@@ -683,40 +683,27 @@ export const useRoutineEditor = ({
       createdAt: existingTemplate?.createdAt || now,
       updatedAt: now,
       weeks: plan.weeks.map((week, index) => ({
-        id: week.id || createId(),
-        number: index + 1,
+        weekNumber: index + 1, // ✅ Cambiado de "number" a "weekNumber"
         title: week.title || `Semana ${index + 1}`,
-        summary: week.summary,
-        notes: week.notes,
-        days: week.days.map((day) => ({
-          id: day.id || createId(),
-          title: day.name,
+        summary: week.summary || "",
+        notes: week.notes || "",
+        days: week.days.map((day, dayIndex) => ({
+          dayNumber: dayIndex + 1, // ✅ Agregado dayNumber
+          name: day.name, // ✅ Cambiado de "title" a "name"
           type: day.type,
-          notes: day.recoveryNote,
-          bloques:
-            day.type === "DESCANSO"
-              ? []
-              : [
-                  {
-                    titulo: "Entrenamiento",
-                    color: "",
-                    items: day.exercises.map((exercise) => ({
-                      id: exercise.id || createId(),
-                      ejercicio: exercise.name,
-                      variantes: [
-                        {
-                          series: exercise.sets,
-                          reps: exercise.reps,
-                          descanso: exercise.rest,
-                          cadencia: exercise.tempo,
-                          rir: exercise.rir,
-                        },
-                      ],
-                      videoUrl: exercise.video,
-                      notes: exercise.note,
-                    })),
-                  },
-                ],
+          recoveryNote: day.recoveryNote || "", // ✅ Cambiado de "notes" a "recoveryNote"
+          exercises: day.type === "DESCANSO"
+            ? []
+            : day.exercises.map((exercise) => ({
+                name: exercise.name,
+                sets: Number(exercise.sets) || 0,
+                reps: exercise.reps || "",
+                rest: exercise.rest || "",
+                rir: Number(exercise.rir) || 0,
+                tempo: exercise.tempo || "",
+                videoUrl: exercise.video || "",
+                notes: exercise.note || "",
+              })),
         })),
       })),
       days: flattenedDays,

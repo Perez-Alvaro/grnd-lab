@@ -1,0 +1,272 @@
+<mxfile host="app.diagrams.net" modified="2025-11-13T00:00:00.000Z" agent="Claude AI" version="22.1.0" etag="casos-de-uso-fitter" type="device">
+  <diagram id="casos-uso" name="Casos de Uso - Fitter">
+    <mxGraphModel dx="1434" dy="764" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Título -->
+        <mxCell id="title" value="&lt;h1&gt;Sistema Fitter - Casos de Uso&lt;/h1&gt;&lt;p&gt;Plataforma de Venta de Rutinas de Entrenamiento&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="500" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Actores -->
+        <mxCell id="actor-cliente" value="Cliente" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="80" y="200" width="40" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="actor-entrenador" value="Entrenador" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="80" y="500" width="40" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="actor-mp" value="Mercado Pago" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="300" width="40" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="actor-email" value="Sistema Email" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="450" width="40" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Sistema Principal -->
+        <mxCell id="sistema" value="Sistema Fitter" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="200" y="100" width="800" height="650" as="geometry" />
+        </mxCell>
+
+        <!-- Módulo Cliente -->
+        <mxCell id="modulo-cliente" value="Módulo Cliente" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1" vertex="1" parent="sistema">
+          <mxGeometry x="20" y="40" width="360" height="250" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc01" value="Seleccionar&lt;br&gt;Género/Objetivo" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="modulo-cliente">
+          <mxGeometry x="20" y="40" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc02" value="Filtrar y Ver&lt;br&gt;Rutinas" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="modulo-cliente">
+          <mxGeometry x="140" y="40" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc03" value="Vista Previa&lt;br&gt;Detallada" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="modulo-cliente">
+          <mxGeometry x="250" y="40" width="90" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc04" value="Realizar Pago" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" vertex="1" parent="modulo-cliente">
+          <mxGeometry x="20" y="120" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc05" value="Descargar&lt;br&gt;Rutina" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="modulo-cliente">
+          <mxGeometry x="140" y="120" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc06" value="Ver Mis&lt;br&gt;Compras" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="modulo-cliente">
+          <mxGeometry x="250" y="120" width="90" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc07" value="Reenviar por&lt;br&gt;Email" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="modulo-cliente">
+          <mxGeometry x="80" y="190" width="90" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc08" value="Trackear&lt;br&gt;Progreso&lt;br&gt;(Fase 2)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="modulo-cliente">
+          <mxGeometry x="190" y="190" width="90" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Módulo Entrenador -->
+        <mxCell id="modulo-entrenador" value="Módulo Entrenador" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1" vertex="1" parent="sistema">
+          <mxGeometry x="420" y="40" width="360" height="250" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc20" value="Crear&lt;br&gt;Rutina" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" vertex="1" parent="modulo-entrenador">
+          <mxGeometry x="20" y="40" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc21" value="Editar/Duplicar&lt;br&gt;Rutina" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="modulo-entrenador">
+          <mxGeometry x="140" y="40" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc22" value="Eliminar&lt;br&gt;Rutina" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="modulo-entrenador">
+          <mxGeometry x="250" y="40" width="90" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc23" value="Exportar PDF" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="modulo-entrenador">
+          <mxGeometry x="20" y="120" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc24" value="Ver Dashboard&lt;br&gt;y Métricas" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" vertex="1" parent="modulo-entrenador">
+          <mxGeometry x="140" y="120" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc25" value="Gestionar&lt;br&gt;Plantillas" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="modulo-entrenador">
+          <mxGeometry x="250" y="120" width="90" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc26" value="Exportar&lt;br&gt;Contactos" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="modulo-entrenador">
+          <mxGeometry x="80" y="190" width="90" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc27" value="Responder&lt;br&gt;Consultas&lt;br&gt;(Fase 2)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="modulo-entrenador">
+          <mxGeometry x="190" y="190" width="90" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Módulo Sistema -->
+        <mxCell id="modulo-sistema" value="Módulo Sistema (Backend)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1" vertex="1" parent="sistema">
+          <mxGeometry x="20" y="320" width="760" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc40" value="Procesar&lt;br&gt;Webhook MP" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" vertex="1" parent="modulo-sistema">
+          <mxGeometry x="30" y="50" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc41" value="Validar&lt;br&gt;Pago" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="modulo-sistema">
+          <mxGeometry x="160" y="50" width="90" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc42" value="Generar&lt;br&gt;PDF" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" vertex="1" parent="modulo-sistema">
+          <mxGeometry x="280" y="50" width="90" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc43" value="Almacenar&lt;br&gt;PDF" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="modulo-sistema">
+          <mxGeometry x="400" y="50" width="90" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc44" value="Enviar&lt;br&gt;Email" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" vertex="1" parent="modulo-sistema">
+          <mxGeometry x="520" y="50" width="90" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc45" value="Calcular&lt;br&gt;Métricas" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="modulo-sistema">
+          <mxGeometry x="640" y="50" width="90" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Módulo Notificaciones (Fase 2) -->
+        <mxCell id="modulo-notif" value="Sistema de Notificaciones (Fase 2)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1" vertex="1" parent="sistema">
+          <mxGeometry x="20" y="490" width="760" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc50" value="Notificaciones&lt;br&gt;Push" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;" vertex="1" parent="modulo-notif">
+          <mxGeometry x="50" y="40" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc51" value="Recordatorios&lt;br&gt;Entrenamiento" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;" vertex="1" parent="modulo-notif">
+          <mxGeometry x="190" y="40" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc52" value="Alertas&lt;br&gt;Nuevas Ventas" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;" vertex="1" parent="modulo-notif">
+          <mxGeometry x="330" y="40" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc53" value="Newsletter&lt;br&gt;Marketing" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;" vertex="1" parent="modulo-notif">
+          <mxGeometry x="470" y="40" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc54" value="Sistema&lt;br&gt;Gamificación" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;" vertex="1" parent="modulo-notif">
+          <mxGeometry x="610" y="40" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Relaciones Cliente -->
+        <mxCell id="rel-cliente-01" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.3333333333333333;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="actor-cliente" target="uc01">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-cliente-02" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.3333333333333333;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="actor-cliente" target="uc04">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-cliente-03" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.3333333333333333;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="actor-cliente" target="uc05">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-cliente-04" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.3333333333333333;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="actor-cliente" target="uc06">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Relaciones Entrenador -->
+        <mxCell id="rel-entrenador-01" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.3333333333333333;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="actor-entrenador" target="uc20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-entrenador-02" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.3333333333333333;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="actor-entrenador" target="uc24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-entrenador-03" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.3333333333333333;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="actor-entrenador" target="uc25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Relaciones con Sistemas Externos -->
+        <mxCell id="rel-mp-01" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3333333333333333;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;strokeColor=#d79b00;" edge="1" parent="1" source="uc04" target="actor-mp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-mp-02" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.3333333333333333;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;strokeColor=#d79b00;" edge="1" parent="1" source="actor-mp" target="uc40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-email-01" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3333333333333333;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;strokeColor=#b85450;" edge="1" parent="1" source="uc44" target="actor-email">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-email-02" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3333333333333333;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;strokeColor=#b85450;" edge="1" parent="1" source="uc07" target="actor-email">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Include/Extend relationships -->
+        <mxCell id="inc-01" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;endFill=0;" edge="1" parent="1" source="uc01" target="uc02">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="inc-02" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="endArrow=open;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;endFill=0;" edge="1" parent="1" source="uc02" target="uc03">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="inc-03" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;endFill=0;" edge="1" parent="1" source="uc40" target="uc41">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="inc-04" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;endFill=0;" edge="1" parent="1" source="uc41" target="uc42">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="inc-05" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;endFill=0;" edge="1" parent="1" source="uc42" target="uc43">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="inc-06" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;endFill=0;" edge="1" parent="1" source="uc43" target="uc44">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Leyenda -->
+        <mxCell id="leyenda" value="LEYENDA" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="770" width="600" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg-critico" value="Caso de Uso Crítico (MVP)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" vertex="1" parent="leyenda">
+          <mxGeometry x="20" y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg-fase2" value="Funcionalidad Fase 2" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="leyenda">
+          <mxGeometry x="160" y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg-estandar" value="Funcionalidad Estándar" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;" vertex="1" parent="leyenda">
+          <mxGeometry x="300" y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg-externo" value="" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="leyenda">
+          <mxGeometry x="460" y="40" width="30" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg-externo-txt" value="Sistema Externo" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="leyenda">
+          <mxGeometry x="500" y="55" width="90" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Notas -->
+        <mxCell id="nota1" value="&lt;b&gt;Flujo Principal de Compra:&lt;/b&gt;&lt;br&gt;1. Cliente selecciona rutina&lt;br&gt;2. Realiza pago (Mercado Pago)&lt;br&gt;3. Sistema procesa webhook&lt;br&gt;4. Genera PDF profesional&lt;br&gt;5. Envía por email&lt;br&gt;6. Cliente puede re-descargar" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;fontSize=10;size=15;" vertex="1" parent="1">
+          <mxGeometry x="680" y="770" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="nota2" value="&lt;b&gt;Estructura de Rutina:&lt;/b&gt;&lt;br&gt;• Metadatos (precio, género, objetivo)&lt;br&gt;• Semanas programadas&lt;br&gt;  - Días de entrenamiento&lt;br&gt;    - Ejercicios detallados&lt;br&gt;      (Series/Reps/RIR/Tempo/Video)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#d5e8d4;strokeColor=#82b366;align=left;verticalAlign=top;fontSize=10;size=15;" vertex="1" parent="1">
+          <mxGeometry x="940" y="770" width="220" height="120" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

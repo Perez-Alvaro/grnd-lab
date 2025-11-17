@@ -75,7 +75,7 @@ const formatRoutineForDB = (routine) => {
     active: routine.active !== undefined ? routine.active : true,
     featured: routine.featured || false,
     image_url: routine.image || null,
-    tags: routine.tags || [],
+    // ❌ Removido tags - products NO tiene esta columna
   };
 
   const routineData = {
@@ -85,7 +85,7 @@ const formatRoutineForDB = (routine) => {
     frequency: routine.frequency || 3,
     duration_weeks: routine.durationWeeks || 4,
     weeks: routine.weeks || buildWeeksFromDays(routine.days),
-    tags: routine.tags || [],
+    tags: routine.tags || [], // ✅ tags solo va en routines
   };
 
   return { product, routineData };

@@ -1,0 +1,639 @@
+<mxfile host="app.diagrams.net" modified="2025-11-13T00:00:00.000Z" agent="Claude AI" version="22.1.0" etag="diagramas-secuencia-fitter" type="device">
+  <diagram id="secuencia-compra" name="1. Flujo de Compra">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Título -->
+        <mxCell id="title1" value="&lt;h1&gt;Diagrama de Secuencia: Flujo de Compra de Rutina&lt;/h1&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="700" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Actores/Sistemas (Lifelines) -->
+        <mxCell id="actor-cliente" value="Cliente" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="100" width="100" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="activation1-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="actor-cliente">
+          <mxGeometry x="45" y="80" width="10" height="520" as="geometry" />
+        </mxCell>
+
+        <mxCell id="system-frontend" value="Frontend React" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="250" y="100" width="120" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="activation2-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="system-frontend">
+          <mxGeometry x="55" y="80" width="10" height="500" as="geometry" />
+        </mxCell>
+
+        <mxCell id="system-api" value="Vercel Function\n/api/create-preference" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="440" y="100" width="140" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="activation3-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="system-api">
+          <mxGeometry x="65" y="200" width="10" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="system-supabase" value="Supabase\nDatabase" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="650" y="100" width="120" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="activation4-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="system-supabase">
+          <mxGeometry x="55" y="220" width="10" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="system-mp" value="Mercado Pago\nAPI" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="850" y="100" width="120" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="activation5-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="system-mp">
+          <mxGeometry x="55" y="300" width="10" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="system-checkout" value="Checkout\nMercado Pago" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1050" y="100" width="120" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="activation6-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="system-checkout">
+          <mxGeometry x="55" y="440" width="10" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Interacciones -->
+        <mxCell id="msg1" value="1: Selecciona rutina" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;exitX=1;exitY=0.1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="activation1-1" target="activation2-1">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="180" y="230" as="sourcePoint" />
+            <mxPoint x="260" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg2" value="2: Ver detalles y precio" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="305" y="260" as="sourcePoint" />
+            <mxPoint x="135" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg3" value="3: Completa formulario checkout" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="135" y="300" as="sourcePoint" />
+            <mxPoint x="305" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg4" value="4: POST /api/create-preference" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontStyle=1" edge="1" parent="1" target="activation3-1">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="315" y="340" as="sourcePoint" />
+            <mxPoint x="505" y="340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg5" value="5: INSERT sale (status=pending)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1" target="activation4-1">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="515" y="360" as="sourcePoint" />
+            <mxPoint x="705" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg6" value="6: sale_id" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="705" y="400" as="sourcePoint" />
+            <mxPoint x="515" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg7" value="7: POST /v1/checkout/preferences" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontStyle=1" edge="1" parent="1" target="activation5-1">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="515" y="440" as="sourcePoint" />
+            <mxPoint x="905" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg8" value="8: preference_id" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="905" y="480" as="sourcePoint" />
+            <mxPoint x="515" y="480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg9" value="9: {preferenceId}" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;fontStyle=1" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="505" y="520" as="sourcePoint" />
+            <mxPoint x="315" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg10" value="10: Redirige a checkout MP" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1" target="activation6-1">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="315" y="580" as="sourcePoint" />
+            <mxPoint x="1105" y="580" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg11" value="11: Ingresa datos de pago" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="135" y="620" as="sourcePoint" />
+            <mxPoint x="1105" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg12" value="12: Procesa pago" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="1115" y="650" as="sourcePoint" />
+            <mxPoint x="1115" y="680" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="1145" y="650" />
+              <mxPoint x="1145" y="680" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg13" value="13: Redirige a /success" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1105" y="720" as="sourcePoint" />
+            <mxPoint x="135" y="720" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Notas -->
+        <mxCell id="note1" value="&lt;b&gt;NOTA:&lt;/b&gt;&lt;br&gt;El webhook de MP se procesa&lt;br&gt;de forma asíncrona (ver&lt;br&gt;diagrama 3)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;fontSize=10;size=15;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="540" width="180" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="note2" value="&lt;b&gt;Sale Status:&lt;/b&gt;&lt;br&gt;PENDING → COMPLETED&lt;br&gt;(actualizado por webhook)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;fontSize=10;size=15;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="360" width="180" height="80" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <diagram id="secuencia-creacion" name="2. Crear Rutina">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="800" math="0" shadow="0">
+      <root>
+        <mxCell id="0-2" />
+        <mxCell id="1-2" parent="0-2" />
+
+        <!-- Título -->
+        <mxCell id="title2" value="&lt;h1&gt;Diagrama de Secuencia: Creación de Rutina por Entrenador&lt;/h1&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=16;fontStyle=1" vertex="1" parent="1-2">
+          <mxGeometry x="40" y="20" width="700" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Actores -->
+        <mxCell id="actor-entrenador" value="Entrenador" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1" vertex="1" parent="1-2">
+          <mxGeometry x="80" y="100" width="100" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="act-ent-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="actor-entrenador">
+          <mxGeometry x="45" y="80" width="10" height="480" as="geometry" />
+        </mxCell>
+
+        <mxCell id="frontend-editor" value="Editor de Rutinas\n(React)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1" vertex="1" parent="1-2">
+          <mxGeometry x="250" y="100" width="120" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="act-fe-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="frontend-editor">
+          <mxGeometry x="55" y="80" width="10" height="460" as="geometry" />
+        </mxCell>
+
+        <mxCell id="context-app" value="AppContext\n(React Context)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" vertex="1" parent="1-2">
+          <mxGeometry x="440" y="100" width="120" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="act-ctx-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="context-app">
+          <mxGeometry x="55" y="200" width="10" height="280" as="geometry" />
+        </mxCell>
+
+        <mxCell id="api-routine" value="Supabase Client\n(API)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1" vertex="1" parent="1-2">
+          <mxGeometry x="630" y="100" width="120" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="act-api-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="api-routine">
+          <mxGeometry x="55" y="280" width="10" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="db-supabase" value="Supabase DB\n(PostgreSQL)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1" vertex="1" parent="1-2">
+          <mxGeometry x="820" y="100" width="120" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="act-db-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="db-supabase">
+          <mxGeometry x="55" y="320" width="10" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Mensajes -->
+        <mxCell id="m1" value="1: Clic 'Nueva Plantilla'" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1-2">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="135" y="210" as="sourcePoint" />
+            <mxPoint x="305" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m2" value="2: Muestra formulario vacío" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" edge="1" parent="1-2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="305" y="240" as="sourcePoint" />
+            <mxPoint x="135" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m3" value="3: Completa metadatos" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1-2">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="135" y="280" as="sourcePoint" />
+            <mxPoint x="305" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m4" value="4: Agrega semanas y días" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1-2">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="135" y="320" as="sourcePoint" />
+            <mxPoint x="305" y="320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m5" value="5: Completa ejercicios" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1-2">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="135" y="360" as="sourcePoint" />
+            <mxPoint x="305" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m6" value="6: Valida campos requeridos" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1-2">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="315" y="390" as="sourcePoint" />
+            <mxPoint x="315" y="420" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="345" y="390" />
+              <mxPoint x="345" y="420" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m7" value="7: Clic 'Guardar'" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1-2">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="135" y="450" as="sourcePoint" />
+            <mxPoint x="305" y="450" as="targetPoint" />
+          </mxGeometry">
+        </mxCell>
+
+        <mxCell id="m8" value="8: dispatch(ADD_ROUTINE, routineData)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontStyle=1" edge="1" parent="1-2">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="315" y="480" as="sourcePoint" />
+            <mxPoint x="495" y="480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m9" value="9: INSERT INTO routines" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontStyle=1" edge="1" parent="1-2">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="505" y="520" as="sourcePoint" />
+            <mxPoint x="685" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m10" value="10: INSERT routine + weeks JSON" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1-2">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="695" y="560" as="sourcePoint" />
+            <mxPoint x="875" y="560" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m11" value="11: routine_id" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" edge="1" parent="1-2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="875" y="590" as="sourcePoint" />
+            <mxPoint x="695" y="590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m12" value="12: {success, routine}" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" edge="1" parent="1-2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="620" as="sourcePoint" />
+            <mxPoint x="505" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m13" value="13: Actualiza estado local" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1-2">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="505" y="650" as="sourcePoint" />
+            <mxPoint x="505" y="680" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="535" y="650" />
+              <mxPoint x="535" y="680" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="m14" value="14: Notifica éxito" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" edge="1" parent="1-2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="495" y="710" as="sourcePoint" />
+            <mxPoint x="135" y="710" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Notas -->
+        <mxCell id="note-editor" value="&lt;b&gt;Estructura guardada:&lt;/b&gt;&lt;br&gt;{&lt;br&gt;  name, description,&lt;br&gt;  weeks: [&lt;br&gt;    {days: [&lt;br&gt;      {exercises: [...]}&lt;br&gt;    ]}]&lt;br&gt;}" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;fontSize=10;size=15;" vertex="1" parent="1-2">
+          <mxGeometry x="1000" y="400" width="180" height="140" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <diagram id="secuencia-webhook" name="3. Webhook MP">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0-3" />
+        <mxCell id="1-3" parent="0-3" />
+
+        <!-- Título -->
+        <mxCell id="title3" value="&lt;h1&gt;Diagrama de Secuencia: Procesamiento de Webhook Mercado Pago&lt;/h1&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=16;fontStyle=1" vertex="1" parent="1-3">
+          <mxGeometry x="40" y="20" width="800" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Actores -->
+        <mxCell id="mp-system" value="Mercado Pago\nWebhook" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1" vertex="1" parent="1-3">
+          <mxGeometry x="80" y="100" width="120" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="act-mp-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="mp-system">
+          <mxGeometry x="55" y="80" width="10" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="webhook-handler" value="/api/webhook.js\n(Vercel Function)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" vertex="1" parent="1-3">
+          <mxGeometry x="270" y="100" width="140" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="act-wh-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="webhook-handler">
+          <mxGeometry x="65" y="80" width="10" height="580" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mp-api-validate" value="MP API\n/v1/payments/:id" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1" vertex="1" parent="1-3">
+          <mxGeometry x="480" y="100" width="130" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="act-mp-api-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="mp-api-validate">
+          <mxGeometry x="60" y="200" width="10" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="db-supabase-3" value="Supabase\nDatabase" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1" vertex="1" parent="1-3">
+          <mxGeometry x="680" y="100" width="120" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="act-db-3-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="db-supabase-3">
+          <mxGeometry x="55" y="320" width="10" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pdf-generator" value="/api/generate-and-send.js\n(Vercel Function)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" vertex="1" parent="1-3">
+          <mxGeometry x="870" y="100" width="170" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="act-pdf-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="pdf-generator">
+          <mxGeometry x="80" y="440" width="10" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- Mensajes -->
+        <mxCell id="wm1" value="1: POST /api/webhook&lt;br&gt;{type: payment, data: {...}}" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontStyle=1" edge="1" parent="1-3">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="145" y="210" as="sourcePoint" />
+            <mxPoint x="335" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="wm2" value="2: Valida firma X-Signature" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1-3">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="345" y="250" as="sourcePoint" />
+            <mxPoint x="345" y="280" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="375" y="250" />
+              <mxPoint x="375" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="wm3" value="3: GET /v1/payments/{payment_id}" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontStyle=1" edge="1" parent="1-3">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="345" y="330" as="sourcePoint" />
+            <mxPoint x="540" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="wm4" value="4: {status: approved, ...}" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" edge="1" parent="1-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="540" y="370" as="sourcePoint" />
+            <mxPoint x="345" y="370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="wm5" value="5: UPDATE sales SET&lt;br&gt;status='completed'" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontStyle=1" edge="1" parent="1-3">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="345" y="450" as="sourcePoint" />
+            <mxPoint x="735" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="wm6" value="6: OK" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" edge="1" parent="1-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="735" y="490" as="sourcePoint" />
+            <mxPoint x="345" y="490" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="wm7" value="7: POST /api/generate-and-send" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontStyle=1" edge="1" parent="1-3">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="345" y="570" as="sourcePoint" />
+            <mxPoint x="950" y="570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="wm8" value="8: Genera PDF y envía&lt;br&gt;(ver diagrama 4)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1-3">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="960" y="610" as="sourcePoint" />
+            <mxPoint x="960" y="640" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="990" y="610" />
+              <mxPoint x="990" y="640" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="wm9" value="9: {success: true}" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" edge="1" parent="1-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="950" y="690" as="sourcePoint" />
+            <mxPoint x="345" y="690" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="wm10" value="10: 200 OK" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" edge="1" parent="1-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="335" y="730" as="sourcePoint" />
+            <mxPoint x="145" y="730" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Notas -->
+        <mxCell id="note-webhook" value="&lt;b&gt;IMPORTANTE:&lt;/b&gt;&lt;br&gt;Siempre validar la firma&lt;br&gt;del webhook para evitar&lt;br&gt;requests fraudulentos" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;fontSize=10;size=15;fontStyle=1" vertex="1" parent="1-3">
+          <mxGeometry x="1150" y="200" width="180" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="note-async" value="&lt;b&gt;Procesamiento Async:&lt;/b&gt;&lt;br&gt;El webhook responde&lt;br&gt;rápido (200 OK) y&lt;br&gt;procesa en background" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;fontSize=10;size=15;" vertex="1" parent="1-3">
+          <mxGeometry x="1150" y="340" width="180" height="100" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <diagram id="secuencia-pdf" name="4. Generar y Enviar PDF">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0-4" />
+        <mxCell id="1-4" parent="0-4" />
+
+        <!-- Título -->
+        <mxCell id="title4" value="&lt;h1&gt;Diagrama de Secuencia: Generación y Envío de PDF&lt;/h1&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=16;fontStyle=1" vertex="1" parent="1-4">
+          <mxGeometry x="40" y="20" width="700" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Actores -->
+        <mxCell id="pdf-func" value="/api/generate-and-send.js" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" vertex="1" parent="1-4">
+          <mxGeometry x="80" y="100" width="160" height="680" as="geometry" />
+        </mxCell>
+        <mxCell id="act-pdf-func-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="pdf-func">
+          <mxGeometry x="75" y="80" width="10" height="560" as="geometry" />
+        </mxCell>
+
+        <mxCell id="db-sup-4" value="Supabase\nDatabase" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1" vertex="1" parent="1-4">
+          <mxGeometry x="310" y="100" width="120" height="680" as="geometry" />
+        </mxCell>
+        <mxCell id="act-db-4-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="db-sup-4">
+          <mxGeometry x="55" y="100" width="10" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="act-db-4-2" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="db-sup-4">
+          <mxGeometry x="55" y="420" width="10" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pdf-renderer" value="@react-pdf/renderer\n(PlanRenderer)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1" vertex="1" parent="1-4">
+          <mxGeometry x="500" y="100" width="150" height="680" as="geometry" />
+        </mxCell>
+        <mxCell id="act-renderer-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="pdf-renderer">
+          <mxGeometry x="70" y="200" width="10" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="storage-sup" value="Supabase Storage" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1" vertex="1" parent="1-4">
+          <mxGeometry x="720" y="100" width="130" height="680" as="geometry" />
+        </mxCell>
+        <mxCell id="act-storage-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="storage-sup">
+          <mxGeometry x="60" y="340" width="10" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="resend-sys" value="Resend API\n(Email Service)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1" vertex="1" parent="1-4">
+          <mxGeometry x="920" y="100" width="130" height="680" as="geometry" />
+        </mxCell>
+        <mxCell id="act-resend-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="resend-sys">
+          <mxGeometry x="60" y="480" width="10" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cliente-final" value="Cliente\n(Email)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1" vertex="1" parent="1-4">
+          <mxGeometry x="1120" y="100" width="100" height="680" as="geometry" />
+        </mxCell>
+        <mxCell id="act-cliente-1" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="cliente-final">
+          <mxGeometry x="45" y="580" width="10" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Mensajes -->
+        <mxCell id="pm1" value="1: Recibe {saleId, email, routineId}" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1-4">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="30" y="210" as="sourcePoint" />
+            <mxPoint x="155" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="pm2" value="2: SELECT routine + weeks" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontStyle=1" edge="1" parent="1-4">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="165" y="240" as="sourcePoint" />
+            <mxPoint x="365" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="pm3" value="3: {routine data}" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" edge="1" parent="1-4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="365" y="280" as="sourcePoint" />
+            <mxPoint x="165" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="pm4" value="4: renderToBuffer(PlanRenderer)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontStyle=1" edge="1" parent="1-4">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="165" y="330" as="sourcePoint" />
+            <mxPoint x="570" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="pm5" value="5: Genera PDF en memoria" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1-4">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="580" y="360" as="sourcePoint" />
+            <mxPoint x="580" y="390" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="610" y="360" />
+              <mxPoint x="610" y="390" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="pm6" value="6: Buffer(PDF)" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" edge="1" parent="1-4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="570" y="430" as="sourcePoint" />
+            <mxPoint x="165" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="pm7" value="7: storage.upload(buffer)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontStyle=1" edge="1" parent="1-4">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="165" y="470" as="sourcePoint" />
+            <mxPoint x="780" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="pm8" value="8: {signedUrl}" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" edge="1" parent="1-4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="780" y="510" as="sourcePoint" />
+            <mxPoint x="165" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="pm9" value="9: UPDATE sale SET pdf_url" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontStyle=1" edge="1" parent="1-4">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="165" y="550" as="sourcePoint" />
+            <mxPoint x="365" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="pm10" value="10: OK" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" edge="1" parent="1-4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="365" y="590" as="sourcePoint" />
+            <mxPoint x="165" y="590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="pm11" value="11: resend.emails.send()" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fontStyle=1" edge="1" parent="1-4">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="165" y="610" as="sourcePoint" />
+            <mxPoint x="980" y="610" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="pm12" value="12: Envía email con link" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;" edge="1" parent="1-4">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="990" y="650" as="sourcePoint" />
+            <mxPoint x="1165" y="650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="pm13" value="13: {email_id}" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" edge="1" parent="1-4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="980" y="690" as="sourcePoint" />
+            <mxPoint x="165" y="690" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="pm14" value="14: Cliente recibe email" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;fillColor=#f8cecc;strokeColor=#b85450;" edge="1" parent="1-4">
+          <mxGeometry width="80" relative="1" as="geometry">
+            <mxPoint x="1175" y="730" as="sourcePoint" />
+            <mxPoint x="1175" y="760" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="1205" y="730" />
+              <mxPoint x="1205" y="760" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Nota -->
+        <mxCell id="note-pdf" value="&lt;b&gt;PDF Profesional:&lt;/b&gt;&lt;br&gt;• Portada con branding&lt;br&gt;• Índice interactivo&lt;br&gt;• Secciones por semana&lt;br&gt;• Tablas de ejercicios&lt;br&gt;• Paleta oscura" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;verticalAlign=top;fontSize=10;size=15;" vertex="1" parent="1-4">
+          <mxGeometry x="1320" y="300" width="180" height="140" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
