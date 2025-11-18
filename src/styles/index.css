@@ -21,6 +21,13 @@ body {
   color-scheme: dark;
 }
 
+.mock-text {
+  color: #ffffff !important;
+  white-space: normal !important;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
 @keyframes glow {
   0% {
     box-shadow: 0 0 0px rgba(182, 255, 0, 0);

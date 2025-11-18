@@ -49,11 +49,11 @@ function PremiumUpgradeStep({
 
       <FadeIn className="grid gap-6 rounded-2xl border border-brand-border bg-base p-6 md:grid-cols-[1.2fr_0.8fr] md:gap-8 md:p-8">
         <div className="space-y-4">
-          <p className="text-sm text-gray-300">
+          <p className="mock-text text-sm">
             Entrená con un plan integral que combina tu rutina personalizada con
             educación nutricional y acompañamiento real.
           </p>
-          <ul className="space-y-2 text-sm text-gray-300">
+          <ul className="mock-text space-y-2 text-sm">
             <li>📘 Ebook oficial de Nutrición MZ en PDF</li>
             <li>💬 Acceso a la comunidad privada MZ (email + WhatsApp)</li>
             <li>🎯 Seguimiento integral junto a tu rutina {routine.name}</li>
@@ -67,7 +67,7 @@ function PremiumUpgradeStep({
           <p className="text-4xl font-bold text-accent">
             +${premiumAddonPrice.toLocaleString("es-AR")}
           </p>
-          <p className="text-sm text-gray-400">
+          <p className="mock-text text-sm">
             Total Premium: ${totalPremium.toLocaleString("es-AR")}
           </p>
           <div className="flex w-full flex-col gap-3">
