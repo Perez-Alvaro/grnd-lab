@@ -52,7 +52,7 @@ const RoutinePreview = memo(() => {
 
   return (
     <aside
-      className="flex h-full flex-col rounded-2xl border border-[#787878]/20 bg-[#202020]"
+      className="flex h-full flex-col rounded-2xl border border-[#787878]/20 bg-[#202020] text-natural-wrap"
       data-testid="routine-preview"
     >
       <div className="border-b border-[#787878]/20 px-6 py-5">
@@ -72,7 +72,7 @@ const RoutinePreview = memo(() => {
               />
             )}
           </div>
-          <h2 className="text-3xl font-bold text-accent">
+          <h2 className="text-3xl font-bold text-accent text-natural-wrap">
             {plan.metadata.name || "Plan sin título"}
           </h2>
           <div className="flex flex-wrap justify-center gap-2 text-xs uppercase tracking-wider text-[#787878]">
@@ -104,7 +104,7 @@ const RoutinePreview = memo(() => {
             )}
           </div>
           {plan.metadata.description && (
-            <p className="text-sm text-[#C9C9C9]">
+            <p className="text-sm text-[#C9C9C9] text-natural-wrap">
               {plan.metadata.description}
             </p>
           )}
@@ -113,7 +113,7 @@ const RoutinePreview = memo(() => {
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-[#787878]/20 bg-[#787878]/10 px-2 py-1"
+                  className="rounded-full border border-[#787878]/20 bg-[#787878]/10 px-2 py-1 text-natural-wrap"
                 >
                   #{tag}
                 </span>

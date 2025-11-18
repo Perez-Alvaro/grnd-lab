@@ -77,9 +77,8 @@ function PaymentSection({
     setSuccess(true);
   };
 
-  const sectionClasses = "mt-16 flex flex-col gap-6 p-6 md:p-10";
-  const headerClasses =
-    "space-y-2 text-center md:text-left";
+  const sectionClasses = "mt-16 flex flex-col gap-6 p-6 md:p-10 text-natural-wrap";
+  const headerClasses = "space-y-2 text-center md:text-left text-natural-wrap";
   const motionCardProps = {
     initial: { opacity: 0, y: 24 },
     animate: { opacity: 1, y: 0 },
@@ -93,10 +92,10 @@ function PaymentSection({
           <h4 className="text-xs uppercase tracking-[0.4em] text-accent">
             Paso 04
           </h4>
-          <h2 className="text-3xl font-semibold text-white md:text-4xl break-words whitespace-normal">
+          <h2 className="text-3xl font-semibold text-white md:text-4xl text-natural-wrap">
             Checkout Mercado Pago
           </h2>
-          <p className="text-sm text-gray-400 md:text-base break-words whitespace-normal">
+          <p className="text-sm text-gray-400 md:text-base text-natural-wrap">
             Confirmá tus datos y ejecutá el pago seguro con Mercado Pago.
           </p>
         </header>
@@ -166,13 +165,13 @@ function PaymentSection({
         <h4 className="text-xs uppercase tracking-[0.4em] text-accent">
           Paso 04
         </h4>
-        <h2 className="text-3xl font-semibold text-white md:text-4xl break-words whitespace-normal">
-          Checkout Mercado Pago
-        </h2>
-        <p className="text-sm text-gray-400 md:text-base break-words whitespace-normal">
-          Confirmá tus datos y ejecutá el pago seguro con Mercado Pago.
-        </p>
-      </header>
+          <h2 className="text-3xl font-semibold text-white md:text-4xl text-natural-wrap">
+            Checkout Mercado Pago
+          </h2>
+          <p className="text-sm text-gray-400 md:text-base text-natural-wrap">
+            Confirmá tus datos y ejecutá el pago seguro con Mercado Pago.
+          </p>
+        </header>
 
       <motion.div
         className="rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_0_35px_-20px_rgba(181,255,0,0.35)] md:p-10"
@@ -183,10 +182,10 @@ function PaymentSection({
             <span className="text-xs uppercase tracking-[0.3em] text-gray-500">
               Plan seleccionado
             </span>
-            <h3 className="mock-text text-2xl font-semibold md:text-3xl">
+            <h3 className="mock-text text-2xl font-semibold md:text-3xl text-natural-wrap">
               {routine.name}
             </h3>
-            <p className="mock-text text-sm">
+            <p className="mock-text text-sm text-natural-wrap">
               {formatWeeks(routine.duration)} • {formatFrequency(routine.frequency)}
               {routine.level && routine.level !== ""
                 ? ` • Nivel ${routine.level}`

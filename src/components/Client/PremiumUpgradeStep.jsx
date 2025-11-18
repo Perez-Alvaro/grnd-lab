@@ -33,8 +33,8 @@ function PremiumUpgradeStep({
   };
 
   return (
-    <section className="mt-12 flex flex-col gap-6 rounded-3xl border border-brand-border bg-surface p-6 text-white shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)] md:p-10">
-      <header className="text-center md:text-left space-y-2 md:space-y-3">
+    <section className="mt-12 flex flex-col gap-6 rounded-3xl border border-brand-border bg-surface p-6 text-white shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)] md:p-10 text-natural-wrap">
+      <header className="text-center md:text-left space-y-2 md:space-y-3 text-natural-wrap">
         <p className="text-xs uppercase tracking-[0.4em] text-accent">
           Paso 03.5
         </p>
@@ -47,8 +47,8 @@ function PremiumUpgradeStep({
         </p>
       </header>
 
-      <FadeIn className="grid gap-6 rounded-2xl border border-brand-border bg-base p-6 md:grid-cols-[1.2fr_0.8fr] md:gap-8 md:p-8">
-        <div className="space-y-4">
+      <FadeIn className="grid gap-6 rounded-2xl border border-brand-border bg-base p-6 md:grid-cols-[1.2fr_0.8fr] md:gap-8 md:p-8 text-natural-wrap">
+        <div className="space-y-4 text-natural-wrap">
           <p className="mock-text text-sm">
             Entrená con un plan integral que combina tu rutina personalizada con
             educación nutricional y acompañamiento real.
@@ -60,7 +60,7 @@ function PremiumUpgradeStep({
           </ul>
         </div>
 
-        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-brand-border bg-surface-alt p-5 text-center">
+        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-brand-border bg-surface-alt p-5 text-center text-natural-wrap">
           <p className="text-xs uppercase tracking-[0.3em] text-gray-400">
             Diferencia Premium
           </p>

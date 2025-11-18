@@ -37,7 +37,7 @@ function RoutineCard({ routine, onPreview }) {
 
   return (
     <article
-      className="group flex w-full sm:w-[380px] md:w-[440px] flex-col overflow-hidden rounded-2xl bg-neutral-900 text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-[0.97]"
+      className="group flex w-full sm:w-[380px] md:w-[440px] flex-col overflow-hidden rounded-2xl bg-neutral-900 text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-[0.97] text-natural-wrap"
       style={{ backgroundColor: cardBackground }}
     >
       <div className="relative w-full h-[220px] md:h-[260px] overflow-hidden">
@@ -50,29 +50,29 @@ function RoutineCard({ routine, onPreview }) {
       </div>
 
       <div className="flex flex-col justify-between p-4 gap-3 sm:p-5">
-        <div className="flex flex-col gap-2">
-          <h3 className="mock-text text-lg md:text-xl font-bold leading-tight line-clamp-2">
+        <div className="flex flex-col gap-2 text-natural-wrap">
+          <h3 className="mock-text text-lg md:text-xl font-bold leading-tight text-natural-wrap">
             {title}
           </h3>
           {shortDescription && (
-            <p className="mock-text text-sm md:text-base leading-relaxed line-clamp-2">
+            <p className="mock-text text-sm md:text-base leading-relaxed text-natural-wrap">
               {shortDescription}
             </p>
           )}
         </div>
 
-        <div className="grid grid-cols-3 gap-2 mt-1">
+        <div className="grid grid-cols-1 gap-2 mt-1 sm:grid-cols-3">
           <div className="border border-neutral-700 rounded-lg py-2 text-center">
-            <p className="text-xs text-gray-500 uppercase tracking-wide break-words whitespace-normal">Duración</p>
-            <p className="mock-text text-sm md:text-base font-semibold">{duration}</p>
+            <p className="text-xs text-gray-500 uppercase tracking-wide text-natural-wrap">Duración</p>
+            <p className="mock-text text-sm md:text-base font-semibold text-natural-wrap">{duration}</p>
           </div>
           <div className="border border-neutral-700 rounded-lg py-2 text-center">
-            <p className="text-xs text-gray-500 uppercase tracking-wide break-words whitespace-normal">Frecuencia</p>
-            <p className="mock-text text-sm md:text-base font-semibold">{frequency}</p>
+            <p className="text-xs text-gray-500 uppercase tracking-wide text-natural-wrap">Frecuencia</p>
+            <p className="mock-text text-sm md:text-base font-semibold text-natural-wrap">{frequency}</p>
           </div>
           <div className="border border-neutral-700 rounded-lg py-2 text-center">
-            <p className="text-xs text-gray-500 uppercase tracking-wide break-words whitespace-normal">Nivel</p>
-            <p className="mock-text text-sm md:text-base font-semibold">{level}</p>
+            <p className="text-xs text-gray-500 uppercase tracking-wide text-natural-wrap">Nivel</p>
+            <p className="mock-text text-sm md:text-base font-semibold text-natural-wrap">{level}</p>
           </div>
         </div>
 
