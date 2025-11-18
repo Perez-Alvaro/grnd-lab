@@ -5,12 +5,12 @@ const DayPreview = ({ day }) => {
   const isRest = day.type === "DESCANSO";
 
   return (
-    <div className="rounded-xl border border-[#787878]/20 bg-[#1A1A1A] p-4 space-y-3">
+    <div className="rounded-xl border border-[#787878]/20 bg-[#1A1A1A] p-4 space-y-3 text-natural-wrap">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h4 className="text-lg font-semibold text-white">{day.name}</h4>
+          <h4 className="text-lg font-semibold text-white text-natural-wrap">{day.name}</h4>
           {isRest && day.recoveryNote && (
-            <p className="text-sm text-[#787878]">{day.recoveryNote}</p>
+            <p className="text-sm text-[#787878] text-natural-wrap">{day.recoveryNote}</p>
           )}
         </div>
         <span
@@ -138,14 +138,14 @@ const WeekPreview = memo(({ week, index, collapsed, onToggle }) => {
         className="flex w-full items-center justify-between gap-2 border-b border-[#787878]/20 px-5 py-4 text-left"
       >
         <div>
-          <p className="text-xs uppercase tracking-wide text-[#787878]">
+          <p className="text-xs uppercase tracking-wide text-[#787878] text-natural-wrap">
             Semana {index + 1}
           </p>
-          <h3 className="text-xl font-semibold text-white">
+          <h3 className="text-xl font-semibold text-white text-natural-wrap">
             {week.title || `Semana ${index + 1}`}
           </h3>
           {week.summary && (
-            <p className="text-sm text-[#C9C9C9] mt-1">{week.summary}</p>
+            <p className="text-sm text-[#C9C9C9] mt-1 text-natural-wrap">{week.summary}</p>
           )}
         </div>
         <span className="rounded-full bg-[#1A1A1A] p-2 text-accent">
@@ -160,11 +160,11 @@ const WeekPreview = memo(({ week, index, collapsed, onToggle }) => {
       {!collapsed && (
         <div className="space-y-5 px-5 pb-5 pt-4">
           {week.notes && (
-            <div className="rounded-xl border border-[#787878]/20 bg-[#1A1A1A] p-4">
-              <h4 className="text-xs uppercase tracking-wide text-[#787878] mb-1">
+            <div className="rounded-xl border border-[#787878]/20 bg-[#1A1A1A] p-4 text-natural-wrap">
+              <h4 className="text-xs uppercase tracking-wide text-[#787878] mb-1 text-natural-wrap">
                 Notas de la semana
               </h4>
-              <p className="text-sm text-[#C9C9C9] whitespace-pre-line">
+              <p className="text-sm text-[#C9C9C9] whitespace-pre-line text-natural-wrap">
                 {week.notes}
               </p>
             </div>

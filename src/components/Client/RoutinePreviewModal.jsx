@@ -12,12 +12,12 @@ function InfoPill({ label, value }) {
   const displayValue = value && value !== "" ? value : "—";
   return (
     <div
-      className="rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] px-4 py-4 text-center shadow-inner shadow-black/10"
+      className="rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] px-4 py-4 text-center shadow-inner shadow-black/10 text-natural-wrap"
     >
-      <span className="block text-[11px] uppercase tracking-[0.35em] text-gray-400 break-words whitespace-normal">
+      <span className="block text-[11px] uppercase tracking-[0.35em] text-gray-400 text-natural-wrap">
         {label}
       </span>
-      <span className="mock-text mt-2 block text-base font-semibold">
+      <span className="mock-text mt-2 block text-base font-semibold text-natural-wrap">
         {displayValue}
       </span>
     </div>
@@ -80,8 +80,8 @@ function RoutinePreviewModal({ routine, open, onClose, onSelect }) {
 
   return (
     <Dialog open={open} onOpenChange={(value) => !value && onClose()}>
-      <DialogContent className="w-full max-w-[95vw] sm:max-w-[600px] md:max-w-[800px] p-4 sm:p-6 bg-neutral-950 rounded-2xl overflow-hidden border border-[#2E2E2E] text-white shadow-[0_45px_120px_-50px_rgba(0,0,0,1)]">
-        <div className="flex flex-col gap-6 md:flex-row md:gap-6">
+      <DialogContent className="w-full max-w-[95vw] sm:max-w-[600px] md:max-w-[800px] p-4 sm:p-6 bg-neutral-950 rounded-2xl overflow-hidden border border-[#2E2E2E] text-white shadow-[0_45px_120px_-50px_rgba(0,0,0,1)] text-natural-wrap">
+        <div className="flex flex-col gap-6 md:flex-row md:gap-6 text-natural-wrap">
           <div className="md:w-1/2">
             <img
               src={imageSrc}
@@ -89,28 +89,28 @@ function RoutinePreviewModal({ routine, open, onClose, onSelect }) {
               className="w-full h-[200px] sm:h-[300px] object-cover rounded-xl"
             />
           </div>
-          <div className="md:w-1/2 flex flex-col gap-4 text-center sm:text-left">
-            <DialogHeader className="space-y-2 p-0 text-left">
-              <DialogTitle className="mock-text text-2xl font-bold">
+          <div className="md:w-1/2 flex flex-col gap-4 text-center sm:text-left text-natural-wrap">
+            <DialogHeader className="space-y-2 p-0 text-left text-natural-wrap">
+              <DialogTitle className="mock-text text-2xl font-bold text-natural-wrap">
                 {routine.title || routine.name}
               </DialogTitle>
-              <DialogDescription className="mock-text text-sm sm:text-base leading-relaxed">
+              <DialogDescription className="mock-text text-sm sm:text-base leading-relaxed text-natural-wrap">
                 {description}
               </DialogDescription>
             </DialogHeader>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
               <InfoPill label="Duración" value={duration} />
               <InfoPill label="Frecuencia" value={frequency} />
               <InfoPill label="Nivel" value={level} />
             </div>
 
             {tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+              <div className="flex flex-wrap gap-2 justify-center sm:justify-start text-natural-wrap">
                 {tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full border border-[#2E2E2E] bg-[#1A1A1A] px-3 py-1 text-xs font-medium uppercase tracking-wide text-lime-400 break-words whitespace-normal"
+                    className="rounded-full border border-[#2E2E2E] bg-[#1A1A1A] px-3 py-1 text-xs font-medium uppercase tracking-wide text-lime-400 text-natural-wrap"
                   >
                     {tag}
                   </span>
