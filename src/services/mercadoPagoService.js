@@ -69,12 +69,33 @@ export const createPreference = async (product, userData) => {
       throw new Error('Email del usuario requerido');
     }
 
-    // Detectar si es bundle y obtener productos incluidos
-    const isBundle = await bundleService.isBundleProduct(product.id);
+    // Detectar tipo de producto y obtener items
     let items = [];
+    let isBundle = false;
+    let isDynamic = false;
 
-    if (isBundle) {
-      console.log('Product is a bundle, getting included products...');
+    // Caso 1: Bundle dinámico (creado on-the-fly, ej: rutina + libro)
+    if (product.isDynamic && product.products) {
+      console.log('Product is a dynamic bundle (created on-the-fly)');
+      isDynamic = true;
+      isBundle = true;
+
+      items = product.products.map(p => ({
+        id: p.id,
+        title: p.name,
+        description: p.description || `${p.type === 'routine' ? 'Rutina' : 'Libro'} digital`,
+        category_id: p.type === 'routine' ? 'sports' : 'books',
+        quantity: 1,
+        unit_price: parseFloat(p.price),
+        currency_id: 'ARS'
+      }));
+
+      console.log(`Dynamic bundle contains ${items.length} items`);
+    }
+    // Caso 2: Bundle persistente (guardado en DB)
+    else if (await bundleService.isBundleProduct(product.id)) {
+      console.log('Product is a persistent bundle, getting included products...');
+      isBundle = true;
       const bundleInfo = await bundleService.getBundleInfo(product.id);
 
       // Validar bundle
@@ -94,9 +115,10 @@ export const createPreference = async (product, userData) => {
         currency_id: 'ARS'
       }));
 
-      console.log(`Bundle contains ${items.length} items`);
-    } else {
-      // Producto individual
+      console.log(`Persistent bundle contains ${items.length} items`);
+    }
+    // Caso 3: Producto individual
+    else {
       items = [{
         id: product.id,
         title: product.name || product.title,
@@ -125,7 +147,10 @@ export const createPreference = async (product, userData) => {
         product_id: product.id,
         product_type: isBundle ? 'bundle' : product.type || 'routine',
         user_email: userData.email,
-        is_bundle: isBundle
+        is_bundle: isBundle,
+        is_dynamic: isDynamic,
+        // Si es bundle dinámico, incluir IDs de los productos
+        ...(isDynamic && product.metadata ? product.metadata : {})
       }
     };
 

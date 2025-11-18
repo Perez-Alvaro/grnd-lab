@@ -616,11 +616,27 @@ const DashboardEbookManager = () => {
   const [ebookFile, setEbookFile] = useState(null);
   const [coverFile, setCoverFile] = useState(null);
   const [coverPreview, setCoverPreview] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Formulario de metadatos
+  const [formData, setFormData] = useState({
+    name: 'Ebook Oficial de Nutrición MZ',
+    slug: 'ebook-nutricion-mz',
+    description: 'Guía completa de nutrición deportiva con estrategias prácticas para maximizar tus resultados.',
+    price: '6000',
+    author: 'Matías Ortiz',
+    pages: '150',
+    active: true,
+    featured: true
+  });
 
   const handlePdfUpload = (event) => {
     const file = event.target.files?.[0];
     if (file) {
       setEbookFile(file);
+      setError(null);
     }
   };
 
@@ -629,61 +645,218 @@ const DashboardEbookManager = () => {
     if (file) {
       setCoverFile(file);
       setCoverPreview(URL.createObjectURL(file));
+      setError(null);
+    }
+  };
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async () => {
+    if (!ebookFile) {
+      setError('Debes seleccionar un archivo PDF');
+      return;
+    }
+
+    setUploading(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      const { bookService } = await import('../services/bookService.js');
+
+      const book = await bookService.createBook(
+        formData,
+        ebookFile,
+        coverFile
+      );
+
+      console.log('✅ Libro creado exitosamente:', book);
+      setSuccess(true);
+
+      // Limpiar formulario después de 2 segundos
+      setTimeout(() => {
+        setEbookFile(null);
+        setCoverFile(null);
+        setCoverPreview(null);
+        setSuccess(false);
+      }, 3000);
+
+    } catch (err) {
+      console.error('❌ Error al crear el libro:', err);
+      setError(err.message || 'Error al crear el libro');
+    } finally {
+      setUploading(false);
     }
   };
 
   return (
     <section className="rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
-      <h2 className="text-lg font-semibold text-accent">📘 Ebook de Nutrición</h2>
+      <h2 className="text-lg font-semibold text-accent">📘 Gestión de Ebooks</h2>
       <p className="mt-1 text-sm text-gray-400">
-        Administrá el PDF oficial y la portada que se entregarán junto al Plan Premium.
+        Administrá los PDFs y portadas que se entregarán como productos premium.
       </p>
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div className="space-y-4">
+
+      <div className="mt-6 space-y-6">
+        {/* Metadatos del libro */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <label className="text-sm text-gray-400">Archivo PDF</label>
+            <label className="text-sm text-gray-400">Nombre del libro *</label>
             <input
-              type="file"
-              accept="application/pdf"
-              onChange={handlePdfUpload}
-              className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-gray-200 file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-accent file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black"
+              type="text"
+              value={formData.name}
+              onChange={(e) => handleInputChange('name', e.target.value)}
+              className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-white focus:border-accent focus:outline-none"
+              placeholder="Ej: Ebook de Nutrición MZ"
             />
-            {ebookFile && (
-              <p className="mt-2 text-xs text-gray-500">
-                Archivo cargado: <span className="text-white">{ebookFile.name}</span>
-              </p>
-            )}
           </div>
           <div>
-            <label className="text-sm text-gray-400">Imagen de portada</label>
+            <label className="text-sm text-gray-400">Slug (URL amigable) *</label>
             <input
-              type="file"
-              accept="image/png, image/jpeg"
-              onChange={handleCoverUpload}
-              className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-gray-200 file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-accent file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black"
+              type="text"
+              value={formData.slug}
+              onChange={(e) => handleInputChange('slug', e.target.value)}
+              className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-white focus:border-accent focus:outline-none"
+              placeholder="ebook-nutricion-mz"
             />
-            {coverFile && (
-              <p className="mt-2 text-xs text-gray-500">
-                Portada cargada: <span className="text-white">{coverFile.name}</span>
-              </p>
-            )}
+          </div>
+          <div className="md:col-span-2">
+            <label className="text-sm text-gray-400">Descripción</label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => handleInputChange('description', e.target.value)}
+              rows={3}
+              className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-white focus:border-accent focus:outline-none"
+              placeholder="Describe el contenido del ebook..."
+            />
+          </div>
+          <div>
+            <label className="text-sm text-gray-400">Precio (ARS) *</label>
+            <input
+              type="number"
+              value={formData.price}
+              onChange={(e) => handleInputChange('price', e.target.value)}
+              className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-white focus:border-accent focus:outline-none"
+              placeholder="6000"
+            />
+          </div>
+          <div>
+            <label className="text-sm text-gray-400">Autor</label>
+            <input
+              type="text"
+              value={formData.author}
+              onChange={(e) => handleInputChange('author', e.target.value)}
+              className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-white focus:border-accent focus:outline-none"
+              placeholder="Matías Ortiz"
+            />
+          </div>
+          <div>
+            <label className="text-sm text-gray-400">Páginas</label>
+            <input
+              type="number"
+              value={formData.pages}
+              onChange={(e) => handleInputChange('pages', e.target.value)}
+              className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-white focus:border-accent focus:outline-none"
+              placeholder="150"
+            />
+          </div>
+          <div className="flex items-center gap-4">
+            <label className="flex items-center gap-2 text-sm text-gray-400">
+              <input
+                type="checkbox"
+                checked={formData.active}
+                onChange={(e) => handleInputChange('active', e.target.checked)}
+                className="rounded border-brand-border bg-base text-accent focus:ring-accent"
+              />
+              Activo
+            </label>
+            <label className="flex items-center gap-2 text-sm text-gray-400">
+              <input
+                type="checkbox"
+                checked={formData.featured}
+                onChange={(e) => handleInputChange('featured', e.target.checked)}
+                className="rounded border-brand-border bg-base text-accent focus:ring-accent"
+              />
+              Destacado (Premium)
+            </label>
           </div>
         </div>
-        <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-brand-border bg-base p-6 text-center">
-          {coverPreview ? (
-            <img
-              src={coverPreview}
-              alt="Portada Ebook"
-              className="w-48 rounded-md border border-brand-border"
-            />
-          ) : (
-            <div className="flex h-40 w-full items-center justify-center rounded-lg border border-dashed border-brand-border text-sm text-gray-500">
-              Vista previa disponible al subir la portada.
+
+        {/* Archivos */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm text-gray-400">Archivo PDF *</label>
+              <input
+                type="file"
+                accept="application/pdf"
+                onChange={handlePdfUpload}
+                disabled={uploading}
+                className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-gray-200 file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-accent file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black disabled:opacity-50"
+              />
+              {ebookFile && (
+                <p className="mt-2 text-xs text-gray-500">
+                  Archivo: <span className="text-white">{ebookFile.name}</span> ({(ebookFile.size / (1024 * 1024)).toFixed(2)} MB)
+                </p>
+              )}
             </div>
-          )}
-          <p className="text-xs text-gray-500">
-            Los archivos se almacenan temporalmente (mock) como <strong>ebook.pdf</strong> y <strong>ebookCover.jpg</strong>.
-          </p>
+            <div>
+              <label className="text-sm text-gray-400">Imagen de portada (opcional)</label>
+              <input
+                type="file"
+                accept="image/png, image/jpeg, image/jpg"
+                onChange={handleCoverUpload}
+                disabled={uploading}
+                className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-gray-200 file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-accent file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black disabled:opacity-50"
+              />
+              {coverFile && (
+                <p className="mt-2 text-xs text-gray-500">
+                  Portada: <span className="text-white">{coverFile.name}</span>
+                </p>
+              )}
+            </div>
+          </div>
+          <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-brand-border bg-base p-6 text-center">
+            {coverPreview ? (
+              <img
+                src={coverPreview}
+                alt="Portada Ebook"
+                className="w-48 rounded-md border border-brand-border"
+              />
+            ) : (
+              <div className="flex h-40 w-full items-center justify-center rounded-lg border border-dashed border-brand-border text-sm text-gray-500">
+                Vista previa de portada
+              </div>
+            )}
+            <p className="text-xs text-gray-500">
+              Los archivos se guardan en <strong>Storage → Libros/</strong>
+            </p>
+          </div>
+        </div>
+
+        {/* Mensajes */}
+        {error && (
+          <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
+            <p className="text-sm text-red-400">{error}</p>
+          </div>
+        )}
+
+        {success && (
+          <div className="rounded-lg border border-green-500/20 bg-green-500/10 p-4">
+            <p className="text-sm text-green-400">✅ Libro creado exitosamente y guardado en Supabase Storage</p>
+          </div>
+        )}
+
+        {/* Botón guardar */}
+        <div className="flex justify-end">
+          <button
+            onClick={handleSubmit}
+            disabled={uploading || !ebookFile}
+            className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {uploading ? 'Subiendo a Supabase...' : 'Guardar Ebook'}
+          </button>
         </div>
       </div>
     </section>

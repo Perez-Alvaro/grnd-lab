@@ -6,8 +6,10 @@ import { useAppContext } from "../../context/AppContext.jsx";
 import { useClientAuth } from "../../context/UnifiedAuthContext.jsx";
 import { mercadoPagoService } from "../../services/mercadoPagoService.js";
 import { bundleService } from "../../services/bundleService.js";
+import { nutritionBookService } from "../../services/nutritionBookService.js";
 import { validateCheckoutForm } from "../../utils/validation.js";
 import logger from "../../utils/logger.js";
+import PremiumUpgradeStep from "./PremiumUpgradeStep.jsx";
 
 function PaymentSection({ routine }) {
   const navigate = useNavigate();
@@ -26,6 +28,16 @@ function PaymentSection({ routine }) {
   const [isBundle, setIsBundle] = useState(false);
   const [bundleInfo, setBundleInfo] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
+
+  // Estado para el libro de nutrición y plan premium
+  const [nutritionBook, setNutritionBook] = useState(null);
+  const [planType, setPlanType] = useState("essential"); // "essential" o "premium"
+  const [loadingBook, setLoadingBook] = useState(true);
+
+  // Calcular valores premium
+  const isPremium = planType === "premium";
+  const premiumAddonPrice = nutritionBook ? nutritionBook.price : 0;
+  const planLabel = isPremium ? "Plan Premium" : "Plan Essential";
 
   const formatWeeks = (value) => {
     if (!value && value !== 0) return "—";
@@ -65,6 +77,27 @@ function PaymentSection({ routine }) {
     [planLabel, planType, premiumAddonPrice, routine, totalPrice],
   );
 
+  // Cargar primer ebook disponible al montar el componente
+  useEffect(() => {
+    const loadPremiumBook = async () => {
+      try {
+        const book = await nutritionBookService.getPrimaryBook();
+        setNutritionBook(book);
+        logger.info('Premium book loaded from database', {
+          available: !!book,
+          name: book?.name,
+          price: book?.price
+        });
+      } catch (error) {
+        logger.error('Error loading premium book', error);
+      } finally {
+        setLoadingBook(false);
+      }
+    };
+
+    loadPremiumBook();
+  }, []);
+
   // Detectar si es bundle al montar el componente
   useEffect(() => {
     const checkIfBundle = async () => {
@@ -99,6 +132,11 @@ function PaymentSection({ routine }) {
     }
   };
 
+  const handleSelectPlan = (selectedPlanType) => {
+    logger.info('Plan selected', { planType: selectedPlanType, nutritionBookPrice: nutritionBook?.price });
+    setPlanType(selectedPlanType);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!routine || !plan) return;
@@ -126,15 +164,33 @@ function PaymentSection({ routine }) {
     const timer = logger.createTimer('create_mp_preference');
 
     try {
+      // Determinar qué producto enviar a Mercado Pago
+      let productToSend = routine;
+
+      // Si el usuario seleccionó plan premium Y tenemos el libro de nutrición
+      // crear un bundle dinámico
+      if (isPremium && nutritionBook) {
+        logger.info('Creating dynamic bundle for premium plan', {
+          routineId: routine.id,
+          bookId: nutritionBook.id,
+          totalPrice
+        });
+
+        productToSend = nutritionBookService.createDynamicBundle(routine, nutritionBook);
+      }
+
       logger.info('Creating Mercado Pago preference', {
-        routineId: routine.id,
-        isBundle,
+        productId: productToSend.id,
+        productType: productToSend.type,
+        isBundle: productToSend.type === 'bundle',
+        isDynamic: productToSend.isDynamic || false,
+        totalPrice: productToSend.price,
         userEmail: user.email
       });
 
       // Crear preferencia de pago en Mercado Pago
       const { preferenceId, initPoint } = await mercadoPagoService.createPreference(
-        routine,
+        productToSend,
         {
           email: formData.email,
           firstName: formData.firstName,
@@ -247,20 +303,32 @@ function PaymentSection({ routine }) {
   }
 
   return (
-    <section id="checkout-section" className={sectionClasses}>
-      <header className={headerClasses}>
-        <h4 className="text-xs uppercase tracking-[0.4em] text-accent">
-          Paso 04
-        </h4>
-        <h2 className="text-3xl font-semibold text-white md:text-4xl">
-          Checkout Mercado Pago
-        </h2>
-        <p className="text-sm text-gray-400 md:text-base">
-          Confirmá tus datos y ejecutá el pago seguro con Mercado Pago.
-        </p>
-      </header>
+    <>
+      {/* Paso 03: Selección de plan (Premium upgrade) */}
+      {!loadingBook && nutritionBook && (
+        <PremiumUpgradeStep
+          routine={routine}
+          planType={planType}
+          onSelectPlan={handleSelectPlan}
+          premiumAddonPrice={premiumAddonPrice}
+        />
+      )}
 
-      <motion.div
+      {/* Paso 04: Checkout y pago */}
+      <section id="checkout-section" className={sectionClasses}>
+        <header className={headerClasses}>
+          <h4 className="text-xs uppercase tracking-[0.4em] text-accent">
+            Paso 04
+          </h4>
+          <h2 className="text-3xl font-semibold text-white md:text-4xl">
+            Checkout Mercado Pago
+          </h2>
+          <p className="text-sm text-gray-400 md:text-base">
+            Confirmá tus datos y ejecutá el pago seguro con Mercado Pago.
+          </p>
+        </header>
+
+        <motion.div
         className="rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_0_35px_-20px_rgba(181,255,0,0.35)] md:p-10"
         {...motionCardProps}
       >
@@ -321,7 +389,6 @@ function PaymentSection({ routine }) {
                   handleChange("firstName", event.target.value)
                 }
                 className={`rounded-lg border ${validationErrors.firstName ? 'border-red-500' : 'border-[#2E2E2E]'} bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none`}
-                className="rounded-lg border border-brand-border bg-base px-4 py-3 text-sm text-white focus:border-accent focus:outline-none"
                 placeholder="Tu nombre"
               />
               {validationErrors.firstName && (
@@ -337,7 +404,6 @@ function PaymentSection({ routine }) {
                   handleChange("lastName", event.target.value)
                 }
                 className={`rounded-lg border ${validationErrors.lastName ? 'border-red-500' : 'border-[#2E2E2E]'} bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none`}
-                className="rounded-lg border border-brand-border bg-base px-4 py-3 text-sm text-white focus:border-accent focus:outline-none"
                 placeholder="Tu apellido"
               />
               {validationErrors.lastName && (
@@ -354,7 +420,6 @@ function PaymentSection({ routine }) {
               value={formData.email}
               onChange={(event) => handleChange("email", event.target.value)}
               className={`rounded-lg border ${validationErrors.email ? 'border-red-500' : 'border-[#2E2E2E]'} bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none`}
-              className="rounded-lg border border-brand-border bg-base px-4 py-3 text-sm text-white focus:border-accent focus:outline-none"
               placeholder="tuemail@example.com"
             />
             {validationErrors.email ? (
@@ -396,13 +461,12 @@ function PaymentSection({ routine }) {
           >
             {processing
               ? "Redirigiendo a Mercado Pago..."
-              : user ? `Proceder al pago - $${routine.price.toLocaleString("es-AR")}` : "Iniciar sesión para comprar"}
-              ? "Procesando..."
               : `Proceder al pago - $${totalPrice.toLocaleString("es-AR")}`}
           </button>
         </form>
       </motion.div>
     </section>
+    </>
   );
 }
 
