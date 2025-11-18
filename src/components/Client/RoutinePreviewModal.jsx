@@ -7,21 +7,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../Shared/reactbits/index.js";
-import { getReadableTextColor } from "../../utils/color.js";
 
 function InfoPill({ label, value }) {
   const displayValue = value && value !== "" ? value : "—";
-  const backgroundColor = "#0E0E0E";
-  const readableTextColor = getReadableTextColor(backgroundColor);
   return (
     <div
       className="rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] px-4 py-4 text-center shadow-inner shadow-black/10"
-      style={{ color: readableTextColor }}
     >
       <span className="block text-[11px] uppercase tracking-[0.35em] text-gray-400 break-words whitespace-normal">
         {label}
       </span>
-      <span className="mt-2 block text-base font-semibold text-white break-words whitespace-normal">
+      <span className="mock-text mt-2 block text-base font-semibold">
         {displayValue}
       </span>
     </div>
@@ -95,10 +91,10 @@ function RoutinePreviewModal({ routine, open, onClose, onSelect }) {
           </div>
           <div className="md:w-1/2 flex flex-col gap-4 text-center sm:text-left">
             <DialogHeader className="space-y-2 p-0 text-left">
-              <DialogTitle className="text-2xl font-bold text-white break-words whitespace-normal">
+              <DialogTitle className="mock-text text-2xl font-bold">
                 {routine.title || routine.name}
               </DialogTitle>
-              <DialogDescription className="text-gray-400 text-sm sm:text-base leading-relaxed break-words whitespace-normal">
+              <DialogDescription className="mock-text text-sm sm:text-base leading-relaxed">
                 {description}
               </DialogDescription>
             </DialogHeader>

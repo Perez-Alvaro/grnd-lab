@@ -124,7 +124,7 @@ function PaymentSection({
           <h2 className="text-3xl font-semibold text-white md:text-4xl">
             Pago confirmado
           </h2>
-          <p className="text-sm text-gray-400 md:text-base">
+          <p className="mock-text text-sm md:text-base">
             Te enviamos la rutina seleccionada y el comprobante de Mercado Pago.
           </p>
         </header>
@@ -135,13 +135,13 @@ function PaymentSection({
               ✅
             </div>
             <div className="space-y-3">
-            <h3 className="text-3xl font-semibold uppercase text-white break-words whitespace-normal">
-              ¡Listo!<br className="hidden md:block" /> Pago acreditado
-            </h3>
-            <p className="text-sm text-gray-400 break-words whitespace-normal">
-              Enviamos <span className="text-white">{plan?.label}</span> y tu
-              rutina <span className="text-white">{routine.name}</span> a{" "}
-              <span className="text-white">{formData.email}</span>.
+              <h3 className="text-3xl font-semibold uppercase text-white break-words whitespace-normal">
+                ¡Listo!<br className="hidden md:block" /> Pago acreditado
+              </h3>
+              <p className="mock-text text-sm break-words whitespace-normal">
+                Enviamos <span className="mock-text text-white">{plan?.label}</span> y tu
+                rutina <span className="mock-text text-white">{routine.name}</span> a{" "}
+                <span className="mock-text text-white">{formData.email}</span>.
                 {isPremium
                   ? " Incluimos el ebook nutricional y la invitación a la Comunidad MZ."
                   : " Recordá que podés mejorar a Premium más adelante."}
@@ -183,10 +183,10 @@ function PaymentSection({
             <span className="text-xs uppercase tracking-[0.3em] text-gray-500">
               Plan seleccionado
             </span>
-            <h3 className="text-2xl font-semibold text-white md:text-3xl break-words whitespace-normal">
+            <h3 className="mock-text text-2xl font-semibold md:text-3xl">
               {routine.name}
             </h3>
-            <p className="text-sm text-gray-400 break-words whitespace-normal">
+            <p className="mock-text text-sm">
               {formatWeeks(routine.duration)} • {formatFrequency(routine.frequency)}
               {routine.level && routine.level !== ""
                 ? ` • Nivel ${routine.level}`
