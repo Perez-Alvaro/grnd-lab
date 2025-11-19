@@ -15,7 +15,7 @@ function PremiumUpgradeStep({
   const totalPremium = routine.price + premiumAddonPrice;
 
   const upgradeButtonClasses = isPremium
-    ? "bg-accent shadow-[0_10px_45px_-30px_rgba(181,255,0,0.8)]"
+    ? "bg-accent shadow-[0_10px_45px_-30px_rgba(14,242,160,0.8)]"
     : "bg-accent hover:bg-accent-strong";
   const continueButtonClasses = isPremium
     ? "border-brand-border text-gray-300 hover:border-gray-500"

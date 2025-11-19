@@ -71,8 +71,8 @@ function GoalSelector({
               type="button"
               onClick={() => onSelect(goal.id)}
               className={cn(
-                "flex w-full flex-col justify-center rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] p-6 text-left transition-all duration-150 md:min-h-[220px] md:p-8",
-                "hover:border-accent hover:shadow-[0_0_20px_-12px_rgba(181,255,0,0.6)] hover:-translate-y-0.5",
+                "flex w-full flex-col justify-center rounded-xl border border-[#1f1f1f] bg-[#0b0b0b] p-6 text-left transition-all duration-150 md:min-h-[220px] md:p-8",
+                "hover:border-accent hover:shadow-[0_0_20px_-12px_rgba(14,242,160,0.55)] hover:-translate-y-0.5",
                 selectedGoal === goal.id &&
                   "border-accent ring-1 ring-accent",
               )}

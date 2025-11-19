@@ -37,13 +37,13 @@ body {
 
 @keyframes glow {
   0% {
-    box-shadow: 0 0 0px rgba(182, 255, 0, 0);
+    box-shadow: 0 0 0px rgba(14, 242, 160, 0);
   }
   50% {
-    box-shadow: 0 0 16px rgba(182, 255, 0, 0.7);
+    box-shadow: 0 0 18px rgba(14, 242, 160, 0.75);
   }
   100% {
-    box-shadow: 0 0 0px rgba(182, 255, 0, 0);
+    box-shadow: 0 0 0px rgba(14, 242, 160, 0);
   }
 }
 

@@ -149,7 +149,7 @@ function PaymentSection({
             <button
               type="button"
               className="w-full rounded-full bg-accent px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong md:w-auto"
-              onClick={() => window.location.assign("/")}
+              onClick={() => window.location.assign("/landing")}
             >
               Volver al inicio
             </button>
@@ -174,7 +174,7 @@ function PaymentSection({
         </header>
 
       <motion.div
-        className="rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_0_35px_-20px_rgba(181,255,0,0.35)] md:p-10"
+        className="rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_0_35px_-20px_rgba(14,242,160,0.45)] md:p-10"
         {...motionCardProps}
       >
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">

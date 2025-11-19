@@ -79,9 +79,9 @@ function RoutineCard({ routine, onPreview }) {
         <button
           type="button"
           onClick={() => onPreview?.(routine)}
-          className="mt-2 bg-lime-400 text-black rounded-full py-2 font-semibold hover:bg-lime-300 transition active:scale-[0.97]"
+          className="mt-2 rounded-full bg-[#0EF2A0] py-2 font-semibold text-[#050505] transition hover:bg-[#0AA66A] active:scale-[0.97]"
         >
-          Ver rutina
+          Ver vista previa
         </button>
       </div>
     </article>
