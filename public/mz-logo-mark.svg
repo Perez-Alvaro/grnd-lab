@@ -1,0 +1,14 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="mzGradient" x1="0" y1="0" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00C0A3" />
+      <stop offset="0.5" stop-color="#0EF2A0" />
+      <stop offset="1" stop-color="#0AA66A" />
+    </linearGradient>
+  </defs>
+  <rect width="180" height="180" rx="36" fill="#050505" />
+  <path
+    d="M40 55L40 125L64 125L64 81.5L86 125H110L132 81.5V125H150V55H124L98 104L72 55H40Z"
+    fill="url(#mzGradient)"
+  />
+</svg>
