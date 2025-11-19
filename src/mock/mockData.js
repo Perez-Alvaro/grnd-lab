@@ -26,7 +26,7 @@ export const mockRoutines = [
             rir: "2",
             tempo: "2-0-1",
             video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            note: "Foco en control excéntrico y bloqueo suave",
+            note: "Superserie con press inclinado y foco en control escapular",
           },
           {
             id: "fst7-fondos",
@@ -94,7 +94,7 @@ export const mockRoutines = [
                 rir: "2",
                 tempo: "2-0-1",
                 video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                note: "Progresión lineal de cargas semana a semana",
+                note: "Superserie con press inclinado y foco en control escapular",
               },
               {
                 id: "fst7-week-1-crossover",
@@ -160,7 +160,7 @@ export const mockRoutines = [
                 reps: "6-8",
                 rest: "150s",
                 rir: "2",
-                tempo: "3-0-1",
+                tempo: "2-1-2",
                 video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
                 note: "Mantener la columna neutra y velocidad controlada",
               },
@@ -216,7 +216,7 @@ export const mockRoutines = [
             reps: "12-15",
             rest: "60s",
             rir: "1",
-            tempo: "3-0-1",
+            tempo: "2-0-2",
             video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             note: "Controlar la respiración y mantener rodillas alineadas",
           },
@@ -284,7 +284,7 @@ export const mockRoutines = [
                 reps: "12-15",
                 rest: "60s",
                 rir: "1",
-                tempo: "3-0-1",
+                tempo: "2-2-1",
                 video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
                 note: "Mantener peso centrado en media planta",
               },
@@ -348,7 +348,7 @@ export const mockRoutines = [
             reps: "8-10",
             rest: "90s",
             rir: "2",
-            tempo: "3-0-1",
+            tempo: "2-1-2",
             video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             note: "Mantener activación de dorsales durante todo el recorrido",
           },
@@ -387,7 +387,7 @@ export const mockRoutines = [
                 reps: "10",
                 rest: "90s",
                 rir: "2",
-                tempo: "3-0-1",
+                tempo: "2-2-0",
                 video: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
                 note: "Mantener activación de dorsales",
               },
@@ -647,7 +647,7 @@ export const mockRoutines = [
     title: "Powerbuilding Elite 6x/semana",
     genre: "Masculino",
     gender: "Masculino",
-    objective: "Volumen (Fuerza e Hipertrofia)",
+    objective: "Recomposición (Fuerza y Movilidad)",
     description:
       "Microciclos combinando fuerza pesada y accesorios de hipertrofia con seguimiento de velocidad de ejecución.",
     frequency: 6,
@@ -726,6 +726,8 @@ export const mockRoutines = [
     updatedAt: "2025-11-08",
   },
 ];
+
+export const routines = mockRoutines;
 
 export const mockSales = [
   {

@@ -1,35 +1,49 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Dumbbell, Shield } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Shield } from "lucide-react";
 
 function Header() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-neutral-800/80 bg-neutral-950/90 backdrop-blur">
-      <div className="container mx-auto px-4 py-4 text-white">
-        <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-3 group">
-            <div className="rounded-xl bg-accent p-2 transition-transform group-hover:scale-105">
-              <Dumbbell className="h-6 w-6 text-black" />
-            </div>
-            <h1 className="text-2xl font-bold text-white">
-              Fit<span className="text-accent">ter</span>
-            </h1>
-          </Link>
+    <header className="sticky top-0 z-50 border-b border-brand-border bg-[#050505]/90 backdrop-blur">
+      <div className="container mx-auto flex items-center justify-between px-4 py-4 text-white">
+        <button
+          type="button"
+          onClick={() => navigate("/landing")}
+          className="flex items-center space-x-3 rounded-full border border-transparent px-2 py-1 transition hover:border-[#0EF2A0]"
+        >
+          <div className="rounded-2xl bg-[#050505] p-2">
+            <img src="/mz-logo-mark.PNG" alt="Logo MZ" className="h-10 w-auto" />
+          </div>
+          <div className="text-left">
+            <p className="text-sm uppercase tracking-[0.4em] text-[#00C0A3]">
+              MZ Training
+            </p>
+            <p className="text-xl font-semibold">
+              Matias Ortiz
+            </p>
+          </div>
+        </button>
 
-          <nav className="flex items-center space-x-4">
-            {location.pathname !== "/admin" && (
-              <Link
-                to="/admin"
-                className="flex items-center space-x-2 rounded-full border border-accent px-4 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent/10"
-              >
-                <Shield className="h-4 w-4" />
-                <span>Administrador</span>
-              </Link>
-            )}
-          </nav>
-        </div>
+        <nav className="flex items-center gap-3">
+          <Link
+            to="/purchase-flow"
+            className="rounded-full border border-[#0EF2A0]/70 px-4 py-2 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:border-[#0EF2A0]"
+          >
+            Ver planes
+          </Link>
+          {location.pathname !== "/admin" && (
+            <Link
+              to="/admin"
+              className="flex items-center space-x-2 rounded-full border border-[#00C0A3] px-4 py-2 text-sm font-medium text-[#0EF2A0] transition-colors hover:bg-[#00C0A3]/10"
+            >
+              <Shield className="h-4 w-4" />
+              <span>Administrador</span>
+            </Link>
+          )}
+        </nav>
       </div>
     </header>
   );

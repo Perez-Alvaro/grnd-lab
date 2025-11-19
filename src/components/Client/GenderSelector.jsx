@@ -19,37 +19,39 @@ const genderCards = [
 
 function GenderSelector({ selectedGender, onSelect }) {
   return (
-    <section id="genero" className="flex flex-col gap-8">
-      <FadeIn className="flex flex-col gap-3 text-left">
-        <span className="text-xs uppercase tracking-[0.4em] text-accent">
+    <section id="genero" className="flex flex-col gap-6 sm:gap-8">
+      <FadeIn className="flex flex-col gap-2 text-center sm:gap-3 md:text-left">
+        <span className="text-[10px] uppercase tracking-[0.3em] text-accent sm:text-xs sm:tracking-[0.4em]">
           Paso 01
         </span>
-        <h2 className="text-3xl font-semibold uppercase text-white md:text-4xl">
+        <h2 className="text-2xl font-semibold uppercase text-white sm:text-3xl md:text-4xl">
           Seleccioná tu perfil
         </h2>
-        <p className="max-w-3xl text-sm text-gray-400 md:text-base">
+        <p className="mx-auto max-w-3xl text-xs text-gray-400 sm:text-sm md:mx-0 md:text-base">
           Definimos los planes en base a necesidades fisiológicas y carga
           tolerable. Elegí el enfoque que mejor representa tu estructura.
         </p>
       </FadeIn>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 md:gap-6">
         {genderCards.map((card, index) => (
           <FadeIn key={card.id} delay={index * 80}>
             <button
               type="button"
               onClick={() => onSelect(card.id)}
               className={cn(
-                "group flex w-full flex-col justify-center rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] p-6 text-left transition-all duration-150 md:min-h-[220px] md:p-8",
-                "hover:border-accent hover:shadow-[0_0_20px_-12px_rgba(181,255,0,0.6)] hover:-translate-y-0.5",
+                "group flex w-full flex-col justify-center rounded-xl border border-[#1f1f1f] bg-[#0b0b0b] p-5 text-center transition-all duration-150 sm:p-6 md:min-h-[200px] md:p-8 md:text-left lg:min-h-[220px]",
+                "hover:border-accent hover:shadow-[0_0_20px_-12px_rgba(14,242,160,0.55)] hover:-translate-y-0.5",
                 selectedGender === card.id &&
-                  "border-accent ring-1 ring-accent",
+                "border-accent ring-1 ring-accent",
               )}
             >
-              <h3 className="text-xl font-semibold text-white md:text-2xl">
+              <h3 className="text-lg font-semibold text-white sm:text-xl md:text-2xl break-words whitespace-normal">
                 {card.label}
               </h3>
-              <p className="mt-3 text-sm text-gray-400">{card.description}</p>
+              <p className="mt-2 text-xs text-gray-400 sm:mt-3 sm:text-sm break-words whitespace-normal">
+                {card.description}
+              </p>
             </button>
           </FadeIn>
         ))}
