@@ -32,7 +32,7 @@ function LandingWrapper() {
 
   return (
     <div className="bg-base text-white">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 py-10 sm:px-6 md:py-16">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-3 py-8 sm:gap-12 sm:px-4 sm:py-10 md:gap-16 md:px-6 md:py-16">
         <HeroSection
           onViewPlans={handleViewPlans}
           onRequestAdvisory={handleRequestAdvisory}

@@ -48,13 +48,13 @@ function PaymentSection({
     () =>
       routine
         ? {
-            id: `routine-${routine.id}`,
-            name: routine.name,
-            price: totalPrice,
-            label: planLabel,
-            type: planType,
-            premiumAddonPrice,
-          }
+          id: `routine-${routine.id}`,
+          name: routine.name,
+          price: totalPrice,
+          label: planLabel,
+          type: planType,
+          premiumAddonPrice,
+        }
         : null,
     [planLabel, planType, premiumAddonPrice, routine, totalPrice],
   );
@@ -77,8 +77,8 @@ function PaymentSection({
     setSuccess(true);
   };
 
-  const sectionClasses = "mt-16 flex flex-col gap-6 p-6 md:p-10 text-natural-wrap";
-  const headerClasses = "space-y-2 text-center md:text-left text-natural-wrap";
+  const sectionClasses = "mt-8 flex flex-col gap-4 p-5 text-natural-wrap sm:mt-10 sm:gap-5 sm:p-6 md:mt-12 md:gap-6 md:p-8 lg:mt-16 lg:p-10";
+  const headerClasses = "space-y-2 text-center text-natural-wrap sm:space-y-3 md:text-left";
   const motionCardProps = {
     initial: { opacity: 0, y: 24 },
     animate: { opacity: 1, y: 0 },
@@ -165,13 +165,13 @@ function PaymentSection({
         <h4 className="text-xs uppercase tracking-[0.4em] text-accent">
           Paso 04
         </h4>
-          <h2 className="text-3xl font-semibold text-white md:text-4xl text-natural-wrap">
-            Checkout Mercado Pago
-          </h2>
-          <p className="text-sm text-gray-400 md:text-base text-natural-wrap">
-            Confirmá tus datos y ejecutá el pago seguro con Mercado Pago.
-          </p>
-        </header>
+        <h2 className="text-3xl font-semibold text-white md:text-4xl text-natural-wrap">
+          Checkout Mercado Pago
+        </h2>
+        <p className="text-sm text-gray-400 md:text-base text-natural-wrap">
+          Confirmá tus datos y ejecutá el pago seguro con Mercado Pago.
+        </p>
+      </header>
 
       <motion.div
         className="rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_0_35px_-20px_rgba(14,242,160,0.45)] md:p-10"
@@ -192,11 +192,10 @@ function PaymentSection({
                 : ""}
             </p>
             <span
-              className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${
-                isPremium
+              className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${isPremium
                   ? "border border-accent/60 bg-accent/10 text-accent"
                   : "border border-brand-border text-gray-300"
-              }`}
+                }`}
             >
               {planLabel}
             </span>

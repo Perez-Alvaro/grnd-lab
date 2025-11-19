@@ -24,33 +24,33 @@ const plans = [
 
 function Asesorias() {
   return (
-    <section id="asesorias" className="space-y-10">
-      <header className="space-y-3 text-center md:text-left">
-        <p className="text-xs uppercase tracking-[0.4em] text-[#00C0A3]">
+    <section id="asesorias" className="space-y-6 sm:space-y-8 md:space-y-10">
+      <header className="space-y-2 text-center sm:space-y-3 md:text-left">
+        <p className="text-[10px] uppercase tracking-[0.3em] text-[#00C0A3] sm:text-xs sm:tracking-[0.4em]">
           Experiencias 1:1
         </p>
-        <h2 className="text-3xl font-semibold text-white md:text-4xl">
+        <h2 className="text-2xl font-semibold text-white sm:text-3xl md:text-4xl">
           Asesorías Personalizadas MZ
         </h2>
-        <p className="text-base text-gray-300 md:text-lg">
+        <p className="text-sm text-gray-300 sm:text-base md:text-lg">
           Planes ajustados a tu objetivo, seguimiento semanal y optimizaciones
           continuas guiadas por Matias Ortiz.
         </p>
       </header>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-4 sm:gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
         {plans.map((plan) => {
           const Icon = plan.icon;
           return (
             <article
               key={plan.title}
-              className="group rounded-3xl border border-[#0AA66A]/50 bg-[#0b0b0b]/80 p-6 text-white shadow-[0_25px_80px_-45px_rgba(0,192,163,0.65)] transition-all hover:-translate-y-1 hover:border-[#0EF2A0]"
+              className="group rounded-2xl border border-[#0AA66A]/50 bg-[#0b0b0b]/80 p-5 text-white shadow-[0_25px_80px_-45px_rgba(0,192,163,0.65)] transition-all hover:-translate-y-1 hover:border-[#0EF2A0] sm:rounded-3xl sm:p-6"
             >
-              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-[#0AA66A] bg-[#050505] text-[#0EF2A0]">
-                <Icon className="h-6 w-6" />
+              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#0AA66A] bg-[#050505] text-[#0EF2A0] sm:mb-4 sm:h-12 sm:w-12 sm:rounded-2xl">
+                <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
               </div>
-              <h3 className="text-xl font-semibold">{plan.title}</h3>
-              <p className="mt-3 text-sm text-gray-300">{plan.description}</p>
+              <h3 className="text-lg font-semibold sm:text-xl">{plan.title}</h3>
+              <p className="mt-2 text-xs text-gray-300 sm:mt-3 sm:text-sm">{plan.description}</p>
             </article>
           );
         })}
@@ -61,7 +61,7 @@ function Asesorias() {
           href="https://wa.me/5491100000000"
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center justify-center rounded-full bg-[#0EF2A0] px-8 py-3 text-sm font-semibold uppercase tracking-wide text-[#050505] transition-transform hover:-translate-y-0.5"
+          className="inline-flex w-full items-center justify-center rounded-full bg-[#0EF2A0] px-6 py-3 text-xs font-semibold uppercase tracking-wide text-[#050505] transition-transform hover:-translate-y-0.5 sm:w-auto sm:px-8 sm:text-sm"
         >
           Solicitar asesoría 1:1
         </a>

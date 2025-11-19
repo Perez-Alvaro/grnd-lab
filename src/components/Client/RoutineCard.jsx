@@ -37,10 +37,10 @@ function RoutineCard({ routine, onPreview }) {
 
   return (
     <article
-      className="group flex w-full sm:w-[380px] md:w-[440px] flex-col overflow-hidden rounded-2xl bg-neutral-900 text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-[0.97] text-natural-wrap"
+      className="group flex w-full flex-col overflow-hidden rounded-xl bg-neutral-900 text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-[0.97] text-natural-wrap sm:rounded-2xl"
       style={{ backgroundColor: cardBackground }}
     >
-      <div className="relative w-full h-[220px] md:h-[260px] overflow-hidden">
+      <div className="relative w-full h-[180px] overflow-hidden sm:h-[200px] md:h-[220px] lg:h-[260px]">
         <img
           src={routine.image || fallbackImage}
           alt={title}
@@ -49,37 +49,37 @@ function RoutineCard({ routine, onPreview }) {
         />
       </div>
 
-      <div className="flex flex-col justify-between p-4 gap-3 sm:p-5">
-        <div className="flex flex-col gap-2 text-natural-wrap">
-          <h3 className="mock-text text-lg md:text-xl font-bold leading-tight text-natural-wrap">
+      <div className="flex flex-col justify-between p-4 gap-2 sm:gap-3 sm:p-5">
+        <div className="flex flex-col gap-1 text-natural-wrap sm:gap-2">
+          <h3 className="mock-text text-base font-bold leading-tight text-natural-wrap sm:text-lg md:text-xl">
             {title}
           </h3>
           {shortDescription && (
-            <p className="mock-text text-sm md:text-base leading-relaxed text-natural-wrap">
+            <p className="mock-text text-xs leading-relaxed text-natural-wrap sm:text-sm md:text-base">
               {shortDescription}
             </p>
           )}
         </div>
 
-        <div className="grid grid-cols-1 gap-2 mt-1 sm:grid-cols-3">
+        <div className="grid grid-cols-3 gap-2 mt-1">
           <div className="border border-neutral-700 rounded-lg py-2 text-center">
-            <p className="text-xs text-gray-500 uppercase tracking-wide text-natural-wrap">Duración</p>
-            <p className="mock-text text-sm md:text-base font-semibold text-natural-wrap">{duration}</p>
+            <p className="text-[10px] text-gray-500 uppercase tracking-wide text-natural-wrap sm:text-xs">Duración</p>
+            <p className="mock-text text-xs font-semibold text-natural-wrap sm:text-sm md:text-base">{duration}</p>
           </div>
           <div className="border border-neutral-700 rounded-lg py-2 text-center">
-            <p className="text-xs text-gray-500 uppercase tracking-wide text-natural-wrap">Frecuencia</p>
-            <p className="mock-text text-sm md:text-base font-semibold text-natural-wrap">{frequency}</p>
+            <p className="text-[10px] text-gray-500 uppercase tracking-wide text-natural-wrap sm:text-xs">Frecuencia</p>
+            <p className="mock-text text-xs font-semibold text-natural-wrap sm:text-sm md:text-base">{frequency}</p>
           </div>
           <div className="border border-neutral-700 rounded-lg py-2 text-center">
-            <p className="text-xs text-gray-500 uppercase tracking-wide text-natural-wrap">Nivel</p>
-            <p className="mock-text text-sm md:text-base font-semibold text-natural-wrap">{level}</p>
+            <p className="text-[10px] text-gray-500 uppercase tracking-wide text-natural-wrap sm:text-xs">Nivel</p>
+            <p className="mock-text text-xs font-semibold text-natural-wrap sm:text-sm md:text-base">{level}</p>
           </div>
         </div>
 
         <button
           type="button"
           onClick={() => onPreview?.(routine)}
-          className="mt-2 rounded-full bg-[#0EF2A0] py-2 font-semibold text-[#050505] transition hover:bg-[#0AA66A] active:scale-[0.97]"
+          className="mt-2 rounded-full bg-[#0EF2A0] py-2 text-xs font-semibold text-[#050505] transition hover:bg-[#0AA66A] active:scale-[0.97] sm:py-2.5 sm:text-sm"
         >
           Ver vista previa
         </button>

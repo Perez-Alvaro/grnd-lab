@@ -15,7 +15,7 @@ function Header() {
           className="flex items-center space-x-3 rounded-full border border-transparent px-2 py-1 transition hover:border-[#0EF2A0]"
         >
           <div className="rounded-2xl bg-[#050505] p-2">
-            <img src="/mz-logo-mark.svg" alt="Logo MZ" className="h-10 w-auto" />
+            <img src="/mz-logo-mark.PNG" alt="Logo MZ" className="h-10 w-auto" />
           </div>
           <div className="text-left">
             <p className="text-sm uppercase tracking-[0.4em] text-[#00C0A3]">
