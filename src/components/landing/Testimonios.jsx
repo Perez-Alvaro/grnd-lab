@@ -29,7 +29,7 @@ const testimonials = [
 
 function Testimonios() {
   return (
-    <section className="space-y-6 sm:space-y-8">
+    <section id="testimonios" className="space-y-6 sm:space-y-8">
       <header className="space-y-2 text-center sm:space-y-3 md:text-left">
         <p className="text-[10px] uppercase tracking-[0.3em] text-[#00C0A3] sm:text-xs sm:tracking-[0.4em]">
           Resultados Reales

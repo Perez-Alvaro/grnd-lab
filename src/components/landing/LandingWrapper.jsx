@@ -32,12 +32,16 @@ function LandingWrapper() {
 
   return (
     <div className="bg-base text-white">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-3 py-8 sm:gap-12 sm:px-4 sm:py-10 md:gap-16 md:px-6 md:py-16">
+      {/* Hero Section - Full Width sin restricciones */}
+      <div id="hero">
         <HeroSection
           onViewPlans={handleViewPlans}
           onRequestAdvisory={handleRequestAdvisory}
         />
+      </div>
 
+      {/* Resto del contenido - Con max-width y padding */}
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-3 py-8 sm:gap-12 sm:px-4 sm:py-10 md:gap-16 md:px-6 md:py-16">
         <div ref={asesoriasRef}>
           <Asesorias />
         </div>
