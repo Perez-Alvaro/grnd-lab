@@ -1,17 +1,22 @@
-import React, { useState } from "react";
-import { Menu, X, ChevronRight } from "lucide-react";
+import React from "react";
+import { ChevronRight } from "lucide-react";
 import heroImage from "@/assets/hero.png";
+import Navbar from "../Shared/Navbar.jsx";
 
 function HeroSection({ onViewPlans, onRequestAdvisory }) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-    setMobileMenuOpen(false);
   };
+
+  const menuItems = [
+    { label: "Inicio", onClick: () => scrollToSection("hero") },
+    { label: "Sobre mí", onClick: () => scrollToSection("asesorias") },
+    { label: "Planes", onClick: onViewPlans },
+    { label: "Testimonios", onClick: () => scrollToSection("testimonios") }
+  ];
 
   return (
     <section className="relative w-full min-h-screen overflow-hidden">
@@ -25,97 +30,8 @@ function HeroSection({ onViewPlans, onRequestAdvisory }) {
       {/* Gradiente leve para contraste - MAX 40% */}
       <div className="absolute inset-0 bg-black/40 z-[1]"></div>
 
-      {/* NAVBAR ÚNICO - Centrado */}
-      <nav className="absolute top-0 w-full px-6 py-6 flex justify-center items-center z-[20] sm:px-8 md:px-10 lg:px-12">
-        {/* Menu Desktop - Navegación horizontal a la derecha */}
-        <ul className="hidden items-center gap-8 text-white md:flex lg:gap-12">
-          <li>
-            <button
-              onClick={() => scrollToSection("hero")}
-              className="text-xs uppercase tracking-widest transition-colors hover:text-[#0EF2A0] lg:text-sm"
-            >
-              Inicio
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => scrollToSection("asesorias")}
-              className="text-xs uppercase tracking-widest transition-colors hover:text-[#0EF2A0] lg:text-sm"
-            >
-              Sobre mí
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={onViewPlans}
-              className="text-xs uppercase tracking-widest transition-colors hover:text-[#0EF2A0] lg:text-sm"
-            >
-              Planes
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => scrollToSection("testimonios")}
-              className="text-xs uppercase tracking-widest transition-colors hover:text-[#0EF2A0] lg:text-sm"
-            >
-              Testimonios
-            </button>
-          </li>
-        </ul>
-
-        {/* Menu Mobile - Botón hamburguesa */}
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="text-white md:hidden"
-          aria-label="Toggle menu"
-        >
-          {mobileMenuOpen ? (
-            <X className="h-6 w-6" />
-          ) : (
-            <Menu className="h-6 w-6" />
-          )}
-        </button>
-
-        {/* Mobile Menu Dropdown */}
-        {mobileMenuOpen && (
-          <div className="absolute top-full right-6 mt-2 rounded-2xl border border-white/10 bg-black/90 p-4 backdrop-blur-lg md:hidden">
-            <ul className="flex flex-col gap-4">
-              <li>
-                <button
-                  onClick={() => scrollToSection("hero")}
-                  className="w-full text-left text-sm uppercase tracking-wider text-white transition-colors hover:text-[#0EF2A0]"
-                >
-                  Inicio
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection("asesorias")}
-                  className="w-full text-left text-sm uppercase tracking-wider text-white transition-colors hover:text-[#0EF2A0]"
-                >
-                  Sobre mí
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={onViewPlans}
-                  className="w-full text-left text-sm uppercase tracking-wider text-white transition-colors hover:text-[#0EF2A0]"
-                >
-                  Planes
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection("testimonios")}
-                  className="w-full text-left text-sm uppercase tracking-wider text-white transition-colors hover:text-[#0EF2A0]"
-                >
-                  Testimonios
-                </button>
-              </li>
-            </ul>
-          </div>
-        )}
-      </nav>
+      {/* Shared Navbar Component */}
+      <Navbar menuItems={menuItems} />
 
       {/* Contenido del hero - CENTRADO VERTICALMENTE */}
       <div className="relative z-[10] flex flex-col items-center justify-center min-h-screen text-center px-4">

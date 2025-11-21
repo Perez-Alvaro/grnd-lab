@@ -26,6 +26,8 @@ import { useAppContext } from "../context/AppContext.jsx";
 import usePDFExport from "../hooks/usePDFExport.js";
 import TemplateCard from "../components/Trainer/TemplateCard.jsx";
 import { TRAINING_GOAL_LABELS } from "../constants/objectives.js";
+import Navbar from "../components/Shared/Navbar.jsx";
+import Footer from "../components/Shared/Footer.jsx";
 
 const PLAN_VARIANTS = {
   premium: { label: "Premium", className: "text-accent" },
@@ -80,7 +82,7 @@ const DashboardHeader = ({ onCreateTemplate, onGoToTemplates }) => (
       <h1 className="text-3xl font-semibold text-white md:text-4xl">
         Rendimiento del negocio fitness
       </h1>
-      <p className="max-w-2xl text-sm text-gray-400 md:text-base">
+      <p className="max-w-2xl text-sm !text-white md:text-base">
         Seguimiento integral de ingresos, plantillas y comportamiento de tus
         clientes para tomar decisiones basadas en datos.
       </p>
@@ -777,8 +779,8 @@ function AdminDashboard() {
     const revenueForMonth = (monthKey) =>
       monthKey
         ? state.sales
-            .filter((sale) => sale.date.startsWith(monthKey))
-            .reduce((sum, sale) => sum + sale.amount, 0)
+          .filter((sale) => sale.date.startsWith(monthKey))
+          .reduce((sum, sale) => sum + sale.amount, 0)
         : 0;
 
     const downloadsForMonth = (monthKey) =>
@@ -865,8 +867,8 @@ function AdminDashboard() {
 
     const monthsRange = metrics.months?.latest
       ? Array.from({ length: 6 }).map((_, index) =>
-          addMonths(metrics.months.latest, index - 5),
-        )
+        addMonths(metrics.months.latest, index - 5),
+      )
       : (metrics.months?.all || monthKeys).slice(-6);
 
     const monthlyRevenueData = monthsRange.map((monthKey) => {
@@ -965,8 +967,27 @@ function AdminDashboard() {
     downloadTextFile("clientes_fitter_emails.txt", emails);
   };
 
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const menuItems = [
+    { label: "Dashboard", onClick: () => window.scrollTo({ top: 0, behavior: "smooth" }) },
+    { label: "Plantillas", onClick: () => scrollToSection("templates-section") },
+    { label: "Ventas", onClick: () => scrollToSection("sales-section") },
+    { label: "Contactos", onClick: () => scrollToSection("contacts-section") }
+  ];
+
   return (
-    <div className="min-h-screen bg-base text-gray-200">
+    <div className="relative min-h-screen bg-base text-gray-200">
+      {/* Navbar */}
+      <div className="relative bg-gradient-to-b from-black/60 to-transparent pb-20">
+        <Navbar menuItems={menuItems} />
+      </div>
+
       <div className="mx-auto flex max-w-7xl flex-col gap-10 px-6 py-10">
         <DashboardHeader
           onCreateTemplate={handleCreateTemplate}
@@ -1005,7 +1026,7 @@ function AdminDashboard() {
           />
         </section>
 
-        <section className="grid grid-cols-1 gap-8 xl:grid-cols-2">
+        <section id="sales-section" className="grid grid-cols-1 gap-8 xl:grid-cols-2">
           <DashboardCharts
             monthlyRevenueData={routinePerformance.monthlyRevenueData}
             topRoutineChartData={routinePerformance.topRoutineChartData}
@@ -1028,13 +1049,18 @@ function AdminDashboard() {
           />
         </section>
 
-        <DashboardMailExport
-          onExport={handleExportEmails}
-          emailCount={uniqueEmails.length}
-        />
+        <div id="contacts-section">
+          <DashboardMailExport
+            onExport={handleExportEmails}
+            emailCount={uniqueEmails.length}
+          />
+        </div>
 
         <DashboardEbookManager />
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

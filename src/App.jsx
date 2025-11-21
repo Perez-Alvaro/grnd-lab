@@ -14,8 +14,8 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-base text-white font-sans">
-      {/* Ocultar Header en landing page para evitar navbar duplicada */}
-      {location.pathname !== '/landing' && <Header />}
+      {/* Ocultar Header en landing page y admin dashboard (usan shared Navbar) */}
+      {location.pathname !== '/landing' && location.pathname !== '/admin' && <Header />}
       <main>
         <Routes>
           <Route path="/" element={<Navigate to="/landing" replace />} />
