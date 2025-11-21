@@ -25,8 +25,8 @@ function HeroSection({ onViewPlans, onRequestAdvisory }) {
       {/* Gradiente leve para contraste - MAX 40% */}
       <div className="absolute inset-0 bg-black/40 z-[1]"></div>
 
-      {/* NAVBAR ÚNICO - Alineado a la derecha (navbar inferior) */}
-      <nav className="absolute top-0 w-full px-6 py-6 flex justify-end items-center z-[20] sm:px-8 md:px-10 lg:px-12">
+      {/* NAVBAR ÚNICO - Centrado */}
+      <nav className="absolute top-0 w-full px-6 py-6 flex justify-center items-center z-[20] sm:px-8 md:px-10 lg:px-12">
         {/* Menu Desktop - Navegación horizontal a la derecha */}
         <ul className="hidden items-center gap-8 text-white md:flex lg:gap-12">
           <li>
@@ -125,13 +125,13 @@ function HeroSection({ onViewPlans, onRequestAdvisory }) {
         </h1>
 
         {/* Subtítulo - color cyan MZ */}
-        <p className="mt-4 text-base tracking-widest text-[#0EF2A0] sm:text-lg md:text-xl lg:text-2xl">
+        <p className="mt-4 text-base tracking-widest !text-[#0EF2A0] sm:text-lg md:text-xl lg:text-2xl">
           PERSONAL TRAINER
         </p>
 
         {/* Descripción opcional */}
-        <p className="mx-auto mt-4 max-w-2xl px-4 text-sm text-white/90 sm:text-base md:mt-6 md:text-lg">
-          Entrenamientos clínicamente diseñados, métricas reales y un flujo premium
+        <p className="mx-auto mt-4 max-w-2xl px-4 text-base !text-white/90 sm:text-base md:mt-6 md:text-lg">
+          ¿LISTO PARA DEJAR DE PONER EXCUSAS?
         </p>
 
         {/* CTA - Mobile: uno debajo del otro, Desktop: lado a lado */}

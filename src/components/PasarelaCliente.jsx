@@ -14,6 +14,7 @@ import RoutinePreviewModal from "./Client/RoutinePreviewModal.jsx";
 import PaymentSection from "./Client/PaymentSection.jsx";
 import PremiumUpgradeStep from "./Client/PremiumUpgradeStep.jsx";
 import { useAppContext } from "../context/AppContext.jsx";
+import training4 from "@/assets/training-4.jpg";
 
 const PREMIUM_UPGRADE_PRICE = 6000;
 
@@ -124,20 +125,20 @@ const PasarelaCliente = React.forwardRef(function PasarelaCliente(_, ref) {
           className="relative overflow-hidden rounded-2xl border border-neutral-800 bg-gradient-to-br from-[#050505] via-[#0b0b0b] to-[#101010] sm:rounded-3xl"
         >
           <div className="absolute inset-0 opacity-30">
-            <div className="h-full w-full bg-[url('https://images.unsplash.com/photo-1556817411-31ae72fa3ea0?auto=format&fit=crop&w=1600&q=80')] bg-cover bg-center mix-blend-screen" />
+            <img src={training4} alt="Training background" className="h-full w-full object-cover mix-blend-screen" />
           </div>
           <div className="relative z-10 flex flex-col items-center gap-4 px-5 py-12 text-center sm:items-start sm:gap-5 sm:px-8 sm:py-14 sm:text-left md:gap-6 md:px-12 md:py-16 lg:px-16 lg:py-20">
             <FadeIn className="flex w-full flex-col gap-4 sm:gap-5 md:gap-6">
               <div className="flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.3em] text-[#00C0A3] sm:justify-start sm:gap-3 sm:text-xs sm:tracking-[0.4em]">
                 <span className="h-px w-12 bg-[#0EF2A0]/40 sm:flex-1" />
-                <span>Gateway Cliente</span>
+                <span>TRANSFORMÁ TU CUERPO HOY</span>
                 <span className="h-px w-12 bg-[#0EF2A0]/40 sm:flex-1" />
               </div>
-              <h1 className="text-3xl font-bold uppercase leading-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
+              <h1 className="text-3xl font-bold uppercase leading-tight !text-white sm:text-4xl md:text-5xl lg:text-6xl">
                 Elegí tu entrenamiento. Superá tus límites.
               </h1>
-              <p className="mx-auto max-w-2xl text-sm text-gray-300 sm:mx-0 sm:text-base md:text-lg">
-                Planes diseñados por entrenadores certificados. Seleccioná tu perfil,
+              <p className="mx-auto max-w-2xl text-sm !text-gray-300 sm:mx-0 sm:text-base md:text-lg">
+                Planes técnicamente diseñados por Matías. Seleccioná tu perfil,
                 objetivo y desbloqueá rutinas con enfoque técnico y resultados medibles.
               </p>
               <div className="flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:gap-4">
