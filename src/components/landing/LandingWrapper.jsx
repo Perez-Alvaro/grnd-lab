@@ -5,6 +5,7 @@ import Introduction from "./Introduction.jsx";
 import Asesorias from "./Asesorias.jsx";
 import Testimonios from "./Testimonios.jsx";
 import PasarelaCliente from "../PasarelaCliente.jsx";
+import Footer from "../Shared/Footer.jsx";
 
 function LandingWrapper() {
   const asesoriasRef = useRef(null);
@@ -59,6 +60,9 @@ function LandingWrapper() {
         {/* 3. Testimonials */}
         <Testimonios />
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
