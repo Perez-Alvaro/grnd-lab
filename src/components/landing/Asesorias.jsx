@@ -1,24 +1,26 @@
 import React from "react";
-import { Activity, Dumbbell, HeartPulse } from "lucide-react";
+import training1 from "@/assets/training-1.jpg";
+import training2 from "@/assets/training-2.jpg";
+import training3 from "@/assets/training-3.jpg";
 
 const plans = [
   {
     title: "Fuerza & Hipertrofia",
     description:
       "Bloques periodizados para crear fuerza neural y masa funcional con énfasis técnico.",
-    icon: Dumbbell,
+    image: training1,
   },
   {
     title: "Pérdida de Grasa & Rendimiento",
     description:
       "Workouts híbridos con control metabólico, conditioning de alta densidad y biomarcadores semanales.",
-    icon: Activity,
+    image: training2,
   },
   {
     title: "Movilidad & Rehabilitación",
     description:
-      "Protocolos correctivos con seguimiento conjunto de fisiokinesiólogos para volver a tu mejor versión.",
-    icon: HeartPulse,
+      "Protocolos correctivos con seguimiento conjunto de fisiokinesiologos para volver a tu mejor versión.",
+    image: training3,
   },
 ];
 
@@ -40,17 +42,26 @@ function Asesorias() {
 
       <div className="grid gap-4 sm:gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
         {plans.map((plan) => {
-          const Icon = plan.icon;
           return (
             <article
               key={plan.title}
-              className="group rounded-2xl border border-[#0AA66A]/50 bg-[#0b0b0b]/80 p-5 text-white shadow-[0_25px_80px_-45px_rgba(0,192,163,0.65)] transition-all hover:-translate-y-1 hover:border-[#0EF2A0] sm:rounded-3xl sm:p-6"
+              className="group overflow-hidden rounded-2xl border border-[#0AA66A]/50 bg-[#0b0b0b]/80 text-white shadow-[0_25px_80px_-45px_rgba(0,192,163,0.65)] transition-all hover:-translate-y-1 hover:border-[#0EF2A0] sm:rounded-3xl"
             >
-              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#0AA66A] bg-[#050505] text-[#0EF2A0] sm:mb-4 sm:h-12 sm:w-12 sm:rounded-2xl">
-                <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
+              {/* Image */}
+              <div className="relative h-48 w-full overflow-hidden sm:h-56">
+                <img
+                  src={plan.image}
+                  alt={plan.title}
+                  className="h-full w-full object-cover transition-all duration-300 group-hover:scale-105 group-hover:grayscale-0 grayscale-[30%]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b0b] via-[#0b0b0b]/50 to-transparent"></div>
               </div>
-              <h3 className="text-lg font-semibold sm:text-xl">{plan.title}</h3>
-              <p className="mt-2 text-xs text-gray-300 sm:mt-3 sm:text-sm">{plan.description}</p>
+
+              {/* Content */}
+              <div className="p-5 sm:p-6">
+                <h3 className="text-lg font-semibold sm:text-xl">{plan.title}</h3>
+                <p className="mt-2 text-xs text-gray-300 sm:mt-3 sm:text-sm">{plan.description}</p>
+              </div>
             </article>
           );
         })}

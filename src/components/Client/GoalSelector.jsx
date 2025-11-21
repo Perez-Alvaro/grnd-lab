@@ -48,10 +48,10 @@ function GoalSelector({
         <span className="text-[10px] uppercase tracking-[0.3em] text-accent sm:text-xs sm:tracking-[0.4em]">
           Paso 02
         </span>
-        <h2 className="text-2xl font-semibold uppercase text-white sm:text-3xl md:text-4xl">
+        <h2 className="text-2xl font-semibold uppercase !text-white sm:text-3xl md:text-4xl">
           Definí tu objetivo
         </h2>
-        <p className="mx-auto max-w-3xl text-xs text-gray-400 sm:text-sm md:mx-0 md:text-base">
+        <p className="mx-auto max-w-3xl text-xs !text-gray-400 sm:text-sm md:mx-0 md:text-base">
           Afinamos los bloques semanales y la densidad de entrenamiento según tu
           misión principal. Seleccioná la prioridad para filtrar la
           programación.
@@ -77,10 +77,10 @@ function GoalSelector({
                 "border-accent ring-1 ring-accent",
               )}
             >
-              <h3 className="text-lg font-semibold text-white sm:text-xl md:text-2xl break-words whitespace-normal">
+              <h3 className="text-lg font-semibold !text-white sm:text-xl md:text-2xl break-words whitespace-normal">
                 {goal.title}
               </h3>
-              <p className="mt-2 text-xs text-gray-400 sm:mt-3 sm:text-sm break-words whitespace-normal">
+              <p className="mt-2 text-xs !text-gray-400 sm:mt-3 sm:text-sm break-words whitespace-normal">
                 {goal.description}
               </p>
             </motion.button>

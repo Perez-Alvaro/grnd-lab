@@ -1,44 +1,41 @@
 import React from "react";
+import user1 from "@/assets/user1.jpg";
+import user2 from "@/assets/user2.jpg";
+import user3 from "@/assets/user3.jpg";
 
 const testimonials = [
   {
-    name: "Ezequiel P.",
-    goal: "+6 kg de masa magra",
+    name: "Nicolás Miranda",
     quote:
-      "Matías ajustó mis cargas cada semana y optimizó el volumen cuando mis métricas de HRV bajaron. Fue como tener un laboratorio deportivo en el bolsillo.",
-    avatar:
-      "https://images.unsplash.com/photo-1504593811423-6dd665756598?auto=format&fit=crop&w=200&q=80",
+      "Me siento re bien organizado desde que comencé el plan. Entreno mejor y siento que estoy más cerca de mis objetivos.",
+    avatar: user1,
   },
   {
-    name: "Rocío L.",
-    goal: "-8% grasa corporal",
+    name: "Florencia Stork",
     quote:
-      "El plan integró conditioning inteligente y hábitos nutricionales sencillos. En 12 semanas sentí más energía y mis marcadores de fuerza subieron.",
-    avatar:
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80",
+      "Con el programa pude cumplir mis objetivos y desafiarme a seguir mejorando cada día.",
+    avatar: user2,
   },
   {
-    name: "Lucas M.",
-    goal: "Rehabilitación de rodilla",
+    name: "David Svetliza",
     quote:
-      "Volví a competir gracias al foco en movilidad y trabajo isométrico. Todo se midió con feedback semanal y ajustes claros.",
-    avatar:
-      "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=200&q=80",
+      "Logré sentirme fuerte, ágil y mejorar mi técnica. Ahora entreno mejor y con más eficacia.",
+    avatar: user3,
   },
 ];
 
 function Testimonios() {
   return (
-    <section className="space-y-6 sm:space-y-8">
+    <section id="testimonios" className="space-y-6 sm:space-y-8">
       <header className="space-y-2 text-center sm:space-y-3 md:text-left">
         <p className="text-[10px] uppercase tracking-[0.3em] text-[#00C0A3] sm:text-xs sm:tracking-[0.4em]">
           Resultados Reales
         </p>
-        <h2 className="text-2xl font-semibold text-white sm:text-3xl md:text-4xl">
-          Testimonios breves
+        <h2 className="text-2xl font-semibold !text-white sm:text-3xl md:text-4xl">
+          Testimonios
         </h2>
-        <p className="text-sm text-gray-300 sm:text-base md:text-lg">
-          3 frases, métricas concretas y atletas que sostienen el rendimiento.
+        <p className="text-sm !text-gray-300 sm:text-base md:text-lg">
+          Clientes que están logrando sus objetivos con el método MZ.
         </p>
       </header>
 
@@ -55,13 +52,12 @@ function Testimonios() {
                 className="h-12 w-12 rounded-full object-cover sm:h-14 sm:w-14"
               />
               <div>
-                <p className="text-sm font-semibold text-white sm:text-base">
+                <p className="text-sm font-semibold !text-white sm:text-base">
                   {testimonial.name}
                 </p>
-                <p className="text-xs text-[#0EF2A0] sm:text-sm">{testimonial.goal}</p>
               </div>
             </div>
-            <p className="mt-3 text-xs text-gray-300 sm:mt-4 sm:text-sm">{testimonial.quote}</p>
+            <p className="mt-3 text-xs !text-gray-300 sm:mt-4 sm:text-sm">{testimonial.quote}</p>
           </article>
         ))}
       </div>

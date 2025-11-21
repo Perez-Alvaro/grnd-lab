@@ -13,12 +13,13 @@
   "dependencies": {
     "@react-pdf/renderer": "^4.3.0",
     "file-saver": "^2.0.5",
+    "framer-motion": "^11.2.10",
     "lucide-react": "^0.344.0",
+    "ogl": "^1.0.11",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.7.1",
-    "recharts": "^2.12.7",
-    "framer-motion": "^11.2.10"
+    "recharts": "^2.12.7"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.25.4",
