@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Dumbbell, Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
 import { useClientAuth } from '@/context/UnifiedAuthContext';
 
 function ClientLogin() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { signIn, signInWithOAuth, user } = useClientAuth();
 
   const [formData, setFormData] = useState({
@@ -18,9 +19,19 @@ function ClientLogin() {
 
   useEffect(() => {
     if (user) {
-      navigate('/client/dashboard', { replace: true });
+      // Si hay una compra pendiente, volver a la página principal
+      const hasPendingPurchase = location.state?.pendingPurchase;
+      const pendingPurchaseData = localStorage.getItem('pending_purchase');
+
+      if (hasPendingPurchase || pendingPurchaseData) {
+        console.log('Redirecting to home with pending purchase');
+        navigate('/', { replace: true });
+      } else {
+        console.log('Redirecting to dashboard');
+        navigate('/client/dashboard', { replace: true });
+      }
     }
-  }, [user, navigate]);
+  }, [user, navigate, location]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

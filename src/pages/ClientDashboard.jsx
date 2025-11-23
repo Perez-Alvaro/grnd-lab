@@ -42,23 +42,16 @@ function ClientDashboard() {
         .select(
           `
           id,
-          order_number,
           total_amount,
           status,
           created_at,
+          payment_id,
           sale_items (
             id,
             product_id,
-            product_type,
             product_name,
-            price,
-            generated_file_id,
-            generated_files (
-              id,
-              file_path,
-              download_count,
-              download_limit
-            )
+            unit_price,
+            quantity
           )
         `
         )
@@ -77,55 +70,8 @@ function ClientDashboard() {
   };
 
   const handleDownload = async (saleItem) => {
-    const generatedFile = saleItem.generated_files;
-
-    if (!generatedFile) {
-      alert('Archivo no disponible');
-      return;
-    }
-
-    // Check download limit
-    if (
-      generatedFile.download_limit &&
-      generatedFile.download_count >= generatedFile.download_limit
-    ) {
-      alert('Has alcanzado el límite de descargas para este archivo');
-      return;
-    }
-
-    try {
-      setDownloadingId(saleItem.id);
-
-      // Usar el servicio de descarga
-      const result = await downloadPurchasedFile({
-        userId: user.id,
-        userEmail: user.email,
-        generatedFileId: generatedFile.id,
-        filePath: generatedFile.file_path,
-      });
-
-      if (!result.success) {
-        throw new Error(result.error);
-      }
-
-      // Trigger browser download
-      const url = URL.createObjectURL(result.blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${saleItem.product_name}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      // Refresh purchases to update download count
-      fetchPurchases();
-    } catch (err) {
-      console.error('Error downloading file:', err);
-      alert(err.message || 'Error al descargar el archivo. Por favor intenta nuevamente.');
-    } finally {
-      setDownloadingId(null);
-    }
+    // TODO: Implementar descarga de archivos cuando estén generados
+    alert('La descarga de archivos estará disponible próximamente');
   };
 
   const handleLogout = async () => {
@@ -239,12 +185,18 @@ function ClientDashboard() {
                   <div>
                     <div className="flex items-center gap-3">
                       <h3 className="text-lg font-bold text-white">
-                        Orden #{sale.order_number}
+                        Compra {sale.payment_id ? `#${sale.payment_id.substring(0, 8)}` : `#${sale.id.substring(0, 8)}`}
                       </h3>
                       {sale.status === 'completed' && (
                         <span className="inline-flex items-center gap-1 rounded-full bg-green-500/20 px-3 py-1 text-xs font-semibold text-green-400">
                           <CheckCircle2 className="h-3 w-3" />
                           Completada
+                        </span>
+                      )}
+                      {sale.status === 'pending' && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-yellow-500/20 px-3 py-1 text-xs font-semibold text-yellow-400">
+                          <AlertCircle className="h-3 w-3" />
+                          Pendiente
                         </span>
                       )}
                     </div>
@@ -277,31 +229,14 @@ function ClientDashboard() {
                             {item.product_name}
                           </h4>
                           <p className="text-sm text-neutral-400">
-                            {item.product_type === 'routine'
-                              ? 'Rutina de Entrenamiento'
-                              : 'Libro Digital'}
+                            ${item.unit_price.toLocaleString('es-AR')} × {item.quantity}
                           </p>
-                          {item.generated_files && (
-                            <p className="mt-1 text-xs text-neutral-500">
-                              Descargas:{' '}
-                              {item.generated_files.download_count || 0}
-                              {item.generated_files.download_limit
-                                ? ` / ${item.generated_files.download_limit}`
-                                : ' / ∞'}
-                            </p>
-                          )}
                         </div>
                       </div>
 
                       <button
                         onClick={() => handleDownload(item)}
-                        disabled={
-                          downloadingId === item.id ||
-                          !item.generated_files ||
-                          (item.generated_files.download_limit &&
-                            item.generated_files.download_count >=
-                              item.generated_files.download_limit)
-                        }
+                        disabled={downloadingId === item.id || sale.status !== 'completed'}
                         className="flex items-center gap-2 rounded-lg bg-[#B5FF00] px-4 py-2 font-semibold text-black transition-all hover:bg-[#a0e600] disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {downloadingId === item.id ? (
@@ -312,7 +247,7 @@ function ClientDashboard() {
                         ) : (
                           <>
                             <Download className="h-4 w-4" />
-                            Descargar
+                            {sale.status === 'completed' ? 'Descargar' : 'Pendiente'}
                           </>
                         )}
                       </button>

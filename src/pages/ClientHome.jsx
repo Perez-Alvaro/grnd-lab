@@ -14,11 +14,13 @@ import RoutinePreviewModal from "../components/Client/RoutinePreviewModal.jsx";
 import PaymentSection from "../components/Client/PaymentSection.jsx";
 import PremiumUpgradeStep from "../components/Client/PremiumUpgradeStep.jsx";
 import { useAppContext } from "../context/AppContext.jsx";
+import { useClientAuth } from "../context/UnifiedAuthContext.jsx";
 
 const PREMIUM_UPGRADE_PRICE = 6000;
 
 function ClientHome() {
   const { state } = useAppContext();
+  const { user } = useClientAuth();
   const heroRef = useRef(null);
   const genderRef = useRef(null);
   const [selectedGender, setSelectedGender] = useState(null);
@@ -27,6 +29,7 @@ function ClientHome() {
   const [previewRoutine, setPreviewRoutine] = useState(null);
   const [selectedRoutine, setSelectedRoutine] = useState(null);
   const [planType, setPlanType] = useState("essential");
+  const [pendingPurchaseRestored, setPendingPurchaseRestored] = useState(false);
 
   const trainerRoutines = useMemo(() => {
     return (state.routines || []).map((routine) => ({
@@ -93,6 +96,42 @@ function ClientHome() {
       setPlanType("essential");
     }
   }, [selectedRoutine]);
+
+  // Restaurar compra pendiente después del login
+  useEffect(() => {
+    if (user && !pendingPurchaseRestored && trainerRoutines.length > 0) {
+      const pendingPurchaseData = localStorage.getItem('pending_purchase');
+      if (pendingPurchaseData) {
+        try {
+          const purchase = JSON.parse(pendingPurchaseData);
+          console.log('Restaurando compra pendiente:', purchase);
+
+          // Buscar la rutina en las rutinas disponibles
+          const routine = trainerRoutines.find(r => r.id === purchase.routine?.id);
+          if (routine) {
+            setSelectedRoutine(routine);
+            if (purchase.planType) {
+              setPlanType(purchase.planType);
+            }
+
+            // Hacer scroll al checkout
+            setTimeout(() => {
+              document
+                .getElementById("checkout-section")
+                ?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 500);
+          }
+
+          // Limpiar el localStorage
+          localStorage.removeItem('pending_purchase');
+          setPendingPurchaseRestored(true);
+        } catch (error) {
+          console.error('Error restaurando compra pendiente:', error);
+          localStorage.removeItem('pending_purchase');
+        }
+      }
+    }
+  }, [user, pendingPurchaseRestored, trainerRoutines]);
 
   const readyForRoutines = useMemo(
     () => Boolean(selectedGender && (selectedGoal || selectedGoal === "Todos")),
@@ -181,21 +220,11 @@ function ClientHome() {
           />
         </motion.div>
 
-        {selectedRoutine && (
-          <motion.div id="premium-offer" {...sectionMotionProps}>
-            <PremiumUpgradeStep
-              routine={selectedRoutine}
-              planType={planType}
-              onSelectPlan={setPlanType}
-              premiumAddonPrice={PREMIUM_UPGRADE_PRICE}
-            />
-          </motion.div>
-        )}
-
         <motion.div id="pago" {...sectionMotionProps}>
           <PaymentSection
             routine={selectedRoutine}
             planType={planType}
+            onSelectPlan={setPlanType}
             premiumAddonPrice={PREMIUM_UPGRADE_PRICE}
           />
         </motion.div>

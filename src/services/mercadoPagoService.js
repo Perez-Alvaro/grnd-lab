@@ -54,6 +54,7 @@ const retry = async (fn, options = {}) => {
  * @param {string} userData.email - Email del comprador
  * @param {string} userData.firstName - Nombre
  * @param {string} userData.lastName - Apellido
+ * @param {string} userData.userId - ID del usuario en Supabase (opcional)
  * @returns {Promise<Object>} - { preferenceId, initPoint }
  */
 export const createPreference = async (product, userData) => {
@@ -147,6 +148,7 @@ export const createPreference = async (product, userData) => {
         product_id: product.id,
         product_type: isBundle ? 'bundle' : product.type || 'routine',
         user_email: userData.email,
+        user_id: userData.userId || null, // ID de Supabase para asociar la venta
         is_bundle: isBundle,
         is_dynamic: isDynamic,
         // Si es bundle dinámico, incluir IDs de los productos
@@ -157,8 +159,13 @@ export const createPreference = async (product, userData) => {
     console.log('Preference data:', {
       items: items.length,
       total: items.reduce((sum, item) => sum + item.unit_price, 0),
-      payer: userData.email
+      payer: userData.email,
+      back_urls: preference.back_urls,
+      auto_return: preference.auto_return
     });
+
+    console.log('🌐 Calling Edge Function: create-mp-preference');
+    console.log('📍 URL:', `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-mp-preference`);
 
     // Llamar a la API de Mercado Pago con retry
     const result = await retry(async () => {
@@ -175,12 +182,26 @@ export const createPreference = async (product, userData) => {
         body: JSON.stringify(preference)
       });
 
+      console.log('📨 Edge Function response status:', response.status);
+      console.log('📨 Edge Function response ok:', response.ok);
+
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Error HTTP ${response.status}`);
+        const errorText = await response.text();
+        console.error('❌ Edge Function error response:', errorText);
+
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          errorData = { message: errorText };
+        }
+
+        throw new Error(errorData.message || errorData.error || `Error HTTP ${response.status}: ${errorText}`);
       }
 
-      return await response.json();
+      const data = await response.json();
+      console.log('✅ Edge Function response data:', data);
+      return data;
     });
 
     console.log('Preference created successfully:', result.preferenceId);

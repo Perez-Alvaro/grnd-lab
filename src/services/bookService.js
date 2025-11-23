@@ -3,7 +3,7 @@
  *
  * Servicio para gestionar libros (ebooks) en Supabase:
  * - Upload de PDFs al storage "Libros"
- * - Upload de portadas al storage "public"
+ * - Upload de portadas al storage "Libros"
  * - Creación de productos tipo 'book'
  * - CRUD completo de libros
  */
@@ -60,7 +60,7 @@ export const uploadBookPDF = async (file, fileName = null) => {
 };
 
 /**
- * Subir imagen de portada al storage "public"
+ * Subir imagen de portada al storage "Libros"
  * @param {File} file - Archivo de imagen
  * @returns {Promise<{path: string, url: string}>}
  */
@@ -74,10 +74,10 @@ export const uploadBookCover = async (file) => {
     const fileExt = file.name.split('.').pop();
     const fileName = `book-covers/${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
 
-    console.log('📤 Uploading cover image:', fileName);
+    console.log('📤 Uploading cover image to Libros bucket:', fileName);
 
     const { data, error } = await supabase.storage
-      .from('public')
+      .from('Libros')
       .upload(fileName, file, {
         cacheControl: '3600',
         upsert: false
@@ -86,7 +86,7 @@ export const uploadBookCover = async (file) => {
     if (error) throw error;
 
     const { data: { publicUrl } } = supabase.storage
-      .from('public')
+      .from('Libros')
       .getPublicUrl(fileName);
 
     console.log('✅ Cover image uploaded successfully');
@@ -217,14 +217,37 @@ export const deleteBook = async (bookId) => {
       .eq('id', bookId)
       .single();
 
-    // 2. Eliminar PDF del storage
+    // 2. Obtener URL de portada del producto
+    const { data: product } = await supabase
+      .from('products')
+      .select('image_url')
+      .eq('id', bookId)
+      .single();
+
+    const filesToDelete = [];
+
+    // 3. Agregar PDF a la lista de archivos a eliminar
     if (book?.file_path) {
-      await supabase.storage
-        .from('Libros')
-        .remove([book.file_path]);
+      filesToDelete.push(book.file_path);
     }
 
-    // 3. Eliminar producto (cascade eliminará el registro de books)
+    // 4. Extraer path de portada y agregar a la lista
+    if (product?.image_url) {
+      // Extraer el path del URL (después de /Libros/)
+      const urlParts = product.image_url.split('/Libros/');
+      if (urlParts.length > 1) {
+        filesToDelete.push(urlParts[1]);
+      }
+    }
+
+    // 5. Eliminar archivos del storage
+    if (filesToDelete.length > 0) {
+      await supabase.storage
+        .from('Libros')
+        .remove(filesToDelete);
+    }
+
+    // 6. Eliminar producto (cascade eliminará el registro de books)
     const { error } = await supabase
       .from('products')
       .delete()

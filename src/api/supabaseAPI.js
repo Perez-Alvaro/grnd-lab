@@ -258,7 +258,8 @@ export const SupabaseAPI = {
 
   async getSales() {
     try {
-      const { data, error } = await supabase
+      // 1. Obtener ventas con sus productos
+      const { data: sales, error: salesError } = await supabase
         .from('sales')
         .select(`
           *,
@@ -276,30 +277,57 @@ export const SupabaseAPI = {
         .eq('status', 'completed')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (salesError) throw salesError;
+
+      if (!sales || sales.length === 0) {
+        return [];
+      }
+
+      // 2. Obtener emails desde auth.users usando RPC
+      const userIds = sales
+        .map(sale => sale.user_id)
+        .filter(id => id); // Filtrar nulls
+
+      let emailMap = new Map();
+
+      if (userIds.length > 0) {
+        const { data: authUsers, error: rpcError } = await supabase.rpc('get_user_emails', {
+          user_ids: userIds
+        });
+
+        if (rpcError) {
+          console.warn('Error getting emails from auth.users, using fallback:', rpcError);
+          // Fallback: usar user_email de la tabla sales
+        } else if (authUsers) {
+          authUsers.forEach(user => {
+            emailMap.set(user.id, user.email);
+          });
+        }
+      }
 
       // Helper: derivar plan desde metadata o precio
       const derivePlan = (product) => {
-        // 1. Intentar desde metadata
         if (product?.metadata?.plan) {
           return product.metadata.plan;
         }
 
-        // 2. Derivar desde precio
         const price = parseFloat(product?.price || 0);
         if (price >= 17000) return 'Premium';
         if (price >= 12000) return 'Essential';
         return 'Basic';
       };
 
-      // Formatear al formato esperado por el frontend
-      return data.map((sale) => {
+      // 3. Formatear ventas con emails
+      return sales.map((sale) => {
         const firstItem = sale.sale_items[0];
         const product = firstItem?.products;
 
+        // Prioridad: 1) auth.users (vía RPC), 2) user_email en sale (fallback)
+        const email = emailMap.get(sale.user_id) || sale.user_email || '';
+
         return {
           id: sale.id,
-          userEmail: sale.user_email,
+          userEmail: email,
           routineId: firstItem?.product_id || null,
           plan: derivePlan(product),
           amount: parseFloat(sale.total_amount),
@@ -307,9 +335,10 @@ export const SupabaseAPI = {
           status: sale.status,
         };
       });
+
     } catch (error) {
       console.error('Error fetching sales:', error);
-      return []; // Devolver array vacío en caso de error para no romper la UI
+      return [];
     }
   },
 
@@ -319,51 +348,51 @@ export const SupabaseAPI = {
 
   async getUsers() {
     try {
-      // Obtener perfiles de clientes
+      // 1. Obtener profiles de clientes
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, first_name, last_name, avatar_url, role, created_at')
         .eq('role', 'customer')
         .order('created_at', { ascending: false });
 
       if (profilesError) throw profilesError;
 
-      // Obtener emails desde sales (donde sí tenemos user_email)
-      const { data: sales, error: salesError } = await supabase
-        .from('sales')
-        .select('user_id, user_email')
-        .not('user_id', 'is', null);
-
-      if (salesError) {
-        // Si falla, devolver perfiles sin emails
-        return profiles.map((profile) => ({
-          id: profile.id,
-          firstName: profile.first_name || 'Cliente',
-          lastName: profile.last_name || '',
-          email: '',
-          joined: profile.created_at,
-        }));
+      if (!profiles || profiles.length === 0) {
+        return [];
       }
 
-      // Crear mapa de user_id -> email (último email conocido)
-      const emailMap = new Map();
-      sales.forEach((sale) => {
-        if (sale.user_id && sale.user_email) {
-          emailMap.set(sale.user_id, sale.user_email);
-        }
+      // 2. Obtener emails desde auth.users usando RPC
+      const userIds = profiles.map(p => p.id);
+
+      const { data: authUsers, error: rpcError } = await supabase.rpc('get_user_emails', {
+        user_ids: userIds
       });
 
-      // Formatear usuarios con emails
-      return profiles.map((profile) => ({
+      if (rpcError) {
+        console.error('Error calling get_user_emails:', rpcError);
+        throw rpcError;
+      }
+
+      // 3. Crear mapa de emails
+      const emailMap = new Map();
+      if (authUsers) {
+        authUsers.forEach(user => {
+          emailMap.set(user.id, user.email);
+        });
+      }
+
+      // 4. Combinar profiles con emails
+      return profiles.map(profile => ({
         id: profile.id,
         firstName: profile.first_name || 'Cliente',
         lastName: profile.last_name || '',
         email: emailMap.get(profile.id) || '',
         joined: profile.created_at,
       }));
+
     } catch (error) {
       console.error('Error fetching users:', error);
-      return []; // Devolver array vacío en caso de error
+      return [];
     }
   },
 

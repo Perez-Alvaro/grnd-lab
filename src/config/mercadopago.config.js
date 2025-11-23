@@ -7,6 +7,11 @@
 const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL || 'http://localhost:5173';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 
+console.log('🔧 MP_CONFIG initialization:');
+console.log('  VITE_FRONTEND_URL:', import.meta.env.VITE_FRONTEND_URL);
+console.log('  FRONTEND_URL:', FRONTEND_URL);
+console.log('  SUPABASE_URL:', SUPABASE_URL);
+
 export const MP_CONFIG = {
   // Public Key para el frontend (visible al cliente)
   publicKey: import.meta.env.VITE_MP_PUBLIC_KEY,
@@ -21,8 +26,9 @@ export const MP_CONFIG = {
     pending: `${FRONTEND_URL}/payment/pending`
   },
 
-  // Auto return: redirige automáticamente cuando el pago es aprobado
-  auto_return: 'approved',
+  // Auto return: DESHABILITADO para desarrollo local
+  // En producción con HTTPS, cambiar a 'approved'
+  auto_return: null, // null = mostrar botón "Volver al sitio"
 
   // Configuración de la preferencia de pago
   preferenceDefaults: {

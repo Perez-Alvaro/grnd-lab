@@ -11,7 +11,7 @@ import { validateCheckoutForm } from "../../utils/validation.js";
 import logger from "../../utils/logger.js";
 import PremiumUpgradeStep from "./PremiumUpgradeStep.jsx";
 
-function PaymentSection({ routine }) {
+function PaymentSection({ routine, planType: externalPlanType, onSelectPlan, premiumAddonPrice: externalPremiumAddonPrice }) {
   const navigate = useNavigate();
   const { dispatch } = useAppContext();
   const { user, profile } = useClientAuth();
@@ -31,12 +31,18 @@ function PaymentSection({ routine }) {
 
   // Estado para el libro de nutrición y plan premium
   const [nutritionBook, setNutritionBook] = useState(null);
-  const [planType, setPlanType] = useState("essential"); // "essential" o "premium"
   const [loadingBook, setLoadingBook] = useState(true);
+
+  // Usar el planType externo si se proporciona, sino usar estado interno
+  const [internalPlanType, setInternalPlanType] = useState("essential");
+  const planType = externalPlanType !== undefined ? externalPlanType : internalPlanType;
+  const setPlanType = onSelectPlan || setInternalPlanType;
 
   // Calcular valores premium
   const isPremium = planType === "premium";
-  const premiumAddonPrice = nutritionBook ? nutritionBook.price : 0;
+  const premiumAddonPrice = externalPremiumAddonPrice !== undefined
+    ? externalPremiumAddonPrice
+    : (nutritionBook ? nutritionBook.price : 0);
   const planLabel = isPremium ? "Plan Premium" : "Plan Essential";
 
   const formatWeeks = (value) => {
@@ -139,11 +145,21 @@ function PaymentSection({ routine }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!routine || !plan) return;
+
+    console.log('🛒 Payment submit initiated');
+    console.log('📦 Routine:', routine);
+    console.log('👤 User:', user);
+    console.log('📋 Form data:', formData);
+
+    if (!routine || !plan) {
+      console.error('❌ No routine or plan selected');
+      return;
+    }
 
     // Validar formulario
     const validation = validateCheckoutForm(formData);
     if (!validation.valid) {
+      console.error('❌ Form validation failed:', validation.errors);
       setValidationErrors(validation.errors);
       setError('Por favor completa todos los campos correctamente');
       return;
@@ -152,10 +168,23 @@ function PaymentSection({ routine }) {
     // Verificar que el usuario esté logueado
     if (!user || !profile) {
       logger.info('User not logged in, redirecting to login');
-      localStorage.setItem('pending_purchase', JSON.stringify(routine));
-      navigate('/login');
+      // Guardar la información de compra pendiente
+      const purchaseData = {
+        routine: {
+          id: routine.id,
+          name: routine.name,
+          price: routine.price
+        },
+        planType,
+        premiumAddonPrice,
+        formData
+      };
+      localStorage.setItem('pending_purchase', JSON.stringify(purchaseData));
+      navigate('/login', { state: { from: '/', pendingPurchase: true } });
       return;
     }
+
+    console.log('✅ User authenticated, proceeding with payment');
 
     setProcessing(true);
     setError("");
@@ -194,11 +223,16 @@ function PaymentSection({ routine }) {
         {
           email: formData.email,
           firstName: formData.firstName,
-          lastName: formData.lastName
+          lastName: formData.lastName,
+          userId: user.id // Incluir el ID del usuario de Supabase
         }
       );
 
       timer.end();
+
+      console.log('✅ Preference created successfully');
+      console.log('🔗 Init Point:', initPoint);
+      console.log('🆔 Preference ID:', preferenceId);
 
       logger.info('Preference created, redirecting to MP', {
         preferenceId,
@@ -206,20 +240,31 @@ function PaymentSection({ routine }) {
       });
 
       // Redirigir al Checkout Pro de Mercado Pago
+      console.log('🚀 Redirecting to Mercado Pago...');
       window.location.href = initPoint;
 
     } catch (err) {
       console.error('❌ Error creando preferencia:', err);
+      console.error('❌ Error details:', {
+        message: err.message,
+        stack: err.stack,
+        response: err.response
+      });
+
       logger.paymentError('unknown', err.message, {
         routineId: routine.id,
         userEmail: user.email
       });
 
+      // Mostrar error detallado al usuario
+      const errorMessage = err.message || 'Error desconocido';
       setError(
-        err.message ||
-        'Error al conectar con Mercado Pago. Por favor intenta nuevamente o contacta a soporte.'
+        `Error al conectar con Mercado Pago: ${errorMessage}. Por favor verifica que las credenciales estén configuradas en Supabase.`
       );
       setProcessing(false);
+
+      // NO redirigir al dashboard, quedarse en la página para mostrar el error
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 

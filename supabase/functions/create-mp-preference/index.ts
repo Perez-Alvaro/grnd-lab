@@ -50,6 +50,37 @@ serve(async (req) => {
     const preferenceData = await req.json();
 
     console.log('Creating preference with items:', preferenceData.items?.length);
+    console.log('Full preference data received:', JSON.stringify(preferenceData, null, 2));
+
+    // Validar que back_urls esté presente
+    if (!preferenceData.back_urls) {
+      console.error('❌ back_urls is missing!');
+      return new Response(
+        JSON.stringify({ error: 'back_urls is required' }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
+    }
+
+    if (!preferenceData.back_urls.success) {
+      console.error('❌ back_urls.success is missing!');
+      console.error('back_urls object:', preferenceData.back_urls);
+      return new Response(
+        JSON.stringify({ error: 'back_urls.success is required' }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
+    }
+
+    console.log('✅ back_urls validation passed');
+    console.log('   - success:', preferenceData.back_urls.success);
+    console.log('   - failure:', preferenceData.back_urls.failure);
+    console.log('   - pending:', preferenceData.back_urls.pending);
+    console.log('   - auto_return:', preferenceData.auto_return);
 
     // Validar datos
     if (!preferenceData.items || !Array.isArray(preferenceData.items) || preferenceData.items.length === 0) {

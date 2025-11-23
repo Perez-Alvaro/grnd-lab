@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ResponsiveContainer,
@@ -20,6 +20,7 @@ import {
   Mail,
   Plus,
   FileText,
+  Loader2,
 } from "lucide-react";
 
 import { useAppContext } from "../context/AppContext.jsx";
@@ -586,31 +587,72 @@ const DashboardTemplates = ({
   );
 };
 
-const DashboardMailExport = ({ onExport, emailCount }) => (
-  <section className="rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
-    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-      <div>
-        <h3 className="text-lg font-semibold text-accent">
-          Exportar correos de clientes
-        </h3>
-        <p className="text-sm text-gray-400">
-          Generá un archivo listo para Gmail con todos los contactos de tus
-          compradores.
-        </p>
-        <p className="text-xs text-gray-500">
-          Correos únicos disponibles: {emailCount}
-        </p>
+const DashboardMailExport = ({ onExport, emailCount, salesCount, usersCount, loading }) => {
+  const [showDebug, setShowDebug] = useState(false);
+
+  return (
+    <section className="rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex-1">
+          <h3 className="text-lg font-semibold text-accent">
+            Exportar correos de clientes
+          </h3>
+          <p className="text-sm text-gray-400">
+            Descargá un archivo con todos los emails de tus clientes para campañas de marketing.
+          </p>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            {loading ? (
+              <span className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
+                <Loader2 className="inline h-3 w-3 animate-spin mr-1" />
+                Cargando emails...
+              </span>
+            ) : (
+              <span className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
+                {emailCount} {emailCount === 1 ? 'email' : 'emails'} únicos
+              </span>
+            )}
+            {emailCount === 0 && !loading && (
+              <span className="text-xs text-gray-500">
+                Los emails aparecerán aquí cuando tengas ventas o clientes registrados
+              </span>
+            )}
+            {emailCount > 0 && !loading && (
+              <button
+                onClick={() => setShowDebug(!showDebug)}
+                className="text-xs text-gray-500 hover:text-accent underline"
+              >
+                {showDebug ? 'Ocultar' : 'Ver'} detalles
+              </button>
+            )}
+          </div>
+
+          {showDebug && emailCount > 0 && (
+            <div className="mt-3 rounded-lg border border-brand-border bg-base p-3 text-xs">
+              <p className="text-gray-400">
+                <strong className="text-white">Fuente de emails:</strong>
+              </p>
+              <ul className="mt-2 space-y-1 text-gray-500">
+                <li>• Emails de ventas completadas (tabla <code>sales</code>)</li>
+                <li className="text-gray-600 italic">→ Total de emails únicos: {emailCount}</li>
+              </ul>
+              <p className="mt-2 text-gray-600 italic">
+                Estos son los emails donde los clientes recibieron sus rutinas. Se obtienen directamente desde la base de datos sin duplicados.
+              </p>
+            </div>
+          )}
+        </div>
+        <button
+          onClick={onExport}
+          disabled={emailCount === 0 || loading}
+          className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <Mail className="h-4 w-4" />
+          Descargar (.txt)
+        </button>
       </div>
-      <button
-        onClick={onExport}
-        className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong"
-      >
-        <Mail className="h-4 w-4" />
-        Descargar (.txt)
-      </button>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 const DashboardEbookManager = () => {
   const [ebookFile, setEbookFile] = useState(null);
@@ -619,18 +661,6 @@ const DashboardEbookManager = () => {
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
-
-  // Formulario de metadatos
-  const [formData, setFormData] = useState({
-    name: 'Ebook Oficial de Nutrición MZ',
-    slug: 'ebook-nutricion-mz',
-    description: 'Guía completa de nutrición deportiva con estrategias prácticas para maximizar tus resultados.',
-    price: '6000',
-    author: 'Matías Ortiz',
-    pages: '150',
-    active: true,
-    featured: true
-  });
 
   const handlePdfUpload = (event) => {
     const file = event.target.files?.[0];
@@ -649,13 +679,9 @@ const DashboardEbookManager = () => {
     }
   };
 
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
   const handleSubmit = async () => {
-    if (!ebookFile) {
-      setError('Debes seleccionar un archivo PDF');
+    if (!ebookFile || !coverFile) {
+      setError('Debes seleccionar el PDF y la portada');
       return;
     }
 
@@ -666,8 +692,20 @@ const DashboardEbookManager = () => {
     try {
       const { bookService } = await import('../services/bookService.js');
 
+      // Datos fijos del único libro
+      const bookData = {
+        name: 'Ebook Oficial de Nutrición MZ',
+        slug: 'ebook-nutricion-mz',
+        description: 'Guía completa de nutrición deportiva con estrategias prácticas para maximizar tus resultados. Incluye planes de alimentación, recetas y protocolos de suplementación.',
+        price: '6000',
+        author: 'Matías Ortiz',
+        pages: '150',
+        active: true,
+        featured: true
+      };
+
       const book = await bookService.createBook(
-        formData,
+        bookData,
         ebookFile,
         coverFile
       );
@@ -675,7 +713,7 @@ const DashboardEbookManager = () => {
       console.log('✅ Libro creado exitosamente:', book);
       setSuccess(true);
 
-      // Limpiar formulario después de 2 segundos
+      // Limpiar después de 3 segundos
       setTimeout(() => {
         setEbookFile(null);
         setCoverFile(null);
@@ -693,172 +731,88 @@ const DashboardEbookManager = () => {
 
   return (
     <section className="rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
-      <h2 className="text-lg font-semibold text-accent">📘 Gestión de Ebooks</h2>
+      <h2 className="text-lg font-semibold text-accent">📘 Ebook de Nutrición</h2>
       <p className="mt-1 text-sm text-gray-400">
-        Administrá los PDFs y portadas que se entregarán como productos premium.
+        Subí el PDF oficial y la portada que se entregarán junto al Plan Premium ($6,000 ARS).
       </p>
 
-      <div className="mt-6 space-y-6">
-        {/* Metadatos del libro */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+        {/* Upload de archivos */}
+        <div className="space-y-4">
           <div>
-            <label className="text-sm text-gray-400">Nombre del libro *</label>
+            <label className="text-sm text-gray-400">Archivo PDF *</label>
             <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => handleInputChange('name', e.target.value)}
-              className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-white focus:border-accent focus:outline-none"
-              placeholder="Ej: Ebook de Nutrición MZ"
+              type="file"
+              accept="application/pdf"
+              onChange={handlePdfUpload}
+              disabled={uploading}
+              className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-gray-200 file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-accent file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black disabled:opacity-50"
             />
-          </div>
-          <div>
-            <label className="text-sm text-gray-400">Slug (URL amigable) *</label>
-            <input
-              type="text"
-              value={formData.slug}
-              onChange={(e) => handleInputChange('slug', e.target.value)}
-              className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-white focus:border-accent focus:outline-none"
-              placeholder="ebook-nutricion-mz"
-            />
-          </div>
-          <div className="md:col-span-2">
-            <label className="text-sm text-gray-400">Descripción</label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
-              rows={3}
-              className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-white focus:border-accent focus:outline-none"
-              placeholder="Describe el contenido del ebook..."
-            />
+            {ebookFile && (
+              <p className="mt-2 text-xs text-gray-500">
+                ✅ <span className="text-white">{ebookFile.name}</span> ({(ebookFile.size / (1024 * 1024)).toFixed(2)} MB)
+              </p>
+            )}
           </div>
           <div>
-            <label className="text-sm text-gray-400">Precio (ARS) *</label>
+            <label className="text-sm text-gray-400">Portada (imagen) *</label>
             <input
-              type="number"
-              value={formData.price}
-              onChange={(e) => handleInputChange('price', e.target.value)}
-              className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-white focus:border-accent focus:outline-none"
-              placeholder="6000"
+              type="file"
+              accept="image/png, image/jpeg, image/jpg"
+              onChange={handleCoverUpload}
+              disabled={uploading}
+              className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-gray-200 file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-accent file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black disabled:opacity-50"
             />
+            {coverFile && (
+              <p className="mt-2 text-xs text-gray-500">
+                ✅ <span className="text-white">{coverFile.name}</span>
+              </p>
+            )}
           </div>
-          <div>
-            <label className="text-sm text-gray-400">Autor</label>
-            <input
-              type="text"
-              value={formData.author}
-              onChange={(e) => handleInputChange('author', e.target.value)}
-              className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-white focus:border-accent focus:outline-none"
-              placeholder="Matías Ortiz"
-            />
-          </div>
-          <div>
-            <label className="text-sm text-gray-400">Páginas</label>
-            <input
-              type="number"
-              value={formData.pages}
-              onChange={(e) => handleInputChange('pages', e.target.value)}
-              className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-white focus:border-accent focus:outline-none"
-              placeholder="150"
-            />
-          </div>
-          <div className="flex items-center gap-4">
-            <label className="flex items-center gap-2 text-sm text-gray-400">
-              <input
-                type="checkbox"
-                checked={formData.active}
-                onChange={(e) => handleInputChange('active', e.target.checked)}
-                className="rounded border-brand-border bg-base text-accent focus:ring-accent"
-              />
-              Activo
-            </label>
-            <label className="flex items-center gap-2 text-sm text-gray-400">
-              <input
-                type="checkbox"
-                checked={formData.featured}
-                onChange={(e) => handleInputChange('featured', e.target.checked)}
-                className="rounded border-brand-border bg-base text-accent focus:ring-accent"
-              />
-              Destacado (Premium)
-            </label>
-          </div>
+
+          {/* Botón guardar */}
+          <button
+            onClick={handleSubmit}
+            disabled={uploading || !ebookFile || !coverFile}
+            className="mt-4 w-full rounded-full bg-accent px-6 py-3 text-sm font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {uploading ? 'Subiendo archivos...' : 'Guardar Ebook'}
+          </button>
         </div>
 
-        {/* Archivos */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm text-gray-400">Archivo PDF *</label>
-              <input
-                type="file"
-                accept="application/pdf"
-                onChange={handlePdfUpload}
-                disabled={uploading}
-                className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-gray-200 file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-accent file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black disabled:opacity-50"
-              />
-              {ebookFile && (
-                <p className="mt-2 text-xs text-gray-500">
-                  Archivo: <span className="text-white">{ebookFile.name}</span> ({(ebookFile.size / (1024 * 1024)).toFixed(2)} MB)
-                </p>
-              )}
-            </div>
-            <div>
-              <label className="text-sm text-gray-400">Imagen de portada (opcional)</label>
-              <input
-                type="file"
-                accept="image/png, image/jpeg, image/jpg"
-                onChange={handleCoverUpload}
-                disabled={uploading}
-                className="mt-2 w-full rounded-md border border-brand-border bg-base p-3 text-sm text-gray-200 file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-accent file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black disabled:opacity-50"
-              />
-              {coverFile && (
-                <p className="mt-2 text-xs text-gray-500">
-                  Portada: <span className="text-white">{coverFile.name}</span>
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-brand-border bg-base p-6 text-center">
-            {coverPreview ? (
+        {/* Preview */}
+        <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-brand-border bg-base p-6">
+          {coverPreview ? (
+            <>
               <img
                 src={coverPreview}
                 alt="Portada Ebook"
-                className="w-48 rounded-md border border-brand-border"
+                className="w-48 rounded-md border border-brand-border shadow-lg"
               />
-            ) : (
-              <div className="flex h-40 w-full items-center justify-center rounded-lg border border-dashed border-brand-border text-sm text-gray-500">
-                Vista previa de portada
-              </div>
-            )}
-            <p className="text-xs text-gray-500">
-              Los archivos se guardan en <strong>Storage → Libros/</strong>
-            </p>
-          </div>
-        </div>
-
-        {/* Mensajes */}
-        {error && (
-          <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
-            <p className="text-sm text-red-400">{error}</p>
-          </div>
-        )}
-
-        {success && (
-          <div className="rounded-lg border border-green-500/20 bg-green-500/10 p-4">
-            <p className="text-sm text-green-400">✅ Libro creado exitosamente y guardado en Supabase Storage</p>
-          </div>
-        )}
-
-        {/* Botón guardar */}
-        <div className="flex justify-end">
-          <button
-            onClick={handleSubmit}
-            disabled={uploading || !ebookFile}
-            className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {uploading ? 'Subiendo a Supabase...' : 'Guardar Ebook'}
-          </button>
+              <p className="text-xs text-center text-gray-400">
+                Vista previa de la portada seleccionada
+              </p>
+            </>
+          ) : (
+            <div className="flex h-60 w-full items-center justify-center rounded-lg border border-dashed border-brand-border text-sm text-gray-500">
+              Seleccioná una portada para ver la vista previa
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Mensajes */}
+      {error && (
+        <div className="mt-6 rounded-lg border border-red-500/20 bg-red-500/10 p-4">
+          <p className="text-sm text-red-400">{error}</p>
+        </div>
+      )}
+
+      {success && (
+        <div className="mt-6 rounded-lg border border-green-500/20 bg-green-500/10 p-4">
+          <p className="text-sm text-green-400">✅ Ebook guardado correctamente y listo para ser vendido</p>
+        </div>
+      )}
     </section>
   );
 };
@@ -1065,9 +1019,50 @@ function AdminDashboard() {
     };
   }, [state.sales, routineMap, metrics.months, monthKeys]);
 
-  const uniqueEmails = useMemo(() => {
-    return Array.from(new Set(salesRecords.map((sale) => sale.email)));
-  }, [salesRecords]);
+  // Obtener emails únicos desde Supabase (solo de sales)
+  const [uniqueEmails, setUniqueEmails] = useState([]);
+  const [emailsLoading, setEmailsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchEmails = async () => {
+      setEmailsLoading(true);
+      try {
+        const { supabase } = await import('../lib/supabase');
+
+        // Llamar a la función RPC que obtiene emails únicos de sales
+        const { data, error } = await supabase.rpc('get_sales_emails');
+
+        if (error) {
+          console.error('Error fetching emails via RPC:', error);
+          // Fallback: usar emails del estado de sales
+          const emailSet = new Set();
+          state.sales.forEach((sale) => {
+            if (sale.userEmail && sale.userEmail.trim()) {
+              emailSet.add(sale.userEmail.trim().toLowerCase());
+            }
+          });
+          setUniqueEmails(Array.from(emailSet).sort());
+        } else if (data) {
+          // Usar emails desde RPC
+          setUniqueEmails(data.map(row => row.email).filter(Boolean));
+        }
+      } catch (err) {
+        console.error('Error in fetchEmails:', err);
+        // Fallback final
+        const emailSet = new Set();
+        state.sales.forEach((sale) => {
+          if (sale.userEmail && sale.userEmail.trim()) {
+            emailSet.add(sale.userEmail.trim().toLowerCase());
+          }
+        });
+        setUniqueEmails(Array.from(emailSet).sort());
+      } finally {
+        setEmailsLoading(false);
+      }
+    };
+
+    fetchEmails();
+  }, [state.sales]);
 
   const handleCreateTemplate = () => {
     navigate("/admin/plantillas/nueva");
@@ -1134,8 +1129,36 @@ function AdminDashboard() {
   };
 
   const handleExportEmails = () => {
-    const emails = uniqueEmails.join(", ");
-    downloadTextFile("clientes_fitter_emails.txt", emails);
+    if (uniqueEmails.length === 0) {
+      alert('No hay emails disponibles para exportar. Asegurate de tener clientes registrados o ventas completadas.');
+      return;
+    }
+
+    // Formato 1: Lista separada por comas (Gmail)
+    const emailsComma = uniqueEmails.join(", ");
+
+    // Formato 2: Lista vertical (más legible)
+    const emailsList = uniqueEmails.join("\n");
+
+    // Crear archivo con ambos formatos
+    const content = `==============================================
+LISTA DE EMAILS DE CLIENTES
+Exportado: ${new Date().toLocaleDateString('es-AR')} ${new Date().toLocaleTimeString('es-AR')}
+Total de emails únicos: ${uniqueEmails.length}
+==============================================
+
+FORMATO GMAIL (separados por comas):
+${emailsComma}
+
+==============================================
+
+FORMATO LISTA (uno por línea):
+${emailsList}
+
+==============================================
+`;
+
+    downloadTextFile("clientes_emails.txt", content);
   };
 
   return (
@@ -1204,6 +1227,9 @@ function AdminDashboard() {
         <DashboardMailExport
           onExport={handleExportEmails}
           emailCount={uniqueEmails.length}
+          salesCount={state.sales.length}
+          usersCount={state.users.length}
+          loading={emailsLoading}
         />
 
         <DashboardEbookManager />

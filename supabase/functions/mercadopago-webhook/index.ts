@@ -115,6 +115,7 @@ async function processApprovedPayment(payment: any) {
 
   try {
     const userEmail = payment.payer?.email;
+    const userId = payment.metadata?.user_id; // ID de Supabase
     const productId = payment.metadata?.product_id;
     const isBundle = payment.metadata?.is_bundle === true || payment.metadata?.is_bundle === 'true';
 
@@ -122,24 +123,51 @@ async function processApprovedPayment(payment: any) {
       throw new Error('Missing user email or product ID in payment metadata');
     }
 
+    console.log(`User ID from metadata: ${userId || 'not provided'}`);
+
     // 1. Detectar productos incluidos (si es bundle)
     let products = [];
+    const isDynamic = payment.metadata?.is_dynamic === true || payment.metadata?.is_dynamic === 'true';
+
     if (isBundle) {
-      console.log('Payment is for a bundle, fetching included products...');
-      const { data: bundleRelations } = await supabase
-        .from('product_bundles')
-        .select('included_product_id')
-        .eq('bundle_product_id', productId);
+      console.log('Payment is for a bundle');
 
-      const productIds = bundleRelations?.map(r => r.included_product_id) || [];
+      // Bundle dinámico: productos vienen en los metadatos
+      if (isDynamic) {
+        console.log('Dynamic bundle detected, extracting products from metadata...');
+        const routineId = payment.metadata?.routine_id;
+        const bookId = payment.metadata?.book_id;
 
-      const { data: bundleProducts } = await supabase
-        .from('products')
-        .select('id, type, name, price')
-        .in('id', productIds);
+        if (!routineId || !bookId) {
+          throw new Error('Missing routine_id or book_id in dynamic bundle metadata');
+        }
 
-      products = bundleProducts || [];
-      console.log(`Bundle contains ${products.length} products`);
+        const { data: bundleProducts } = await supabase
+          .from('products')
+          .select('id, type, name, price')
+          .in('id', [routineId, bookId]);
+
+        products = bundleProducts || [];
+        console.log(`Dynamic bundle contains ${products.length} products: ${products.map(p => p.name).join(', ')}`);
+      }
+      // Bundle persistente: productos vienen de la tabla product_bundles
+      else {
+        console.log('Persistent bundle detected, fetching from product_bundles...');
+        const { data: bundleRelations } = await supabase
+          .from('product_bundles')
+          .select('included_product_id')
+          .eq('bundle_product_id', productId);
+
+        const productIds = bundleRelations?.map(r => r.included_product_id) || [];
+
+        const { data: bundleProducts } = await supabase
+          .from('products')
+          .select('id, type, name, price')
+          .in('id', productIds);
+
+        products = bundleProducts || [];
+        console.log(`Persistent bundle contains ${products.length} products`);
+      }
     } else {
       const { data: product } = await supabase
         .from('products')
@@ -158,6 +186,7 @@ async function processApprovedPayment(payment: any) {
     const { data: sale, error: saleError } = await supabase
       .from('sales')
       .insert({
+        user_id: userId || null, // Asociar con el usuario si está disponible
         user_email: userEmail,
         total_amount: payment.transaction_amount,
         status: 'completed',
@@ -227,6 +256,7 @@ async function processApprovedPayment(payment: any) {
 
     // 6. Registrar actividad
     await supabase.from('activity_logs').insert({
+      user_id: userId || null,
       user_email: userEmail,
       action: 'sale_completed',
       entity_type: 'sale',
