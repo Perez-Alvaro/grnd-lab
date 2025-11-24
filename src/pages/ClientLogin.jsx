@@ -97,23 +97,23 @@ function ClientLogin() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black px-4 py-12">
+    <div className="flex min-h-screen items-center justify-center bg-black px-4 py-8 sm:py-12">
       <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="mb-8 text-center">
-          <Link to="/" className="inline-flex items-center space-x-3 group">
-            <div className="rounded-xl bg-[#B5FF00] p-3 transition-transform group-hover:scale-105">
-              <Dumbbell className="h-8 w-8 text-black" />
+        <div className="mb-6 sm:mb-8 text-center">
+          <Link to="/" className="inline-flex items-center space-x-2 sm:space-x-3 group">
+            <div className="rounded-xl bg-[#0EF2A0] p-2 sm:p-3 transition-transform group-hover:scale-105">
+              <Dumbbell className="h-6 w-6 sm:h-8 sm:w-8 text-black" />
             </div>
-            <h1 className="text-3xl font-bold text-white">
-              Fit<span className="text-[#B5FF00]">ter</span>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white">
+              Fit<span className="text-[#0EF2A0]">ter</span>
             </h1>
           </Link>
-          <p className="mt-4 text-neutral-400">Inicia sesión en tu cuenta</p>
+          <p className="mt-3 sm:mt-4 text-sm sm:text-base text-neutral-400">Inicia sesión en tu cuenta</p>
         </div>
 
         {/* Form Card */}
-        <div className="rounded-2xl border border-neutral-800 bg-neutral-900/50 p-8 shadow-2xl backdrop-blur">
+        <div className="rounded-2xl border border-neutral-800 bg-neutral-900/50 p-6 sm:p-8 shadow-2xl backdrop-blur">
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email Input */}
             <div>
@@ -130,7 +130,7 @@ function ClientLogin() {
                   onChange={handleChange}
                   className={`w-full rounded-lg border ${
                     errors.email ? 'border-red-500' : 'border-neutral-700'
-                  } bg-neutral-800 py-3 pl-11 pr-4 text-white outline-none transition-colors focus:border-[#B5FF00] focus:ring-2 focus:ring-[#B5FF00]/20`}
+                  } bg-neutral-800 py-3 pl-11 pr-4 text-white outline-none transition-colors focus:border-[#0EF2A0] focus:ring-2 focus:ring-[#0EF2A0]/20`}
                   placeholder="tu@email.com"
                   autoComplete="email"
                 />
@@ -148,7 +148,7 @@ function ClientLogin() {
                 </label>
                 <Link
                   to="/forgot-password"
-                  className="text-sm text-[#B5FF00] transition-colors hover:text-[#a0e600]"
+                  className="text-sm text-[#0EF2A0] transition-colors hover:text-[#00C0A3]"
                 >
                   ¿Olvidaste tu contraseña?
                 </Link>
@@ -163,7 +163,7 @@ function ClientLogin() {
                   onChange={handleChange}
                   className={`w-full rounded-lg border ${
                     errors.password ? 'border-red-500' : 'border-neutral-700'
-                  } bg-neutral-800 py-3 pl-11 pr-4 text-white outline-none transition-colors focus:border-[#B5FF00] focus:ring-2 focus:ring-[#B5FF00]/20`}
+                  } bg-neutral-800 py-3 pl-11 pr-4 text-white outline-none transition-colors focus:border-[#0EF2A0] focus:ring-2 focus:ring-[#0EF2A0]/20`}
                   placeholder="••••••••"
                   autoComplete="current-password"
                 />
@@ -187,7 +187,7 @@ function ClientLogin() {
             <button
               type="submit"
               disabled={loading || oauthLoading}
-              className="w-full rounded-lg bg-[#B5FF00] py-3 font-semibold text-black transition-all hover:bg-[#a0e600] disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full rounded-lg bg-[#0EF2A0] py-2.5 sm:py-3 text-sm sm:text-base font-semibold text-black transition-all hover:bg-[#00C0A3] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
             </button>
@@ -204,7 +204,7 @@ function ClientLogin() {
           <button
             onClick={() => handleOAuthLogin('google')}
             disabled={loading || oauthLoading}
-            className="flex w-full items-center justify-center gap-3 rounded-lg border border-neutral-700 bg-neutral-800/50 py-3 font-medium text-white transition-all hover:bg-neutral-800 hover:border-neutral-600 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex w-full items-center justify-center gap-2 sm:gap-3 rounded-lg border border-neutral-700 bg-neutral-800/50 py-2.5 sm:py-3 text-sm sm:text-base font-medium text-white transition-all hover:bg-neutral-800 hover:border-neutral-600 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {oauthLoading === 'google' ? (
               <Loader2 className="h-5 w-5 animate-spin" />
@@ -216,7 +216,7 @@ function ClientLogin() {
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
               </svg>
             )}
-            <span>Continuar con Google</span>
+            <span className="text-white">Continuar con Google</span>
           </button>
 
           {/* Register Link */}
@@ -225,7 +225,7 @@ function ClientLogin() {
               ¿No tienes cuenta?{' '}
               <Link
                 to="/register"
-                className="font-semibold text-[#B5FF00] transition-colors hover:text-[#a0e600]"
+                className="font-semibold text-[#0EF2A0] transition-colors hover:text-[#00C0A3]"
               >
                 Regístrate
               </Link>

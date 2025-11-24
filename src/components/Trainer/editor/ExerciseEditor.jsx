@@ -1,10 +1,15 @@
-import { memo, useCallback } from "react";
-import { Copy, Trash2 } from "lucide-react";
+import { memo, useCallback, useState, useRef } from "react";
+import { Copy, Trash2, Upload, X } from "lucide-react";
 import { usePlanContext } from "../../../context/PlanContext.jsx";
+import { multimediaService } from "../../../services/multimediaService.js";
 
 const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
   const { updateExerciseField, duplicateExercise, removeExercise } =
     usePlanContext();
+
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState(null);
+  const fileInputRef = useRef(null);
 
   const handleChange = useCallback(
     (field) => (event) => {
@@ -29,6 +34,41 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
       onActionError(error);
     }
   }, [dayId, exercise.id, onActionError, removeExercise, weekId]);
+
+  const handleVideoUpload = useCallback(async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploadError(null);
+    setUploading(true);
+
+    try {
+      const result = await multimediaService.uploadVideo(file, {
+        exerciseName: exercise.name || 'ejercicio'
+      });
+
+      // Actualizar el campo video con la URL del video subido
+      updateExerciseField(weekId, dayId, exercise.id, 'video', result.url);
+
+    } catch (error) {
+      console.error('Error uploading video:', error);
+      setUploadError(error.message);
+      if (onActionError) {
+        onActionError(error.message);
+      }
+    } finally {
+      setUploading(false);
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  }, [exercise.id, exercise.name, dayId, onActionError, updateExerciseField, weekId]);
+
+  const handleClearVideo = useCallback(() => {
+    updateExerciseField(weekId, dayId, exercise.id, 'video', '');
+    setUploadError(null);
+  }, [dayId, exercise.id, updateExerciseField, weekId]);
 
   const labelClasses =
     "text-xs font-semibold uppercase tracking-wide text-neutral-500";
@@ -102,13 +142,47 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
         </div>
         <div className="flex flex-col gap-2 md:col-span-3">
           <label className={labelClasses}>Video o referencia</label>
-          <input
-            type="url"
-            value={exercise.video}
-            onChange={handleChange("video")}
-            placeholder="URL del video"
-            className={inputClasses}
-          />
+          <div className="flex gap-2">
+            <input
+              type="url"
+              value={exercise.video}
+              onChange={handleChange("video")}
+              placeholder="URL del video o subir archivo"
+              className={inputClasses}
+              disabled={uploading}
+            />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="video/*"
+              onChange={handleVideoUpload}
+              className="hidden"
+              disabled={uploading}
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="inline-flex items-center gap-2 rounded-lg border border-neutral-700 px-3 py-2 text-xs font-semibold text-accent transition-colors hover:border-accent hover:bg-neutral-900 disabled:cursor-not-allowed disabled:opacity-50"
+              title="Subir video"
+            >
+              <Upload className="h-4 w-4" />
+              {uploading ? 'Subiendo...' : 'Subir'}
+            </button>
+            {exercise.video && !uploading && (
+              <button
+                type="button"
+                onClick={handleClearVideo}
+                className="inline-flex items-center gap-2 rounded-lg border border-red-500/40 px-3 py-2 text-xs font-semibold text-red-400 transition-colors hover:border-red-400 hover:bg-red-500/10"
+                title="Limpiar video"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+          {uploadError && (
+            <span className="text-xs text-red-400">{uploadError}</span>
+          )}
         </div>
       </div>
 

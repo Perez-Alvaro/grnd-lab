@@ -1,1 +1,2 @@
-export { default } from "./WeekSection.jsx";
+// Re-export from WeekSection.jsx
+export { default } from './WeekSection.jsx';

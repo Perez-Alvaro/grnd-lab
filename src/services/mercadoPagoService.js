@@ -11,7 +11,7 @@
  */
 
 import { MP_CONFIG, PAYMENT_STATUS, getErrorMessage } from '@/config/mercadopago.config';
-import { bundleService } from './bundleService';
+// import { bundleService } from './bundleService'; // Comentado - no se usa actualmente
 
 /**
  * Esperar un tiempo (para retry con backoff)
@@ -93,31 +93,26 @@ export const createPreference = async (product, userData) => {
 
       console.log(`Dynamic bundle contains ${items.length} items`);
     }
-    // Caso 2: Bundle persistente (guardado en DB)
-    else if (await bundleService.isBundleProduct(product.id)) {
-      console.log('Product is a persistent bundle, getting included products...');
-      isBundle = true;
-      const bundleInfo = await bundleService.getBundleInfo(product.id);
-
-      // Validar bundle
-      const validation = await bundleService.validateBundle(product.id);
-      if (!validation.valid) {
-        throw new Error(`Bundle inválido: ${validation.errors.join(', ')}`);
-      }
-
-      // Crear items del bundle
-      items = bundleInfo.products.map(p => ({
-        id: p.id,
-        title: p.name,
-        description: p.description || `${p.type === 'routine' ? 'Rutina' : 'Libro'} digital`,
-        category_id: p.type === 'routine' ? 'sports' : 'books',
-        quantity: 1,
-        unit_price: parseFloat(p.price),
-        currency_id: 'ARS'
-      }));
-
-      console.log(`Persistent bundle contains ${items.length} items`);
-    }
+    // Caso 2: Bundle persistente (guardado en DB) - DESHABILITADO
+    // else if (await bundleService.isBundleProduct(product.id)) {
+    //   console.log('Product is a persistent bundle, getting included products...');
+    //   isBundle = true;
+    //   const bundleInfo = await bundleService.getBundleInfo(product.id);
+    //   const validation = await bundleService.validateBundle(product.id);
+    //   if (!validation.valid) {
+    //     throw new Error(`Bundle inválido: ${validation.errors.join(', ')}`);
+    //   }
+    //   items = bundleInfo.products.map(p => ({
+    //     id: p.id,
+    //     title: p.name,
+    //     description: p.description || `${p.type === 'routine' ? 'Rutina' : 'Libro'} digital`,
+    //     category_id: p.type === 'routine' ? 'sports' : 'books',
+    //     quantity: 1,
+    //     unit_price: parseFloat(p.price),
+    //     currency_id: 'ARS'
+    //   }));
+    //   console.log(`Persistent bundle contains ${items.length} items`);
+    // }
     // Caso 3: Producto individual
     else {
       items = [{

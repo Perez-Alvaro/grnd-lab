@@ -1,11 +1,14 @@
-import { memo, useCallback } from "react";
+import { memo, useCallback, useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { usePlanContext } from "../../../context/PlanContext.jsx";
 import { TRAINING_GOALS } from "../../../constants/objectives.js";
 import ImageUploader from "@/components/Shared/ImageUploader.jsx";
+import { multimediaService } from "../../../services/multimediaService.js";
 
 const PlanMetadataForm = memo(() => {
   const { metadata, updateMetadata } = usePlanContext();
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadError, setUploadError] = useState(null);
 
   const handleChange = useCallback(
     (field) => (event) => {
@@ -15,8 +18,32 @@ const PlanMetadataForm = memo(() => {
   );
 
   const handleImageChange = useCallback(
-    (nextValue) => {
-      updateMetadata("image", nextValue);
+    async (nextValue, { file }) => {
+      // Si no hay archivo, solo actualizar (caso de limpieza)
+      if (!file) {
+        updateMetadata("image", nextValue);
+        return;
+      }
+
+      // Si hay archivo, subir a Supabase primero
+      setUploadingImage(true);
+      setUploadError(null);
+
+      try {
+        const result = await multimediaService.uploadImage(file, {
+          type: 'routine-cover'
+        });
+
+        // Actualizar con la URL del bucket multimedia
+        updateMetadata("image", result.url);
+      } catch (error) {
+        console.error('Error uploading cover image:', error);
+        setUploadError(error.message);
+        // Fallback: usar dataURL temporal
+        updateMetadata("image", nextValue);
+      } finally {
+        setUploadingImage(false);
+      }
     },
     [updateMetadata],
   );

@@ -202,7 +202,7 @@ export default function AdminLogin() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-950">
         <div className="text-center">
-          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-[#B5FF00] border-t-transparent"></div>
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-[#0EF2A0] border-t-transparent"></div>
           <p className="mt-4 text-neutral-400">Verificando autenticación...</p>
         </div>
       </div>
@@ -210,25 +210,25 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-neutral-950 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-neutral-950 px-4 py-8 sm:py-0">
       <div className="w-full max-w-md">
         {!needsMFA ? (
           <>
             {/* Logo */}
-            <div className="mb-8 text-center">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#B5FF00]">
-                <Shield className="h-8 w-8 text-black" />
+            <div className="mb-6 sm:mb-8 text-center">
+              <div className="mx-auto mb-3 sm:mb-4 flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-[#0EF2A0]">
+                <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-black" />
               </div>
-              <h1 className="text-3xl font-bold text-white">
-                Fitter <span className="text-[#B5FF00]">Admin</span>
+              <h1 className="text-2xl sm:text-3xl font-bold text-white">
+                Fitter <span className="text-[#0EF2A0]">Admin</span>
               </h1>
-              <p className="mt-2 text-sm text-neutral-400">
+              <p className="mt-2 text-xs sm:text-sm text-neutral-400">
                 Acceso restringido para administradores
               </p>
             </div>
 
             {/* Formulario */}
-            <div className="rounded-2xl border border-neutral-800 bg-neutral-900/50 p-8 backdrop-blur">
+            <div className="rounded-2xl border border-neutral-800 bg-neutral-900/50 p-6 sm:p-8 backdrop-blur">
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Email */}
                 <div>
@@ -243,7 +243,7 @@ export default function AdminLogin() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-lg border border-neutral-700 bg-neutral-800 px-4 py-3 text-white placeholder-neutral-500 outline-none transition-colors focus:border-[#B5FF00] focus:ring-2 focus:ring-[#B5FF00]/20"
+                    className="w-full rounded-lg border border-neutral-700 bg-neutral-800 px-4 py-3 text-white placeholder-neutral-500 outline-none transition-colors focus:border-[#0EF2A0] focus:ring-2 focus:ring-[#0EF2A0]/20"
                     placeholder="admin@fitter.com"
                     autoComplete="email"
                     disabled={loading}
@@ -264,7 +264,7 @@ export default function AdminLogin() {
                       type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full rounded-lg border border-neutral-700 bg-neutral-800 px-4 py-3 pr-12 text-white placeholder-neutral-500 outline-none transition-colors focus:border-[#B5FF00] focus:ring-2 focus:ring-[#B5FF00]/20"
+                      className="w-full rounded-lg border border-neutral-700 bg-neutral-800 px-4 py-3 pr-12 text-white placeholder-neutral-500 outline-none transition-colors focus:border-[#0EF2A0] focus:ring-2 focus:ring-[#0EF2A0]/20"
                       placeholder="••••••••"
                       autoComplete="current-password"
                       disabled={loading}
@@ -296,7 +296,7 @@ export default function AdminLogin() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-lg bg-[#B5FF00] px-6 py-3 font-semibold text-black transition-all hover:bg-[#a0e600] disabled:cursor-not-allowed disabled:opacity-50"
+                  className="w-full rounded-lg bg-[#0EF2A0] px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base font-semibold text-black transition-all hover:bg-[#00C0A3] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {loading ? (
                     <span className="flex items-center justify-center gap-2">
@@ -313,7 +313,7 @@ export default function AdminLogin() {
               <div className="mt-6 text-center">
                 <button
                   onClick={() => navigate('/')}
-                  className="text-sm text-neutral-400 transition-colors hover:text-[#B5FF00]"
+                  className="text-sm text-neutral-400 transition-colors hover:text-[#0EF2A0]"
                 >
                   ← Volver al inicio
                 </button>

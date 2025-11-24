@@ -1,49 +1,28 @@
-import React, { useMemo, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { FadeIn } from "../Shared/reactbits/index.js";
 import { useAppContext } from "../../context/AppContext.jsx";
-import { useClientAuth } from "../../context/UnifiedAuthContext.jsx";
 import { mercadoPagoService } from "../../services/mercadoPagoService.js";
-import { bundleService } from "../../services/bundleService.js";
-import { nutritionBookService } from "../../services/nutritionBookService.js";
-import { validateCheckoutForm } from "../../utils/validation.js";
-import logger from "../../utils/logger.js";
-import PremiumUpgradeStep from "./PremiumUpgradeStep.jsx";
+import { useClientAuth } from "../../context/UnifiedAuthContext.jsx";
 
-function PaymentSection({ routine, planType: externalPlanType, onSelectPlan, premiumAddonPrice: externalPremiumAddonPrice }) {
-  const navigate = useNavigate();
+function PaymentSection({
+  routine,
+  planType = "essential",
+  premiumAddonPrice = 6000,
+}) {
   const { dispatch } = useAppContext();
-  const { user, profile } = useClientAuth();
-
+  const { user } = useClientAuth();
   const [formData, setFormData] = useState({
-    email: user?.email || "",
+    email: "",
     firstName: "",
     lastName: "",
     phone: "",
   });
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
-  const [isBundle, setIsBundle] = useState(false);
-  const [bundleInfo, setBundleInfo] = useState(null);
-  const [validationErrors, setValidationErrors] = useState({});
-
-  // Estado para el libro de nutrición y plan premium
-  const [nutritionBook, setNutritionBook] = useState(null);
-  const [loadingBook, setLoadingBook] = useState(true);
-
-  // Usar el planType externo si se proporciona, sino usar estado interno
-  const [internalPlanType, setInternalPlanType] = useState("essential");
-  const planType = externalPlanType !== undefined ? externalPlanType : internalPlanType;
-  const setPlanType = onSelectPlan || setInternalPlanType;
-
-  // Calcular valores premium
+  const [error, setError] = useState(null);
   const isPremium = planType === "premium";
-  const premiumAddonPrice = externalPremiumAddonPrice !== undefined
-    ? externalPremiumAddonPrice
-    : (nutritionBook ? nutritionBook.price : 0);
-  const planLabel = isPremium ? "Plan Premium" : "Plan Essential";
+  const planLabel = isPremium ? "Plan Premium MZ" : "Plan Essential";
 
   const formatWeeks = (value) => {
     if (!value && value !== 0) return "—";
@@ -72,205 +51,92 @@ function PaymentSection({ routine, planType: externalPlanType, onSelectPlan, pre
     () =>
       routine
         ? {
-            id: `routine-${routine.id}`,
-            name: routine.name,
-            price: totalPrice,
-            label: planLabel,
-            type: planType,
-            premiumAddonPrice,
-          }
+          id: `routine-${routine.id}`,
+          name: routine.name,
+          price: totalPrice,
+          label: planLabel,
+          type: planType,
+          premiumAddonPrice,
+        }
         : null,
     [planLabel, planType, premiumAddonPrice, routine, totalPrice],
   );
 
-  // Cargar primer ebook disponible al montar el componente
-  useEffect(() => {
-    const loadPremiumBook = async () => {
-      try {
-        const book = await nutritionBookService.getPrimaryBook();
-        setNutritionBook(book);
-        logger.info('Premium book loaded from database', {
-          available: !!book,
-          name: book?.name,
-          price: book?.price
-        });
-      } catch (error) {
-        logger.error('Error loading premium book', error);
-      } finally {
-        setLoadingBook(false);
-      }
-    };
-
-    loadPremiumBook();
-  }, []);
-
-  // Detectar si es bundle al montar el componente
-  useEffect(() => {
-    const checkIfBundle = async () => {
-      if (!routine) return;
-
-      try {
-        const isBundleProduct = await bundleService.isBundleProduct(routine.id);
-        setIsBundle(isBundleProduct);
-
-        if (isBundleProduct) {
-          const info = await bundleService.getBundleInfo(routine.id);
-          setBundleInfo(info);
-          logger.info('Bundle detected', { bundleId: routine.id, products: info.products.length });
-        }
-      } catch (error) {
-        logger.error('Error checking bundle', error);
-      }
-    };
-
-    checkIfBundle();
-  }, [routine]);
-
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    // Limpiar error de validación al escribir
-    if (validationErrors[field]) {
-      setValidationErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[field];
-        return newErrors;
-      });
-    }
-  };
-
-  const handleSelectPlan = (selectedPlanType) => {
-    logger.info('Plan selected', { planType: selectedPlanType, nutritionBookPrice: nutritionBook?.price });
-    setPlanType(selectedPlanType);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    console.log('🛒 Payment submit initiated');
-    console.log('📦 Routine:', routine);
-    console.log('👤 User:', user);
-    console.log('📋 Form data:', formData);
-
-    if (!routine || !plan) {
-      console.error('❌ No routine or plan selected');
-      return;
-    }
-
-    // Validar formulario
-    const validation = validateCheckoutForm(formData);
-    if (!validation.valid) {
-      console.error('❌ Form validation failed:', validation.errors);
-      setValidationErrors(validation.errors);
-      setError('Por favor completa todos los campos correctamente');
-      return;
-    }
-
-    // Verificar que el usuario esté logueado
-    if (!user || !profile) {
-      logger.info('User not logged in, redirecting to login');
-      // Guardar la información de compra pendiente
-      const purchaseData = {
-        routine: {
-          id: routine.id,
-          name: routine.name,
-          price: routine.price
-        },
-        planType,
-        premiumAddonPrice,
-        formData
-      };
-      localStorage.setItem('pending_purchase', JSON.stringify(purchaseData));
-      navigate('/login', { state: { from: '/', pendingPurchase: true } });
-      return;
-    }
-
-    console.log('✅ User authenticated, proceeding with payment');
+    if (!routine || !plan) return;
 
     setProcessing(true);
-    setError("");
-    setValidationErrors({});
-
-    const timer = logger.createTimer('create_mp_preference');
+    setError(null);
 
     try {
-      // Determinar qué producto enviar a Mercado Pago
-      let productToSend = routine;
-
-      // Si el usuario seleccionó plan premium Y tenemos el libro de nutrición
-      // crear un bundle dinámico
-      if (isPremium && nutritionBook) {
-        logger.info('Creating dynamic bundle for premium plan', {
-          routineId: routine.id,
-          bookId: nutritionBook.id,
-          totalPrice
-        });
-
-        productToSend = nutritionBookService.createDynamicBundle(routine, nutritionBook);
-      }
-
-      logger.info('Creating Mercado Pago preference', {
-        productId: productToSend.id,
-        productType: productToSend.type,
-        isBundle: productToSend.type === 'bundle',
-        isDynamic: productToSend.isDynamic || false,
-        totalPrice: productToSend.price,
-        userEmail: user.email
-      });
-
-      // Crear preferencia de pago en Mercado Pago
-      const { preferenceId, initPoint } = await mercadoPagoService.createPreference(
-        productToSend,
-        {
-          email: formData.email,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          userId: user.id // Incluir el ID del usuario de Supabase
+      // Preparar datos del producto
+      const productData = {
+        id: routine.id,
+        name: routine.name,
+        description: routine.description || `Rutina ${routine.name}`,
+        price: totalPrice,
+        type: 'routine',
+        // Si es premium, agregar metadata
+        metadata: isPremium ? {
+          plan_type: 'premium',
+          includes_ebook: true,
+          addon_price: premiumAddonPrice
+        } : {
+          plan_type: 'essential'
         }
+      };
+
+      // Preparar datos del usuario
+      const userData = {
+        email: formData.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phone: formData.phone,
+        userId: user?.id || null, // ID de Supabase si está autenticado
+        planType: planType
+      };
+
+      console.log('🚀 Iniciando proceso de pago con MercadoPago...');
+      console.log('📦 Producto:', productData);
+      console.log('👤 Usuario:', { ...userData, userId: userData.userId ? '***' : null });
+
+      // Crear preferencia de pago en MercadoPago
+      const { preferenceId, initPoint } = await mercadoPagoService.createPreference(
+        productData,
+        userData
       );
 
-      timer.end();
+      console.log('✅ Preferencia creada:', preferenceId);
+      console.log('🔗 Redirigiendo a MercadoPago Checkout:', initPoint);
 
-      console.log('✅ Preference created successfully');
-      console.log('🔗 Init Point:', initPoint);
-      console.log('🆔 Preference ID:', preferenceId);
-
-      logger.info('Preference created, redirecting to MP', {
-        preferenceId,
-        isBundle
+      // Guardar datos en contexto antes de redireccionar
+      dispatch({
+        type: "SET_PENDING_PURCHASE",
+        payload: {
+          routine,
+          plan,
+          userData,
+          preferenceId
+        }
       });
 
-      // Redirigir al Checkout Pro de Mercado Pago
-      console.log('🚀 Redirecting to Mercado Pago...');
+      // Redirigir a MercadoPago Checkout Pro
       window.location.href = initPoint;
 
     } catch (err) {
-      console.error('❌ Error creando preferencia:', err);
-      console.error('❌ Error details:', {
-        message: err.message,
-        stack: err.stack,
-        response: err.response
-      });
-
-      logger.paymentError('unknown', err.message, {
-        routineId: routine.id,
-        userEmail: user.email
-      });
-
-      // Mostrar error detallado al usuario
-      const errorMessage = err.message || 'Error desconocido';
-      setError(
-        `Error al conectar con Mercado Pago: ${errorMessage}. Por favor verifica que las credenciales estén configuradas en Supabase.`
-      );
+      console.error('❌ Error al procesar el pago:', err);
+      setError(err.message || 'Error al procesar el pago. Por favor, intenta nuevamente.');
       setProcessing(false);
-
-      // NO redirigir al dashboard, quedarse en la página para mostrar el error
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
-  const sectionClasses = "mt-16 flex flex-col gap-6 p-6 md:p-10";
-  const headerClasses =
-    "space-y-2 text-center md:text-left";
+  const sectionClasses = "mt-8 flex flex-col gap-4 p-5 text-natural-wrap sm:mt-10 sm:gap-5 sm:p-6 md:mt-12 md:gap-6 md:p-8 lg:mt-16 lg:p-10";
+  const headerClasses = "space-y-2 text-center text-natural-wrap sm:space-y-3 md:text-left";
   const motionCardProps = {
     initial: { opacity: 0, y: 24 },
     animate: { opacity: 1, y: 0 },
@@ -284,10 +150,10 @@ function PaymentSection({ routine, planType: externalPlanType, onSelectPlan, pre
           <h4 className="text-xs uppercase tracking-[0.4em] text-accent">
             Paso 04
           </h4>
-          <h2 className="text-3xl font-semibold text-white md:text-4xl">
+          <h2 className="text-3xl font-semibold text-white md:text-4xl text-natural-wrap">
             Checkout Mercado Pago
           </h2>
-          <p className="text-sm text-gray-400 md:text-base">
+          <p className="text-sm text-gray-400 md:text-base text-natural-wrap">
             Confirmá tus datos y ejecutá el pago seguro con Mercado Pago.
           </p>
         </header>
@@ -315,7 +181,7 @@ function PaymentSection({ routine, planType: externalPlanType, onSelectPlan, pre
           <h2 className="text-3xl font-semibold text-white md:text-4xl">
             Pago confirmado
           </h2>
-          <p className="text-sm text-gray-400 md:text-base">
+          <p className="mock-text text-sm md:text-base">
             Te enviamos la rutina seleccionada y el comprobante de Mercado Pago.
           </p>
         </header>
@@ -326,20 +192,24 @@ function PaymentSection({ routine, planType: externalPlanType, onSelectPlan, pre
               ✅
             </div>
             <div className="space-y-3">
-              <h3 className="text-3xl font-semibold uppercase text-white">
+              <h3 className="text-3xl font-semibold uppercase text-white break-words whitespace-normal">
                 ¡Listo!<br className="hidden md:block" /> Pago acreditado
               </h3>
-              <p className="text-sm text-gray-400">
-                Tu rutina <span className="text-white">{routine.name}</span> ya está disponible en tu dashboard.
-                Redirigiendo en 3 segundos...
+              <p className="mock-text text-sm break-words whitespace-normal">
+                Enviamos <span className="mock-text text-white">{plan?.label}</span> y tu
+                rutina <span className="mock-text text-white">{routine.name}</span> a{" "}
+                <span className="mock-text text-white">{formData.email}</span>.
+                {isPremium
+                  ? " Incluimos el ebook nutricional y la invitación a la Comunidad MZ."
+                  : " Recordá que podés mejorar a Premium más adelante."}
               </p>
             </div>
             <button
               type="button"
-              className="w-full rounded-full bg-[#B5FF00] px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-[#D0FF4D] md:w-auto"
-              onClick={() => navigate('/client/dashboard')}
+              className="w-full rounded-full bg-accent px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong md:w-auto"
+              onClick={() => window.location.assign("/landing")}
             >
-              Ir a Mi Dashboard
+              Volver al inicio
             </button>
           </div>
         </FadeIn>
@@ -348,33 +218,21 @@ function PaymentSection({ routine, planType: externalPlanType, onSelectPlan, pre
   }
 
   return (
-    <>
-      {/* Paso 03: Selección de plan (Premium upgrade) */}
-      {!loadingBook && nutritionBook && (
-        <PremiumUpgradeStep
-          routine={routine}
-          planType={planType}
-          onSelectPlan={handleSelectPlan}
-          premiumAddonPrice={premiumAddonPrice}
-        />
-      )}
+    <section id="checkout-section" className={sectionClasses}>
+      <header className={headerClasses}>
+        <h4 className="text-xs uppercase tracking-[0.4em] text-accent">
+          Paso 04
+        </h4>
+        <h2 className="text-3xl font-semibold text-white md:text-4xl text-natural-wrap">
+          Checkout Mercado Pago
+        </h2>
+        <p className="text-sm text-gray-400 md:text-base text-natural-wrap">
+          Confirmá tus datos y ejecutá el pago seguro con Mercado Pago.
+        </p>
+      </header>
 
-      {/* Paso 04: Checkout y pago */}
-      <section id="checkout-section" className={sectionClasses}>
-        <header className={headerClasses}>
-          <h4 className="text-xs uppercase tracking-[0.4em] text-accent">
-            Paso 04
-          </h4>
-          <h2 className="text-3xl font-semibold text-white md:text-4xl">
-            Checkout Mercado Pago
-          </h2>
-          <p className="text-sm text-gray-400 md:text-base">
-            Confirmá tus datos y ejecutá el pago seguro con Mercado Pago.
-          </p>
-        </header>
-
-        <motion.div
-        className="rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_0_35px_-20px_rgba(181,255,0,0.35)] md:p-10"
+      <motion.div
+        className="rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_0_35px_-20px_rgba(14,242,160,0.45)] md:p-10"
         {...motionCardProps}
       >
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
@@ -382,28 +240,20 @@ function PaymentSection({ routine, planType: externalPlanType, onSelectPlan, pre
             <span className="text-xs uppercase tracking-[0.3em] text-gray-500">
               Plan seleccionado
             </span>
-            <h3 className="text-2xl font-semibold text-white md:text-3xl">
+            <h3 className="mock-text text-2xl font-semibold md:text-3xl text-natural-wrap">
               {routine.name}
             </h3>
-            <p className="text-sm text-gray-400">
+            <p className="mock-text text-sm text-natural-wrap">
               {formatWeeks(routine.duration)} • {formatFrequency(routine.frequency)}
               {routine.level && routine.level !== ""
                 ? ` • Nivel ${routine.level}`
                 : ""}
             </p>
-            {isBundle && bundleInfo && (
-              <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-[#B5FF00]/10 px-3 py-1">
-                <span className="text-xs font-semibold text-[#B5FF00]">
-                  📦 Bundle: {bundleInfo.products.length} productos
-                </span>
-              </div>
-            )}
             <span
-              className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${
-                isPremium
+              className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${isPremium
                   ? "border border-accent/60 bg-accent/10 text-accent"
                   : "border border-brand-border text-gray-300"
-              }`}
+                }`}
             >
               {planLabel}
             </span>
@@ -423,6 +273,14 @@ function PaymentSection({ routine, planType: externalPlanType, onSelectPlan, pre
           </div>
         </div>
 
+        {error && (
+          <div className="rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-center">
+            <p className="text-sm text-red-400">
+              {error}
+            </p>
+          </div>
+        )}
+
         <form className="mt-8 grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <label className="flex flex-col gap-2 text-sm font-medium text-gray-200">
@@ -433,12 +291,9 @@ function PaymentSection({ routine, planType: externalPlanType, onSelectPlan, pre
                 onChange={(event) =>
                   handleChange("firstName", event.target.value)
                 }
-                className={`rounded-lg border ${validationErrors.firstName ? 'border-red-500' : 'border-[#2E2E2E]'} bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none`}
+                className="rounded-lg border border-brand-border bg-base px-4 py-3 text-sm text-white focus:border-accent focus:outline-none"
                 placeholder="Tu nombre"
               />
-              {validationErrors.firstName && (
-                <span className="text-xs text-red-400">{validationErrors.firstName}</span>
-              )}
             </label>
             <label className="flex flex-col gap-2 text-sm font-medium text-gray-200">
               Apellido
@@ -448,12 +303,9 @@ function PaymentSection({ routine, planType: externalPlanType, onSelectPlan, pre
                 onChange={(event) =>
                   handleChange("lastName", event.target.value)
                 }
-                className={`rounded-lg border ${validationErrors.lastName ? 'border-red-500' : 'border-[#2E2E2E]'} bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none`}
+                className="rounded-lg border border-brand-border bg-base px-4 py-3 text-sm text-white focus:border-accent focus:outline-none"
                 placeholder="Tu apellido"
               />
-              {validationErrors.lastName && (
-                <span className="text-xs text-red-400">{validationErrors.lastName}</span>
-              )}
             </label>
           </div>
 
@@ -464,20 +316,33 @@ function PaymentSection({ routine, planType: externalPlanType, onSelectPlan, pre
               type="email"
               value={formData.email}
               onChange={(event) => handleChange("email", event.target.value)}
-              className={`rounded-lg border ${validationErrors.email ? 'border-red-500' : 'border-[#2E2E2E]'} bg-[#0A0A0A] px-4 py-3 text-sm text-white focus:border-[#B5FF00] focus:outline-none`}
+              className="rounded-lg border border-brand-border bg-base px-4 py-3 text-sm text-white focus:border-accent focus:outline-none"
               placeholder="tuemail@example.com"
             />
-            {validationErrors.email ? (
-              <span className="text-xs text-red-400">{validationErrors.email}</span>
-            ) : (
-              <span className="text-xs text-gray-500">
-                Enviaremos {isBundle ? 'tus archivos' : 'la rutina'}, seguimiento y comprobante a este correo.
-              </span>
-            )}
+            <span className="text-xs text-gray-500">
+              Enviaremos la rutina, seguimiento y comprobante a este correo.
+            </span>
           </label>
 
-          <div className="flex flex-col items-center gap-4 rounded-xl border border-[#2E2E2E] bg-[#0A0A0A] p-6 text-center">
-            <span className="text-sm font-semibold uppercase tracking-[0.3em] text-[#B5FF00]">
+          <label className="flex flex-col gap-2 text-sm font-medium text-gray-200">
+            Teléfono
+            <input
+              required
+              type="tel"
+              name="telefono"
+              value={formData.phone}
+              onChange={(event) => handleChange("phone", event.target.value)}
+              className="w-full rounded-lg border border-accent text-accent bg-neutral-950 px-4 py-3 text-sm focus:ring-2 focus:ring-accent"
+              placeholder="Tu número de teléfono"
+            />
+            <span className="text-xs text-gray-500">
+              Utilizamos este canal para enviarte novedades del plan y acceso a
+              la comunidad MZ.
+            </span>
+          </label>
+
+          <div className="flex flex-col items-center gap-4 rounded-xl border border-brand-border bg-base p-6 text-center">
+            <span className="text-sm font-semibold uppercase tracking-[0.3em] text-accent">
               Método de pago
             </span>
             <div className="flex items-center justify-center">
@@ -493,25 +358,18 @@ function PaymentSection({ routine, planType: externalPlanType, onSelectPlan, pre
             </p>
           </div>
 
-          {error && (
-            <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
-              <p className="text-sm text-red-400">{error}</p>
-            </div>
-          )}
-
           <button
             type="submit"
             disabled={processing}
             className="w-full rounded-full bg-accent px-8 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong disabled:cursor-not-allowed disabled:bg-brand-border disabled:text-gray-500"
           >
             {processing
-              ? "Redirigiendo a Mercado Pago..."
+              ? "Procesando..."
               : `Proceder al pago - $${totalPrice.toLocaleString("es-AR")}`}
           </button>
         </form>
       </motion.div>
     </section>
-    </>
   );
 }
 

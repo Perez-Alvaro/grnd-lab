@@ -222,15 +222,62 @@ async function processApprovedPayment(payment: any) {
 
     console.log(`Created ${saleItems.length} sale items`);
 
-    // 4. Generar PDFs y obtener archivos
+    // 4. Generar PDFs y obtener archivos del Storage
     const files = [];
     for (const item of saleItems) {
       const product = products.find(p => p.id === item.product_id);
 
       if (product?.type === 'routine') {
-        // TODO: Generar PDF de rutina (implementar después)
-        console.log(`TODO: Generate routine PDF for ${product.id}`);
-        // Por ahora solo registramos que se debe generar
+        // Buscar PDF pre-generado en Storage
+        console.log(`Looking for routine PDF: routines/${product.id}.pdf`);
+        const filePath = `routines/${product.id}.pdf`;
+
+        try {
+          // Verificar si existe el archivo
+          const { data: fileList, error: listError } = await supabase.storage
+            .from('Rutinas')
+            .list('routines', {
+              search: `${product.id}.pdf`
+            });
+
+          if (!listError && fileList && fileList.length > 0) {
+            // Obtener URL firmada (válida por 7 días)
+            const { data: signedUrl, error: urlError } = await supabase.storage
+              .from('Rutinas')
+              .createSignedUrl(filePath, 604800); // 7 días en segundos
+
+            if (!urlError && signedUrl) {
+              // Registrar archivo en generated_files
+              const { data: generatedFile, error: genError } = await supabase
+                .from('generated_files')
+                .insert({
+                  sale_item_id: item.id,
+                  file_path: filePath,
+                  file_url: signedUrl.signedUrl,
+                  file_size_kb: 0, // Se puede actualizar después
+                  expires_at: new Date(Date.now() + 604800000).toISOString() // 7 días
+                })
+                .select()
+                .single();
+
+              if (!genError) {
+                files.push({
+                  type: 'routine',
+                  name: product.name,
+                  path: filePath,
+                  url: signedUrl.signedUrl,
+                  sale_item_id: item.id,
+                  generated_file_id: generatedFile.id
+                });
+                console.log(`Found routine PDF: ${filePath}`);
+              }
+            }
+          } else {
+            console.warn(`Routine PDF not found: ${filePath}`);
+          }
+        } catch (error) {
+          console.error(`Error fetching routine PDF for ${product.id}:`, error);
+        }
       } else if (product?.type === 'book') {
         // Obtener PDF pre-existente del libro
         const { data: book } = await supabase
@@ -240,19 +287,123 @@ async function processApprovedPayment(payment: any) {
           .single();
 
         if (book?.file_path) {
-          files.push({
-            type: 'book',
-            name: product.name,
-            path: book.file_path,
-            sale_item_id: item.id
-          });
+          // Obtener URL firmada
+          const { data: signedUrl, error: urlError } = await supabase.storage
+            .from('Libros')
+            .createSignedUrl(book.file_path, 604800);
+
+          if (!urlError && signedUrl) {
+            // Registrar archivo en generated_files
+            const { data: generatedFile } = await supabase
+              .from('generated_files')
+              .insert({
+                sale_item_id: item.id,
+                file_path: book.file_path,
+                file_url: signedUrl.signedUrl,
+                expires_at: new Date(Date.now() + 604800000).toISOString()
+              })
+              .select()
+              .single();
+
+            files.push({
+              type: 'book',
+              name: product.name,
+              path: book.file_path,
+              url: signedUrl.signedUrl,
+              sale_item_id: item.id,
+              generated_file_id: generatedFile?.id
+            });
+          }
         }
       }
     }
 
-    // 5. Enviar email con archivos
-    // TODO: Implementar envío de email con attachments
-    console.log(`TODO: Send email to ${userEmail} with ${files.length} files`);
+    // 5. Enviar email con archivos usando Resend
+    if (files.length > 0) {
+      try {
+        console.log(`Sending email to ${userEmail} with ${files.length} files`);
+
+        // Construir lista de productos para el email
+        const productsList = products.map(p => `- ${p.name}`).join('\n');
+
+        const { data: emailData, error: emailError } = await resend.emails.send({
+          from: Deno.env.get('RESEND_FROM_EMAIL') || 'onboarding@resend.dev',
+          to: [userEmail],
+          subject: '¡Tu compra en MZ Training está lista!',
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+              <h1 style="color: #0ef2a0;">¡Gracias por tu compra!</h1>
+
+              <p>Hola,</p>
+
+              <p>Tu pago ha sido procesado exitosamente. Aquí están los detalles de tu compra:</p>
+
+              <div style="background-color: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <h3 style="margin-top: 0;">Productos adquiridos:</h3>
+                <pre style="font-family: Arial, sans-serif; white-space: pre-line;">${productsList}</pre>
+                <p><strong>Total:</strong> $${payment.transaction_amount.toLocaleString('es-AR')}</p>
+                <p><strong>ID de pago:</strong> ${payment.id}</p>
+              </div>
+
+              <h3>Descarga tus archivos:</h3>
+              <p>Haz clic en los enlaces a continuación para descargar tus rutinas (los enlaces son válidos por 7 días):</p>
+
+              <ul>
+                ${files.map(file => `
+                  <li style="margin: 10px 0;">
+                    <a href="${file.url}" style="color: #0ef2a0; text-decoration: none; font-weight: bold;">
+                      📥 Descargar ${file.name}
+                    </a>
+                  </li>
+                `).join('')}
+              </ul>
+
+              <p style="margin-top: 30px;">También puedes acceder a tus compras en cualquier momento desde tu dashboard en nuestro sitio web.</p>
+
+              <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+
+              <p style="color: #666; font-size: 14px;">
+                Si tienes alguna pregunta, no dudes en contactarnos.<br>
+                ¡Disfruta tu entrenamiento!
+              </p>
+
+              <p style="color: #666; font-size: 14px; margin-top: 20px;">
+                <strong>MZ Training</strong><br>
+                Tu camino hacia el mejor físico
+              </p>
+            </div>
+          `
+        });
+
+        if (emailError) {
+          console.error('Error sending email:', emailError);
+          throw emailError;
+        }
+
+        console.log(`Email sent successfully:`, emailData);
+
+        // Registrar envío de email
+        await supabase.from('email_logs').insert({
+          user_id: userId || null,
+          recipient_email: userEmail,
+          email_type: 'purchase_confirmation',
+          subject: '¡Tu compra en MZ Training está lista!',
+          template_name: 'purchase_confirmation',
+          sent_at: new Date().toISOString(),
+          provider: 'resend',
+          provider_id: emailData?.id,
+          status: 'sent',
+          sale_id: sale.id
+        });
+
+      } catch (error) {
+        console.error('Failed to send email:', error);
+        // No lanzamos error aquí para no bloquear el proceso
+        // El usuario aún puede descargar desde el dashboard
+      }
+    } else {
+      console.warn('No files found to send, skipping email');
+    }
 
     // 6. Registrar actividad
     await supabase.from('activity_logs').insert({

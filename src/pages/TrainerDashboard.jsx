@@ -27,6 +27,8 @@ import { useAppContext } from "../context/AppContext.jsx";
 import usePDFExport from "../hooks/usePDFExport.js";
 import TemplateCard from "../components/Trainer/TemplateCard.jsx";
 import { TRAINING_GOAL_LABELS } from "../constants/objectives.js";
+import Navbar from "../components/Shared/Navbar.jsx";
+import Footer from "../components/Shared/Footer.jsx";
 
 const PLAN_VARIANTS = {
   premium: { label: "Premium", className: "text-accent" },
@@ -81,7 +83,7 @@ const DashboardHeader = ({ onCreateTemplate, onGoToTemplates }) => (
       <h1 className="text-3xl font-semibold text-white md:text-4xl">
         Rendimiento del negocio fitness
       </h1>
-      <p className="max-w-2xl text-sm text-gray-400 md:text-base">
+      <p className="max-w-2xl text-sm !text-white md:text-base">
         Seguimiento integral de ingresos, plantillas y comportamiento de tus
         clientes para tomar decisiones basadas en datos.
       </p>
@@ -661,6 +663,58 @@ const DashboardEbookManager = () => {
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const [existingBook, setExistingBook] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
+
+  // Cargar libro existente al montar el componente
+  useEffect(() => {
+    loadExistingBook();
+  }, []);
+
+  const loadExistingBook = async () => {
+    try {
+      setLoading(true);
+      const { bookService } = await import('../services/bookService.js');
+      const books = await bookService.getAllBooks();
+
+      // Buscar el libro oficial de nutrición
+      const nutritionBook = books.find(book => book.slug === 'ebook-nutricion-mz');
+
+      if (nutritionBook) {
+        setExistingBook(nutritionBook);
+
+        // Generar URL firmada para mostrar preview de la portada existente
+        if (nutritionBook.image_url) {
+          const { supabase } = await import('../lib/supabase.js');
+
+          // Determinar el path correcto en el bucket
+          let imagePath = nutritionBook.image_url;
+
+          // Si es una URL completa, extraer solo el path
+          if (imagePath.includes('supabase')) {
+            const urlParts = imagePath.split('/storage/v1/object/public/Libros/');
+            imagePath = urlParts[1] || imagePath;
+          }
+
+          // Generar URL firmada (válida por 1 hora)
+          const { data: signedUrl, error } = await supabase.storage
+            .from('Libros')
+            .createSignedUrl(imagePath, 3600);
+
+          if (!error && signedUrl) {
+            setCoverPreview(signedUrl.signedUrl);
+          } else {
+            console.warn('No se pudo generar URL firmada para la portada:', error);
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Error loading existing book:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handlePdfUpload = (event) => {
     const file = event.target.files?.[0];
@@ -729,6 +783,51 @@ const DashboardEbookManager = () => {
     }
   };
 
+  const handleDelete = async () => {
+    if (!existingBook) {
+      setError('No hay libro para eliminar');
+      return;
+    }
+
+    const confirmDelete = window.confirm(
+      '¿Estás seguro de que quieres eliminar el ebook? Esta acción no se puede deshacer.'
+    );
+
+    if (!confirmDelete) return;
+
+    setDeleting(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      const { bookService } = await import('../services/bookService.js');
+
+      console.log('🗑️ Deleting book:', existingBook.id);
+
+      await bookService.deleteBook(existingBook.id);
+
+      console.log('✅ Book deleted successfully');
+
+      // Limpiar estados
+      setExistingBook(null);
+      setCoverPreview(null);
+      setEbookFile(null);
+      setCoverFile(null);
+      setSuccess(true);
+
+      // Mensaje de éxito
+      setTimeout(() => {
+        setSuccess(false);
+      }, 3000);
+
+    } catch (err) {
+      console.error('❌ Error al eliminar el libro:', err);
+      setError(err.message || 'Error al eliminar el libro');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <section className="rounded-2xl border border-brand-border bg-surface p-6 shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)]">
       <h2 className="text-lg font-semibold text-accent">📘 Ebook de Nutrición</h2>
@@ -770,14 +869,23 @@ const DashboardEbookManager = () => {
             )}
           </div>
 
-          {/* Botón guardar */}
-          <button
-            onClick={handleSubmit}
-            disabled={uploading || !ebookFile || !coverFile}
-            className="mt-4 w-full rounded-full bg-accent px-6 py-3 text-sm font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {uploading ? 'Subiendo archivos...' : 'Guardar Ebook'}
-          </button>
+          {/* Botones */}
+          <div className="mt-4 flex gap-3">
+            <button
+              onClick={handleSubmit}
+              disabled={uploading || !ebookFile || !coverFile}
+              className="flex-1 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {uploading ? 'Subiendo archivos...' : 'Guardar Ebook'}
+            </button>
+            <button
+              onClick={handleDelete}
+              disabled={deleting || !existingBook || loading}
+              className="rounded-full bg-red-500/10 px-6 py-3 text-sm font-semibold text-red-400 transition-all hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {deleting ? 'Eliminando...' : '🗑️ Eliminar'}
+            </button>
+          </div>
         </div>
 
         {/* Preview */}
@@ -904,8 +1012,8 @@ function AdminDashboard() {
     const revenueForMonth = (monthKey) =>
       monthKey
         ? state.sales
-            .filter((sale) => sale.date.startsWith(monthKey))
-            .reduce((sum, sale) => sum + sale.amount, 0)
+          .filter((sale) => sale.date.startsWith(monthKey))
+          .reduce((sum, sale) => sum + sale.amount, 0)
         : 0;
 
     const downloadsForMonth = (monthKey) =>
@@ -992,8 +1100,8 @@ function AdminDashboard() {
 
     const monthsRange = metrics.months?.latest
       ? Array.from({ length: 6 }).map((_, index) =>
-          addMonths(metrics.months.latest, index - 5),
-        )
+        addMonths(metrics.months.latest, index - 5),
+      )
       : (metrics.months?.all || monthKeys).slice(-6);
 
     const monthlyRevenueData = monthsRange.map((monthKey) => {
@@ -1129,40 +1237,31 @@ function AdminDashboard() {
   };
 
   const handleExportEmails = () => {
-    if (uniqueEmails.length === 0) {
-      alert('No hay emails disponibles para exportar. Asegurate de tener clientes registrados o ventas completadas.');
-      return;
-    }
-
-    // Formato 1: Lista separada por comas (Gmail)
-    const emailsComma = uniqueEmails.join(", ");
-
-    // Formato 2: Lista vertical (más legible)
-    const emailsList = uniqueEmails.join("\n");
-
-    // Crear archivo con ambos formatos
-    const content = `==============================================
-LISTA DE EMAILS DE CLIENTES
-Exportado: ${new Date().toLocaleDateString('es-AR')} ${new Date().toLocaleTimeString('es-AR')}
-Total de emails únicos: ${uniqueEmails.length}
-==============================================
-
-FORMATO GMAIL (separados por comas):
-${emailsComma}
-
-==============================================
-
-FORMATO LISTA (uno por línea):
-${emailsList}
-
-==============================================
-`;
-
-    downloadTextFile("clientes_emails.txt", content);
+    const emails = uniqueEmails.join(", ");
+    downloadTextFile("clientes_fitter_emails.txt", emails);
   };
 
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const menuItems = [
+    { label: "Dashboard", onClick: () => window.scrollTo({ top: 0, behavior: "smooth" }) },
+    { label: "Plantillas", onClick: () => scrollToSection("templates-section") },
+    { label: "Ventas", onClick: () => scrollToSection("sales-section") },
+    { label: "Contactos", onClick: () => scrollToSection("contacts-section") }
+  ];
+
   return (
-    <div className="min-h-screen bg-base text-gray-200">
+    <div className="relative min-h-screen bg-base text-gray-200">
+      {/* Navbar */}
+      <div className="relative bg-gradient-to-b from-black/60 to-transparent pb-20">
+        <Navbar menuItems={menuItems} />
+      </div>
+
       <div className="mx-auto flex max-w-7xl flex-col gap-10 px-6 py-10">
         <DashboardHeader
           onCreateTemplate={handleCreateTemplate}
@@ -1201,7 +1300,7 @@ ${emailsList}
           />
         </section>
 
-        <section className="grid grid-cols-1 gap-8 xl:grid-cols-2">
+        <section id="sales-section" className="grid grid-cols-1 gap-8 xl:grid-cols-2">
           <DashboardCharts
             monthlyRevenueData={routinePerformance.monthlyRevenueData}
             topRoutineChartData={routinePerformance.topRoutineChartData}
@@ -1224,16 +1323,18 @@ ${emailsList}
           />
         </section>
 
-        <DashboardMailExport
-          onExport={handleExportEmails}
-          emailCount={uniqueEmails.length}
-          salesCount={state.sales.length}
-          usersCount={state.users.length}
-          loading={emailsLoading}
-        />
+        <div id="contacts-section">
+          <DashboardMailExport
+            onExport={handleExportEmails}
+            emailCount={uniqueEmails.length}
+          />
+        </div>
 
         <DashboardEbookManager />
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

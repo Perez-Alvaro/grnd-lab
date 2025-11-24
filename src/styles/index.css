@@ -20,3 +20,33 @@ body {
 * {
   color-scheme: dark;
 }
+
+.mock-text {
+  color: #ffffff !important;
+  white-space: normal !important;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.text-natural-wrap {
+  word-break: normal !important;
+  overflow-wrap: break-word;
+  white-space: normal !important;
+  hyphens: none;
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 0px rgba(14, 242, 160, 0);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(14, 242, 160, 0.75);
+  }
+  100% {
+    box-shadow: 0 0 0px rgba(14, 242, 160, 0);
+  }
+}
+
+.animate-glow {
+  animation: glow 1s ease-in-out;
+}

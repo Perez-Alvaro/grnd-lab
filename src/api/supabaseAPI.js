@@ -480,16 +480,16 @@ export const SupabaseAPI = {
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `routine-images/${fileName}`;
+      const filePath = `images/routine-cover-${fileName}`;
 
       const { data, error } = await supabase.storage
-        .from('public')
+        .from('multimedia')
         .upload(filePath, file);
 
       if (error) throw error;
 
       const { data: { publicUrl } } = supabase.storage
-        .from('public')
+        .from('multimedia')
         .getPublicUrl(filePath);
 
       return { url: publicUrl };
