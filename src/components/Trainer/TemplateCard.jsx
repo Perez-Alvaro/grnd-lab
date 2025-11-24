@@ -9,6 +9,8 @@ export default function TemplateCard({
   onDuplicate,
   onDelete,
   onExportPdf,
+  onUploadToStorage,
+  uploadingPDF = false,
 }) {
   const formattedDate = template.createdAt
     ? new Date(template.createdAt).toLocaleDateString("es-AR")
@@ -50,6 +52,8 @@ export default function TemplateCard({
           onDuplicate={onDuplicate}
           onDelete={onDelete}
           onExportPdf={onExportPdf}
+          onUploadToStorage={onUploadToStorage}
+          uploadingPDF={uploadingPDF}
         />
       </div>
       {meta.length > 0 && (

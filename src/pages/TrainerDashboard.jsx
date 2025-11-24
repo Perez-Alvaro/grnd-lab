@@ -21,6 +21,7 @@ import {
   Plus,
   FileText,
   Loader2,
+  Upload,
 } from "lucide-react";
 
 import { useAppContext } from "../context/AppContext.jsx";
@@ -427,6 +428,10 @@ const DashboardTemplates = ({
   onDuplicate,
   onDelete,
   onExport,
+  onUploadToStorage,
+  onGenerateAllPDFs,
+  uploadingPDFs = new Set(),
+  generatingAllPDFs = false,
 }) => {
   const [filters, setFilters] = useState({
     tag: "",
@@ -509,6 +514,15 @@ const DashboardTemplates = ({
             Limpiar filtros
           </button>
           <button
+            onClick={onGenerateAllPDFs}
+            disabled={generatingAllPDFs}
+            className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:border-accent hover:bg-accent/20 disabled:cursor-not-allowed disabled:opacity-50"
+            title="Generar y subir PDFs de todas las rutinas al Storage"
+          >
+            <Upload className="h-4 w-4" />
+            {generatingAllPDFs ? 'Generando...' : 'Regenerar todos los PDFs'}
+          </button>
+          <button
             onClick={onCreate}
             className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong"
           >
@@ -576,6 +590,8 @@ const DashboardTemplates = ({
             onDuplicate={() => onDuplicate(template)}
             onDelete={() => onDelete(template.id)}
             onExportPdf={() => onExport(template)}
+            onUploadToStorage={() => onUploadToStorage(template)}
+            uploadingPDF={uploadingPDFs.has(template.id)}
           />
         ))}
       </div>
@@ -941,6 +957,8 @@ function AdminDashboard() {
   const navigate = useNavigate();
   const { state, dispatch } = useAppContext();
   const exportPlan = usePDFExport();
+  const [uploadingPDFs, setUploadingPDFs] = useState(new Set());
+  const [generatingAllPDFs, setGeneratingAllPDFs] = useState(false);
 
   const monthKeys = useMemo(() => {
     const set = new Set();
@@ -1236,6 +1254,105 @@ function AdminDashboard() {
     exportPlan(planData);
   };
 
+  const handleUploadPDFToStorage = async (template) => {
+    try {
+      // Marcar como "subiendo"
+      setUploadingPDFs(prev => new Set(prev).add(template.id));
+
+      // Importar el servicio dinámicamente
+      const { default: pdfGeneratorService } = await import('../services/pdfGeneratorService.jsx');
+
+      // Generar y subir
+      const result = await pdfGeneratorService.regenerateRoutinePDF(template);
+
+      if (result.success) {
+        // Mostrar toast de éxito (opcional, puedes usar tu sistema de toast)
+        console.log(`✅ PDF de "${template.name}" subido exitosamente`);
+        alert(`✅ PDF de "${template.name}" generado y subido al Storage correctamente`);
+      } else {
+        console.error(`❌ Error al generar PDF de "${template.name}":`, result.error);
+        alert(`❌ Error al generar PDF: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Error al subir PDF:', error);
+      alert(`❌ Error al subir PDF: ${error.message}`);
+    } finally {
+      // Quitar marca de "subiendo"
+      setUploadingPDFs(prev => {
+        const next = new Set(prev);
+        next.delete(template.id);
+        return next;
+      });
+    }
+  };
+
+  const handleGenerateAllPDFs = async () => {
+    const confirmation = window.confirm(
+      `¿Generar PDFs de todas las ${state.routines.length} rutinas?\n\nEsto puede tardar varios minutos.`
+    );
+
+    if (!confirmation) return;
+
+    setGeneratingAllPDFs(true);
+
+    try {
+      const { default: pdfGeneratorService } = await import('../services/pdfGeneratorService.jsx');
+
+      let successful = 0;
+      let failed = 0;
+      const errors = [];
+
+      console.log(`🚀 Generando PDFs de ${state.routines.length} rutinas...`);
+
+      for (let i = 0; i < state.routines.length; i++) {
+        const routine = state.routines[i];
+
+        try {
+          console.log(`📄 [${i + 1}/${state.routines.length}] Procesando: ${routine.name}`);
+
+          const result = await pdfGeneratorService.regenerateRoutinePDF(routine);
+
+          if (result.success) {
+            successful++;
+            console.log(`  ✅ Completado`);
+          } else {
+            failed++;
+            errors.push(`${routine.name}: ${result.error}`);
+            console.error(`  ❌ Error:`, result.error);
+          }
+        } catch (error) {
+          failed++;
+          errors.push(`${routine.name}: ${error.message}`);
+          console.error(`  ❌ Error:`, error);
+        }
+
+        // Pequeña pausa entre rutinas
+        if (i < state.routines.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      }
+
+      // Mostrar resumen
+      const summary = `
+📊 RESUMEN DE GENERACIÓN:
+
+✅ Exitosos: ${successful}/${state.routines.length}
+❌ Fallidos: ${failed}/${state.routines.length}
+
+${errors.length > 0 ? `\nErrores:\n${errors.map(e => `• ${e}`).join('\n')}` : ''}
+      `.trim();
+
+      console.log('\n' + summary);
+      alert(summary);
+
+    } catch (error) {
+      console.error('Error en generación masiva:', error);
+      alert(`❌ Error en generación masiva: ${error.message}`);
+    } finally {
+      setGeneratingAllPDFs(false);
+    }
+  };
+
   const handleExportEmails = () => {
     const emails = uniqueEmails.join(", ");
     downloadTextFile("clientes_fitter_emails.txt", emails);
@@ -1320,6 +1437,10 @@ function AdminDashboard() {
             onDuplicate={handleDuplicateTemplate}
             onDelete={handleDeleteTemplate}
             onExport={handleDownloadPDF}
+            onUploadToStorage={handleUploadPDFToStorage}
+            onGenerateAllPDFs={handleGenerateAllPDFs}
+            uploadingPDFs={uploadingPDFs}
+            generatingAllPDFs={generatingAllPDFs}
           />
         </section>
 

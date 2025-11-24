@@ -113,7 +113,7 @@ const PlanMetadataForm = memo(() => {
               onChange={handleChange("gender")}
               className={inputClasses}
             >
-              <option value="">Todos</option>
+              <option value="">Seleccionar</option>
               <option value="Masculino">Masculino</option>
               <option value="Femenino">Femenino</option>
             </select>

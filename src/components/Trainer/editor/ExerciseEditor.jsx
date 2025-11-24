@@ -1,27 +1,101 @@
-import { memo, useCallback, useState, useRef } from "react";
-import { Copy, Trash2, Upload, X } from "lucide-react";
+import { memo, useCallback, useState } from "react";
+import { Copy, Trash2, AlertCircle } from "lucide-react";
 import { usePlanContext } from "../../../context/PlanContext.jsx";
-import { multimediaService } from "../../../services/multimediaService.js";
 
 const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
   const { updateExerciseField, duplicateExercise, removeExercise } =
     usePlanContext();
 
-  const [uploading, setUploading] = useState(false);
-  const [uploadError, setUploadError] = useState(null);
-  const fileInputRef = useRef(null);
+  const [errors, setErrors] = useState({});
+
+  // Funciones de validación específicas para entrenamiento
+  const validateField = useCallback((field, value) => {
+    const trimmedValue = value.trim();
+
+    switch (field) {
+      case 'name':
+        if (!trimmedValue) return 'El nombre del ejercicio es obligatorio';
+        if (trimmedValue.length > 100) return 'Máximo 100 caracteres';
+        return null;
+
+      case 'sets':
+        if (!trimmedValue) return null; // Opcional
+        // Formatos válidos: "3", "4x8", "3-4", "3 x 8"
+        if (!/^(\d+)(\s*[x-]\s*\d+)?$/.test(trimmedValue)) {
+          return 'Formato inválido (ej: 3, 4x8, 3-4)';
+        }
+        return null;
+
+      case 'reps':
+        if (!trimmedValue) return null; // Opcional
+        // Formatos válidos: "8", "8-12", "10-15", "AMRAP", "Max"
+        if (!/^(\d+(-\d+)?|AMRAP|amrap|Max|max|Máx|máx|Fallo|fallo)$/i.test(trimmedValue)) {
+          return 'Formato inválido (ej: 8, 8-12, AMRAP)';
+        }
+        return null;
+
+      case 'rir':
+        if (!trimmedValue) return null; // Opcional
+        // RIR debe ser 0-10 o formatos como "0-1", "2-3"
+        if (!/^(\d{1,2}(-\d{1,2})?)$/.test(trimmedValue)) {
+          return 'RIR inválido (ej: 0, 2, 1-2)';
+        }
+        const rir = parseInt(trimmedValue.split('-')[0]);
+        if (rir > 10) return 'RIR máximo es 10';
+        return null;
+
+      case 'rest':
+        if (!trimmedValue) return null; // Opcional
+        // Formatos válidos: "60", "90s", "60-90", "1-2min", "1.5min"
+        if (!/^(\d+(\.\d+)?)(s|seg|min|m)?(\s*-\s*\d+(\.\d+)?(s|seg|min|m)?)?$/i.test(trimmedValue)) {
+          return 'Formato inválido (ej: 60s, 90, 1-2min)';
+        }
+        return null;
+
+      case 'tempo':
+        if (!trimmedValue) return null; // Opcional
+        // Formatos válidos: "2-0-2", "3-1-1", "2-0-2-0"
+        if (!/^(\d{1}(-\d{1}){2,3})$/.test(trimmedValue)) {
+          return 'Formato inválido (ej: 2-0-2, 3-1-1-0)';
+        }
+        return null;
+
+      case 'video':
+        if (!trimmedValue) return null; // Opcional
+        // Validar que sea una URL válida
+        try {
+          new URL(trimmedValue);
+          return null;
+        } catch {
+          return 'URL inválida';
+        }
+
+      default:
+        return null;
+    }
+  }, []);
 
   const handleChange = useCallback(
     (field) => (event) => {
+      const value = event.target.value;
+
+      // Actualizar el valor
       updateExerciseField(
         weekId,
         dayId,
         exercise.id,
         field,
-        event.target.value,
+        value,
       );
+
+      // Validar el campo
+      const error = validateField(field, value);
+      setErrors(prev => ({
+        ...prev,
+        [field]: error
+      }));
     },
-    [dayId, exercise.id, updateExerciseField, weekId],
+    [dayId, exercise.id, updateExerciseField, weekId, validateField],
   );
 
   const handleDuplicate = useCallback(() => {
@@ -35,41 +109,6 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
     }
   }, [dayId, exercise.id, onActionError, removeExercise, weekId]);
 
-  const handleVideoUpload = useCallback(async (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    setUploadError(null);
-    setUploading(true);
-
-    try {
-      const result = await multimediaService.uploadVideo(file, {
-        exerciseName: exercise.name || 'ejercicio'
-      });
-
-      // Actualizar el campo video con la URL del video subido
-      updateExerciseField(weekId, dayId, exercise.id, 'video', result.url);
-
-    } catch (error) {
-      console.error('Error uploading video:', error);
-      setUploadError(error.message);
-      if (onActionError) {
-        onActionError(error.message);
-      }
-    } finally {
-      setUploading(false);
-      // Reset file input
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-    }
-  }, [exercise.id, exercise.name, dayId, onActionError, updateExerciseField, weekId]);
-
-  const handleClearVideo = useCallback(() => {
-    updateExerciseField(weekId, dayId, exercise.id, 'video', '');
-    setUploadError(null);
-  }, [dayId, exercise.id, updateExerciseField, weekId]);
-
   const labelClasses =
     "text-xs font-semibold uppercase tracking-wide text-neutral-500";
   const inputClasses =
@@ -82,14 +121,22 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
     >
       <div className="grid grid-cols-1 gap-3 md:grid-cols-6">
         <div className="flex flex-col gap-2 md:col-span-2">
-          <label className={labelClasses}>Ejercicio</label>
+          <label className={labelClasses}>
+            Ejercicio <span className="text-red-500">*</span>
+          </label>
           <input
             type="text"
             value={exercise.name}
             onChange={handleChange("name")}
             placeholder="Nombre del ejercicio"
-            className={inputClasses}
+            className={`${inputClasses} ${errors.name ? 'border-red-500' : ''}`}
           />
+          {errors.name && (
+            <span className="flex items-center gap-1 text-xs text-red-400">
+              <AlertCircle className="h-3 w-3" />
+              {errors.name}
+            </span>
+          )}
         </div>
         <div className="flex flex-col gap-2 md:col-span-1">
           <label className={labelClasses}>Series</label>
@@ -97,8 +144,15 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
             type="text"
             value={exercise.sets}
             onChange={handleChange("sets")}
-            className={inputClasses}
+            placeholder="ej: 3"
+            className={`${inputClasses} ${errors.sets ? 'border-red-500' : ''}`}
           />
+          {errors.sets && (
+            <span className="flex items-center gap-1 text-xs text-red-400">
+              <AlertCircle className="h-3 w-3" />
+              {errors.sets}
+            </span>
+          )}
         </div>
         <div className="flex flex-col gap-2 md:col-span-1">
           <label className={labelClasses}>Reps</label>
@@ -106,9 +160,15 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
             type="text"
             value={exercise.reps}
             onChange={handleChange("reps")}
-            className={inputClasses}
-            placeholder="Reps"
+            className={`${inputClasses} ${errors.reps ? 'border-red-500' : ''}`}
+            placeholder="ej: 8-12"
           />
+          {errors.reps && (
+            <span className="flex items-center gap-1 text-xs text-red-400">
+              <AlertCircle className="h-3 w-3" />
+              {errors.reps}
+            </span>
+          )}
         </div>
         <div className="flex flex-col gap-2 md:col-span-1">
           <label className={labelClasses}>RIR</label>
@@ -116,9 +176,15 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
             type="text"
             value={exercise.rir}
             onChange={handleChange("rir")}
-            className={inputClasses}
-            placeholder="RIR"
+            className={`${inputClasses} ${errors.rir ? 'border-red-500' : ''}`}
+            placeholder="ej: 2"
           />
+          {errors.rir && (
+            <span className="flex items-center gap-1 text-xs text-red-400">
+              <AlertCircle className="h-3 w-3" />
+              {errors.rir}
+            </span>
+          )}
         </div>
         <div className="flex flex-col gap-2 md:col-span-1">
           <label className={labelClasses}>Descanso</label>
@@ -126,9 +192,15 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
             type="text"
             value={exercise.rest}
             onChange={handleChange("rest")}
-            className={inputClasses}
-            placeholder="Ej. 90s"
+            className={`${inputClasses} ${errors.rest ? 'border-red-500' : ''}`}
+            placeholder="ej: 90s"
           />
+          {errors.rest && (
+            <span className="flex items-center gap-1 text-xs text-red-400">
+              <AlertCircle className="h-3 w-3" />
+              {errors.rest}
+            </span>
+          )}
         </div>
         <div className="flex flex-col gap-2 md:col-span-1">
           <label className={labelClasses}>Cadencia</label>
@@ -136,52 +208,30 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
             type="text"
             value={exercise.tempo}
             onChange={handleChange("tempo")}
-            className={inputClasses}
-            placeholder="Ej. 2-1-2"
+            className={`${inputClasses} ${errors.tempo ? 'border-red-500' : ''}`}
+            placeholder="ej: 2-0-2"
           />
+          {errors.tempo && (
+            <span className="flex items-center gap-1 text-xs text-red-400">
+              <AlertCircle className="h-3 w-3" />
+              {errors.tempo}
+            </span>
+          )}
         </div>
         <div className="flex flex-col gap-2 md:col-span-3">
           <label className={labelClasses}>Video o referencia</label>
-          <div className="flex gap-2">
-            <input
-              type="url"
-              value={exercise.video}
-              onChange={handleChange("video")}
-              placeholder="URL del video o subir archivo"
-              className={inputClasses}
-              disabled={uploading}
-            />
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="video/*"
-              onChange={handleVideoUpload}
-              className="hidden"
-              disabled={uploading}
-            />
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploading}
-              className="inline-flex items-center gap-2 rounded-lg border border-neutral-700 px-3 py-2 text-xs font-semibold text-accent transition-colors hover:border-accent hover:bg-neutral-900 disabled:cursor-not-allowed disabled:opacity-50"
-              title="Subir video"
-            >
-              <Upload className="h-4 w-4" />
-              {uploading ? 'Subiendo...' : 'Subir'}
-            </button>
-            {exercise.video && !uploading && (
-              <button
-                type="button"
-                onClick={handleClearVideo}
-                className="inline-flex items-center gap-2 rounded-lg border border-red-500/40 px-3 py-2 text-xs font-semibold text-red-400 transition-colors hover:border-red-400 hover:bg-red-500/10"
-                title="Limpiar video"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </div>
-          {uploadError && (
-            <span className="text-xs text-red-400">{uploadError}</span>
+          <input
+            type="url"
+            value={exercise.video}
+            onChange={handleChange("video")}
+            placeholder="URL del video (ej. YouTube, Drive, etc.)"
+            className={`${inputClasses} ${errors.video ? 'border-red-500' : ''}`}
+          />
+          {errors.video && (
+            <span className="flex items-center gap-1 text-xs text-red-400">
+              <AlertCircle className="h-3 w-3" />
+              {errors.video}
+            </span>
           )}
         </div>
       </div>

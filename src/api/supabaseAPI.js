@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import { toUIObjective, toDBObjective } from '@/constants/objectives.js';
+import pdfGeneratorService from '@/services/pdfGeneratorService.jsx';
 
 // Helper para formatear rutinas desde Supabase al formato esperado por el frontend
 const formatRoutineFromDB = (product, routine) => {
@@ -197,7 +198,15 @@ export const SupabaseAPI = {
 
       if (routineError) throw routineError;
 
-      return formatRoutineFromDB(insertedProduct, insertedRoutine);
+      const formattedRoutine = formatRoutineFromDB(insertedProduct, insertedRoutine);
+
+      // 3. Generar PDF automáticamente en background (no bloquea)
+      pdfGeneratorService.generateAndUploadRoutinePDF(formattedRoutine).catch(err => {
+        console.error('Error generating PDF in background:', err);
+        // No lanzamos el error para no bloquear la creación de la rutina
+      });
+
+      return formattedRoutine;
     } catch (error) {
       console.error('Error creating routine:', error);
       throw error;
@@ -228,7 +237,15 @@ export const SupabaseAPI = {
 
       if (routineError) throw routineError;
 
-      return formatRoutineFromDB(updatedProduct, updatedRoutine);
+      const formattedRoutine = formatRoutineFromDB(updatedProduct, updatedRoutine);
+
+      // 3. Regenerar PDF automáticamente en background (no bloquea)
+      pdfGeneratorService.regenerateRoutinePDF(formattedRoutine).catch(err => {
+        console.error('Error regenerating PDF in background:', err);
+        // No lanzamos el error para no bloquear la actualización de la rutina
+      });
+
+      return formattedRoutine;
     } catch (error) {
       console.error('Error updating routine:', error);
       throw error;
@@ -237,7 +254,13 @@ export const SupabaseAPI = {
 
   async deleteRoutine(id) {
     try {
-      // La eliminación en cascada se encargará de eliminar la rutina
+      // 1. Eliminar PDF del storage
+      pdfGeneratorService.deletePDFFromStorage(id).catch(err => {
+        console.error('Error deleting PDF from storage:', err);
+        // No bloqueamos la eliminación de la rutina
+      });
+
+      // 2. Eliminar de la base de datos (la eliminación en cascada se encargará de eliminar la rutina)
       const { error } = await supabase
         .from('products')
         .delete()

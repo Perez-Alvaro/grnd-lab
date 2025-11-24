@@ -1,10 +1,12 @@
-import { Edit, Copy, Trash2, Monitor } from "lucide-react";
+import { Edit, Copy, Trash2, Monitor, Upload } from "lucide-react";
 
 export default function TemplateActions({
   onEdit,
   onDuplicate,
   onDelete,
   onExportPdf,
+  onUploadToStorage,
+  uploadingPDF = false,
 }) {
   return (
     <div className="flex flex-wrap gap-2 md:justify-end">
@@ -35,11 +37,24 @@ export default function TemplateActions({
       <button
         onClick={onExportPdf}
         className="inline-flex items-center gap-2 rounded-lg border border-[#2E2E2E] px-3 py-2 text-sm text-gray-300 transition-colors hover:border-accent/60 hover:text-white"
-        aria-label="PDF"
+        aria-label="Descargar PDF"
+        title="Descargar PDF local"
       >
         <Monitor className="w-4 h-4" />
         <span className="hidden sm:inline">PDF</span>
       </button>
+      {onUploadToStorage && (
+        <button
+          onClick={onUploadToStorage}
+          disabled={uploadingPDF}
+          className="inline-flex items-center gap-2 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm text-accent transition-colors hover:border-accent hover:bg-accent/20 disabled:cursor-not-allowed disabled:opacity-50"
+          aria-label="Subir a Storage"
+          title="Generar y subir PDF al Storage de Supabase"
+        >
+          <Upload className="w-4 h-4" />
+          <span className="hidden sm:inline">{uploadingPDF ? 'Subiendo...' : 'Storage'}</span>
+        </button>
+      )}
     </div>
   );
 }

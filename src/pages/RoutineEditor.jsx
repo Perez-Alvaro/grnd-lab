@@ -1,6 +1,6 @@
-import { useMemo, useRef, useCallback, useEffect } from "react";
+import { useMemo, useRef, useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Save, FileDown } from "lucide-react";
+import { ArrowLeft, Save, FileDown, Upload } from "lucide-react";
 import { PlanProvider } from "../context/PlanContext.jsx";
 import { useAppContext } from "../context/AppContext.jsx";
 import useRoutineEditor from "../hooks/useRoutineEditor.js";
@@ -11,6 +11,7 @@ import WeekEditor from "../components/Trainer/editor/WeekEditor.jsx";
 import RoutinePreview from "../components/Trainer/preview/RoutinePreview.jsx";
 import migrateTemplate from "../utils/migrateTemplate.ts";
 import { toast } from "../utils/toast.js";
+import pdfGeneratorService from "../services/pdfGeneratorService.jsx";
 
 const buildContextValue = (planEditor) => ({
   plan: planEditor.plan,
@@ -38,6 +39,7 @@ export default function RoutineEditorPage() {
   const { state } = useAppContext();
   const { addRoutine, updateRoutine } = useRoutineSync();
   const exportPlan = usePDFExport();
+  const [uploadingPDF, setUploadingPDF] = useState(false);
 
   const existing = useMemo(
     () =>
@@ -145,6 +147,37 @@ export default function RoutineEditorPage() {
     }
   }, [exportPlan, handleValidationErrors, planEditor]);
 
+  const handleUploadPDFToStorage = useCallback(async () => {
+    if (!existing) {
+      toast.error("Debes guardar la rutina antes de subir el PDF.");
+      return;
+    }
+
+    const { isValid, errors } = planEditor.validatePlan();
+    if (!isValid) {
+      handleValidationErrors(errors);
+      return;
+    }
+
+    setUploadingPDF(true);
+    try {
+      toast.info("Generando y subiendo PDF a Storage...");
+
+      const result = await pdfGeneratorService.regenerateRoutinePDF(existing);
+
+      if (result.success) {
+        toast.success("PDF generado y subido correctamente al Storage.");
+      } else {
+        toast.error(`Error al generar PDF: ${result.error}`);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("No se pudo generar y subir el PDF.");
+    } finally {
+      setUploadingPDF(false);
+    }
+  }, [existing, planEditor, handleValidationErrors]);
+
   useEffect(() => {
     const handleKeyDown = (event) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
@@ -193,6 +226,18 @@ export default function RoutineEditorPage() {
               >
                 <FileDown className="h-4 w-4" /> Exportar PDF
               </button>
+              {isEditing && (
+                <button
+                  type="button"
+                  onClick={handleUploadPDFToStorage}
+                  disabled={uploadingPDF}
+                  className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-2 text-sm font-medium text-accent transition-colors hover:border-accent hover:bg-accent/20 disabled:cursor-not-allowed disabled:opacity-50"
+                  title="Regenerar y subir PDF al Storage"
+                >
+                  <Upload className="h-4 w-4" />
+                  {uploadingPDF ? "Subiendo..." : "Subir a Storage"}
+                </button>
+              )}
             </div>
           </div>
         </header>
