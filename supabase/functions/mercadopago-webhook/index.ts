@@ -14,7 +14,7 @@
  */
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
-import { MercadoPagoConfig, Payment } from 'npm:mercadopago@2.0.15';
+import { MercadoPagoConfig, Payment, MerchantOrder } from 'npm:mercadopago@2.0.15';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 import { Resend } from 'npm:resend@3.2.0';
 
@@ -501,21 +501,51 @@ serve(async (req) => {
     const body = await req.json();
     console.log('Webhook body:', JSON.stringify(body, null, 2));
 
-    // 2. Extraer payment ID
-    paymentId = body.data?.id || body.id;
-    const eventType = body.type || body.action;
+    // 2. Extraer payment ID según el tipo de notificación
+    const url = new URL(req.url);
+    const topic = url.searchParams.get('topic') || body.topic || body.type;
+    const resourceId = url.searchParams.get('id') || body.data?.id || body.id;
+    const eventType = body.type || body.action || topic;
 
-    if (!paymentId) {
-      console.warn('No payment ID in webhook');
-      return new Response('No payment ID', {
+    console.log(`Topic: ${topic}, Resource ID: ${resourceId}, Event: ${eventType}`);
+
+    if (!resourceId) {
+      console.warn('No resource ID in webhook');
+      return new Response('No resource ID', {
         status: 200, // Siempre 200 para que MP no reintente
         headers: corsHeaders
       });
     }
 
+    // 3. Si es merchant_order, necesitamos obtener el payment_id de la orden
+    const client = new MercadoPagoConfig({ accessToken: mpAccessToken });
+
+    if (topic === 'merchant_order') {
+      console.log(`Processing merchant_order: ${resourceId}`);
+      const merchantOrderApi = new MerchantOrder(client);
+      const order = await retry(() => merchantOrderApi.get({ merchantOrderId: resourceId }));
+
+      console.log('Merchant order:', JSON.stringify(order, null, 2));
+
+      // Extraer el primer payment_id de la orden
+      if (order.payments && order.payments.length > 0) {
+        paymentId = order.payments[0].id.toString();
+        console.log(`Extracted payment ID from merchant order: ${paymentId}`);
+      } else {
+        console.warn('No payments found in merchant order');
+        return new Response('No payments in order', {
+          status: 200,
+          headers: corsHeaders
+        });
+      }
+    } else {
+      // Para notificaciones de tipo 'payment', el resourceId ES el paymentId
+      paymentId = resourceId;
+    }
+
     console.log(`Processing payment: ${paymentId}, event: ${eventType}`);
 
-    // 3. IDEMPOTENCIA: Verificar si ya se procesó este pago
+    // 4. IDEMPOTENCIA: Verificar si ya se procesó este pago
     const { data: existingSale } = await supabase
       .from('sales')
       .select('id, status')
@@ -532,15 +562,13 @@ serve(async (req) => {
       });
     }
 
-    // 4. Consultar API de Mercado Pago para confirmar estado REAL
-    const client = new MercadoPagoConfig({ accessToken: mpAccessToken });
+    // 5. Consultar API de Mercado Pago para confirmar estado REAL del pago
     const paymentApi = new Payment(client);
-
     const payment = await retry(() => paymentApi.get({ id: paymentId }));
 
     console.log(`Payment status from MP: ${payment.status}`);
 
-    // 5. Procesar según estado
+    // 6. Procesar según estado
     if (payment.status === 'approved') {
       await processApprovedPayment(payment);
       await logWebhook('mercadopago', eventType, paymentId, 'approved', body, true);
@@ -555,7 +583,7 @@ serve(async (req) => {
       await logWebhook('mercadopago', eventType, paymentId, payment.status, body, false, 'Unknown status');
     }
 
-    // 6. Siempre responder 200 OK
+    // 7. Siempre responder 200 OK
     return new Response('OK', {
       status: 200,
       headers: corsHeaders

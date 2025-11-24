@@ -59,7 +59,7 @@ function PaymentSuccess() {
             status: sale.status,
             saleId: sale.id,
             amount: sale.total_amount,
-            email: sale.customer_email,
+            email: sale.user_email,
             products: sale.sale_items,
             processed: true
           });

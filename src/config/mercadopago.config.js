@@ -26,9 +26,9 @@ export const MP_CONFIG = {
     pending: `${FRONTEND_URL}/payment/pending`
   },
 
-  // Auto return: DESHABILITADO para desarrollo local
-  // En producción con HTTPS, cambiar a 'approved'
-  auto_return: null, // null = mostrar botón "Volver al sitio"
+  // Auto return: Habilitado para intentar redirección automática
+  // Nota: MercadoPago puede requerir HTTPS para que esto funcione consistentemente
+  auto_return: 'approved',
 
   // Configuración de la preferencia de pago
   preferenceDefaults: {
