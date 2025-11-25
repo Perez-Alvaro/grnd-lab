@@ -135,8 +135,9 @@ export const createPreference = async (product, userData) => {
         email: userData.email
       },
       back_urls: MP_CONFIG.back_urls,
-      auto_return: MP_CONFIG.auto_return,
+      auto_return: MP_CONFIG.auto_return || undefined,
       notification_url: MP_CONFIG.notification_url,
+      binary_mode: MP_CONFIG.preferenceDefaults.binary_mode,
       statement_descriptor: MP_CONFIG.preferenceDefaults.statement_descriptor,
       payment_methods: MP_CONFIG.preferenceDefaults.payment_methods,
       metadata: {

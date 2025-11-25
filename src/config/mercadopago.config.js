@@ -28,7 +28,7 @@ export const MP_CONFIG = {
 
   // Auto return: Habilitado para intentar redirección automática
   // Nota: MercadoPago puede requerir HTTPS para que esto funcione consistentemente
-  auto_return: 'approved',
+  auto_return: false,
 
   // Configuración de la preferencia de pago
   preferenceDefaults: {
@@ -45,6 +45,10 @@ export const MP_CONFIG = {
     // Expiración de la preferencia (7 días)
     expiration_date_from: null,
     expiration_date_to: null,
+
+    // Modo binario: Aprobado o Rechazado (sin estados intermedios complejos)
+    // Esto ayuda a que el flujo de retorno sea más directo
+    binary_mode: true,
   },
 
   // Configuración para retry de llamadas a la API

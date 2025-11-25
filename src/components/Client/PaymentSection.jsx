@@ -74,22 +74,87 @@ function PaymentSection({
     setError(null);
 
     try {
-      // Preparar datos del producto
-      const productData = {
-        id: routine.id,
-        name: routine.name,
-        description: routine.description || `Rutina ${routine.name}`,
-        price: totalPrice,
-        type: 'routine',
-        // Si es premium, agregar metadata
-        metadata: isPremium ? {
-          plan_type: 'premium',
-          includes_ebook: true,
-          addon_price: premiumAddonPrice
-        } : {
-          plan_type: 'essential'
+      let productData;
+      // Import dinámico para evitar problemas de SSR o inicialización
+      const { supabase } = await import('@/lib/supabase');
+
+      if (isPremium) {
+        // 1. Buscar el producto "Libro" en la base de datos
+        const { data: bookProduct, error: bookError } = await supabase
+          .from('products')
+          .select('id, name, price, description')
+          .eq('type', 'book')
+          .limit(1)
+          .single();
+
+        if (bookError && bookError.code !== 'PGRST116') {
+          console.error('Error fetching book:', bookError);
         }
-      };
+
+        // Si encontramos el libro, creamos un bundle dinámico
+        if (bookProduct) {
+          console.log('📚 Libro encontrado para bundle:', bookProduct.name);
+          
+          productData = {
+            id: `bundle-${routine.id}-${bookProduct.id}`, // ID temporal para el bundle
+            name: `${routine.name} + ${bookProduct.name}`,
+            description: `Pack Premium: Rutina + Ebook`,
+            price: totalPrice,
+            type: 'bundle',
+            isDynamic: true, // Flag importante para el servicio
+            products: [
+              {
+                id: routine.id,
+                name: routine.name,
+                description: routine.description || 'Rutina de entrenamiento',
+                price: routine.price,
+                type: 'routine'
+              },
+              {
+                id: bookProduct.id,
+                name: bookProduct.name,
+                description: bookProduct.description || 'Ebook de Nutrición',
+                price: premiumAddonPrice, // Usamos el precio del addon definido en frontend
+                type: 'book'
+              }
+            ],
+            metadata: {
+              is_dynamic: true,
+              is_bundle: true,
+              routine_id: routine.id,
+              book_id: bookProduct.id,
+              plan_type: 'premium'
+            }
+          };
+        } else {
+          // Fallback si no hay libro en DB (no debería pasar en prod)
+          console.warn('⚠️ No se encontró producto tipo "book" en DB. Usando fallback simple.');
+          productData = {
+            id: routine.id,
+            name: routine.name,
+            description: routine.description || `Rutina ${routine.name}`,
+            price: totalPrice,
+            type: 'routine',
+            metadata: {
+              plan_type: 'premium',
+              includes_ebook: true, // Flag legacy
+              addon_price: premiumAddonPrice
+            }
+          };
+        }
+      } else {
+        // Plan Essential (Solo Rutina)
+        productData = {
+          id: routine.id,
+          name: routine.name,
+          description: routine.description || `Rutina ${routine.name}`,
+          price: totalPrice,
+          type: 'routine',
+          metadata: {
+            plan_type: 'essential'
+          }
+        };
+      }
 
       // Preparar datos del usuario
       const userData = {
