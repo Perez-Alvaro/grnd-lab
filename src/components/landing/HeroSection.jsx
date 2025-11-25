@@ -1,14 +1,9 @@
 import React from "react";
-import { ChevronRight, LogIn, User } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { ChevronRight } from "lucide-react";
 import heroImage from "@/assets/hero.png";
 import Navbar from "../Shared/Navbar.jsx";
-import { useClientAuth } from "@/context/UnifiedAuthContext";
 
 function HeroSection({ onViewPlans, onRequestAdvisory }) {
-  const navigate = useNavigate();
-  const { user: clientUser, profile: clientProfile } = useClientAuth();
-
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -24,94 +19,112 @@ function HeroSection({ onViewPlans, onRequestAdvisory }) {
   ];
 
   return (
-    <section className="relative w-full min-h-screen overflow-hidden">
-      {/* Imagen de fondo corregida - SIEMPRE VISIBLE */}
-      <img
-        src={heroImage}
-        alt="matias-ortiz-hero"
-        className="absolute inset-0 w-full h-full object-cover object-center z-0"
-      />
+    <section className="relative w-full min-h-screen bg-black overflow-hidden" id="hero">
 
-      {/* Gradiente leve para contraste - MAX 40% */}
-      <div className="absolute inset-0 bg-black/40 z-[1]"></div>
-
-      {/* Shared Navbar Component */}
+      {/* Navbar */}
       <Navbar menuItems={menuItems} />
 
-      {/* Auth Buttons - Positioned absolutely on the right */}
-      <div className="absolute top-6 right-6 z-[25] sm:right-8 md:right-10 lg:right-12">
-        {!clientUser ? (
-          // Botones para usuarios no autenticados
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate("/login")}
-              className="hidden sm:flex items-center gap-2 rounded-full border border-white/30 bg-black/30 backdrop-blur-sm px-4 py-2 text-sm font-medium text-white transition-all hover:bg-white/10 hover:border-[#0EF2A0]/50"
-            >
-              <LogIn className="h-4 w-4" />
-              <span>Iniciar Sesión</span>
-            </button>
-            <button
-              onClick={() => navigate("/register")}
-              className="rounded-full bg-[#0EF2A0] px-4 py-2 text-sm font-semibold text-black transition-all hover:bg-[#a0e600] hover:scale-105"
-            >
-              Registrarse
-            </button>
-          </div>
-        ) : (
-          // Botón de perfil para usuarios autenticados
-          <button
-            onClick={() => navigate("/client/dashboard")}
-            className="flex items-center gap-2 rounded-full border border-[#0EF2A0]/50 bg-[#0EF2A0]/10 backdrop-blur-sm px-4 py-2 text-sm font-medium text-[#0EF2A0] transition-all hover:bg-[#0EF2A0]/20"
-          >
-            <User className="h-4 w-4" />
-            <span className="hidden sm:inline">{clientProfile?.full_name || 'Mi Cuenta'}</span>
-          </button>
-        )}
+      {/* MOBILE: Imagen como background con overlay */}
+      <div className="absolute inset-0 md:hidden z-0">
+        <img
+          src={heroImage}
+          alt="matias-ortiz"
+          className="h-full w-full object-cover object-center opacity-40"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/70 to-black" />
       </div>
 
-      {/* Contenido del hero - CENTRADO VERTICALMENTE */}
-      <div className="relative z-[10] flex flex-col items-center justify-center min-h-screen text-center px-4">
-        {/* Título principal - Mobile first */}
-        <h1 className="text-4xl font-light tracking-[0.3em] text-white sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl xl:tracking-[0.45em]">
-          MATIAS ORTIZ
-        </h1>
+      {/* DESKTOP: Imagen a la derecha estilo CBUM */}
+      <div className="hidden md:block absolute right-0 top-0 h-full w-1/2 z-0">
+        <img
+          src={heroImage}
+          alt="matias-ortiz"
+          className="h-full w-full object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-gradient-to-l from-transparent via-black/20 to-black" />
+      </div>
 
-        {/* Subtítulo - color cyan MZ */}
-        <p className="mt-4 text-base tracking-widest !text-[#0EF2A0] sm:text-lg md:text-xl lg:text-2xl">
-          PERSONAL TRAINER
-        </p>
+      {/* CONTENIDO PRINCIPAL */}
+      <div className="relative z-20 flex flex-col justify-center min-h-screen px-6 sm:px-8 md:px-12 lg:px-16 max-w-7xl mx-auto">
+        <div className="md:w-1/2 md:pr-8">
 
-        {/* Descripción opcional */}
-        <p className="mx-auto mt-4 max-w-2xl px-4 text-base !text-white/90 sm:text-base md:mt-6 md:text-lg">
-          ¿LISTO PARA DEJAR DE PONER EXCUSAS?
-        </p>
+          {/* TÍTULO BOLD estilo CBUM - Mobile First */}
+          <h1 className="text-white font-black leading-[0.9] tracking-tight
+                         text-5xl
+                         sm:text-6xl 
+                         md:text-7xl 
+                         lg:text-8xl 
+                         xl:text-9xl">
+            ENTRENÁ
+            <br />
+            CON LOS
+            <br />
+            MEJORES
+          </h1>
 
-        {/* CTA - Mobile: uno debajo del otro, Desktop: lado a lado */}
-        <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
-          <button
-            type="button"
-            onClick={onViewPlans}
-            className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#0EF2A0] px-10 py-3 font-semibold uppercase tracking-wide text-black shadow-lg shadow-[#0EF2A0]/20 transition-all hover:scale-105 hover:bg-[#0AA66A] hover:shadow-xl hover:shadow-[#0EF2A0]/30"
-          >
-            Comenzá Ya
-            <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1 sm:h-5 sm:w-5" />
-          </button>
+          {/* QUOTE MOTIVACIONAL */}
+          <div className="mt-8 md:mt-10 lg:mt-12 max-w-xl">
+            <p className="text-white/70 text-sm leading-relaxed
+                         sm:text-base 
+                         md:text-lg
+                         lg:leading-relaxed">
+              "El progreso no se trata de ser perfecto, sino de ser constante.
+              Entrenar con disciplina, superarte con humildad y construir la mejor
+              versión de vos mismo. Ese es el estándar."
+            </p>
 
-          <button
-            type="button"
-            onClick={onRequestAdvisory}
-            className="group inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#0EF2A0] bg-transparent px-10 py-3 font-semibold uppercase tracking-wide text-[#0EF2A0] transition-all hover:scale-105 hover:bg-[#0EF2A0]/10"
-          >
-            Asesoría Personalizada
-            <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1 sm:h-5 sm:w-5" />
-          </button>
+            <p className="mt-4 text-xs font-bold text-white/90 tracking-widest
+                         sm:text-sm 
+                         md:mt-6">
+              — MATÍAS ORTIZ · COACH ONLINE
+            </p>
+          </div>
+
+          {/* CTAs - Mobile First */}
+          <div className="mt-10 flex flex-col gap-4
+                         sm:flex-row sm:gap-5
+                         md:mt-12
+                         lg:mt-14">
+            <button
+              type="button"
+              onClick={onViewPlans}
+              className="group inline-flex items-center justify-center gap-2 
+                         rounded-full bg-emerald-500 px-8 py-3.5
+                         text-sm font-bold uppercase tracking-wide text-black 
+                         transition-all duration-300 
+                         hover:bg-emerald-600 hover:scale-105
+                         shadow-lg shadow-emerald-500/25
+                         sm:px-10 sm:py-4
+                         md:text-base"
+            >
+              Ver Planes
+              <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1 sm:h-5 sm:w-5" />
+            </button>
+
+            <a
+              href="https://wa.me/5493512800414"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center justify-center gap-2 
+                         rounded-full border-2 border-emerald-500 bg-transparent px-8 py-3.5
+                         text-sm font-bold uppercase tracking-wide text-emerald-500 
+                         transition-all duration-300 
+                         hover:bg-emerald-500/10 hover:border-emerald-400 hover:scale-105
+                         sm:px-10 sm:py-4
+                         md:text-base"
+            >
+              Asesoría 1:1
+              <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1 sm:h-5 sm:w-5" />
+            </a>
+          </div>
         </div>
       </div>
 
-      {/* Indicador de scroll opcional */}
-      <div className="absolute bottom-8 left-1/2 z-30 -translate-x-1/2 animate-bounce">
-        <div className="h-8 w-5 rounded-full border-2 border-white/40">
-          <div className="mx-auto mt-2 h-1.5 w-1.5 animate-pulse rounded-full bg-[#0EF2A0]" />
+      {/* Scroll indicator - opcional */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 hidden md:block">
+        <div className="flex flex-col items-center gap-2 text-white/40">
+          <span className="text-xs uppercase tracking-widest">Scroll</span>
+          <div className="h-12 w-[2px] bg-gradient-to-b from-white/40 to-transparent animate-pulse" />
         </div>
       </div>
     </section>

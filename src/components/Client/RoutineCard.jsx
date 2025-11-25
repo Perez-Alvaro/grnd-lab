@@ -12,7 +12,7 @@ function RoutineCard({ routine, onPreview }) {
             </linearGradient>
           </defs>
           <rect width='400' height='240' fill='url(%23gradient)'/>
-          <text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='Inter, sans-serif' font-size='28' fill='%23B5FF00'>Rutina</text>
+          <text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='Inter, sans-serif' font-size='28' fill='%2322c55e'>Rutina</text>
         </svg>
       `)}`,
     [],
@@ -37,25 +37,26 @@ function RoutineCard({ routine, onPreview }) {
 
   return (
     <article
-      className="group flex w-full flex-col overflow-hidden rounded-xl bg-neutral-900 text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-[0.97] text-natural-wrap sm:rounded-2xl"
+      className="group flex w-full flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-black text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-emerald-500/10 hover:border-emerald-500/50 active:scale-[0.97]"
       style={{ backgroundColor: cardBackground }}
     >
-      <div className="relative w-full h-[180px] overflow-hidden sm:h-[200px] md:h-[220px] lg:h-[260px]">
+      <div className="relative w-full aspect-[16/10] overflow-hidden">
         <img
           src={routine.image || fallbackImage}
           alt={title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
           loading="lazy"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
       </div>
 
       <div className="flex flex-col justify-between p-4 gap-2 sm:gap-3 sm:p-5">
         <div className="flex flex-col gap-1 text-natural-wrap sm:gap-2">
-          <h3 className="mock-text text-base font-bold leading-tight text-natural-wrap sm:text-lg md:text-xl">
+          <h3 className="text-lg font-bold leading-tight text-white sm:text-xl md:text-2xl line-clamp-2">
             {title}
           </h3>
           {shortDescription && (
-            <p className="mock-text text-xs leading-relaxed text-natural-wrap sm:text-sm md:text-base">
+            <p className="text-sm leading-relaxed text-zinc-400 sm:text-base line-clamp-2">
               {shortDescription}
             </p>
           )}
@@ -63,23 +64,23 @@ function RoutineCard({ routine, onPreview }) {
 
         <div className="grid grid-cols-3 gap-2 mt-1">
           <div className="border border-neutral-700 rounded-lg py-2 text-center">
-            <p className="text-[10px] text-gray-500 uppercase tracking-wide text-natural-wrap sm:text-xs">Duración</p>
-            <p className="mock-text text-xs font-semibold text-natural-wrap sm:text-sm md:text-base">{duration}</p>
+            <p className="text-[10px] text-zinc-500 uppercase tracking-wide sm:text-xs">Duración</p>
+            <p className="text-sm font-semibold text-white sm:text-base">{duration}</p>
           </div>
           <div className="border border-neutral-700 rounded-lg py-2 text-center">
-            <p className="text-[10px] text-gray-500 uppercase tracking-wide text-natural-wrap sm:text-xs">Frecuencia</p>
-            <p className="mock-text text-xs font-semibold text-natural-wrap sm:text-sm md:text-base">{frequency}</p>
+            <p className="text-[10px] text-zinc-500 uppercase tracking-wide sm:text-xs">Frecuencia</p>
+            <p className="text-sm font-semibold text-white sm:text-base">{frequency}</p>
           </div>
           <div className="border border-neutral-700 rounded-lg py-2 text-center">
-            <p className="text-[10px] text-gray-500 uppercase tracking-wide text-natural-wrap sm:text-xs">Nivel</p>
-            <p className="mock-text text-xs font-semibold text-natural-wrap sm:text-sm md:text-base">{level}</p>
+            <p className="text-[10px] text-zinc-500 uppercase tracking-wide sm:text-xs">Nivel</p>
+            <p className="text-sm font-semibold text-white sm:text-base">{level}</p>
           </div>
         </div>
 
         <button
           type="button"
           onClick={() => onPreview?.(routine)}
-          className="mt-2 rounded-full bg-[#0EF2A0] py-2 text-xs font-semibold text-[#050505] transition hover:bg-[#0AA66A] active:scale-[0.97] sm:py-2.5 sm:text-sm"
+          className="mt-3 rounded-full bg-emerald-500 py-3 text-sm font-bold uppercase tracking-wide text-black shadow-lg shadow-emerald-500/25 transition-all duration-300 hover:bg-emerald-600 hover:scale-105 active:scale-95 sm:py-3.5"
         >
           Ver vista previa
         </button>

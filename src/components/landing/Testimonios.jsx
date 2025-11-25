@@ -28,7 +28,7 @@ function Testimonios() {
   return (
     <section id="testimonios" className="space-y-6 sm:space-y-8">
       <header className="space-y-2 text-center sm:space-y-3 md:text-left">
-        <p className="text-[10px] uppercase tracking-[0.3em] text-[#00C0A3] sm:text-xs sm:tracking-[0.4em]">
+        <p className="text-[10px] uppercase tracking-[0.3em] text-emerald-400 sm:text-xs sm:tracking-[0.4em]">
           Resultados Reales
         </p>
         <h2 className="text-2xl font-semibold !text-white sm:text-3xl md:text-4xl">
@@ -43,7 +43,7 @@ function Testimonios() {
         {testimonials.map((testimonial) => (
           <article
             key={testimonial.name}
-            className="min-w-[90%] snap-center rounded-2xl border border-[#0AA66A]/60 bg-[#0b0b0b]/80 p-5 text-white transition-all hover:-translate-y-1 hover:shadow-[0_20px_60px_-30px_rgba(0,192,163,0.9)] sm:min-w-[85%] sm:rounded-3xl sm:p-6 md:min-w-0"
+            className="min-w-[90%] snap-center rounded-2xl border border-emerald-500/20 bg-zinc-950/80 p-5 text-white transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-500/20 hover:border-emerald-500/40 sm:min-w-[85%] sm:rounded-3xl sm:p-6 md:min-w-0"
           >
             <div className="flex items-center gap-3 sm:gap-4">
               <img
