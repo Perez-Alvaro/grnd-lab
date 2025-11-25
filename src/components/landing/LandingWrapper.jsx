@@ -29,19 +29,12 @@ function LandingWrapper() {
     }
   };
 
-  const handleRequestAdvisory = () => {
-    if (!scrollIntoView(asesoriasRef)) {
-      navigate("/landing#asesorias");
-    }
-  };
-
   return (
     <div className="bg-black text-white">
       {/* Hero Section - Full Width */}
       <div id="hero">
         <HeroSection
           onViewPlans={handleViewPlans}
-          onRequestAdvisory={handleRequestAdvisory}
         />
       </div>
 

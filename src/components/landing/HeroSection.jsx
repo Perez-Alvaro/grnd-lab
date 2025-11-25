@@ -3,7 +3,7 @@ import { ChevronRight } from "lucide-react";
 import heroImage from "@/assets/hero.png";
 import Navbar from "../Shared/Navbar.jsx";
 
-function HeroSection({ onViewPlans, onRequestAdvisory }) {
+function HeroSection({ onViewPlans }) {
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -14,8 +14,7 @@ function HeroSection({ onViewPlans, onRequestAdvisory }) {
   const menuItems = [
     { label: "Inicio", onClick: () => scrollToSection("hero") },
     { label: "Sobre mí", onClick: () => scrollToSection("asesorias") },
-    { label: "Planes", onClick: onViewPlans },
-    { label: "Testimonios", onClick: () => scrollToSection("testimonios") }
+    { label: "Planes", onClick: onViewPlans }
   ];
 
   return (
