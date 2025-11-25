@@ -45,7 +45,7 @@ function GoalSelector({
   return (
     <section id="objetivo" className="mt-10 flex flex-col gap-6 sm:mt-12 sm:gap-8 md:mt-16">
       <FadeIn className="flex flex-col gap-2 text-center sm:gap-3 md:text-left">
-        <span className="text-[10px] uppercase tracking-[0.3em] text-accent sm:text-xs sm:tracking-[0.4em]">
+        <span className="text-[10px] uppercase tracking-[0.3em] text-emerald-400 sm:text-xs sm:tracking-[0.4em]">
           Paso 02
         </span>
         <h2 className="text-2xl font-semibold uppercase !text-white sm:text-3xl md:text-4xl">
@@ -71,10 +71,10 @@ function GoalSelector({
               type="button"
               onClick={() => onSelect(goal.id)}
               className={cn(
-                "flex w-full flex-col justify-center rounded-xl border border-[#1f1f1f] bg-[#0b0b0b] p-5 text-center transition-all duration-150 sm:p-6 md:min-h-[200px] md:p-8 md:text-left lg:min-h-[220px]",
-                "hover:border-accent hover:shadow-[0_0_20px_-12px_rgba(14,242,160,0.55)] hover:-translate-y-0.5",
+                "flex w-full flex-col justify-center rounded-xl border border-zinc-800 bg-black p-5 text-center transition-all duration-300 sm:p-6 md:min-h-[200px] md:p-8 md:text-left lg:min-h-[220px]",
+                "hover:border-emerald-500 hover:shadow-lg hover:shadow-emerald-500/20 hover:-translate-y-0.5",
                 selectedGoal === goal.id &&
-                "border-accent ring-1 ring-accent",
+                "border-emerald-500 ring-2 ring-emerald-500/50 shadow-lg shadow-emerald-500/20",
               )}
             >
               <h3 className="text-lg font-semibold !text-white sm:text-xl md:text-2xl break-words whitespace-normal">
@@ -92,7 +92,7 @@ function GoalSelector({
         <FadeIn delay={200} className="flex justify-center">
           <button
             type="button"
-            className="w-full rounded-full border border-accent bg-accent px-6 py-3 text-xs font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong sm:w-auto sm:px-8 sm:text-sm"
+            className="w-full rounded-full bg-emerald-500 px-8 py-3.5 text-xs font-bold uppercase tracking-wide text-black shadow-lg shadow-emerald-500/25 transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:bg-emerald-600 hover:shadow-xl hover:shadow-emerald-500/40 sm:w-auto sm:px-10 sm:text-sm"
             onClick={() =>
               document
                 .getElementById("rutinas")

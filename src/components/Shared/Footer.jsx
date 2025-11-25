@@ -20,85 +20,73 @@ function Footer() {
         {
             name: "WhatsApp",
             icon: Phone,
-            href: "https://wa.me/5491123456789",
-            label: "+54 911 2345 6789"
+            href: "https://wa.me/5493512800414",
+            label: "+54 9 351 280 0414"
         }
     ];
 
+    const legalLinks = [
+        { label: "Términos y Condiciones", href: "#" },
+        { label: "Política de Privacidad", href: "#" },
+        { label: "Política de Reembolso", href: "#" }
+    ];
+
     return (
-        <footer className="w-full border-t border-neutral-800 bg-[#050505] py-12 px-6">
-            <div className="mx-auto max-w-6xl">
-                <div className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-12">
-                    {/* Brand Section */}
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                            <div className="rounded-2xl bg-[#0a0a0a] p-2">
-                                <img src="/mz-logo-mark.PNG" alt="MZ Logo" className="h-10 w-auto" />
-                            </div>
-                            <div>
-                                <p className="text-sm uppercase tracking-[0.4em] text-[#00C0A3]">
-                                    MZ Training
-                                </p>
-                                <p className="text-lg font-semibold text-white">
-                                    Matias Ortiz
-                                </p>
-                            </div>
+        <footer className="w-full border-t border-zinc-800 bg-black py-16 px-6">
+            <div className="mx-auto max-w-5xl">
+
+                {/* Logo & Brand - Centered */}
+                <div className="text-center mb-12">
+                    <div className="inline-flex items-center justify-center gap-3 mb-4">
+                        <div className="rounded-2xl bg-zinc-900 p-2">
+                            <img src="/mz-logo-mark.PNG" alt="MZ Logo" className="h-10 w-auto" />
                         </div>
-                        <p className="text-sm text-gray-400">
-                            Transformá tu cuerpo con planes técnicamente diseñados para resultados medibles.
-                        </p>
+                        <div className="text-left">
+                            <p className="text-sm uppercase tracking-[0.4em] !text-emerald-400">
+                                MZ Training
+                            </p>
+                            <p className="text-lg font-semibold !text-white">
+                                Matias Ortiz
+                            </p>
+                        </div>
                     </div>
 
-                    {/* Contact Section */}
-                    <div className="space-y-4">
-                        <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
-                            Contacto
-                        </h3>
-                        <ul className="space-y-3">
-                            {socialLinks.map((link) => (
-                                <li key={link.name}>
-                                    <a
-                                        href={link.href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center gap-3 text-sm text-gray-400 transition-colors hover:text-[#0EF2A0]"
-                                    >
-                                        <link.icon className="h-4 w-4" />
-                                        <span>{link.label}</span>
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* Legal Section */}
-                    <div className="space-y-4">
-                        <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
-                            Información
-                        </h3>
-                        <ul className="space-y-3 text-sm text-gray-400">
-                            <li>
-                                <button className="transition-colors hover:text-[#0EF2A0]">
-                                    Términos y Condiciones
-                                </button>
-                            </li>
-                            <li>
-                                <button className="transition-colors hover:text-[#0EF2A0]">
-                                    Política de Privacidad
-                                </button>
-                            </li>
-                            <li>
-                                <button className="transition-colors hover:text-[#0EF2A0]">
-                                    Política de Reembolso
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
+                    <p className="text-sm !text-zinc-400 max-w-md mx-auto">
+                        Planes diseñados con ciencia, seguimiento real y técnica aplicada para que alcances tus objetivos.
+                    </p>
                 </div>
 
-                {/* Copyright */}
-                <div className="mt-12 border-t border-neutral-800 pt-8 text-center">
-                    <p className="text-sm text-gray-500">
+                {/* Social Links - Centered Row */}
+                <div className="flex flex-wrap justify-center gap-6 mb-12">
+                    {socialLinks.map((link) => (
+                        <a
+                            key={link.name}
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 text-sm !text-zinc-400 transition-colors hover:text-emerald-500"
+                        >
+                            <link.icon className="h-4 w-4" />
+                            <span className="hidden sm:inline">{link.label}</span>
+                        </a>
+                    ))}
+                </div>
+
+                {/* Legal Links - Centered Row */}
+                <div className="flex flex-wrap justify-center gap-6 mb-8 text-center">
+                    {legalLinks.map((link) => (
+                        <button
+                            key={link.label}
+                            className="text-xs !text-zinc-500 transition-colors hover:text-emerald-500"
+                        >
+                            {link.label}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Copyright - Centered */}
+                <div className="text-center pt-8 border-t border-zinc-800">
+                    <p className="text-sm !text-zinc-500">
                         © {currentYear} MZ Training - Matias Ortiz. Todos los derechos reservados.
                     </p>
                 </div>

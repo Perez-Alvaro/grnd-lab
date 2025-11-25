@@ -1,83 +1,110 @@
 import React from "react";
-import training1 from "@/assets/training-1.jpg";
+import { motion } from "framer-motion";
+import { MessageCircle } from "lucide-react";
 import training2 from "@/assets/training-2.jpg";
-import training3 from "@/assets/training-3.jpg";
-
-const plans = [
-  {
-    title: "Fuerza & Hipertrofia",
-    description:
-      "Bloques periodizados para crear fuerza neural y masa funcional con énfasis técnico.",
-    image: training1,
-  },
-  {
-    title: "Pérdida de Grasa & Rendimiento",
-    description:
-      "Workouts híbridos con control metabólico, conditioning de alta densidad y biomarcadores semanales.",
-    image: training2,
-  },
-  {
-    title: "Movilidad & Rehabilitación",
-    description:
-      "Protocolos correctivos con seguimiento conjunto de fisiokinesiologos para volver a tu mejor versión.",
-    image: training3,
-  },
-];
 
 function Asesorias() {
+  const WHATSAPP_URL = "https://wa.me/5493512800414";
+
   return (
-    <section id="asesorias" className="space-y-6 sm:space-y-8 md:space-y-10">
-      <header className="space-y-2 text-center sm:space-y-3 md:text-left">
-        <p className="text-[10px] uppercase tracking-[0.3em] text-[#00C0A3] sm:text-xs sm:tracking-[0.4em]">
-          Experiencias 1:1
-        </p>
-        <h2 className="text-2xl font-semibold text-white sm:text-3xl md:text-4xl">
-          Asesorías Personalizadas MZ
-        </h2>
-        <p className="text-sm text-gray-300 sm:text-base md:text-lg">
-          Planes ajustados a tu objetivo, seguimiento semanal y optimizaciones
-          continuas guiadas por Matias Ortiz.
-        </p>
-      </header>
-
-      <div className="grid gap-4 sm:gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
-        {plans.map((plan) => {
-          return (
-            <article
-              key={plan.title}
-              className="group overflow-hidden rounded-2xl border border-[#0AA66A]/50 bg-[#0b0b0b]/80 text-white shadow-[0_25px_80px_-45px_rgba(0,192,163,0.65)] transition-all hover:-translate-y-1 hover:border-[#0EF2A0] sm:rounded-3xl"
-            >
-              {/* Image */}
-              <div className="relative h-48 w-full overflow-hidden sm:h-56">
-                <img
-                  src={plan.image}
-                  alt={plan.title}
-                  className="h-full w-full object-cover transition-all duration-300 group-hover:scale-105 group-hover:grayscale-0 grayscale-[30%]"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b0b] via-[#0b0b0b]/50 to-transparent"></div>
-              </div>
-
-              {/* Content */}
-              <div className="p-5 sm:p-6">
-                <h3 className="text-lg font-semibold sm:text-xl">{plan.title}</h3>
-                <p className="mt-2 text-xs text-gray-300 sm:mt-3 sm:text-sm">{plan.description}</p>
-              </div>
-            </article>
-          );
-        })}
+    <section
+      id="asesorias"
+      className="relative overflow-hidden bg-black py-20 md:py-28 lg:py-32 border-y border-zinc-900"
+    >
+      {/* Background Image with Overlay */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src={training2}
+          alt="Personal Training"
+          className="w-full h-full object-cover object-center opacity-30"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/90 to-black" />
       </div>
 
-      <div className="flex justify-center md:justify-start">
-        <a
-          href="https://wa.me/5491100000000"
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex w-full items-center justify-center rounded-full bg-[#0EF2A0] px-6 py-3 text-xs font-semibold uppercase tracking-wide text-[#050505] transition-transform hover:-translate-y-0.5 sm:w-auto sm:px-8 sm:text-sm"
+      {/* Content */}
+      <div className="relative z-10 max-w-4xl mx-auto px-6 sm:px-8 text-center">
+
+        {/* Overline */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-xs sm:text-sm uppercase tracking-widest !text-emerald-400 mb-6"
         >
-          Solicitar asesoría 1:1
-        </a>
+          Entrenamiento Personalizado
+        </motion.p>
+
+        {/* Title */}
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase !text-white mb-6 leading-tight"
+        >
+          Asesoría 1:1
+          <br />
+          <span className="bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-400 bg-clip-text text-transparent">
+            Con Matías Ortiz
+          </span>
+        </motion.h2>
+
+        {/* Subtitle */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="text-lg md:text-xl lg:text-2xl !text-zinc-300 mb-4 leading-relaxed max-w-3xl mx-auto"
+        >
+          Plan diseñado 100% para vos. Ajustes semanales según tu evolución. Seguimiento técnico directo conmigo para alcanzar tu objetivo de forma sostenible.
+        </motion.p>
+
+        {/* Features List */}
+        <motion.ul
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="text-base md:text-lg !text-zinc-400 mb-10 space-y-2 max-w-2xl mx-auto"
+        >
+          <li>✓ Plan diseñado 100% a medida</li>
+          <li>✓ Ajustes semanales según tu evolución</li>
+          <li>✓ Seguimiento nutricional básico</li>
+          <li>✓ Soporte directo por WhatsApp</li>
+        </motion.ul>
+
+        {/* Big CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-3 rounded-full bg-emerald-500 px-10 py-5 text-lg font-black uppercase tracking-wide text-black shadow-2xl shadow-emerald-500/30 transition-all duration-300 hover:bg-emerald-600 hover:scale-105 hover:shadow-3xl hover:shadow-emerald-500/50"
+          >
+            <MessageCircle className="h-6 w-6" />
+            Consultar por WhatsApp
+          </a>
+        </motion.div>
+
+        {/* Small note */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="mt-6 text-sm !text-zinc-500"
+        >
+          Cupos limitados · Respuesta en 24hs
+        </motion.p>
       </div>
-    </section>
+    </section >
   );
 }
 

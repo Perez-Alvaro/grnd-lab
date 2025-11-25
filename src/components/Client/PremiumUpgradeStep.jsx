@@ -1,5 +1,6 @@
 import React from "react";
-import { FadeIn } from "../Shared/reactbits/index.js";
+import { motion } from "framer-motion";
+import { Check } from "lucide-react";
 
 function PremiumUpgradeStep({
   routine,
@@ -14,14 +15,6 @@ function PremiumUpgradeStep({
   const isPremium = planType === "premium";
   const totalPremium = routine.price + premiumAddonPrice;
 
-  const upgradeButtonClasses = isPremium
-    ? "bg-accent shadow-[0_10px_45px_-30px_rgba(14,242,160,0.8)]"
-    : "bg-accent hover:bg-accent-strong";
-  const continueButtonClasses = isPremium
-    ? "border-brand-border text-gray-300 hover:border-gray-500"
-    : "border-accent text-accent";
-  const premiumAddonLabel = premiumAddonPrice.toLocaleString("es-AR");
-
   const goToCheckout = (selectedPlan) => {
     onSelectPlan(selectedPlan);
     const checkoutSection = document.getElementById("checkout-section");
@@ -32,65 +25,153 @@ function PremiumUpgradeStep({
     }
   };
 
+  const essentialFeatures = [
+    "Rutina personalizada por bloques",
+    "Progresión semanal estructurada",
+    "Descripciones técnicas de ejercicios",
+    "Acceso a plataforma online"
+  ];
+
+  const premiumFeatures = [
+    ...essentialFeatures,
+    "📘 Ebook Nutrición MZ (PDF)",
+    "💬 Comunidad privada MZ",
+    "🎯 Seguimiento nutricional básico",
+    "⚡ Soporte prioritario"
+  ];
+
   return (
-    <section className="mt-8 flex flex-col gap-4 rounded-2xl border border-brand-border bg-surface p-5 text-white shadow-[0_25px_80px_-50px_rgba(0,0,0,0.75)] text-natural-wrap sm:mt-10 sm:gap-5 sm:rounded-3xl sm:p-6 md:mt-12 md:gap-6 md:p-8 lg:p-10">
-      <header className="space-y-2 text-center text-natural-wrap md:space-y-3 md:text-left">
-        <p className="text-[10px] uppercase tracking-[0.3em] text-accent sm:text-xs sm:tracking-[0.4em]">
-          Paso 03.5
-        </p>
-        <h3 className="mt-2 text-xl font-semibold sm:text-2xl md:text-3xl">
-          Plan Premium MZ – Nutrición y Comunidad
-        </h3>
-        <p className="mt-2 text-xs text-gray-400 sm:text-sm">
-          Sumá el Ebook oficial de Nutrición MZ 📘 y acceso exclusivo a la
-          Comunidad MZ junto a Matías Ortiz.
-        </p>
-      </header>
+    <section className="mt-10 sm:mt-12 md:mt-16 bg-black border-t border-zinc-800 py-16 sm:py-20 md:py-24 -mx-3 sm:-mx-4 md:-mx-6 px-3 sm:px-4 md:px-6">
+      <div className="max-w-5xl mx-auto">
 
-      <FadeIn className="grid gap-4 rounded-xl border border-brand-border bg-base p-5 text-natural-wrap sm:gap-5 sm:rounded-2xl sm:p-6 md:grid-cols-[1.2fr_0.8fr] md:gap-6 md:p-8 lg:gap-8">
-        <div className="space-y-3 text-center text-natural-wrap sm:space-y-4 md:text-left">
-          <p className="mock-text text-xs sm:text-sm">
-            Entrená con un plan integral que combina tu rutina personalizada con
-            educación nutricional y acompañamiento real.
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12 md:mb-16"
+        >
+          <p className="text-xs sm:text-sm uppercase tracking-widest !text-emerald-400 mb-4">
+            Paso 03 - Opcional
           </p>
-          <ul className="mock-text space-y-2 text-xs sm:text-sm">
-            <li>📘 Ebook oficial de Nutrición MZ en PDF</li>
-            <li>💬 Acceso a la comunidad privada MZ (email + WhatsApp)</li>
-            <li>🎯 Seguimiento integral junto a tu rutina {routine.name}</li>
-          </ul>
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase !text-white mb-6 leading-tight">
+            Upgrade Your
+            <br />
+            Training Standard
+          </h2>
+          <p className="text-base md:text-lg !text-zinc-400 max-w-2xl mx-auto">
+            Sumá el Ebook de Nutrición MZ y acceso exclusivo a la Comunidad junto a Matías Ortiz.
+          </p>
+        </motion.div>
+
+        {/* Plans Comparison */}
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-12">
+
+          {/* Essential Plan */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className={`relative rounded-2xl border p-6 md:p-8 transition-all duration-300 ${!isPremium
+              ? "border-emerald-500 ring-2 ring-emerald-500/50 bg-emerald-500/5"
+              : "border-zinc-800 bg-black/50"
+              }`}
+          >
+            <div className="mb-6">
+              <h3 className="text-2xl md:text-3xl font-bold !text-white mb-2">
+                Essential
+              </h3>
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl md:text-5xl font-black !text-white">
+                  ${routine.price.toLocaleString("es-AR")}
+                </span>
+              </div>
+            </div>
+
+            <ul className="space-y-3 mb-8">
+              {essentialFeatures.map((feature, index) => (
+                <li key={index} className="flex items-start gap-3 text-zinc-300">
+                  <Check className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm md:text-base !text-zinc-300">{feature}</span>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Premium Plan - Highlighted */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className={`relative rounded-2xl border p-6 md:p-8 transition-all duration-300 ${isPremium
+              ? "border-emerald-500 ring-2 ring-emerald-500/50 bg-emerald-500/5"
+              : "border-zinc-800 bg-black/50"
+              }`}
+          >
+            {/* Premium Badge */}
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+              <span className="inline-block rounded-full bg-emerald-500 px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-black">
+                Recomendado
+              </span>
+            </div>
+
+            <div className="mb-6">
+              <h3 className="text-2xl md:text-3xl font-bold !text-white mb-2">
+                Premium
+              </h3>
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl md:text-5xl font-black !text-emerald-400">
+                  ${totalPremium.toLocaleString("es-AR")}
+                </span>
+              </div>
+              <p className="text-sm !text-zinc-500 mt-1">
+                +${premiumAddonPrice.toLocaleString("es-AR")} adicionales
+              </p>
+            </div>
+
+            <ul className="space-y-3 mb-8">
+              {premiumFeatures.map((feature, index) => (
+                <li key={index} className="flex items-start gap-3 text-zinc-300">
+                  <Check className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm md:text-base !text-zinc-300">{feature}</span>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
         </div>
 
-        <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-brand-border bg-surface-alt p-4 text-center text-natural-wrap sm:gap-3 sm:rounded-2xl sm:p-5">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 sm:text-xs sm:tracking-[0.3em]">
-            Diferencia Premium
-          </p>
-          <p className="text-3xl font-bold text-accent sm:text-4xl">
-            +${premiumAddonPrice.toLocaleString("es-AR")}
-          </p>
-          <p className="mock-text text-xs sm:text-sm">
-            Total Premium: ${totalPremium.toLocaleString("es-AR")}
-          </p>
-          <div className="flex w-full flex-col gap-2 sm:gap-3">
-            <button
-              type="button"
-              onClick={() => goToCheckout("premium")}
-              className={`w-full rounded-full px-5 py-2.5 text-xs font-semibold uppercase tracking-wide text-black transition-all hover:-translate-y-0.5 sm:px-5 sm:py-3 sm:text-sm ${upgradeButtonClasses}`}
-            >
-              {`Mejorar a Plan Premium (+$${premiumAddonLabel})`}
-            </button>
-            <button
-              type="button"
-              onClick={() => goToCheckout("essential")}
-              className={`w-full rounded-full border px-5 py-2.5 text-xs font-semibold uppercase tracking-wide transition-all hover:-translate-y-0.5 sm:px-5 sm:py-3 sm:text-sm ${continueButtonClasses}`}
-            >
-              Continuar con Plan Essential
-            </button>
-          </div>
-          <p className="text-[10px] text-gray-500 sm:text-xs">
-            Podrás cambiar esta selección antes de pagar.
-          </p>
-        </div>
-      </FadeIn>
+        {/* CTAs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="flex flex-col sm:flex-row gap-4 justify-center"
+        >
+          <button
+            type="button"
+            onClick={() => goToCheckout("essential")}
+            className="w-full sm:w-auto rounded-full border-2 border-emerald-500 bg-transparent px-10 py-4 text-base font-bold uppercase tracking-wide !text-emerald-500 transition-all duration-300 hover:bg-emerald-500/10 hover:border-emerald-400 hover:scale-105"
+          >
+            Continuar con Essential
+          </button>
+          <button
+            type="button"
+            onClick={() => goToCheckout("premium")}
+            className="w-full sm:w-auto rounded-full bg-emerald-500 px-10 py-4 text-base font-bold uppercase tracking-wide text-black shadow-lg shadow-emerald-500/25 transition-all duration-300 hover:bg-emerald-600 hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/40"
+          >
+            Upgrade to Premium +${premiumAddonPrice.toLocaleString("es-AR")}
+          </button>
+        </motion.div>
+
+        {/* Footer note */}
+        <p className="text-center text-sm !text-zinc-500 mt-8">
+          Podrás cambiar esta selección antes de confirmar tu pago.
+        </p>
+      </div>
     </section>
   );
 }
