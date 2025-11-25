@@ -52,11 +52,11 @@ function RoutineCard({ routine, onPreview }) {
 
       <div className="flex flex-col justify-between p-4 gap-2 sm:gap-3 sm:p-5">
         <div className="flex flex-col gap-1 text-natural-wrap sm:gap-2">
-          <h3 className="text-lg font-bold leading-tight text-white sm:text-xl md:text-2xl line-clamp-2">
+          <h3 className="text-lg font-bold leading-tight !text-white sm:text-xl md:text-2xl line-clamp-2">
             {title}
           </h3>
           {shortDescription && (
-            <p className="text-sm leading-relaxed text-zinc-400 sm:text-base line-clamp-2">
+            <p className="text-sm leading-relaxed !text-zinc-400 sm:text-base line-clamp-2">
               {shortDescription}
             </p>
           )}
@@ -64,16 +64,16 @@ function RoutineCard({ routine, onPreview }) {
 
         <div className="grid grid-cols-3 gap-2 mt-1">
           <div className="border border-neutral-700 rounded-lg py-2 text-center">
-            <p className="text-[10px] text-zinc-500 uppercase tracking-wide sm:text-xs">Duración</p>
-            <p className="text-sm font-semibold text-white sm:text-base">{duration}</p>
+            <p className="text-[10px] !text-zinc-500 uppercase tracking-wide sm:text-xs">Duración</p>
+            <p className="text-sm font-semibold !text-white sm:text-base">{duration}</p>
           </div>
           <div className="border border-neutral-700 rounded-lg py-2 text-center">
-            <p className="text-[10px] text-zinc-500 uppercase tracking-wide sm:text-xs">Frecuencia</p>
-            <p className="text-sm font-semibold text-white sm:text-base">{frequency}</p>
+            <p className="text-[10px] !text-zinc-500 uppercase tracking-wide sm:text-xs">Frecuencia</p>
+            <p className="text-sm font-semibold !text-white sm:text-base">{frequency}</p>
           </div>
           <div className="border border-neutral-700 rounded-lg py-2 text-center">
-            <p className="text-[10px] text-zinc-500 uppercase tracking-wide sm:text-xs">Nivel</p>
-            <p className="text-sm font-semibold text-white sm:text-base">{level}</p>
+            <p className="text-[10px] !text-zinc-500 uppercase tracking-wide sm:text-xs">Nivel</p>
+            <p className="text-sm font-semibold !text-white sm:text-base">{level}</p>
           </div>
         </div>
 

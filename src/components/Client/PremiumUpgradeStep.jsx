@@ -52,15 +52,15 @@ function PremiumUpgradeStep({
           transition={{ duration: 0.5 }}
           className="text-center mb-12 md:mb-16"
         >
-          <p className="text-xs sm:text-sm uppercase tracking-widest text-emerald-400 mb-4">
+          <p className="text-xs sm:text-sm uppercase tracking-widest !text-emerald-400 mb-4">
             Paso 03 - Opcional
           </p>
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase text-white mb-6 leading-tight">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase !text-white mb-6 leading-tight">
             Upgrade Your
             <br />
             Training Standard
           </h2>
-          <p className="text-base md:text-lg text-zinc-400 max-w-2xl mx-auto">
+          <p className="text-base md:text-lg !text-zinc-400 max-w-2xl mx-auto">
             Sumá el Ebook de Nutrición MZ y acceso exclusivo a la Comunidad junto a Matías Ortiz.
           </p>
         </motion.div>
@@ -80,11 +80,11 @@ function PremiumUpgradeStep({
               }`}
           >
             <div className="mb-6">
-              <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
+              <h3 className="text-2xl md:text-3xl font-bold !text-white mb-2">
                 Essential
               </h3>
               <div className="flex items-baseline gap-2">
-                <span className="text-4xl md:text-5xl font-black text-white">
+                <span className="text-4xl md:text-5xl font-black !text-white">
                   ${routine.price.toLocaleString("es-AR")}
                 </span>
               </div>
@@ -94,7 +94,7 @@ function PremiumUpgradeStep({
               {essentialFeatures.map((feature, index) => (
                 <li key={index} className="flex items-start gap-3 text-zinc-300">
                   <Check className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm md:text-base">{feature}</span>
+                  <span className="text-sm md:text-base !text-zinc-300">{feature}</span>
                 </li>
               ))}
             </ul>
@@ -119,15 +119,15 @@ function PremiumUpgradeStep({
             </div>
 
             <div className="mb-6">
-              <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
+              <h3 className="text-2xl md:text-3xl font-bold !text-white mb-2">
                 Premium
               </h3>
               <div className="flex items-baseline gap-2">
-                <span className="text-4xl md:text-5xl font-black text-emerald-400">
+                <span className="text-4xl md:text-5xl font-black !text-emerald-400">
                   ${totalPremium.toLocaleString("es-AR")}
                 </span>
               </div>
-              <p className="text-sm text-zinc-500 mt-1">
+              <p className="text-sm !text-zinc-500 mt-1">
                 +${premiumAddonPrice.toLocaleString("es-AR")} adicionales
               </p>
             </div>
@@ -136,7 +136,7 @@ function PremiumUpgradeStep({
               {premiumFeatures.map((feature, index) => (
                 <li key={index} className="flex items-start gap-3 text-zinc-300">
                   <Check className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm md:text-base">{feature}</span>
+                  <span className="text-sm md:text-base !text-zinc-300">{feature}</span>
                 </li>
               ))}
             </ul>
@@ -154,7 +154,7 @@ function PremiumUpgradeStep({
           <button
             type="button"
             onClick={() => goToCheckout("essential")}
-            className="w-full sm:w-auto rounded-full border-2 border-emerald-500 bg-transparent px-10 py-4 text-base font-bold uppercase tracking-wide text-emerald-500 transition-all duration-300 hover:bg-emerald-500/10 hover:border-emerald-400 hover:scale-105"
+            className="w-full sm:w-auto rounded-full border-2 border-emerald-500 bg-transparent px-10 py-4 text-base font-bold uppercase tracking-wide !text-emerald-500 transition-all duration-300 hover:bg-emerald-500/10 hover:border-emerald-400 hover:scale-105"
           >
             Continuar con Essential
           </button>
@@ -168,7 +168,7 @@ function PremiumUpgradeStep({
         </motion.div>
 
         {/* Footer note */}
-        <p className="text-center text-sm text-zinc-500 mt-8">
+        <p className="text-center text-sm !text-zinc-500 mt-8">
           Podrás cambiar esta selección antes de confirmar tu pago.
         </p>
       </div>

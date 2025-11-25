@@ -42,16 +42,16 @@ function Footer() {
                             <img src="/mz-logo-mark.PNG" alt="MZ Logo" className="h-10 w-auto" />
                         </div>
                         <div className="text-left">
-                            <p className="text-sm uppercase tracking-[0.4em] text-emerald-400">
+                            <p className="text-sm uppercase tracking-[0.4em] !text-emerald-400">
                                 MZ Training
                             </p>
-                            <p className="text-lg font-semibold text-white">
+                            <p className="text-lg font-semibold !text-white">
                                 Matias Ortiz
                             </p>
                         </div>
                     </div>
 
-                    <p className="text-sm text-zinc-400 max-w-md mx-auto">
+                    <p className="text-sm !text-zinc-400 max-w-md mx-auto">
                         Planes diseñados con ciencia, seguimiento real y técnica aplicada para que alcances tus objetivos.
                     </p>
                 </div>
@@ -64,7 +64,7 @@ function Footer() {
                             href={link.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 text-sm text-zinc-400 transition-colors hover:text-emerald-500"
+                            className="flex items-center gap-2 text-sm !text-zinc-400 transition-colors hover:text-emerald-500"
                         >
                             <link.icon className="h-4 w-4" />
                             <span className="hidden sm:inline">{link.label}</span>
@@ -77,7 +77,7 @@ function Footer() {
                     {legalLinks.map((link) => (
                         <button
                             key={link.label}
-                            className="text-xs text-zinc-500 transition-colors hover:text-emerald-500"
+                            className="text-xs !text-zinc-500 transition-colors hover:text-emerald-500"
                         >
                             {link.label}
                         </button>
@@ -86,7 +86,7 @@ function Footer() {
 
                 {/* Copyright - Centered */}
                 <div className="text-center pt-8 border-t border-zinc-800">
-                    <p className="text-sm text-zinc-500">
+                    <p className="text-sm !text-zinc-500">
                         © {currentYear} MZ Training - Matias Ortiz. Todos los derechos reservados.
                     </p>
                 </div>

@@ -30,7 +30,7 @@ function Asesorias() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-xs sm:text-sm uppercase tracking-widest text-emerald-400 mb-6"
+          className="text-xs sm:text-sm uppercase tracking-widest !text-emerald-400 mb-6"
         >
           Entrenamiento Personalizado
         </motion.p>
@@ -41,7 +41,7 @@ function Asesorias() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase text-white mb-6 leading-tight"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase !text-white mb-6 leading-tight"
         >
           Asesoría 1:1
           <br />
@@ -56,7 +56,7 @@ function Asesorias() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-lg md:text-xl lg:text-2xl text-zinc-300 mb-4 leading-relaxed max-w-3xl mx-auto"
+          className="text-lg md:text-xl lg:text-2xl !text-zinc-300 mb-4 leading-relaxed max-w-3xl mx-auto"
         >
           Programación personalizada, ajustes semanales y seguimiento directo para alcanzar tus objetivos específicos.
         </motion.p>
@@ -67,7 +67,7 @@ function Asesorias() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="text-base md:text-lg text-zinc-400 mb-10 space-y-2 max-w-2xl mx-auto"
+          className="text-base md:text-lg !text-zinc-400 mb-10 space-y-2 max-w-2xl mx-auto"
         >
           <li>✓ Plan diseñado 100% a medida</li>
           <li>✓ Ajustes semanales según tu evolución</li>
@@ -99,7 +99,7 @@ function Asesorias() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.5 }}
-          className="mt-6 text-sm text-zinc-500"
+          className="mt-6 text-sm !text-zinc-500"
         >
           Cupos limitados · Respuesta en 24hs
         </motion.p>

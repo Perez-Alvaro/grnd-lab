@@ -14,10 +14,10 @@ function InfoPill({ label, value }) {
     <div
       className="rounded-xl border border-zinc-800 bg-black px-4 py-4 text-center shadow-inner shadow-black/10"
     >
-      <span className="block text-[11px] uppercase tracking-[0.35em] text-zinc-400">
+      <span className="block text-[11px] uppercase tracking-[0.35em] !text-zinc-400">
         {label}
       </span>
-      <span className="mt-2 block text-base font-semibold text-white">
+      <span className="mt-2 block text-base font-semibold !text-white">
         {displayValue}
       </span>
     </div>
@@ -95,10 +95,10 @@ function RoutinePreviewModal({ routine, open, onClose, onSelect }) {
         {/* Content */}
         <div className="p-6 md:p-8">
           <DialogHeader className="space-y-3 p-0 text-left mb-6">
-            <DialogTitle className="text-3xl md:text-4xl font-black text-white uppercase leading-tight break-words">
+            <DialogTitle className="text-3xl md:text-4xl font-black !text-white uppercase leading-tight break-words">
               {routine.title || routine.name}
             </DialogTitle>
-            <DialogDescription className="text-base md:text-lg leading-relaxed text-zinc-300 whitespace-pre-wrap break-words">
+            <DialogDescription className="text-base md:text-lg leading-relaxed !text-zinc-300 whitespace-pre-wrap break-words">
               {description}
             </DialogDescription>
           </DialogHeader>
@@ -110,26 +110,13 @@ function RoutinePreviewModal({ routine, open, onClose, onSelect }) {
             <InfoPill label="Nivel" value={level} />
           </div>
 
-          {/* Tags - Emerald */}
-          {tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-6">
-              {tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full bg-emerald-500/20 border border-emerald-500/40 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-emerald-400"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
 
           {/* Footer with CTAs */}
           <DialogFooter className="flex flex-col gap-3 sm:flex-row sm:justify-end sm:gap-4 pt-6 border-t border-zinc-800">
             <button
               type="button"
               onClick={onClose}
-              className="w-full sm:w-auto rounded-full border-2 border-emerald-500 bg-transparent px-8 py-3 text-sm font-bold uppercase tracking-wide text-emerald-500 transition-all duration-300 hover:bg-emerald-500/10 hover:border-emerald-400 hover:scale-105"
+              className="w-full sm:w-auto rounded-full border-2 border-emerald-500 bg-transparent px-8 py-3 text-sm font-bold uppercase tracking-wide !text-emerald-500 transition-all duration-300 hover:bg-emerald-500/10 hover:border-emerald-400 hover:scale-105"
             >
               Cerrar
             </button>

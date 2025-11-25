@@ -14,7 +14,7 @@ import RoutinePreviewModal from "./Client/RoutinePreviewModal.jsx";
 import PaymentSection from "./Client/PaymentSection.jsx";
 import PremiumUpgradeStep from "./Client/PremiumUpgradeStep.jsx";
 import { useAppContext } from "../context/AppContext.jsx";
-import training4 from "@/assets/training-4.jpg";
+import mockupImage from "@/assets/mockup.jpg";
 
 const PREMIUM_UPGRADE_PRICE = 6000;
 
@@ -137,38 +137,49 @@ const PasarelaCliente = React.forwardRef(function PasarelaCliente(_, ref) {
   };
 
   return (
-    <div ref={ref} className="flex w-full flex-col items-center bg-base text-white">
-      <section className="w-full max-w-6xl px-3 py-8 sm:px-4 sm:py-10 md:px-6 md:py-12 lg:py-16">
-        <div
-          className="relative overflow-hidden rounded-2xl border border-neutral-800 bg-gradient-to-br from-[#050505] via-[#0b0b0b] to-[#101010] sm:rounded-3xl"
-        >
-          <div className="absolute inset-0 opacity-30">
-            <img src={training4} alt="Training background" className="h-full w-full object-cover mix-blend-screen" />
-          </div>
-          <div className="relative z-10 flex flex-col items-center gap-4 px-5 py-12 text-center sm:items-start sm:gap-5 sm:px-8 sm:py-14 sm:text-left md:gap-6 md:px-12 md:py-16 lg:px-16 lg:py-20">
-            <FadeIn className="flex w-full flex-col gap-4 sm:gap-5 md:gap-6">
-              <div className="flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.3em] text-[#00C0A3] sm:justify-start sm:gap-3 sm:text-xs sm:tracking-[0.4em]">
-                <span className="h-px w-12 bg-[#0EF2A0]/40 sm:flex-1" />
-                <span>TRANSFORMÁ TU CUERPO HOY</span>
-                <span className="h-px w-12 bg-[#0EF2A0]/40 sm:flex-1" />
-              </div>
-              <h1 className="text-3xl font-bold uppercase leading-tight !text-white sm:text-4xl md:text-5xl lg:text-6xl">
+    <div ref={ref} className="flex w-full flex-col items-center bg-black text-white">
+      <section className="w-full max-w-7xl px-3 py-8 sm:px-4 sm:py-10 md:px-6 md:py-16 lg:py-20">
+        {/* Hero Section with Two-Column Layout */}
+        <div className="relative overflow-hidden rounded-3xl bg-black py-12 sm:py-16 md:py-20 lg:py-24">
+          <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-8 px-6 sm:px-8 md:grid-cols-2 md:gap-12 lg:gap-16 lg:px-12">
+            {/* Left Column - Text Content */}
+            <FadeIn className="flex flex-col gap-6 text-center md:text-left">
+              <h1 className="text-4xl font-black uppercase leading-[0.95] tracking-tight !text-white sm:text-5xl md:text-6xl lg:text-7xl">
                 Elegí tu entrenamiento. Superá tus límites.
               </h1>
-              <p className="mx-auto max-w-2xl text-sm !text-gray-300 sm:mx-0 sm:text-base md:text-lg">
+              <p className="mx-auto max-w-xl text-base !text-gray-400 sm:text-lg md:mx-0 md:text-xl">
                 Planes técnicamente diseñados por Matías. Seleccioná tu perfil,
                 objetivo y desbloqueá rutinas con enfoque técnico y resultados medibles.
               </p>
-              <div className="flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:gap-4">
+
+              {/* Pagination Dots */}
+              <div className="flex items-center justify-center gap-2 md:justify-start">
+                <div className="h-2.5 w-2.5 rounded-full bg-gray-600" />
+                <div className="h-2.5 w-8 rounded-full bg-white" />
+                <div className="h-2.5 w-2.5 rounded-full bg-gray-600" />
+                <div className="h-2.5 w-2.5 rounded-full bg-gray-600" />
+              </div>
+
+              {/* CTA Button */}
+              <div className="flex justify-center md:justify-start">
                 <Button
                   size="lg"
                   rounded="full"
-                  className="w-full bg-[#0EF2A0] px-6 py-3 text-xs font-semibold uppercase tracking-wide text-[#050505] transition-transform hover:-translate-y-0.5 hover:bg-[#0AA66A] sm:w-auto sm:px-8 sm:py-4 sm:text-sm md:text-base"
+                  className="bg-emerald-500 px-8 py-4 text-sm font-bold uppercase tracking-wider text-black transition-all hover:-translate-y-0.5 hover:scale-105 hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-500/50 sm:px-10 sm:py-5 sm:text-base"
                   onClick={handleStart}
                 >
                   Comenzar selección
                 </Button>
               </div>
+            </FadeIn>
+
+            {/* Right Column - Phone Mockup */}
+            <FadeIn delay={200} className="relative flex items-center justify-center md:justify-end">
+              <img
+                src={mockupImage}
+                alt="App Preview"
+                className="h-auto w-[280px] sm:w-[320px] lg:w-[380px]"
+              />
             </FadeIn>
           </div>
         </div>

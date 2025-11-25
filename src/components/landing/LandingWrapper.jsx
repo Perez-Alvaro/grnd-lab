@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 import HeroSection from "./HeroSection.jsx";
 import TransformationGallery from "./TransformationGallery.jsx";
 import Introduction from "./Introduction.jsx";
-import TrainWithTheBest from "./TrainWithTheBest.jsx";
+import TrainWithMati from "./TrainWithMati.jsx";
 import ProgramsGrid from "./ProgramsGrid.jsx";
-import Asesorias from "./Asesorias.jsx";
 import FAQ from "./FAQ.jsx";
 import PasarelaCliente from "../PasarelaCliente.jsx";
 import Footer from "../Shared/Footer.jsx";
@@ -38,33 +37,27 @@ function LandingWrapper() {
         />
       </div>
 
-      {/* Transformation Gallery - New CBUM Section */}
-      <TransformationGallery />
-
-      {/* Introduction / Elevator Pitch */}
+      {/* Introduction / Elevator Pitch - Moved up for immediate value prop */}
       <Introduction />
 
-      {/* Train With The Best - New CBUM Section */}
-      <TrainWithTheBest />
+      {/* Transformation Gallery - Social proof early */}
+      <TransformationGallery onViewPlans={handleViewPlans} />
 
-      {/* Programs Grid - New CBUM Section */}
+      {/* Programs Grid - Showcase objectives with CTA */}
       <ProgramsGrid />
 
-      {/* Main Content Container */}
+      {/* Main Content Container - Routine Selector positioned after Programs Grid */}
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-3 py-8 sm:gap-12 sm:px-4 sm:py-10 md:gap-16 md:px-6 md:py-16">
-
-        {/* 1. Plan Selection System */}
+        {/* Plan Selection System - MOVED UP for better conversion */}
         <div ref={pasarelaRef} id="planes">
           <PasarelaCliente />
         </div>
       </div>
 
-      {/* Asesorías - Full Width CBUM Style */}
-      <div ref={asesoriasRef} id="asesorias">
-        <Asesorias />
-      </div>
+      {/* Train With Mati - Credibility after selector */}
+      <TrainWithMati />
 
-      {/* FAQ Section - New CBUM Section */}
+      {/* FAQ Section - Address final objections */}
       <FAQ />
 
       {/* Footer */}

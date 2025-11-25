@@ -36,22 +36,34 @@ const transformations = [
     }
 ];
 
-function TransformationGallery() {
+function TransformationGallery({ onViewPlans }) {
     return (
         <section className="bg-black py-20 md:py-28 lg:py-32">
             <div className="max-w-7xl mx-auto px-6 sm:px-8">
 
                 {/* Overline */}
-                <p className="text-emerald-400 text-xs sm:text-sm uppercase tracking-widest text-center mb-4 md:mb-6">
+                <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                    className="!text-emerald-400 text-xs sm:text-sm uppercase tracking-widest text-center mb-4 md:mb-6"
+                >
                     Historias Reales
-                </p>
+                </motion.p>
 
-                {/* Title */}
-                <h2 className="text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase text-center mb-12 md:mb-16 lg:mb-20 leading-tight">
+                {/* Title with stagger animation */}
+                <motion.h2
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.7, ease: "easeOut" }}
+                    className="!text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase text-center mb-12 md:mb-16 lg:mb-20 leading-tight"
+                >
                     Tu Transformación
                     <br />
                     Empieza Acá
-                </h2>
+                </motion.h2>
 
                 {/* Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
@@ -78,18 +90,18 @@ function TransformationGallery() {
                             <div className="absolute bottom-0 left-0 right-0 p-6">
                                 {/* Badge */}
                                 <div className="inline-block mb-3">
-                                    <span className="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-xs font-bold uppercase tracking-wide">
+                                    <span className="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 !text-emerald-400 text-xs font-bold uppercase tracking-wide">
                                         {item.badge}
                                     </span>
                                 </div>
 
                                 {/* Name */}
-                                <h3 className="text-white text-xl font-bold mb-2">
+                                <h3 className="!text-white text-xl font-bold mb-2">
                                     {item.name}
                                 </h3>
 
                                 {/* Result */}
-                                <p className="text-zinc-300 text-sm font-medium">
+                                <p className="!text-zinc-300 text-sm font-medium">
                                     {item.result}
                                 </p>
                             </div>
@@ -102,10 +114,13 @@ function TransformationGallery() {
 
                 {/* Optional CTA */}
                 <div className="mt-12 md:mt-16 text-center">
-                    <p className="text-zinc-400 text-base md:text-lg mb-6">
+                    <p className="!text-zinc-400 text-base md:text-lg mb-6">
                         Sumate a cientos de personas que ya están transformando su cuerpo
                     </p>
-                    <button className="inline-flex items-center justify-center rounded-full bg-emerald-500 px-10 py-4 text-base font-bold uppercase tracking-wide text-black transition-all duration-300 hover:bg-emerald-600 hover:scale-105 shadow-lg shadow-emerald-500/25">
+                    <button
+                        onClick={onViewPlans}
+                        className="inline-flex items-center justify-center rounded-full bg-emerald-500 px-10 py-4 text-base font-bold uppercase tracking-wide text-black transition-all duration-300 hover:bg-emerald-600 hover:scale-105 shadow-lg shadow-emerald-500/25 animate-pulse hover:animate-none"
+                    >
                         Ver Todos los Planes
                     </button>
                 </div>

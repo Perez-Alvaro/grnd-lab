@@ -36,23 +36,23 @@ function TrainWithTheBest() {
                         className="text-left"
                     >
                         {/* Overline */}
-                        <p className="text-emerald-400 text-xs sm:text-sm uppercase tracking-widest mb-4">
+                        <p className="!text-emerald-400 text-xs sm:text-sm uppercase tracking-widest mb-4">
                             Sobre MZ Training
                         </p>
 
                         {/* Title */}
-                        <h2 className="text-white text-4xl sm:text-5xl md:text-6xl font-black uppercase mb-6 leading-tight">
+                        <h2 className="!text-white text-4xl sm:text-5xl md:text-6xl font-black uppercase mb-6 leading-tight">
                             Entrená Con
                             <br />
                             Los Mejores
                         </h2>
 
                         {/* Description */}
-                        <p className="text-zinc-300 text-base md:text-lg leading-relaxed mb-6">
+                        <p className="!text-zinc-300 text-base md:text-lg leading-relaxed mb-6">
                             Programación periodizada por bloques, seguimiento técnico semanal y ajustes personalizados según tu evolución. No trabajamos con métodos genéricos ni promesas vacías.
                         </p>
 
-                        <p className="text-zinc-300 text-base md:text-lg leading-relaxed mb-8">
+                        <p className="!text-zinc-300 text-base md:text-lg leading-relaxed mb-8">
                             Cada plan está diseñado con ciencia del deporte, biomecánica aplicada y estrategias nutricionales validadas. Tu progreso es medible, tu técnica es prioritaria y tus resultados son reales.
                         </p>
 
@@ -68,7 +68,7 @@ function TrainWithTheBest() {
                                     <div className="mt-1 flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500 flex items-center justify-center">
                                         <div className="w-2 h-2 rounded-full bg-emerald-500" />
                                     </div>
-                                    <span className="text-white font-medium">
+                                    <span className="!text-white font-medium">
                                         {point}
                                     </span>
                                 </li>

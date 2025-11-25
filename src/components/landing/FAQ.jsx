@@ -45,7 +45,7 @@ function FAQItem({ faq, isOpen, onClick }) {
                 onClick={onClick}
                 className="w-full px-6 py-6 md:px-8 md:py-7 flex justify-between items-center text-left gap-6 group"
             >
-                <span className="text-lg md:text-xl font-bold text-white group-hover:text-emerald-400 transition-colors duration-300 leading-relaxed">
+                <span className="text-lg md:text-xl font-bold !text-white group-hover:text-emerald-400 transition-colors duration-300 leading-relaxed">
                     {faq.question}
                 </span>
                 <ChevronDown
@@ -63,7 +63,7 @@ function FAQItem({ faq, isOpen, onClick }) {
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                         className="overflow-hidden"
                     >
-                        <p className="px-6 pb-6 md:px-8 md:pb-7 pt-2 text-zinc-300 text-base md:text-lg leading-relaxed">
+                        <p className="px-6 pb-6 md:px-8 md:pb-7 pt-2 !text-zinc-300 text-base md:text-lg leading-relaxed">
                             {faq.answer}
                         </p>
                     </motion.div>
@@ -86,19 +86,37 @@ function FAQ() {
 
                 {/* Header */}
                 <div className="text-center mb-12 md:mb-16">
-                    <p className="text-emerald-400 text-xs sm:text-sm uppercase tracking-widest mb-4">
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5 }}
+                        className="!text-emerald-400 text-xs sm:text-sm uppercase tracking-widest mb-4"
+                    >
                         FAQ
-                    </p>
+                    </motion.p>
 
-                    <h2 className="text-white text-4xl sm:text-5xl md:text-6xl font-black uppercase mb-6 leading-tight">
+                    <motion.h2
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.7, ease: "easeOut" }}
+                        className="!text-white text-4xl sm:text-5xl md:text-6xl font-black uppercase mb-6 leading-tight"
+                    >
                         Preguntas
                         <br />
                         Frecuentes
-                    </h2>
+                    </motion.h2>
 
-                    <p className="text-zinc-400 text-base md:text-lg">
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: 0.3 }}
+                        className="!text-zinc-400 text-base md:text-lg"
+                    >
                         Todo lo que necesitás saber sobre los programas MZ Training
-                    </p>
+                    </motion.p>
                 </div>
 
                 {/* FAQ List */}
@@ -117,14 +135,14 @@ function FAQ() {
 
                 {/* Contact CTA */}
                 <div className="mt-12 md:mt-16 text-center">
-                    <p className="text-zinc-400 text-base md:text-lg mb-6">
+                    <p className="!text-zinc-400 text-base md:text-lg mb-6">
                         ¿Tenés otra pregunta?
                     </p>
                     <a
                         href="https://wa.me/5493512800414"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center rounded-full border-2 border-emerald-500 bg-transparent px-10 py-4 text-base font-bold uppercase tracking-wide text-emerald-500 transition-all duration-300 hover:bg-emerald-500/10 hover:border-emerald-400 hover:scale-105"
+                        className="inline-flex items-center justify-center rounded-full border-2 border-emerald-500 bg-transparent px-10 py-4 text-base font-bold uppercase tracking-wide !text-emerald-500 transition-all duration-300 hover:bg-emerald-500/10 hover:border-emerald-400 hover:scale-105"
                     >
                         Contactanos por WhatsApp
                     </a>

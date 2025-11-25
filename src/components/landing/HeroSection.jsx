@@ -1,5 +1,6 @@
 import React from "react";
 import { ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
 import heroImage from "@/assets/hero.png";
 import Navbar from "../Shared/Navbar.jsx";
 
@@ -16,6 +17,20 @@ function HeroSection({ onViewPlans }) {
     { label: "Sobre mí", onClick: () => scrollToSection("asesorias") },
     { label: "Planes", onClick: onViewPlans }
   ];
+
+  // Animation variants for title
+  const titleVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: (i) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.2,
+        duration: 0.8,
+        ease: "easeOut"
+      }
+    })
+  };
 
   return (
     <section className="relative w-full min-h-screen bg-black overflow-hidden" id="hero">
@@ -47,40 +62,61 @@ function HeroSection({ onViewPlans }) {
       <div className="relative z-20 flex flex-col justify-center min-h-screen px-6 sm:px-8 md:px-12 lg:px-16 max-w-7xl mx-auto">
         <div className="md:w-1/2 md:pr-8">
 
-          {/* TÍTULO BOLD estilo CBUM - Mobile First */}
+          {/* TÍTULO BOLD estilo CBUM - Mobile First with Animated Lines */}
           <h1 className="text-white font-black leading-[0.9] tracking-tight
                          text-5xl
                          sm:text-6xl 
                          md:text-7xl 
                          lg:text-8xl 
                          xl:text-9xl">
-            ENTRENÁ
-            <br />
-            CON LOS
-            <br />
-            MEJORES
+            <motion.div
+              custom={0}
+              initial="hidden"
+              animate="visible"
+              variants={titleVariants}
+            >
+              ENTRENÁ
+            </motion.div>
+            <motion.div
+              custom={1}
+              initial="hidden"
+              animate="visible"
+              variants={titleVariants}
+            >
+              CON LOS
+            </motion.div>
+            <motion.div
+              custom={2}
+              initial="hidden"
+              animate="visible"
+              variants={titleVariants}
+            >
+              MEJORES
+            </motion.div>
           </h1>
 
           {/* QUOTE MOTIVACIONAL */}
-          <div className="mt-8 md:mt-10 lg:mt-12 max-w-xl">
-            <p className="text-white/70 text-sm leading-relaxed
+          <div className="mt-8 md:mt-10 lg:mt-12 max-w-xl relative z-30">
+            <p className="!text-white text-sm leading-relaxed
                          sm:text-base 
                          md:text-lg
-                         lg:leading-relaxed">
+                         lg:leading-relaxed
+                         [text-shadow:_0_2px_8px_rgb(0_0_0_/_80%)]">
               "El progreso no se trata de ser perfecto, sino de ser constante.
               Entrenar con disciplina, superarte con humildad y construir la mejor
               versión de vos mismo. Ese es el estándar."
             </p>
 
-            <p className="mt-4 text-xs font-bold text-white/90 tracking-widest
+            <p className="mt-4 text-xs font-bold !text-white tracking-widest
                          sm:text-sm 
-                         md:mt-6">
+                         md:mt-6
+                         [text-shadow:_0_2px_8px_rgb(0_0_0_/_80%)]">
               — MATÍAS ORTIZ · COACH ONLINE
             </p>
           </div>
 
           {/* CTAs - Mobile First */}
-          <div className="mt-10 flex flex-col gap-4
+          <div className="mt-10 flex flex-col gap-4 relative z-30
                          sm:flex-row sm:gap-5
                          md:mt-12
                          lg:mt-14">
@@ -89,7 +125,7 @@ function HeroSection({ onViewPlans }) {
               onClick={onViewPlans}
               className="group inline-flex items-center justify-center gap-2 
                          rounded-full bg-emerald-500 px-8 py-3.5
-                         text-sm font-bold uppercase tracking-wide text-black 
+                         text-sm font-bold uppercase tracking-wide !text-black 
                          transition-all duration-300 
                          hover:bg-emerald-600 hover:scale-105
                          shadow-lg shadow-emerald-500/25
@@ -106,7 +142,7 @@ function HeroSection({ onViewPlans }) {
               rel="noopener noreferrer"
               className="group inline-flex items-center justify-center gap-2 
                          rounded-full border-2 border-emerald-500 bg-transparent px-8 py-3.5
-                         text-sm font-bold uppercase tracking-wide text-emerald-500 
+                         text-sm font-bold uppercase tracking-wide !text-white
                          transition-all duration-300 
                          hover:bg-emerald-500/10 hover:border-emerald-400 hover:scale-105
                          sm:px-10 sm:py-4
