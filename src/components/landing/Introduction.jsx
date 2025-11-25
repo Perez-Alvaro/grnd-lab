@@ -41,7 +41,7 @@ function Introduction() {
                     transition={{ duration: 0.8, ease: "easeOut" }}
                     className="mb-6 text-4xl font-bold !text-white sm:mb-8 sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl"
                 >
-                    Planes que se adaptan a{" "}
+                    Metodología clara. Progresión por bloques.{" "}
                     <motion.span
                         initial={{ backgroundPosition: "200% center" }}
                         whileInView={{ backgroundPosition: "0% center" }}
@@ -50,18 +50,7 @@ function Introduction() {
                         className="bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-400 bg-clip-text text-transparent"
                         style={{ backgroundSize: "200% auto" }}
                     >
-                        vos
-                    </motion.span>
-                    {" "}diseñados para{" "}
-                    <motion.span
-                        initial={{ backgroundPosition: "200% center" }}
-                        whileInView={{ backgroundPosition: "0% center" }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1.5, delay: 0.7 }}
-                        className="bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-400 bg-clip-text text-transparent"
-                        style={{ backgroundSize: "200% auto" }}
-                    >
-                        resultados medibles
+                        Resultados que podés medir.
                     </motion.span>
                 </motion.h2>
 

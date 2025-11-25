@@ -14,7 +14,7 @@ function HeroSection({ onViewPlans }) {
 
   const menuItems = [
     { label: "Inicio", onClick: () => scrollToSection("hero") },
-    { label: "Sobre mí", onClick: () => scrollToSection("asesorias") },
+    { label: "Sobre mí", onClick: () => scrollToSection("train-with-mati") },
     { label: "Planes", onClick: onViewPlans }
   ];
 
@@ -75,7 +75,7 @@ function HeroSection({ onViewPlans }) {
               animate="visible"
               variants={titleVariants}
             >
-              ENTRENÁ
+              CONSTRUÍ
             </motion.div>
             <motion.div
               custom={1}
@@ -83,7 +83,7 @@ function HeroSection({ onViewPlans }) {
               animate="visible"
               variants={titleVariants}
             >
-              CON LOS
+              TU MEJOR
             </motion.div>
             <motion.div
               custom={2}
@@ -91,7 +91,7 @@ function HeroSection({ onViewPlans }) {
               animate="visible"
               variants={titleVariants}
             >
-              MEJORES
+              VERSIÓN
             </motion.div>
           </h1>
 
@@ -111,7 +111,7 @@ function HeroSection({ onViewPlans }) {
                          sm:text-sm 
                          md:mt-6
                          [text-shadow:_0_2px_8px_rgb(0_0_0_/_80%)]">
-              — MATÍAS ORTIZ · COACH ONLINE
+              — MATÍAS ORTIZ · PERSONAL TRAINER
             </p>
           </div>
 
@@ -132,7 +132,7 @@ function HeroSection({ onViewPlans }) {
                          sm:px-10 sm:py-4
                          md:text-base"
             >
-              Ver Planes
+              Elegí Tu Rutina
               <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1 sm:h-5 sm:w-5" />
             </button>
 

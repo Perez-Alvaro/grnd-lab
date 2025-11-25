@@ -142,9 +142,18 @@ const PasarelaCliente = React.forwardRef(function PasarelaCliente(_, ref) {
         {/* Hero Section with Two-Column Layout */}
         <div className="relative overflow-hidden rounded-3xl bg-black py-12 sm:py-16 md:py-20 lg:py-24">
           <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-8 px-6 sm:px-8 md:grid-cols-2 md:gap-12 lg:gap-16 lg:px-12">
-            {/* Left Column - Text Content */}
-            <FadeIn className="flex flex-col gap-6 text-center md:text-left">
-              <h1 className="text-4xl font-black uppercase leading-[0.95] tracking-tight !text-white sm:text-5xl md:text-6xl lg:text-7xl">
+            {/* Left Column - Phone Mockup */}
+            <FadeIn delay={0} className="relative flex items-center justify-center md:justify-start">
+              <img
+                src={mockupImage}
+                alt="App Preview"
+                className="h-auto w-[280px] sm:w-[320px] lg:w-[380px]"
+              />
+            </FadeIn>
+
+            {/* Right Column - Text Content */}
+            <FadeIn delay={200} className="flex flex-col gap-6 text-center md:text-left">
+              <h1 className="text-3xl font-black uppercase leading-tight !text-white sm:text-4xl md:text-5xl lg:text-6xl">
                 Elegí tu entrenamiento. Superá tus límites.
               </h1>
               <p className="mx-auto max-w-xl text-base !text-gray-400 sm:text-lg md:mx-0 md:text-xl">
@@ -171,15 +180,6 @@ const PasarelaCliente = React.forwardRef(function PasarelaCliente(_, ref) {
                   Comenzar selección
                 </Button>
               </div>
-            </FadeIn>
-
-            {/* Right Column - Phone Mockup */}
-            <FadeIn delay={200} className="relative flex items-center justify-center md:justify-end">
-              <img
-                src={mockupImage}
-                alt="App Preview"
-                className="h-auto w-[280px] sm:w-[320px] lg:w-[380px]"
-              />
             </FadeIn>
           </div>
         </div>

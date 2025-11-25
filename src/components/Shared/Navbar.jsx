@@ -254,12 +254,12 @@ function Navbar({ menuItems = [], className = "" }) {
     // ==================== MAIN RENDER ====================
     return (
         <nav className={`sticky top-0 w-full z-50 border-b border-zinc-800/50 bg-black/80 backdrop-blur-md ${className}`}>
-            <div className="mx-auto px-6 py-4 flex justify-between items-center sm:px-8 md:px-10 lg:px-12">
-                {/* Desktop Navigation Menu */}
+            <div className="mx-auto px-6 py-4 flex justify-center items-center sm:px-8 md:px-10 lg:px-12 relative">
+                {/* Desktop Navigation Menu - Centered */}
                 {renderDesktopMenu()}
 
-                {/* Right Side Controls */}
-                <div className="flex items-center gap-3">
+                {/* Right Side Controls - Absolute positioned */}
+                <div className="flex items-center gap-3 md:absolute md:right-6 lg:right-12">
                     {user ? renderAdminControls() : renderPublicAuthButtons()}
                     {renderMobileMenuToggle()}
                 </div>

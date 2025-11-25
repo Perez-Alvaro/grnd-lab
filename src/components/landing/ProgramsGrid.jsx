@@ -13,7 +13,7 @@ const programs = [
         title: "Volumen",
         subtitle: "Fuerza e Hipertrofia",
         image: training1,
-        description: OBJECTIVE_DESCRIPTIONS['muscle_gain']
+        description: "Programación orientada a hipertrofia muscular y fuerza progresiva. Bloques de trabajo con énfasis en volumen técnico y sobrecarga gradual."
     },
     {
         id: 2,
@@ -29,7 +29,7 @@ const programs = [
         title: "Recomposición",
         subtitle: "Fuerza y Movilidad",
         image: training3,
-        description: OBJECTIVE_DESCRIPTIONS['strength']
+        description: "Ganancia muscular con pérdida de grasa simultánea. Fuerza como base, movilidad funcional y progresión técnica como pilares."
     }
 ];
 
@@ -64,9 +64,9 @@ function ProgramsGrid() {
                         transition={{ duration: 0.7, ease: "easeOut" }}
                         className="!text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase mb-6 leading-tight"
                     >
-                        Elegí Tu
+                        Seleccioná Tu
                         <br />
-                        Objetivo
+                        Meta
                     </motion.h2>
 
                     <motion.p
@@ -143,7 +143,7 @@ function ProgramsGrid() {
                     className="mt-12 md:mt-16 text-center"
                 >
                     <p className="!text-zinc-300 text-lg md:text-xl mb-6 font-medium">
-                        ¿Listo para empezar tu transformación?
+                        ¿Arrancamos?
                     </p>
                     <button
                         onClick={handleProgramClick}

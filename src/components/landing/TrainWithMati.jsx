@@ -34,7 +34,7 @@ function TrainWithMati() {
                             transition={{ duration: 0.5 }}
                             className="!text-emerald-400 text-xs sm:text-sm uppercase tracking-widest mb-4 font-bold"
                         >
-                            Sobre MZ Training
+                            Sobre Mí
                         </motion.p>
 
                         {/* Main Title */}
@@ -45,39 +45,39 @@ function TrainWithMati() {
                             transition={{ duration: 0.7, ease: "easeOut" }}
                             className="!text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase mb-6 leading-[0.9]"
                         >
-                            Train With
+                            Entrenemos
                             <br />
-                            The Best
+                            Juntos
                         </motion.h2>
 
                         {/* Quote Section */}
                         <div className="border-l-4 border-emerald-500 pl-6 mb-8">
                             <p className="!text-zinc-300 text-base md:text-lg leading-relaxed italic mb-4">
-                                "El estándar no se trata de ser perfecto, se trata de ser mejor. Se trata de superar los contratiempos con humildad, sabiendo que la verdadera victoria está en no rendirse nunca y siempre dar lo mejor. El éxito no es la ausencia de fracaso; es la capacidad de levantarse después, acercarte más a la grandeza y construir una vida que refleje tus más altos estándares."
+                                "El estándar no se trata de ser perfecto, se trata de ser mejor. Superar contratiempos con humildad, sabiendo que la verdadera victoria está en no rendirse nunca. El éxito es la capacidad de levantarse y construir una vida que refleje tus más altos estándares."
                             </p>
                             <p className="!text-emerald-400 text-sm font-bold uppercase tracking-wider">
-                                — Matías Ortiz, Fitter & Coach
+                                — Matías Ortiz, Personal Trainer
                             </p>
                         </div>
 
                         {/* Description */}
                         <p className="!text-zinc-300 text-base md:text-lg leading-relaxed mb-6">
-                            Programación periodizada por bloques, seguimiento técnico semanal y ajustes personalizados según tu evolución. No trabajamos con métodos genéricos ni promesas vacías.
+                            Cada plan que diseño está basado en periodización por bloques, con progresiones claras y enfoque técnico en cada ejercicio. Seguimiento semanal, ajustes según cómo respondas y feedback constante. Nada de copiar y pegar rutinas genéricas.
                         </p>
 
                         <p className="!text-zinc-300 text-base md:text-lg leading-relaxed mb-8">
-                            Cada plan está diseñado con ciencia del deporte, biomecánica aplicada y estrategias nutricionales validadas. Tu progreso es medible, tu técnica es prioritaria y tus resultados son reales.
+                            Trabajo con fundamentos de ciencia del deporte, biomecánica aplicada y estrategias nutricionales validadas. Tu progreso se mide, tu técnica se corrige y tus resultados se construyen con tiempo y constancia. Así entrenamos.
                         </p>
 
                         {/* Key Features Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
                             {[
-                                "Programación por bloques periodizados",
-                                "Seguimiento semanal personalizado",
-                                "Enfoque técnico en cada ejercicio",
-                                "Ajustes según tu evolución",
+                                "Programación periodizada por bloques de entrenamiento",
+                                "Seguimiento semanal y ajustes según tu respuesta",
+                                "Técnica como prioridad en cada movimiento",
+                                "Progresiones claras y adaptadas a vos",
                                 "Soporte directo por WhatsApp",
-                                "Resultados medibles y progreso real"
+                                "Resultados medibles, sin promesas mágicas"
                             ].map((point, index) => (
                                 <div key={index} className="flex items-start gap-3">
                                     <div className="mt-1 flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500 flex items-center justify-center">
@@ -144,7 +144,7 @@ function TrainWithMati() {
                                     Matías Ortiz
                                 </p>
                                 <p className="!text-white text-sm font-medium">
-                                    Fitter Profesional & Coach
+                                    Personal Trainer & Coach
                                 </p>
                                 <p className="!text-zinc-400 text-xs mt-2">
                                     +5 años transformando vidas

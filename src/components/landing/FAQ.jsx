@@ -11,27 +11,27 @@ const faqs = [
     {
         id: 2,
         question: "¿Qué incluye el plan Essential?",
-        answer: "El plan Essential incluye: rutina completa periodizada por bloques, progresión semana a semana, descripciones técnicas de cada ejercicio, y acceso a la plataforma online para seguimiento."
+        answer: "El plan Essential incluye: rutina completa periodizada por bloques en formato PDF, progresión semana a semana, y descripciones técnicas de cada ejercicio."
     },
     {
         id: 3,
         question: "¿Qué incluye el plan Premium?",
-        answer: "El plan Premium incluye todo lo del Essential + asesoría personalizada 1:1 con Matías, ajustes semanales según tu progreso, seguimiento nutricional básico, y soporte prioritario vía WhatsApp."
+        answer: "El plan Premium incluye todo lo del Essential + ebook de nutrición en PDF + acceso a la comunidad privada de WhatsApp con Matías para soporte directo."
     },
     {
         id: 4,
         question: "¿Puedo cambiar de plan después de comprar?",
-        answer: "Sí, podés hacer upgrade de Essential a Premium en cualquier momento abonando la diferencia. El downgrade no está disponible una vez iniciado el plan Premium."
+        answer: "Sí, podés hacer upgrade de Essential a Premium en cualquier momento. Solo contactá a Matías mostrándole tu mail y nombre de compra, y él te brindará acceso al ebook y la comunidad."
     },
     {
         id: 5,
         question: "¿Necesito experiencia previa en el gym?",
-        answer: "No necesariamente. Los planes están diseñados para adaptarse a diferentes niveles. Cada ejercicio incluye progresiones técnicas y alternativas según tu nivel actual."
+        answer: "No es obligatorio. Los planes están pensados para distintos niveles de experiencia. Cada ejercicio viene con progresiones técnicas y variantes según dónde estés parado hoy."
     },
     {
         id: 6,
         question: "¿Cuánto dura cada programa?",
-        answer: "Los programas tienen duraciones entre 8 y 16 semanas dependiendo del objetivo. Están diseñados por bloques que podés renovar o modificar según tu evolución."
+        answer: "Los programas tienen duraciones entre 1 y 4 semanas dependiendo del objetivo. Están diseñados por bloques que podés renovar o modificar según tu evolución."
     }
 ];
 
@@ -136,7 +136,7 @@ function FAQ() {
                 {/* Contact CTA */}
                 <div className="mt-12 md:mt-16 text-center">
                     <p className="!text-zinc-400 text-base md:text-lg mb-6">
-                        ¿Tenés otra pregunta?
+                        ¿Algo más que quieras saber?
                     </p>
                     <a
                         href="https://wa.me/5493512800414"
@@ -144,7 +144,7 @@ function FAQ() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center rounded-full border-2 border-emerald-500 bg-transparent px-10 py-4 text-base font-bold uppercase tracking-wide !text-emerald-500 transition-all duration-300 hover:bg-emerald-500/10 hover:border-emerald-400 hover:scale-105"
                     >
-                        Contactanos por WhatsApp
+                        Hablemos por WhatsApp
                     </a>
                 </div>
             </div>

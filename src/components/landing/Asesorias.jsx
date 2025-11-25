@@ -58,7 +58,7 @@ function Asesorias() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-lg md:text-xl lg:text-2xl !text-zinc-300 mb-4 leading-relaxed max-w-3xl mx-auto"
         >
-          Programación personalizada, ajustes semanales y seguimiento directo para alcanzar tus objetivos específicos.
+          Plan diseñado 100% para vos. Ajustes semanales según tu evolución. Seguimiento técnico directo conmigo para alcanzar tu objetivo de forma sostenible.
         </motion.p>
 
         {/* Features List */}
@@ -104,7 +104,7 @@ function Asesorias() {
           Cupos limitados · Respuesta en 24hs
         </motion.p>
       </div>
-    </section>
+    </section >
   );
 }
 
