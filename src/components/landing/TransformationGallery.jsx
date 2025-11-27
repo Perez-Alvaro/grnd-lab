@@ -1,9 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { ChevronRight } from "lucide-react";
 import user1 from "@/assets/user1.jpg";
 import user2 from "@/assets/user2.jpg";
 import user3 from "@/assets/user3.jpg";
-import training1 from "@/assets/training-1.jpg";
+import training1 from "@/assets/user4.jpg";
 
 const transformations = [
     {
@@ -15,7 +16,7 @@ const transformations = [
     },
     {
         id: 2,
-        name: "Florencia S.",
+        name: "Genaro S.",
         result: "+8kg músculo magro",
         image: user2,
         badge: "Hipertrofia"
@@ -29,7 +30,7 @@ const transformations = [
     },
     {
         id: 4,
-        name: "María L.",
+        name: "Pedro L.",
         result: "Recuperación completa",
         image: training1,
         badge: "Rehabilitación"
@@ -112,16 +113,17 @@ function TransformationGallery({ onViewPlans }) {
                     ))}
                 </div>
 
-                {/* Optional CTA */}
+                {/* CTA */}
                 <div className="mt-12 md:mt-16 text-center">
                     <p className="!text-zinc-400 text-base md:text-lg mb-6">
                         Sumate a cientos de personas que ya están transformando su cuerpo
                     </p>
                     <button
                         onClick={onViewPlans}
-                        className="inline-flex items-center justify-center rounded-full bg-emerald-500 px-10 py-4 text-base font-bold uppercase tracking-wide text-black transition-all duration-300 hover:bg-emerald-600 hover:scale-105 shadow-lg shadow-emerald-500/25 animate-pulse hover:animate-none"
+                        className="group inline-flex items-center justify-center gap-2 rounded-full bg-emerald-500 px-10 py-4 text-base font-bold uppercase tracking-wide text-black shadow-lg shadow-emerald-500/25 transition-all duration-300 hover:bg-emerald-600 hover:scale-105"
                     >
-                        Ver Todos los Planes
+                        Elegí tu plan perfecto
+                        <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                     </button>
                 </div>
             </div>
