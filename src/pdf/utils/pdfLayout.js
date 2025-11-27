@@ -12,6 +12,8 @@ const normalizeExercise = (exercise, blockTitle) => {
   const series = variant.series ?? exercise.series ?? "";
   const reps = variant.reps ?? exercise.reps ?? "";
   const descanso = variant.descanso ?? exercise.descanso ?? "";
+  const rir = variant.rir ?? exercise.rir ?? "";
+  const tempo = variant.tempo ?? exercise.tempo ?? variant.cadencia ?? exercise.cadencia ?? "";
 
   const baseNotes = [
     blockTitle && blockTitle !== "Entrenamiento"
@@ -27,6 +29,8 @@ const normalizeExercise = (exercise, blockTitle) => {
     series: series ? String(series) : "",
     reps: reps ? String(reps) : "",
     descanso: descanso ? String(descanso) : "",
+    rir: (rir === 0 || rir) ? String(rir) : "",
+    tempo: (tempo === 0 || tempo) ? String(tempo) : "",
     videoUrl:
       exercise?.videoUrl || exercise?.youtubeLink || exercise?.video || "",
     notes: baseNotes,
@@ -124,7 +128,7 @@ const normalizeProgress = (plan) => {
   };
 };
 
-export const normalizePlanData = (planData) => {
+export const normalizePlanData = async (planData) => {
   const metadata = planData || {};
   const weeksSource = metadata?.weeks || metadata?.semanas;
   const daysFallback = metadata?.days || metadata?.dias;
@@ -151,8 +155,17 @@ export const normalizePlanData = (planData) => {
     metadata?.progress ||
     (metadata?.progressNotes || metadata?.progressMetrics ? metadata : null);
 
+  // Extract and normalize tags
+  const tagsString = metadata?.tags || "";
+  const tagsArray = tagsString
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+
   return {
+    // Keep existing fields for backward compatibility
     title:
+      metadata?.name ||
       metadata?.planName ||
       metadata?.title ||
       metadata?.nombre ||
@@ -164,6 +177,16 @@ export const normalizePlanData = (planData) => {
         ? String(metadata.frequency || metadata.frecuencia)
         : "",
     objective: metadata?.objective || metadata?.objetivo || "",
+
+    // Add new metadata fields for enhanced PDF
+    image: "",  // No images in PDF
+    description: metadata?.description || metadata?.descripcion || "",
+    level: metadata?.level || metadata?.nivel || "",
+    author: metadata?.author || metadata?.coach || metadata?.trainer || "",
+    durationWeeks: metadata?.durationWeeks || metadata?.semanas || "",
+    tags: tagsArray,
+    notes: metadata?.notes || metadata?.notas || "",
+
     weeks,
     progress: normalizeProgress(progressSource),
   };
