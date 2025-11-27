@@ -4,7 +4,7 @@ import { MessageCircle } from "lucide-react";
 import training2 from "@/assets/training-2.jpg";
 
 function Asesorias() {
-  const WHATSAPP_URL = "https://wa.me/5493512800414";
+  const WHATSAPP_URL = "https://wa.me/5493512800414?text=Hola%20Mati%2C%20vi%20tus%20asesor%C3%ADas%20por%20la%20p%C3%A1gina%20y%20me%20encantar%C3%ADa%20saber%20m%C3%A1s";
 
   return (
     <section

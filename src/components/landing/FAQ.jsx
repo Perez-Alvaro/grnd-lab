@@ -139,7 +139,7 @@ function FAQ() {
                         ¿Algo más que quieras saber?
                     </p>
                     <a
-                        href="https://wa.me/5493512800414"
+                        href="https://wa.me/5493512800414?text=Hola%20Mati%2C%20vi%20tus%20asesor%C3%ADas%20por%20la%20p%C3%A1gina%20y%20me%20encantar%C3%ADa%20saber%20m%C3%A1s"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center rounded-full border-2 border-emerald-500 bg-transparent px-10 py-4 text-base font-bold uppercase tracking-wide !text-emerald-500 transition-all duration-300 hover:bg-emerald-500/10 hover:border-emerald-400 hover:scale-105"
