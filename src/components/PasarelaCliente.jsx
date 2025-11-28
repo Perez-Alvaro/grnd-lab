@@ -145,7 +145,7 @@ const PasarelaCliente = React.forwardRef(function PasarelaCliente(_, ref) {
       <section className="w-full max-w-7xl px-3 py-8 sm:px-4 sm:py-10 md:px-6 md:py-16 lg:py-20">
         {/* Hero Section with Two-Column Layout */}
         <div className="relative overflow-hidden rounded-3xl bg-black py-12 sm:py-16 md:py-20 lg:py-24">
-          <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-8 px-6 sm:px-8 md:grid-cols-2 md:gap-12 lg:gap-16 lg:px-12">
+          <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-8 px-6 sm:px-8 md:grid-cols-2 md:gap-12 lg:gap-20 lg:px-12">
             {/* Left Column - Phone Mockup */}
             <FadeIn delay={0} className="relative flex items-center justify-center md:justify-start">
               <img
@@ -157,7 +157,7 @@ const PasarelaCliente = React.forwardRef(function PasarelaCliente(_, ref) {
 
             {/* Right Column - Text Content */}
             <FadeIn delay={200} className="flex flex-col gap-6 text-center md:text-left">
-              <h1 className="text-3xl font-black uppercase leading-tight !text-white sm:text-4xl md:text-5xl lg:text-6xl">
+              <h1 className="text-3xl font-black uppercase leading-tight !text-white sm:text-4xl md:text-5xl">
                 Elegí tu entrenamiento. Superá tus límites.
               </h1>
               <p className="mx-auto max-w-xl text-base !text-gray-400 sm:text-lg md:mx-0 md:text-xl">
@@ -181,7 +181,7 @@ const PasarelaCliente = React.forwardRef(function PasarelaCliente(_, ref) {
                   className="bg-emerald-500 px-8 py-4 text-sm font-bold uppercase tracking-wider text-black transition-all hover:-translate-y-0.5 hover:scale-105 hover:bg-emerald-600 hover:shadow-lg hover:shadow-emerald-500/50 sm:px-10 sm:py-5 sm:text-base"
                   onClick={handleStart}
                 >
-                  Comenzar selección
+                  Empecemos
                 </Button>
               </div>
             </FadeIn>

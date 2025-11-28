@@ -16,7 +16,7 @@ function TrainWithMati() {
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/5 blur-[100px] rounded-full" />
 
             <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8">
-                <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+                <div className="grid md:grid-cols-2 gap-12 md:gap-16 lg:gap-20 items-center">
 
                     {/* Left Content Section */}
                     <motion.div
@@ -43,7 +43,7 @@ function TrainWithMati() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.7, ease: "easeOut" }}
-                            className="!text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase mb-6 leading-[0.9]"
+                            className="!text-white text-5xl sm:text-6xl md:text-7xl font-black uppercase mb-6 leading-[0.9]"
                         >
                             Entrenemos
                             <br />
@@ -61,13 +61,6 @@ function TrainWithMati() {
                         </div>
 
                         {/* Description */}
-                        <p className="!text-zinc-300 text-base md:text-lg leading-relaxed mb-6">
-                            Cada plan que diseño está basado en periodización por bloques, con progresiones claras y enfoque técnico en cada ejercicio. Seguimiento semanal, ajustes según cómo respondas y feedback constante. Nada de copiar y pegar rutinas genéricas.
-                        </p>
-
-                        <p className="!text-zinc-300 text-base md:text-lg leading-relaxed mb-8">
-                            Trabajo con fundamentos de ciencia del deporte, biomecánica aplicada y estrategias nutricionales validadas. Tu progreso se mide, tu técnica se corrige y tus resultados se construyen con tiempo y constancia. Así entrenamos.
-                        </p>
 
                         {/* Key Features Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
@@ -170,7 +163,7 @@ function TrainWithMati() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.6, delay: 0.5 }}
-                            className="absolute -top-6 -left-6 bg-black border border-emerald-500/30 rounded-xl p-4 shadow-xl hidden md:block"
+                            className="absolute top-4 right-4 bg-black/90 backdrop-blur-sm border border-emerald-500/30 rounded-xl p-4 shadow-xl hidden md:block"
                         >
                             <p className="!text-emerald-400 text-3xl font-black">100%</p>
                             <p className="!text-white text-sm font-medium">Personalizado</p>

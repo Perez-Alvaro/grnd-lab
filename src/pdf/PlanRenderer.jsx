@@ -34,7 +34,7 @@ const PlanDocument = ({ plan }) => {
 };
 
 export const generateTrainingPlanPDF = async (planData) => {
-  const normalizedPlan = normalizePlanData(planData);
+  const normalizedPlan = await normalizePlanData(planData);
   const blob = await pdf(<PlanDocument plan={normalizedPlan} />).toBlob();
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");

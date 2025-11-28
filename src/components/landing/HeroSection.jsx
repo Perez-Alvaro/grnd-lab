@@ -136,10 +136,9 @@ function HeroSection({ onViewPlans }) {
               <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1 sm:h-5 sm:w-5" />
             </button>
 
-            <a
-              href="https://wa.me/5493512800414"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={() => scrollToSection("train-with-mati")}
               className="group inline-flex items-center justify-center gap-2 
                          rounded-full border-2 border-emerald-500 bg-transparent px-8 py-3.5
                          text-sm font-bold uppercase tracking-wide !text-white
@@ -150,7 +149,7 @@ function HeroSection({ onViewPlans }) {
             >
               Asesoría 1:1
               <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1 sm:h-5 sm:w-5" />
-            </a>
+            </button>
           </div>
         </div>
       </div>
