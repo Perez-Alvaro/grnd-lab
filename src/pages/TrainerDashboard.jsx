@@ -26,10 +26,13 @@ import {
 
 import { useAppContext } from "../context/AppContext.jsx";
 import usePDFExport from "../hooks/usePDFExport.js";
+import useRoutineSync from "../hooks/useRoutineSync.js";
 import TemplateCard from "../components/Trainer/TemplateCard.jsx";
 import { TRAINING_GOAL_LABELS } from "../constants/objectives.js";
 import Navbar from "../components/Shared/Navbar.jsx";
 import Footer from "../components/Shared/Footer.jsx";
+import ConfirmDialog from "../components/Shared/ConfirmDialog.jsx";
+import { toast } from "../utils/toast.js";
 
 const PLAN_VARIANTS = {
   premium: { label: "Premium", className: "text-accent" },
@@ -427,6 +430,7 @@ const DashboardTemplates = ({
   onEdit,
   onDuplicate,
   onDelete,
+  onToggleActive,
   onExport,
   onUploadToStorage,
   onGenerateAllPDFs,
@@ -589,6 +593,7 @@ const DashboardTemplates = ({
             onEdit={() => onEdit(template)}
             onDuplicate={() => onDuplicate(template)}
             onDelete={() => onDelete(template.id)}
+            onToggleActive={() => onToggleActive(template.id)}
             onExportPdf={() => onExport(template)}
             onUploadToStorage={() => onUploadToStorage(template)}
             uploadingPDF={uploadingPDFs.has(template.id)}
@@ -957,8 +962,13 @@ function AdminDashboard() {
   const navigate = useNavigate();
   const { state, dispatch } = useAppContext();
   const exportPlan = usePDFExport();
+  const { deleteRoutine, toggleRoutineActive } = useRoutineSync();
   const [uploadingPDFs, setUploadingPDFs] = useState(new Set());
   const [generatingAllPDFs, setGeneratingAllPDFs] = useState(false);
+
+  // Estados para modales de confirmación
+  const [deleteConfirm, setDeleteConfirm] = useState({ open: false, routineId: null, routineName: "" });
+  const [toggleConfirm, setToggleConfirm] = useState({ open: false, routineId: null, routineName: "", isActive: false });
 
   const monthKeys = useMemo(() => {
     const set = new Set();
@@ -1213,10 +1223,41 @@ function AdminDashboard() {
   };
 
   const handleDeleteTemplate = (templateId) => {
-    if (
-      window.confirm("¿Estás seguro de que deseas eliminar esta plantilla?")
-    ) {
-      dispatch({ type: "DELETE_ROUTINE", payload: templateId });
+    const routine = state.routines.find(r => r.id === templateId);
+    setDeleteConfirm({
+      open: true,
+      routineId: templateId,
+      routineName: routine?.name || routine?.title || "esta rutina"
+    });
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteRoutine(deleteConfirm.routineId);
+      toast.success("Rutina eliminada correctamente");
+    } catch (error) {
+      console.error("Error eliminando rutina:", error);
+      toast.error("No se pudo eliminar la rutina. Intenta nuevamente.");
+    }
+  };
+
+  const handleToggleActive = (templateId) => {
+    const routine = state.routines.find(r => r.id === templateId);
+    setToggleConfirm({
+      open: true,
+      routineId: templateId,
+      routineName: routine?.name || routine?.title || "esta rutina",
+      isActive: routine?.active || false
+    });
+  };
+
+  const confirmToggle = async () => {
+    try {
+      const updated = await toggleRoutineActive(toggleConfirm.routineId);
+      toast.success(`Rutina ${updated.active ? 'activada' : 'desactivada'} correctamente`);
+    } catch (error) {
+      console.error("Error cambiando estado de rutina:", error);
+      toast.error("No se pudo cambiar el estado de la rutina. Intenta nuevamente.");
     }
   };
 
@@ -1436,6 +1477,7 @@ ${errors.length > 0 ? `\nErrores:\n${errors.map(e => `• ${e}`).join('\n')}` : 
             onEdit={handleEditTemplate}
             onDuplicate={handleDuplicateTemplate}
             onDelete={handleDeleteTemplate}
+            onToggleActive={handleToggleActive}
             onExport={handleDownloadPDF}
             onUploadToStorage={handleUploadPDFToStorage}
             onGenerateAllPDFs={handleGenerateAllPDFs}
@@ -1456,6 +1498,35 @@ ${errors.length > 0 ? `\nErrores:\n${errors.map(e => `• ${e}`).join('\n')}` : 
 
       {/* Footer */}
       <Footer />
+
+      {/* Modales de Confirmación */}
+      <ConfirmDialog
+        open={deleteConfirm.open}
+        onClose={() => setDeleteConfirm({ open: false, routineId: null, routineName: "" })}
+        onConfirm={confirmDelete}
+        title="Eliminar Rutina"
+        description={`¿Estás seguro de que deseas eliminar "${deleteConfirm.routineName}"? Esta acción no se puede deshacer y se eliminará permanentemente de la base de datos.`}
+        confirmText="Sí, Eliminar"
+        cancelText="Cancelar"
+        variant="danger"
+        icon="delete"
+      />
+
+      <ConfirmDialog
+        open={toggleConfirm.open}
+        onClose={() => setToggleConfirm({ open: false, routineId: null, routineName: "", isActive: false })}
+        onConfirm={confirmToggle}
+        title={toggleConfirm.isActive ? "Desactivar Rutina" : "Activar Rutina"}
+        description={
+          toggleConfirm.isActive
+            ? `¿Deseas desactivar "${toggleConfirm.routineName}"? Los clientes no podrán verla en la landing hasta que la reactives.`
+            : `¿Deseas activar "${toggleConfirm.routineName}"? Los clientes podrán verla y comprarla desde la landing.`
+        }
+        confirmText={toggleConfirm.isActive ? "Sí, Desactivar" : "Sí, Activar"}
+        cancelText="Cancelar"
+        variant={toggleConfirm.isActive ? "warning" : "success"}
+        icon={toggleConfirm.isActive ? "toggle-off" : "toggle-on"}
+      />
     </div>
   );
 }

@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AppProvider } from "./context/AppContext.jsx";
 import { UnifiedAuthProvider } from "./context/UnifiedAuthContext.jsx";
+import { ToastProvider, useToast } from "./context/ToastContext.jsx";
+import { setToastInstance } from "./utils/toast.js";
 import { ProtectedRoute } from "./components/Auth/ProtectedRoute.jsx";
 import ClientProtectedRoute from "./components/Auth/ClientProtectedRoute.jsx";
 import { DebugAuthPanel } from "./components/Auth/DebugAuthPanel.jsx";
@@ -23,11 +25,22 @@ import ClientForgotPassword from "./pages/ClientForgotPassword.jsx";
 import ClientDashboard from "./pages/ClientDashboard.jsx";
 import ClientHome from "./pages/ClientHome.jsx";
 
+function ToastInitializer() {
+  const toast = useToast();
+
+  useEffect(() => {
+    setToastInstance(toast);
+  }, [toast]);
+
+  return null;
+}
+
 function AppContent() {
   const location = useLocation();
 
   return (
     <div className="min-h-screen bg-base text-white font-sans">
+      <ToastInitializer />
       {/* Ocultar Header en landing page y admin dashboard (usan shared Navbar) */}
       {location.pathname !== '/landing' && location.pathname !== '/admin' && <Header />}
       <main>
@@ -120,9 +133,11 @@ function App() {
   return (
     <UnifiedAuthProvider>
       <AppProvider>
-        <Router>
-          <AppContent />
-        </Router>
+        <ToastProvider>
+          <Router>
+            <AppContent />
+          </Router>
+        </ToastProvider>
       </AppProvider>
     </UnifiedAuthProvider>
   );

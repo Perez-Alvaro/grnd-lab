@@ -42,8 +42,30 @@ export default function useRoutineSync() {
     [dispatch, persistRoutine],
   );
 
+  const deleteRoutine = useCallback(
+    async (id) => {
+      await persistRoutine({ id }, (payload) => API.deleteRoutine(payload.id));
+      dispatch({ type: "DELETE_ROUTINE", payload: id });
+      return { success: true };
+    },
+    [dispatch, persistRoutine],
+  );
+
+  const toggleRoutineActive = useCallback(
+    async (id) => {
+      const persisted = await persistRoutine({ id }, (payload) =>
+        API.toggleRoutineActive(payload.id),
+      );
+      dispatch({ type: "UPDATE_ROUTINE", payload: persisted });
+      return persisted;
+    },
+    [dispatch, persistRoutine],
+  );
+
   return {
     addRoutine,
     updateRoutine,
+    deleteRoutine,
+    toggleRoutineActive,
   };
 }

@@ -114,7 +114,9 @@ async function processApprovedPayment(payment: any) {
   console.log(`Processing approved payment: ${payment.id}`);
 
   try {
-    const userEmail = payment.payer?.email;
+    // IMPORTANTE: Usar el email de los metadatos (ingresado por el usuario en el form)
+    // NO el email del payer de Mercado Pago (que puede ser un email de prueba)
+    const userEmail = payment.metadata?.user_email || payment.payer?.email;
     const userId = payment.metadata?.user_id; // ID de Supabase
     const productId = payment.metadata?.product_id;
     const isBundle = payment.metadata?.is_bundle === true || payment.metadata?.is_bundle === 'true';
@@ -123,6 +125,8 @@ async function processApprovedPayment(payment: any) {
       throw new Error('Missing user email or product ID in payment metadata');
     }
 
+    console.log(`User email from metadata: ${userEmail}`);
+    console.log(`Payer email from MP: ${payment.payer?.email}`);
     console.log(`User ID from metadata: ${userId || 'not provided'}`);
 
     // 1. Detectar productos incluidos (si es bundle)

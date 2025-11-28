@@ -9,7 +9,7 @@ function RoutinePreviewPage() {
   const { state } = useAppContext();
 
   const routine = useMemo(
-    () => state.routines.find((item) => String(item.id) === String(id)),
+    () => state.routines.find((item) => String(item.id) === String(id) && item.active === true),
     [id, state.routines],
   );
 

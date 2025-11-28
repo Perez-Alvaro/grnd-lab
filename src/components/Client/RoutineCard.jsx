@@ -27,11 +27,23 @@ function RoutineCard({ routine, onPreview }) {
       ? routine.highlights[0]
       : description);
 
-  const duration = routine.duration || routine.durationWeeks || "—";
+  // Formatear duración (ej: "8" -> "8 sem")
+  const rawDuration = routine.duration || routine.durationWeeks || routine.duration_weeks;
+  const duration = rawDuration
+    ? `${rawDuration} sem${rawDuration === 1 || rawDuration === '1' ? '' : ''}`
+    : "—";
+
   const frequency =
     routine.frequency ||
-    (Array.isArray(routine.days) ? `${routine.days.length}x/semana` : "—");
-  const level = routine.level || routine.difficulty || "—";
+    (Array.isArray(routine.days) ? `${routine.days.length}x/sem` : "—");
+
+  // Mapeo de niveles a español
+  const levelMap = {
+    'beginner': 'Principiante',
+    'intermediate': 'Intermedio',
+    'advanced': 'Avanzado'
+  };
+  const level = routine.level ? (levelMap[routine.level] || routine.level) : (routine.difficulty || "—");
 
   const cardBackground = routine.cardColor || "#111111";
 

@@ -66,11 +66,14 @@ function PaymentSuccess() {
         } else {
           // El webhook aún no procesó el pago, verificar con MP
           const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+          const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
           const response = await fetch(
             `${SUPABASE_URL}/functions/v1/get-mp-payment/${paymentId}`,
             {
               headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
               }
             }
           );

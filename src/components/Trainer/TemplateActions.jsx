@@ -1,15 +1,30 @@
-import { Edit, Copy, Trash2, Monitor, Upload } from "lucide-react";
+import { Edit, Copy, Trash2, Monitor, Upload, Power, PowerOff } from "lucide-react";
 
 export default function TemplateActions({
+  template,
   onEdit,
   onDuplicate,
   onDelete,
+  onToggleActive,
   onExportPdf,
   onUploadToStorage,
   uploadingPDF = false,
 }) {
   return (
     <div className="flex flex-wrap gap-2 md:justify-end">
+      <button
+        onClick={onToggleActive}
+        className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
+          template.active
+            ? 'border-gray-500/60 text-gray-400 hover:bg-gray-500/10'
+            : 'border-green-500/60 text-green-400 hover:bg-green-500/10'
+        }`}
+        aria-label={template.active ? "Desactivar" : "Activar"}
+        title={template.active ? "Desactivar rutina (no se mostrará en la landing)" : "Activar rutina (se mostrará en la landing)"}
+      >
+        {template.active ? <PowerOff className="w-4 h-4" /> : <Power className="w-4 h-4" />}
+        <span className="hidden sm:inline">{template.active ? 'Desactivar' : 'Activar'}</span>
+      </button>
       <button
         onClick={onEdit}
         className="inline-flex items-center gap-2 rounded-lg border border-accent px-3 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent/10"

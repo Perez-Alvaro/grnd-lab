@@ -8,6 +8,7 @@ export default function TemplateCard({
   onEdit,
   onDuplicate,
   onDelete,
+  onToggleActive,
   onExportPdf,
   onUploadToStorage,
   uploadingPDF = false,
@@ -36,6 +37,13 @@ export default function TemplateCard({
             </h4>
           </button>
           <div className="flex flex-wrap gap-2 mt-2">
+            <span className={`rounded-full px-2.5 py-1 text-xs font-semibold uppercase tracking-wide ${
+              template.active
+                ? 'bg-green-500/20 text-green-400 border border-green-500/40'
+                : 'bg-gray-500/20 text-gray-400 border border-gray-500/40'
+            }`}>
+              {template.active ? '● Activa' : '○ Inactiva'}
+            </span>
             <span className="rounded-full border border-[#2E2E2E] bg-[#0E0E0E] px-2.5 py-1 text-sm capitalize text-gray-300">
               {genderLabel[template.gender]}
             </span>
@@ -48,9 +56,11 @@ export default function TemplateCard({
           </div>
         </div>
         <TemplateActions
+          template={template}
           onEdit={onEdit}
           onDuplicate={onDuplicate}
           onDelete={onDelete}
+          onToggleActive={onToggleActive}
           onExportPdf={onExportPdf}
           onUploadToStorage={onUploadToStorage}
           uploadingPDF={uploadingPDF}

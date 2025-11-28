@@ -62,6 +62,15 @@ function RoutinePreviewModal({ routine, open, onClose, onSelect }) {
     return value;
   };
 
+  const formatLevel = (value) => {
+    const levelMap = {
+      'beginner': 'Principiante',
+      'intermediate': 'Intermedio',
+      'advanced': 'Avanzado'
+    };
+    return value ? (levelMap[value] || value) : "—";
+  };
+
   const tags = Array.isArray(routine.tags)
     ? routine.tags
     : typeof routine.tags === "string"
@@ -72,9 +81,14 @@ function RoutinePreviewModal({ routine, open, onClose, onSelect }) {
       : [];
 
   const description = routine.description?.trim() || "—";
-  const duration = formatWeeks(routine.duration);
-  const frequency = formatFrequency(routine.frequency);
-  const level = routine.level || "—";
+
+  // Obtener valores raw de duration y frequency (pueden venir mapeados o del preview)
+  const rawDuration = routine.duration || routine.duration_weeks || routine.durationWeeks;
+  const rawFrequency = routine.frequency || (Array.isArray(routine.days) ? routine.days.length : null);
+
+  const duration = formatWeeks(rawDuration);
+  const frequency = formatFrequency(rawFrequency);
+  const level = formatLevel(routine.level);
 
   const imageSrc = routine.image || fallbackImage;
 

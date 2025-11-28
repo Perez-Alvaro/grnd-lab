@@ -31,22 +31,26 @@ const PasarelaCliente = React.forwardRef(function PasarelaCliente(_, ref) {
   const trainerRoutines = useMemo(() => {
     console.log('🔍 [PasarelaCliente] state.routines:', state.routines);
 
-    const mapped = (state.routines || []).map((routine) => ({
+    // Filtrar solo rutinas activas para la landing
+    const activeRoutines = (state.routines || []).filter((routine) => routine.active === true);
+
+    const mapped = activeRoutines.map((routine) => ({
       id: routine.id,
       name: routine.title || routine.name || "Plan sin título",
       title: routine.title || routine.name || "Plan sin título",
       description: routine.description || routine.notes || "",
-      duration: routine.durationWeeks ? String(routine.durationWeeks) : "",
-      frequency: Array.isArray(routine.days) ? String(routine.days.length) : "",
+      duration: routine.duration_weeks || routine.durationWeeks || "",
+      frequency: routine.frequency || (Array.isArray(routine.days) ? String(routine.days.length) : ""),
       tags: routine.tags || [],
       image: routine.image || "",
       gender: routine.gender || routine.genre || "",
       objective: routine.objective || "",
+      level: routine.level || "",
       price: routine.price ?? 0,
       preview: routine,
     }));
 
-    console.log('📋 [PasarelaCliente] Mapped routines:', mapped);
+    console.log('📋 [PasarelaCliente] Mapped active routines:', mapped);
     return mapped;
   }, [state.routines]);
 

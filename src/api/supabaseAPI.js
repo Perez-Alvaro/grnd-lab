@@ -136,7 +136,7 @@ export const SupabaseAPI = {
           routines (*)
         `)
         .eq('type', 'routine')
-        .eq('active', true)
+        // Traer todas las rutinas (activas e inactivas) para el admin
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -271,6 +271,39 @@ export const SupabaseAPI = {
       return { success: true };
     } catch (error) {
       console.error('Error deleting routine:', error);
+      throw error;
+    }
+  },
+
+  async toggleRoutineActive(id) {
+    try {
+      // 1. Obtener estado actual
+      const { data: product, error: fetchError } = await supabase
+        .from('products')
+        .select('active')
+        .eq('id', id)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      // 2. Toggle del estado
+      const newActiveState = !product.active;
+
+      const { data: updatedProduct, error: updateError } = await supabase
+        .from('products')
+        .update({ active: newActiveState })
+        .eq('id', id)
+        .select(`
+          *,
+          routines (*)
+        `)
+        .single();
+
+      if (updateError) throw updateError;
+
+      return formatRoutineFromDB(updatedProduct, updatedProduct.routines);
+    } catch (error) {
+      console.error('Error toggling routine active state:', error);
       throw error;
     }
   },
