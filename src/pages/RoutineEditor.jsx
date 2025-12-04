@@ -5,7 +5,7 @@
 
 import React, { useMemo, useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Save, FileDown, FileJson, Download } from "lucide-react";
+import { ArrowLeft, Save, FileDown, FileJson, Download, Sparkles } from "lucide-react";
 import { PlanProvider } from "../context/PlanContext.jsx";
 import { useAppContext } from "../context/AppContext.jsx";
 import useRoutineEditor from "../hooks/useRoutineEditor.js";
@@ -139,6 +139,66 @@ export default function RoutineEditorPage() {
     toast.success("Rutina importada correctamente");
   }, []);
 
+  const handleGenerateAIRoutine = useCallback(() => {
+    const { tags } = planEditor.metadata;
+    if (!tags || tags.length === 0) {
+      toast.error("Por favor, seleccione al menos un tag para generar la rutina.");
+      return;
+    }
+
+    // This is a mock response, in a real scenario you would call Gemini API
+    const mockApiResponse = {
+      name: `Rutina de ${tags.join(', ')}`,
+      description: `Una rutina de entrenamiento generada por IA basada en ${tags.join(', ')}.`,
+      weeks: [
+        {
+          name: 'Semana 1',
+          days: [
+            {
+              name: 'Día 1',
+              type: 'training',
+              exercises: [
+                {
+                  name: 'Ejercicio de ejemplo 1',
+                  reps: '10-12',
+                  sets: '3',
+                  rest: '60s',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    planEditor.updateMetadata({ target: { name: 'name', value: mockApiResponse.name } });
+    planEditor.updateMetadata({ target: { name: 'description', value: mockApiResponse.description } });
+    
+    // Clear existing weeks before adding new ones
+    planEditor.plan.weeks.forEach((_, weekIndex) => planEditor.removeWeek(weekIndex));
+    
+    mockApiResponse.weeks.forEach(week => {
+      planEditor.addWeek();
+      const newWeekIndex = planEditor.plan.weeks.length;
+      planEditor.updateWeekField(newWeekIndex, 'name', week.name);
+      week.days.forEach(day => {
+        planEditor.addDay(newWeekIndex);
+        const newDayIndex = planEditor.plan.weeks[newWeekIndex].days.length;
+        planEditor.updateDayField(newWeekIndex, newDayIndex, 'name', day.name);
+        day.exercises.forEach(exercise => {
+          planEditor.addExercise(newWeekIndex, newDayIndex);
+          const newExerciseIndex = planEditor.plan.weeks[newWeekIndex].days[newDayIndex].exercises.length;
+          planEditor.updateExerciseField(newWeekIndex, newDayIndex, newExerciseIndex, 'name', exercise.name);
+          planEditor.updateExerciseField(newWeekIndex, newDayIndex, newExerciseIndex, 'reps', exercise.reps);
+          planEditor.updateExerciseField(newWeekIndex, newDayIndex, newExerciseIndex, 'sets', exercise.sets);
+          planEditor.updateExerciseField(newWeekIndex, newDayIndex, newExerciseIndex, 'rest', exercise.rest);
+        });
+      });
+    });
+
+    toast.success("Rutina generada con IA exitosamente!");
+  }, [planEditor]);
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -175,6 +235,10 @@ export default function RoutineEditorPage() {
             </div>
 
             <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={handleGenerateAIRoutine}>
+                <Sparkles className="h-4 w-4" />
+                Generar con IA
+              </Button>
               <Button variant="ghost" size="sm" onClick={() => setShowImportModal(true)}>
                 <FileJson className="h-4 w-4" />
                 Importar JSON
