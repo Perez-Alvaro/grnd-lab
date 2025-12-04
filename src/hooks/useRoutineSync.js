@@ -1,65 +1,60 @@
 import { useCallback } from "react";
-import API from "../api/endpoints.js";
 import { useAppContext } from "../context/AppContext.jsx";
+
+const createId = () => Date.now().toString(36) + Math.random().toString(36).slice(2);
 
 export default function useRoutineSync() {
   const { dispatch } = useAppContext();
 
-  const persistRoutine = useCallback(
-    async (payload, action) => {
-      dispatch({ type: "SET_LOADING", payload: true });
-      try {
-        const result = await action(payload);
-        dispatch({ type: "SET_ERROR", payload: null });
-        return result;
-      } catch (error) {
-        dispatch({ type: "SET_ERROR", payload: error });
-        throw error;
-      } finally {
-        dispatch({ type: "SET_LOADING", payload: false });
-      }
+  const addRoutine = useCallback(
+    async (routine) => {
+      const newRoutine = {
+        ...routine,
+        id: routine.id || createId(),
+        createdAt: routine.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      
+      dispatch({ type: "ADD_ROUTINE", payload: newRoutine });
+      return newRoutine;
     },
     [dispatch],
   );
 
-  const addRoutine = useCallback(
-    async (routine) => {
-      const persisted = await persistRoutine(routine, API.postRoutine);
-      dispatch({ type: "ADD_ROUTINE", payload: persisted });
-      return persisted;
-    },
-    [dispatch, persistRoutine],
-  );
-
   const updateRoutine = useCallback(
     async (id, updates) => {
-      const persisted = await persistRoutine({ id, updates }, (payload) =>
-        API.updateRoutine(payload.id, payload.updates),
-      );
-      dispatch({ type: "UPDATE_ROUTINE", payload: persisted });
-      return persisted;
+      const updatedRoutine = {
+        ...updates,
+        id,
+        updatedAt: new Date().toISOString(),
+      };
+      
+      dispatch({ type: "UPDATE_ROUTINE", payload: updatedRoutine });
+      return updatedRoutine;
     },
-    [dispatch, persistRoutine],
+    [dispatch],
   );
 
   const deleteRoutine = useCallback(
     async (id) => {
-      await persistRoutine({ id }, (payload) => API.deleteRoutine(payload.id));
       dispatch({ type: "DELETE_ROUTINE", payload: id });
       return { success: true };
     },
-    [dispatch, persistRoutine],
+    [dispatch],
   );
 
   const toggleRoutineActive = useCallback(
-    async (id) => {
-      const persisted = await persistRoutine({ id }, (payload) =>
-        API.toggleRoutineActive(payload.id),
-      );
-      dispatch({ type: "UPDATE_ROUTINE", payload: persisted });
-      return persisted;
+    async (routine) => {
+      const updated = {
+        ...routine,
+        active: !routine.active,
+        updatedAt: new Date().toISOString(),
+      };
+      
+      dispatch({ type: "UPDATE_ROUTINE", payload: updated });
+      return updated;
     },
-    [dispatch, persistRoutine],
+    [dispatch],
   );
 
   return {

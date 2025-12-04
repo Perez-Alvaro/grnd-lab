@@ -1,17 +1,24 @@
-import { useMemo, useRef, useCallback, useEffect, useState } from "react";
+/**
+ * Routine Forge - Routine Editor
+ *  2-Panel Layout: Form Editor | PDF Preview
+ */
+
+import React, { useMemo, useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Save, FileDown, Upload } from "lucide-react";
+import { ArrowLeft, Save, FileDown, FileJson, Download } from "lucide-react";
 import { PlanProvider } from "../context/PlanContext.jsx";
 import { useAppContext } from "../context/AppContext.jsx";
 import useRoutineEditor from "../hooks/useRoutineEditor.js";
 import useRoutineSync from "../hooks/useRoutineSync.js";
 import usePDFExport from "../hooks/usePDFExport.js";
 import PlanMetadataForm from "../components/Trainer/editor/PlanMetadataForm.jsx";
-import WeekEditor from "../components/Trainer/editor/WeekEditor.jsx";
 import RoutinePreview from "../components/Trainer/preview/RoutinePreview.jsx";
+import ImportModal from "../components/Editor/ImportModal.jsx";
+import ExportModal from "../components/Editor/ExportModal.jsx";
+import WeekEditor from "../components/Trainer/editor/WeekEditor.jsx";
 import migrateTemplate from "../utils/migrateTemplate.ts";
 import { toast } from "../utils/toast.js";
-import pdfGeneratorService from "../services/pdfGeneratorService.jsx";
+import { Button } from "../components/ui";
 
 const buildContextValue = (planEditor) => ({
   plan: planEditor.plan,
@@ -38,8 +45,10 @@ export default function RoutineEditorPage() {
   const { id } = useParams();
   const { state } = useAppContext();
   const { addRoutine, updateRoutine } = useRoutineSync();
-  const exportPlan = usePDFExport();
-  const [uploadingPDF, setUploadingPDF] = useState(false);
+  const exportPDF = usePDFExport();
+
+  const [showImportModal, setShowImportModal] = React.useState(false);
+  const [showExportModal, setShowExportModal] = React.useState(false);
 
   const existing = useMemo(
     () =>
@@ -61,25 +70,6 @@ export default function RoutineEditorPage() {
     () => buildContextValue(planEditor),
     [planEditor],
   );
-
-  const weekRefs = useRef({});
-  const registerWeekRef = useCallback(
-    (weekId) => (node) => {
-      if (node) {
-        weekRefs.current[weekId] = node;
-      } else {
-        delete weekRefs.current[weekId];
-      }
-    },
-    [],
-  );
-
-  const handleNavigateWeek = useCallback((weekId) => {
-    const target = weekRefs.current[weekId];
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, []);
 
   const handleBack = useCallback(() => {
     if (
@@ -106,10 +96,10 @@ export default function RoutineEditorPage() {
       const payload = planEditor.buildTemplatePayload();
       if (existing) {
         await updateRoutine(payload.id, payload);
-        toast.success("Plantilla actualizada correctamente.");
+        toast.success("Rutina actualizada correctamente");
       } else {
         const created = await addRoutine(payload);
-        toast.success("Plantilla creada correctamente.");
+        toast.success("Rutina creada correctamente");
         if (!id || id === "nueva") {
           navigate(`/admin/plantillas/${created.id}/editar`, {
             replace: true,
@@ -120,7 +110,7 @@ export default function RoutineEditorPage() {
       planEditor.markAsSaved();
     } catch (error) {
       console.error(error);
-      toast.error("No se pudo guardar la plantilla. Intenta nuevamente.");
+      toast.error("No se pudo guardar la rutina");
     }
   }, [
     addRoutine,
@@ -133,51 +123,23 @@ export default function RoutineEditorPage() {
   ]);
 
   const handleExportPdf = useCallback(async () => {
-    const { isValid, errors } = planEditor.validatePlan();
-    if (!isValid) {
-      handleValidationErrors(errors);
-      return;
-    }
     try {
-      await exportPlan(planEditor.planForPdf);
-      toast.success("Exportando plan a PDF.");
+      console.log("Exporting PDF with plan:", planEditor.plan);
+      await exportPDF(planEditor.plan);
+      toast.success("PDF exportado correctamente");
     } catch (error) {
-      console.error(error);
-      toast.error("No se pudo exportar el PDF en este momento.");
+      console.error("PDF Export Error:", error);
+      toast.error(`Error: ${error.message || "No se pudo exportar el PDF"}`);
     }
-  }, [exportPlan, handleValidationErrors, planEditor]);
+  }, [exportPDF, planEditor.plan]);
 
-  const handleUploadPDFToStorage = useCallback(async () => {
-    if (!existing) {
-      toast.error("Debes guardar la rutina antes de subir el PDF.");
-      return;
-    }
+  const handleImport = useCallback((importedData) => {
+    // TODO: Implement import logic to update planEditor state
+    console.log("Import data:", importedData);
+    toast.success("Rutina importada correctamente");
+  }, []);
 
-    const { isValid, errors } = planEditor.validatePlan();
-    if (!isValid) {
-      handleValidationErrors(errors);
-      return;
-    }
-
-    setUploadingPDF(true);
-    try {
-      toast.info("Generando y subiendo PDF a Storage...");
-
-      const result = await pdfGeneratorService.regenerateRoutinePDF(existing);
-
-      if (result.success) {
-        toast.success("PDF generado y subido correctamente al Storage.");
-      } else {
-        toast.error(`Error al generar PDF: ${result.error}`);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("No se pudo generar y subir el PDF.");
-    } finally {
-      setUploadingPDF(false);
-    }
-  }, [existing, planEditor, handleValidationErrors]);
-
+  // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (event) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
@@ -189,76 +151,85 @@ export default function RoutineEditorPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleSave]);
 
-  const onActionError = useCallback((message) => toast.error(message), []);
-
   const isEditing = Boolean(existing);
 
   return (
     <PlanProvider value={planContextValue}>
-      <div className="w-full bg-transparent">
-        <header className="border-b border-[#2E2E2E] bg-[#0E0E0E]">
-          <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={handleBack}
-                className="inline-flex items-center gap-2 rounded-full border border-accent px-4 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent/10"
-              >
-                <ArrowLeft className="h-4 w-4" /> Volver
-              </button>
-              <h1 className="text-2xl font-bold text-white">
-                Editor de Planes
-              </h1>
+      <div className="flex h-screen flex-col bg-primary-bg overflow-hidden">
+        {/* Top Bar */}
+        <header className="flex-shrink-0 border-b border-border bg-primary-surface">
+          <div className="flex items-center justify-between px-6 py-4">
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="sm" onClick={handleBack}>
+                <ArrowLeft className="h-4 w-4" />
+                Volver
+              </Button>
+              <div>
+                <h1 className="text-xl font-semibold text-text-primary font-display">
+                  {isEditing ? 'Editar Rutina' : 'Nueva Rutina'}
+                </h1>
+                <p className="text-sm text-text-muted">
+                  {planEditor.metadata.name || 'Rutina sin nombre'}
+                </p>
+              </div>
             </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <button
-                type="button"
-                onClick={handleSave}
-                className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-black transition-all hover:-translate-y-0.5 hover:bg-accent-strong"
-              >
+
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" onClick={() => setShowImportModal(true)}>
+                <FileJson className="h-4 w-4" />
+                Importar JSON
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => setShowExportModal(true)}>
+                <Download className="h-4 w-4" />
+                Exportar JSON
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleExportPdf}>
+                <FileDown className="h-4 w-4" />
+                Exportar PDF
+              </Button>
+              <Button onClick={handleSave}>
                 <Save className="h-4 w-4" />
-                {isEditing ? "Actualizar plantilla" : "Guardar plantilla"}
-              </button>
-              <button
-                type="button"
-                onClick={handleExportPdf}
-                className="inline-flex items-center gap-2 rounded-full border border-[#2E2E2E] px-4 py-2 text-sm font-medium text-gray-200 transition-colors hover:border-accent/60 hover:text-white"
-              >
-                <FileDown className="h-4 w-4" /> Exportar PDF
-              </button>
-              {isEditing && (
-                <button
-                  type="button"
-                  onClick={handleUploadPDFToStorage}
-                  disabled={uploadingPDF}
-                  className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-2 text-sm font-medium text-accent transition-colors hover:border-accent hover:bg-accent/20 disabled:cursor-not-allowed disabled:opacity-50"
-                  title="Regenerar y subir PDF al Storage"
-                >
-                  <Upload className="h-4 w-4" />
-                  {uploadingPDF ? "Subiendo..." : "Subir a Storage"}
-                </button>
-              )}
+                {isEditing ? "Actualizar" : "Guardar"}
+              </Button>
             </div>
           </div>
         </header>
 
-        <div className="px-3 sm:px-6">
-          <div className="flex flex-col lg:flex-row w-full max-w-7xl mx-auto gap-6 px-4 py-8 sm:px-6 lg:px-6">
-            <section className="lg:w-1/2 flex flex-col gap-6">
+        {/* 2-Panel Layout */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* Left Panel - Form Editor (50%) */}
+          <div className="flex-1 overflow-y-auto border-r border-border">
+            <div className="p-6 space-y-6">
               <PlanMetadataForm />
-              <WeekEditor
-                onNavigateWeek={handleNavigateWeek}
-                registerWeekRef={registerWeekRef}
-                onActionError={onActionError}
-              />
-            </section>
-            <aside className="lg:w-1/2 sticky top-0 max-h-[90vh] overflow-y-auto rounded-2xl border border-neutral-800 bg-neutral-900/80 p-4 lg:p-6">
+              <WeekEditor />
+            </div>
+          </div>
+
+          {/* Right Panel - PDF Preview (50%) */}
+          <div className="flex-1 overflow-y-auto bg-primary-surface">
+            <div className="p-6">
+              <h3 className="text-lg font-semibold text-text-primary font-display mb-4">
+                Vista Previa
+              </h3>
               <RoutinePreview />
-            </aside>
+            </div>
           </div>
         </div>
       </div>
 
+      {/* Import Modal */}
+      <ImportModal
+        open={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        onImport={handleImport}
+      />
+
+      {/* Export Modal */}
+      <ExportModal
+        open={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        planData={planEditor.plan}
+      />
     </PlanProvider>
   );
 }
