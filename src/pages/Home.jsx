@@ -25,7 +25,7 @@ export default function Home() {
             {/* ===== HERO SECTION ===== */}
             <div className="relative min-h-screen flex items-center overflow-hidden border-b border-border">
                 {/* Hyperspeed Background - Interactive speed tunnel */}
-                <div className="absolute inset-0 z-0 opacity-70">
+                <div className="absolute inset-0 z-0 opacity-50">
                     <Hyperspeed />
                 </div>
 
