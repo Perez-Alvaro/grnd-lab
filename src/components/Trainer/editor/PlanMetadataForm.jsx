@@ -1,49 +1,14 @@
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback } from "react";
 import { ChevronRight } from "lucide-react";
 import { usePlanContext } from "../../../context/PlanContext.jsx";
 import { TRAINING_GOALS } from "../../../constants/objectives.js";
-import ImageUploader from "@/components/Shared/ImageUploader.jsx";
-import { multimediaService } from "../../../services/multimediaService.js";
 
 const PlanMetadataForm = memo(() => {
   const { metadata, updateMetadata } = usePlanContext();
-  const [uploadingImage, setUploadingImage] = useState(false);
-  const [uploadError, setUploadError] = useState(null);
 
   const handleChange = useCallback(
     (field) => (event) => {
       updateMetadata(field, event.target.value);
-    },
-    [updateMetadata],
-  );
-
-  const handleImageChange = useCallback(
-    async (nextValue, { file }) => {
-      // Si no hay archivo, solo actualizar (caso de limpieza)
-      if (!file) {
-        updateMetadata("image", nextValue);
-        return;
-      }
-
-      // Si hay archivo, subir a Supabase primero
-      setUploadingImage(true);
-      setUploadError(null);
-
-      try {
-        const result = await multimediaService.uploadImage(file, {
-          type: 'routine-cover'
-        });
-
-        // Actualizar con la URL del bucket multimedia
-        updateMetadata("image", result.url);
-      } catch (error) {
-        console.error('Error uploading cover image:', error);
-        setUploadError(error.message);
-        // Fallback: usar dataURL temporal
-        updateMetadata("image", nextValue);
-      } finally {
-        setUploadingImage(false);
-      }
     },
     [updateMetadata],
   );
@@ -207,30 +172,6 @@ const PlanMetadataForm = memo(() => {
             placeholder="fst-7, superseries"
             className={inputClasses}
           />
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="flex flex-col gap-2">
-            <label className={labelClasses}>Precio (ARS)</label>
-            <input
-              data-testid="plan-price-input"
-              type="number"
-              min="0"
-              value={metadata.price}
-              onChange={handleChange("price")}
-              placeholder="Valor del plan en pesos"
-              className={inputClasses}
-            />
-          </div>
-          <div className="md:col-span-2">
-            <ImageUploader
-              label="Imagen de portada"
-              value={metadata.image}
-              onChange={handleImageChange}
-              helperText="Seleccioná una imagen para mostrar en la previsualización y el carrusel del cliente"
-              inputProps={{ "data-testid": "plan-image-input" }}
-            />
-          </div>
         </div>
 
         <div className="flex flex-col gap-2">

@@ -12,8 +12,16 @@ const normalizeExercise = (exercise, blockTitle) => {
   const series = variant.series ?? exercise.series ?? "";
   const reps = variant.reps ?? exercise.reps ?? "";
   const descanso = variant.descanso ?? exercise.descanso ?? "";
-  const rir = variant.rir ?? exercise.rir ?? "";
+  
+  // Soportar tanto RIR como RPE
+  const rir = variant.rir ?? exercise.rir ?? variant.rpe ?? exercise.rpe ?? "";
+  
   const tempo = variant.tempo ?? exercise.tempo ?? variant.cadencia ?? exercise.cadencia ?? "";
+  
+  // Nuevos campos agregados del formato del editor
+  const duracion = exercise.duracion ?? "";
+  const cues = exercise.cues ?? "";
+  const progresion = exercise.progresion ?? "";
 
   const baseNotes = [
     blockTitle && blockTitle !== "Entrenamiento"
@@ -21,14 +29,17 @@ const normalizeExercise = (exercise, blockTitle) => {
       : null,
   ]
     .concat(toArray(exercise?.notes || exercise?.notas))
+    .concat(cues ? [`Cues: ${cues}`] : [])
+    .concat(progresion ? [`Progresión: ${progresion}`] : [])
     .filter(Boolean);
 
   return {
     name:
-      exercise?.ejercicio || exercise?.title || exercise?.name || "Ejercicio",
+      exercise?.ejercicio || exercise?.title || exercise?.name || exercise?.nombre || "Ejercicio",
     series: series ? String(series) : "",
     reps: reps ? String(reps) : "",
     descanso: descanso ? String(descanso) : "",
+    duracion: duracion ? String(duracion) : "",
     rir: (rir === 0 || rir) ? String(rir) : "",
     tempo: (tempo === 0 || tempo) ? String(tempo) : "",
     videoUrl:
@@ -38,7 +49,7 @@ const normalizeExercise = (exercise, blockTitle) => {
 };
 
 const normalizeDay = (day, index) => {
-  const dayName = day?.name || day?.title || day?.titulo || `Día ${index + 1}`;
+  const dayName = day?.name || day?.title || day?.titulo || day?.nombre || `Día ${index + 1}`;
   const type = (
     day?.type ||
     day?.tipo ||
@@ -48,15 +59,17 @@ const normalizeDay = (day, index) => {
   const recoveryMessage =
     day?.recoveryMessage ||
     day?.mensajeRecuperacion ||
+    day?.notaRecuperacion ||
     "Recuperación activa y movilidad ligera recomendada.";
 
   let exercises = [];
   if (Array.isArray(day?.exercises)) {
     exercises = day.exercises.map((exercise) => normalizeExercise(exercise));
   } else if (Array.isArray(day?.bloques)) {
+    // Formato del editor: bloques con ejercicios
     exercises = day.bloques.flatMap((block) =>
-      (block?.items || []).map((exercise) =>
-        normalizeExercise(exercise, block?.titulo),
+      (block?.ejercicios || block?.items || []).map((exercise) =>
+        normalizeExercise(exercise, block?.titulo || block?.tipo),
       ),
     );
   } else if (
@@ -129,9 +142,10 @@ const normalizeProgress = (plan) => {
 };
 
 export const normalizePlanData = async (planData) => {
-  const metadata = planData || {};
-  const weeksSource = metadata?.weeks || metadata?.semanas;
-  const daysFallback = metadata?.days || metadata?.dias;
+  // Soportar tanto formato plano como formato con 'meta'
+  const metadata = planData?.meta || planData || {};
+  const weeksSource = planData?.weeks || planData?.semanas || metadata?.weeks || metadata?.semanas;
+  const daysFallback = planData?.days || planData?.dias || metadata?.days || metadata?.dias;
 
   let weeks = [];
   if (Array.isArray(weeksSource) && weeksSource.length) {
@@ -141,7 +155,7 @@ export const normalizePlanData = async (planData) => {
       normalizeWeek(
         {
           title: "Semana 1",
-          description: metadata?.notes,
+          description: metadata?.notes || metadata?.notas,
           days: daysFallback,
         },
         0,
@@ -156,11 +170,10 @@ export const normalizePlanData = async (planData) => {
     (metadata?.progressNotes || metadata?.progressMetrics ? metadata : null);
 
   // Extract and normalize tags
-  const tagsString = metadata?.tags || "";
-  const tagsArray = tagsString
-    .split(",")
-    .map((tag) => tag.trim())
-    .filter(Boolean);
+  const tagsRaw = metadata?.tags || planData?.tags || "";
+  const tagsArray = Array.isArray(tagsRaw) 
+    ? tagsRaw 
+    : String(tagsRaw).split(",").map((tag) => tag.trim()).filter(Boolean);
 
   return {
     // Keep existing fields for backward compatibility
@@ -169,6 +182,7 @@ export const normalizePlanData = async (planData) => {
       metadata?.planName ||
       metadata?.title ||
       metadata?.nombre ||
+      planData?.nombre ||
       "Plan de entrenamiento",
     user: metadata?.user || metadata?.usuario || metadata?.clientName || "",
     duration: metadata?.duration || metadata?.duracion || "",
@@ -176,14 +190,15 @@ export const normalizePlanData = async (planData) => {
       metadata?.frequency || metadata?.frecuencia
         ? String(metadata.frequency || metadata.frecuencia)
         : "",
-    objective: metadata?.objective || metadata?.objetivo || "",
+    objective: metadata?.objective || metadata?.objetivo || metadata?.foco || "",
 
     // Add new metadata fields for enhanced PDF
     image: "",  // No images in PDF
     description: metadata?.description || metadata?.descripcion || "",
     level: metadata?.level || metadata?.nivel || "",
-    author: metadata?.author || metadata?.coach || metadata?.trainer || "",
-    durationWeeks: metadata?.durationWeeks || metadata?.semanas || "",
+    author: metadata?.author || metadata?.coach || metadata?.trainer || metadata?.autor || "",
+    durationWeeks: metadata?.durationWeeks || metadata?.semanas || metadata?.duracion || "",
+    equipment: metadata?.equipment || metadata?.equipamiento || "",
     tags: tagsArray,
     notes: metadata?.notes || metadata?.notas || "",
 

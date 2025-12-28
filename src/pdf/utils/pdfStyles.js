@@ -5,8 +5,8 @@ export const palette = {
   background: themeColors.surfaceAlt,
   card: themeColors.surface,
   neutral: "#787878",
-  accent: themeColors.accent,
-  secondary: themeColors.accentStrong,
+  accent: "#0ef2a0", // Dashboard accent color
+  secondary: "#00c0a3", // Darker shade of accent
   text: themeColors.text,
 };
 
@@ -106,7 +106,7 @@ export const createBaseStyles = () =>
       backgroundColor: "rgba(32,32,32,0.95)",
       borderRadius: 8,
       borderWidth: 1,
-      borderColor: "rgba(203,255,0,0.15)",
+      borderColor: "rgba(14,242,160,0.15)",
       padding: 12,
       minWidth: 100,
       alignItems: "center",
@@ -128,10 +128,10 @@ export const createBaseStyles = () =>
     tag: {
       fontSize: typography.small - 1,
       color: palette.accent,
-      backgroundColor: "rgba(203,255,0,0.08)",
+      backgroundColor: "rgba(14,242,160,0.08)",
       borderRadius: 6,
       borderWidth: 1,
-      borderColor: "rgba(203,255,0,0.2)",
+      borderColor: "rgba(14,242,160,0.2)",
       paddingVertical: 4,
       paddingHorizontal: 10,
       fontWeight: 500,
@@ -151,10 +151,10 @@ export const createBaseStyles = () =>
       marginTop: 18,
       marginBottom: 20,
       padding: 14,
-      backgroundColor: "rgba(203,255,0,0.05)",
+      backgroundColor: "rgba(14,242,160,0.05)",
       borderRadius: 8,
       borderWidth: 1,
-      borderColor: "rgba(203,255,0,0.25)",
+      borderColor: "rgba(14,242,160,0.25)",
     },
     notesTitle: {
       fontSize: typography.small,
@@ -281,10 +281,10 @@ export const createBaseStyles = () =>
       textTransform: "uppercase",
     },
     dayTypeTraining: {
-      backgroundColor: "rgba(203,255,0,0.15)",
+      backgroundColor: "rgba(14,242,160,0.15)",
       color: palette.accent,
       borderWidth: 1,
-      borderColor: "rgba(203,255,0,0.35)",
+      borderColor: "rgba(14,242,160,0.35)",
     },
     dayTypeRest: {
       backgroundColor: "rgba(120,120,120,0.15)",
@@ -334,8 +334,13 @@ export const createBaseStyles = () =>
       textAlign: "center",
     },
     restCol: {
-      flexBasis: "12%",
-      minWidth: 48,
+      flexBasis: "10%",
+      minWidth: 40,
+      textAlign: "center",
+    },
+    durationCol: {
+      flexBasis: "10%",
+      minWidth: 40,
       textAlign: "center",
     },
     rirCol: {
@@ -344,13 +349,13 @@ export const createBaseStyles = () =>
       textAlign: "center",
     },
     tempoCol: {
-      flexBasis: "12%",
-      minWidth: 56,
+      flexBasis: "11%",
+      minWidth: 48,
       textAlign: "center",
     },
     videoCol: {
-      flexBasis: "12%",
-      minWidth: 48,
+      flexBasis: "11%",
+      minWidth: 44,
       textAlign: "center",
     },
     videoLink: {

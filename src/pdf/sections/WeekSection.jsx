@@ -25,8 +25,9 @@ const ExerciseTable = ({ exercises, styles }) => {
         <Text style={[styles.tableCell, styles.seriesCol]}>Series</Text>
         <Text style={[styles.tableCell, styles.repsCol]}>Reps</Text>
         <Text style={[styles.tableCell, styles.restCol]}>Desc</Text>
+        <Text style={[styles.tableCell, styles.durationCol]}>Durac</Text>
         <Text style={[styles.tableCell, styles.rirCol]}>RIR</Text>
-        <Text style={[styles.tableCell, styles.tempoCol]}>Cadencia</Text>
+        <Text style={[styles.tableCell, styles.tempoCol]}>Tempo</Text>
         <Text style={[styles.tableCell, styles.videoCol]}>Video</Text>
       </View>
       {exercises.map((exercise, idx) => {
@@ -37,6 +38,8 @@ const ExerciseTable = ({ exercises, styles }) => {
         const reps = repsValue === 0 || repsValue ? repsValue : "–";
         const restValue = exercise.rest ?? exercise.descanso;
         const rest = restValue === 0 || restValue ? restValue : "–";
+        const durationValue = exercise.duracion ?? exercise.duration;
+        const duration = durationValue === 0 || durationValue ? durationValue : "–";
         const rir = exercise.rir === 0 || exercise.rir ? exercise.rir : "–";
         const tempoValue = exercise.tempo ?? exercise.cadencia;
         const tempo = tempoValue === 0 || tempoValue ? tempoValue : "–";
@@ -54,6 +57,7 @@ const ExerciseTable = ({ exercises, styles }) => {
             <Text style={[styles.tableCell, styles.seriesCol]}>{sets}</Text>
             <Text style={[styles.tableCell, styles.repsCol]}>{reps}</Text>
             <Text style={[styles.tableCell, styles.restCol]}>{rest}</Text>
+            <Text style={[styles.tableCell, styles.durationCol]}>{duration}</Text>
             <Text style={[styles.tableCell, styles.rirCol]}>{rir}</Text>
             <Text style={[styles.tableCell, styles.tempoCol]}>{tempo}</Text>
             {videoUrl ? (

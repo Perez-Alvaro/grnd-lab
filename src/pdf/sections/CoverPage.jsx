@@ -2,10 +2,6 @@ import { View, Text, Link } from "@react-pdf/renderer";
 import { INDEX_ANCHOR, weekLinkTarget } from "../utils/pdfAnchors.js";
 import { TRAINING_GOAL_LABELS } from "../../constants/objectives.js";
 
-const MZ_METHOD_INTRO = `Cada plan que diseño está basado en periodización por bloques, con progresiones claras y enfoque técnico en cada ejercicio. Seguimiento semanal, ajustes según cómo respondas y feedback constante. Nada de copiar y pegar rutinas genéricas.
-
-Trabajo con fundamentos de ciencia del deporte, biomecánica aplicada y estrategias nutricionales validadas. Tu progreso se mide, tu técnica se corrige y tus resultados se construyen con tiempo y constancia. Así entrenamos.`;
-
 const MetadataRow = ({ items, styles }) => (
   <View style={styles.metadataRow}>
     {items.filter((item) => item.value).map((item, idx) => (
@@ -46,15 +42,6 @@ const CoverPage = ({ plan, styles }) => {
   return (
     <View style={styles.coverWrapper} id={INDEX_ANCHOR}>
       <View style={styles.coverHeader}>
-        {/* MZ Method Introduction */}
-        <View style={styles.introSection}>
-          <Text style={styles.introTitle}>EL MÉTODO MZ</Text>
-          <Text style={styles.introText}>{MZ_METHOD_INTRO}</Text>
-        </View>
-
-        {/* Divider */}
-        <View style={styles.divider} />
-
         {/* Header Section */}
         <View style={styles.headerSection}>
           <Text style={styles.planTitle}>{plan.title}</Text>

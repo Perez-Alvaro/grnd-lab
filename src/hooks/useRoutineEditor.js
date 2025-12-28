@@ -562,6 +562,14 @@ export const useRoutineEditor = ({
     localStorage.removeItem(draftKey);
   }, [draftKey]);
 
+  const loadPlan = useCallback((newPlan) => {
+    if (!newPlan || !newPlan.metadata || !newPlan.weeks) {
+      throw new Error("Invalid plan structure");
+    }
+    setPlan(newPlan);
+    setDirty(true);
+  }, []);
+
   const validatePlan = useCallback(() => {
     const errors = [];
     if (!plan.metadata.name?.trim()) {
@@ -731,6 +739,7 @@ export const useRoutineEditor = ({
     removeExercise,
     updateExerciseField,
     markAsSaved,
+    loadPlan,
     validatePlan,
     planForPdf,
     buildTemplatePayload,

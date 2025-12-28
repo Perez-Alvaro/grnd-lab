@@ -1,9 +1,9 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { AppProvider } from "./context/AppContext.jsx";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastProvider, useToast } from "./context/ToastContext.jsx";
 import { setToastInstance } from "./utils/toast.js";
-import TrainerDashboard from "./pages/TrainerDashboard.jsx";
+import { SnackbarProvider } from "./components/Tutorial/Snackbar.jsx";
+import Home from "./pages/Home.jsx";
 import RoutineEditor from "./pages/RoutineEditor.jsx";
 
 function ToastInitializer() {
@@ -22,20 +22,14 @@ function AppContent() {
       <ToastInitializer />
       <main>
         <Routes>
-          {/* Redirect root to dashboard */}
-          <Route path="/" element={<Navigate to="/admin" replace />} />
+          {/* Home/Landing */}
+          <Route path="/" element={<Home />} />
 
-          {/* Admin Dashboard - list of routines */}
-          <Route path="/admin" element={<TrainerDashboard />} />
+          {/* Routine Editor */}
+          <Route path="/editor" element={<RoutineEditor />} />
 
-          {/* Routine Editor - new routine */}
-          <Route path="/admin/plantillas/nueva" element={<RoutineEditor />} />
-
-          {/* Routine Editor - edit existing */}
-          <Route path="/admin/plantillas/:id/editar" element={<RoutineEditor />} />
-
-          {/* Catch all - redirect to admin */}
-          <Route path="*" element={<Navigate to="/admin" replace />} />
+          {/* Catch all - redirect to home */}
+          <Route path="*" element={<Home />} />
         </Routes>
       </main>
     </div>
@@ -44,13 +38,13 @@ function AppContent() {
 
 function App() {
   return (
-    <AppProvider>
+    <SnackbarProvider>
       <ToastProvider>
         <Router>
           <AppContent />
         </Router>
       </ToastProvider>
-    </AppProvider>
+    </SnackbarProvider>
   );
 }
 

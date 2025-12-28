@@ -1,5 +1,0 @@
-{
-  "imports": {
-    "mercadopago": "npm:mercadopago@2.0.15"
-  }
-}

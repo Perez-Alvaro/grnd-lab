@@ -19,25 +19,6 @@ const RoutinePreview = memo(() => {
 
   const weekAnchors = useMemo(() => buildWeekAnchors(plan.weeks), [plan.weeks]);
 
-  const fallbackImage = useMemo(
-    () =>
-      `data:image/svg+xml;utf8,${encodeURIComponent(`
-        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240'>
-          <defs>
-            <linearGradient id='gradient' x1='0%' y1='0%' x2='100%' y2='100%'>
-              <stop offset='0%' stop-color='%230A0A0A'/>
-              <stop offset='100%' stop-color='%231A1A1A'/>
-            </linearGradient>
-          </defs>
-          <rect width='400' height='240' rx='24' fill='url(%23gradient)'/>
-          <text x='50%' y='54%' dominant-baseline='middle' text-anchor='middle' font-family='Inter, sans-serif' font-size='22' fill='%23B5FF00'>Portada del plan</text>
-        </svg>
-      `)}`,
-    [],
-  );
-
-  const coverImage = plan.metadata.image?.trim();
-
   const toggleWeek = useCallback((weekId) => {
     setCollapsed((prev) => {
       const next = new Set(prev);
@@ -57,21 +38,6 @@ const RoutinePreview = memo(() => {
     >
       <div className="border-b border-[#787878]/20 px-6 py-5">
         <div className="space-y-4 text-center">
-          <div className="overflow-hidden rounded-2xl border border-[#2E2E2E] bg-[#121212]">
-            {coverImage ? (
-              <img
-                src={coverImage}
-                alt={`Portada de ${plan.metadata.name || "plan"}`}
-                className="h-44 w-full object-cover"
-              />
-            ) : (
-              <img
-                src={fallbackImage}
-                alt="Portada no disponible"
-                className="h-44 w-full object-cover"
-              />
-            )}
-          </div>
           <h2 className="text-3xl font-bold text-accent text-natural-wrap">
             {plan.metadata.name || "Plan sin título"}
           </h2>

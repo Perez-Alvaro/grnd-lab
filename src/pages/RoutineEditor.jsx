@@ -1,24 +1,25 @@
 /**
- * Routine Forge - Routine Editor
- *  2-Panel Layout: Form Editor | PDF Preview
+ * Grind-Lab - Routine Editor
+ * Client-side only - No backend, no database
+ * 2-Panel Layout: Form Editor | Preview
  */
 
-import React, { useMemo, useCallback, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Save, FileDown, FileJson, Download, Sparkles } from "lucide-react";
+import React, { useMemo, useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft, FileDown, FileJson, Download, Copy, Code } from "lucide-react";
 import { PlanProvider } from "../context/PlanContext.jsx";
-import { useAppContext } from "../context/AppContext.jsx";
 import useRoutineEditor from "../hooks/useRoutineEditor.js";
-import useRoutineSync from "../hooks/useRoutineSync.js";
 import usePDFExport from "../hooks/usePDFExport.js";
 import PlanMetadataForm from "../components/Trainer/editor/PlanMetadataForm.jsx";
 import RoutinePreview from "../components/Trainer/preview/RoutinePreview.jsx";
 import ImportModal from "../components/Editor/ImportModal.jsx";
 import ExportModal from "../components/Editor/ExportModal.jsx";
 import WeekEditor from "../components/Trainer/editor/WeekEditor.jsx";
-import migrateTemplate from "../utils/migrateTemplate.ts";
-import { toast } from "../utils/toast.js";
 import { Button } from "../components/ui";
+import { copyPromptToClipboard } from "../utils/promptGenerator.js";
+import JSONEditor from "../components/Editor/JSONEditor.jsx";
+import TutorialOverlay from "../components/Tutorial/TutorialOverlay.jsx";
+import { useSnackbar, TUTORIAL_SNACKBARS } from "../components/Tutorial/Snackbar.jsx";
 
 const buildContextValue = (planEditor) => ({
   plan: planEditor.plan,
@@ -42,28 +43,18 @@ const buildContextValue = (planEditor) => ({
 
 export default function RoutineEditorPage() {
   const navigate = useNavigate();
-  const { id } = useParams();
-  const { state } = useAppContext();
-  const { addRoutine, updateRoutine } = useRoutineSync();
   const exportPDF = usePDFExport();
+  const snackbar = useSnackbar();
 
   const [showImportModal, setShowImportModal] = React.useState(false);
   const [showExportModal, setShowExportModal] = React.useState(false);
+  const [showJSONEditor, setShowJSONEditor] = useState(false);
 
-  const existing = useMemo(
-    () =>
-      id
-        ? state.routines.find((template) => String(template.id) === String(id))
-        : null,
-    [id, state.routines],
-  );
-
-  const migratedTemplate = useMemo(() => migrateTemplate(existing), [existing]);
-
+  // Inicializar el editor sin templates previos (siempre nueva rutina)
   const planEditor = useRoutineEditor({
-    template: migratedTemplate,
-    templateId: id,
-    existingTemplate: existing,
+    template: null,
+    templateId: null,
+    existingTemplate: null,
   });
 
   const planContextValue = useMemo(
@@ -78,155 +69,72 @@ export default function RoutineEditorPage() {
     ) {
       return;
     }
-    navigate("/admin");
+    navigate("/");
   }, [navigate, planEditor.dirty]);
-
-  const handleValidationErrors = useCallback((errors) => {
-    errors.forEach((message) => toast.error(message));
-  }, []);
-
-  const handleSave = useCallback(async () => {
-    const { isValid, errors } = planEditor.validatePlan();
-    if (!isValid) {
-      handleValidationErrors(errors);
-      return;
-    }
-
-    try {
-      const payload = planEditor.buildTemplatePayload();
-      if (existing) {
-        await updateRoutine(payload.id, payload);
-        toast.success("Rutina actualizada correctamente");
-      } else {
-        const created = await addRoutine(payload);
-        toast.success("Rutina creada correctamente");
-        if (!id || id === "nueva") {
-          navigate(`/admin/plantillas/${created.id}/editar`, {
-            replace: true,
-          });
-        }
-      }
-
-      planEditor.markAsSaved();
-    } catch (error) {
-      console.error(error);
-      toast.error("No se pudo guardar la rutina");
-    }
-  }, [
-    addRoutine,
-    existing,
-    handleValidationErrors,
-    id,
-    navigate,
-    planEditor,
-    updateRoutine,
-  ]);
 
   const handleExportPdf = useCallback(async () => {
     try {
-      console.log("Exporting PDF with plan:", planEditor.plan);
-      await exportPDF(planEditor.plan);
-      toast.success("PDF exportado correctamente");
+      console.log("Exporting PDF with planForPdf:", planEditor.planForPdf);
+      await exportPDF(planEditor.planForPdf);
+      snackbar.success(TUTORIAL_SNACKBARS.pdfExported);
     } catch (error) {
       console.error("PDF Export Error:", error);
-      toast.error(`Error: ${error.message || "No se pudo exportar el PDF"}`);
+      snackbar.error(`Error: ${error.message || "No se pudo exportar el PDF"}`);
     }
-  }, [exportPDF, planEditor.plan]);
+  }, [exportPDF, planEditor.planForPdf, snackbar]);
 
   const handleImport = useCallback((importedData) => {
-    // TODO: Implement import logic to update planEditor state
-    console.log("Import data:", importedData);
-    toast.success("Rutina importada correctamente");
-  }, []);
-
-  const handleGenerateAIRoutine = useCallback(() => {
-    const { tags } = planEditor.metadata;
-    if (!tags || tags.length === 0) {
-      toast.error("Por favor, seleccione al menos un tag para generar la rutina.");
-      return;
+    try {
+      planEditor.loadPlan(importedData);
+      snackbar.success(TUTORIAL_SNACKBARS.jsonLoaded);
+      setShowImportModal(false);
+    } catch (error) {
+      console.error("Import error:", error);
+      snackbar.error(TUTORIAL_SNACKBARS.jsonError);
     }
+  }, [planEditor, snackbar]);
 
-    // This is a mock response, in a real scenario you would call Gemini API
-    const mockApiResponse = {
-      name: `Rutina de ${tags.join(', ')}`,
-      description: `Una rutina de entrenamiento generada por IA basada en ${tags.join(', ')}.`,
-      weeks: [
-        {
-          name: 'Semana 1',
-          days: [
-            {
-              name: 'Día 1',
-              type: 'training',
-              exercises: [
-                {
-                  name: 'Ejercicio de ejemplo 1',
-                  reps: '10-12',
-                  sets: '3',
-                  rest: '60s',
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    };
-
-    planEditor.updateMetadata({ target: { name: 'name', value: mockApiResponse.name } });
-    planEditor.updateMetadata({ target: { name: 'description', value: mockApiResponse.description } });
-    
-    // Clear existing weeks before adding new ones
-    planEditor.plan.weeks.forEach((_, weekIndex) => planEditor.removeWeek(weekIndex));
-    
-    mockApiResponse.weeks.forEach(week => {
-      planEditor.addWeek();
-      const newWeekIndex = planEditor.plan.weeks.length;
-      planEditor.updateWeekField(newWeekIndex, 'name', week.name);
-      week.days.forEach(day => {
-        planEditor.addDay(newWeekIndex);
-        const newDayIndex = planEditor.plan.weeks[newWeekIndex].days.length;
-        planEditor.updateDayField(newWeekIndex, newDayIndex, 'name', day.name);
-        day.exercises.forEach(exercise => {
-          planEditor.addExercise(newWeekIndex, newDayIndex);
-          const newExerciseIndex = planEditor.plan.weeks[newWeekIndex].days[newDayIndex].exercises.length;
-          planEditor.updateExerciseField(newWeekIndex, newDayIndex, newExerciseIndex, 'name', exercise.name);
-          planEditor.updateExerciseField(newWeekIndex, newDayIndex, newExerciseIndex, 'reps', exercise.reps);
-          planEditor.updateExerciseField(newWeekIndex, newDayIndex, newExerciseIndex, 'sets', exercise.sets);
-          planEditor.updateExerciseField(newWeekIndex, newDayIndex, newExerciseIndex, 'rest', exercise.rest);
-        });
-      });
-    });
-
-    toast.success("Rutina generada con IA exitosamente!");
-  }, [planEditor]);
-
-  // Keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
-        event.preventDefault();
-        handleSave();
+  const handleCopyPrompt = useCallback(async () => {
+    try {
+      const success = await copyPromptToClipboard(planEditor.metadata);
+      if (success) {
+        snackbar.success(TUTORIAL_SNACKBARS.promptCopied, 6000);
+      } else {
+        snackbar.error("No se pudo copiar el prompt");
       }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleSave]);
+    } catch (error) {
+      console.error("Error copiando prompt:", error);
+      snackbar.error("Error al copiar el prompt");
+    }
+  }, [planEditor.metadata, snackbar]);
 
-  const isEditing = Boolean(existing);
+  const handleJSONEditorChange = useCallback((parsedJSON) => {
+    try {
+      planEditor.loadPlan(parsedJSON);
+      snackbar.success(TUTORIAL_SNACKBARS.jsonLoaded);
+    } catch (error) {
+      console.error("Error al aplicar JSON:", error);
+      snackbar.error(TUTORIAL_SNACKBARS.jsonError);
+    }
+  }, [planEditor, snackbar]);
 
   return (
     <PlanProvider value={planContextValue}>
       <div className="flex h-screen flex-col bg-primary-bg overflow-hidden">
+        {/* Tutorial Overlay */}
+        <TutorialOverlay />
+
         {/* Top Bar */}
         <header className="flex-shrink-0 border-b border-border bg-primary-surface">
           <div className="flex items-center justify-between px-6 py-4">
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="sm" onClick={handleBack}>
                 <ArrowLeft className="h-4 w-4" />
-                Volver
+                Volver al inicio
               </Button>
               <div>
                 <h1 className="text-xl font-semibold text-text-primary font-display">
-                  {isEditing ? 'Editar Rutina' : 'Nueva Rutina'}
+                  Grind-Lab - Editor de Rutinas
                 </h1>
                 <p className="text-sm text-text-muted">
                   {planEditor.metadata.name || 'Rutina sin nombre'}
@@ -235,9 +143,23 @@ export default function RoutineEditorPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={handleGenerateAIRoutine}>
-                <Sparkles className="h-4 w-4" />
-                Generar con IA
+              <Button
+                id="copy-prompt-button"
+                variant="accent"
+                size="sm"
+                onClick={handleCopyPrompt}
+              >
+                <Copy className="h-4 w-4" />
+                Copiar Prompt para IA
+              </Button>
+              <Button
+                id="json-editor-button"
+                variant={showJSONEditor ? "default" : "outline"}
+                size="sm"
+                onClick={() => setShowJSONEditor(!showJSONEditor)}
+              >
+                <Code className="h-4 w-4" />
+                {showJSONEditor ? 'Modo Visual' : 'Editor JSON'}
               </Button>
               <Button variant="ghost" size="sm" onClick={() => setShowImportModal(true)}>
                 <FileJson className="h-4 w-4" />
@@ -247,13 +169,14 @@ export default function RoutineEditorPage() {
                 <Download className="h-4 w-4" />
                 Exportar JSON
               </Button>
-              <Button variant="outline" size="sm" onClick={handleExportPdf}>
+              <Button
+                id="export-pdf-button"
+                variant="outline"
+                size="sm"
+                onClick={handleExportPdf}
+              >
                 <FileDown className="h-4 w-4" />
                 Exportar PDF
-              </Button>
-              <Button onClick={handleSave}>
-                <Save className="h-4 w-4" />
-                {isEditing ? "Actualizar" : "Guardar"}
               </Button>
             </div>
           </div>
@@ -261,15 +184,22 @@ export default function RoutineEditorPage() {
 
         {/* 2-Panel Layout */}
         <div className="flex flex-1 overflow-hidden">
-          {/* Left Panel - Form Editor (50%) */}
+          {/* Left Panel - JSON Editor o Form Editor */}
           <div className="flex-1 overflow-y-auto border-r border-border">
-            <div className="p-6 space-y-6">
-              <PlanMetadataForm />
-              <WeekEditor />
-            </div>
+            {showJSONEditor ? (
+              <JSONEditor
+                value={planEditor.plan}
+                onChange={handleJSONEditorChange}
+              />
+            ) : (
+              <div id="metadata-form" className="p-6 space-y-6">
+                <PlanMetadataForm />
+                <WeekEditor />
+              </div>
+            )}
           </div>
 
-          {/* Right Panel - PDF Preview (50%) */}
+          {/* Right Panel - Preview */}
           <div className="flex-1 overflow-y-auto bg-primary-surface">
             <div className="p-6">
               <h3 className="text-lg font-semibold text-text-primary font-display mb-4">

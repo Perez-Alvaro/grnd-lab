@@ -4,10 +4,12 @@
  */
 
 import { useState, useCallback } from 'react';
-import { Upload, AlertCircle, CheckCircle2, FileJson } from 'lucide-react';
+import { Upload, AlertCircle, CheckCircle2, FileJson, Database } from 'lucide-react';
 import Modal, { ModalFooter } from '../ui/Modal.jsx';
 import Button from '../ui/Button.jsx';
 import { importToEditor } from '../../lib/transformers/routineTransformer.js';
+import { useRoutinesAPI } from '../../hooks/useRoutinesAPI.js';
+import { editorToAPI } from '../../lib/utils/routineTransform.js';
 
 export default function ImportModal({ open, onClose, onImport }) {
     const [file, setFile] = useState(null);
@@ -15,6 +17,10 @@ export default function ImportModal({ open, onClose, onImport }) {
     const [validation, setValidation] = useState(null);
     const [loading, setLoading] = useState(false);
     const [dragActive, setDragActive] = useState(false);
+    const [saveToDatabase, setSaveToDatabase] = useState(true);
+    const [saving, setSaving] = useState(false);
+
+    const { saveRoutine, serverAvailable } = useRoutinesAPI();
 
     const handleReset = () => {
         setFile(null);
@@ -78,12 +84,41 @@ export default function ImportModal({ open, onClose, onImport }) {
         }
     }, [handleFileSelect]);
 
-    const handleImport = () => {
+    const handleImport = async () => {
         if (!validation?.success || !validation?.data) return;
 
-        onImport(validation.data);
-        handleReset();
-        onClose();
+        setSaving(true);
+        try {
+            // Siempre importar al editor
+            onImport(validation.data);
+
+            // Guardar en base de datos si está habilitado y el servidor está disponible
+            if (saveToDatabase && serverAvailable) {
+                try {
+                    const apiData = editorToAPI(validation.data);
+                    const saved = await saveRoutine(apiData);
+                    console.log('✅ Rutina guardada en base de datos:', saved.nombre);
+
+                    // Opcional: mostrar notificación de éxito
+                    if (window.confirm) {
+                        setTimeout(() => {
+                            alert(`✅ Rutina "${saved.nombre}" importada y guardada en la base de datos`);
+                        }, 100);
+                    }
+                } catch (dbError) {
+                    console.error('❌ Error al guardar en base de datos:', dbError);
+                    alert(`⚠️ Rutina importada al editor, pero hubo un error al guardar en la base de datos:\n${dbError.message}`);
+                }
+            }
+
+            handleReset();
+            onClose();
+        } catch (error) {
+            console.error('Error en importación:', error);
+            alert(`Error al importar: ${error.message}`);
+        } finally {
+            setSaving(false);
+        }
     };
 
     const handleClose = () => {
@@ -105,8 +140,8 @@ export default function ImportModal({ open, onClose, onImport }) {
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     className={`relative rounded-xl border-2 border-dashed transition-all ${dragActive
-                            ? 'border-accent bg-accent/5'
-                            : 'border-border hover:border-accent/50'
+                        ? 'border-accent bg-accent/5'
+                        : 'border-border hover:border-accent/50'
                         }`}
                 >
                     <input
@@ -135,6 +170,68 @@ export default function ImportModal({ open, onClose, onImport }) {
                     </div>
                 </div>
 
+                {/* JSON Format Specification */}
+                <div className="space-y-3">
+                    <h3 className="text-sm font-semibold text-text-primary">Formato del JSON</h3>
+                    <p className="text-sm text-text-secondary">
+                        Tu archivo JSON debe seguir esta estructura:
+                    </p>
+                    <details className="group rounded-lg border border-border bg-primary-bg">
+                        <summary className="cursor-pointer list-none p-3 text-sm font-medium text-text-primary hover:text-accent transition-colors">
+                            <span className="inline-flex items-center gap-2">
+                                <span className="transform transition-transform duration-200 group-open:rotate-90">▶</span>
+                                Ver ejemplo de estructura JSON
+                            </span>
+                        </summary>
+                        <div className="border-t border-border p-3">
+                            <pre className="text-xs text-text-secondary overflow-x-auto font-mono whitespace-pre">
+                                {`{
+  "meta": {
+    "nombre": "Nombre de la rutina (requerido)",
+    "foco": "Objetivo de entrenamiento",
+    "nivel": "novato | intermedio | avanzado",
+    "duracion": 8,
+    "frecuencia": 4,
+    "equipamiento": "casa | gimnasio | bandas | mixto",
+    "autor": "Tu nombre",
+    "descripcion": "Descripción de la rutina",
+    "tags": ["hipertrofia", "fuerza"]
+  },
+  "semanas": [
+    {
+      "nombre": "Semana 1",
+      "resumen": "Fase de adaptación",
+      "dias": [
+        {
+          "nombre": "Día 1 - Tren Superior",
+          "tipo": "ENTRENAMIENTO",
+          "bloques": [
+            {
+              "tipo": "ENTRENAMIENTO",
+              "ejercicios": [
+                {
+                  "nombre": "Press Banca (requerido)",
+                  "series": 4,
+                  "reps": "8-10",
+                  "descanso": "90s",
+                  "rpe": 8,
+                  "tempo": "3-0-1-0",
+                  "notas": "Enfocarse en técnica"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}`}
+                            </pre>
+                        </div>
+                    </details>
+                </div>
+
+
                 {/* File Info */}
                 {file && (
                     <div className="flex items-center gap-3 rounded-lg border border-border bg-primary-bg p-4">
@@ -151,8 +248,8 @@ export default function ImportModal({ open, onClose, onImport }) {
                 {/* Validation Results */}
                 {validation && (
                     <div className={`rounded-lg border p-4 ${validation.success
-                            ? 'border-success/20 bg-success/5'
-                            : 'border-error/20 bg-error/5'
+                        ? 'border-success/20 bg-success/5'
+                        : 'border-error/20 bg-error/5'
                         }`}>
                         <div className="flex items-start gap-3">
                             {validation.success ? (
@@ -198,6 +295,40 @@ export default function ImportModal({ open, onClose, onImport }) {
                         </div>
                     </div>
                 )}
+
+                {/* Opción para guardar en base de datos */}
+                {validation?.success && (
+                    <div className="rounded-lg border border-accent/20 bg-accent/5 p-4">
+                        <label className="flex items-start gap-3 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={saveToDatabase}
+                                onChange={(e) => setSaveToDatabase(e.target.checked)}
+                                className="mt-1 h-4 w-4 rounded border-border text-accent focus:ring-accent cursor-pointer"
+                                disabled={!serverAvailable}
+                            />
+                            <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                    <Database className="h-4 w-4 text-accent" />
+                                    <h4 className="font-semibold text-text-primary">
+                                        Guardar en base de datos local
+                                    </h4>
+                                </div>
+                                <p className="mt-1 text-sm text-text-secondary">
+                                    {serverAvailable ? (
+                                        <>
+                                            La rutina se guardará automáticamente en tu base de datos SQLite para acceso persistente.
+                                        </>
+                                    ) : (
+                                        <span className="text-warning">
+                                            ⚠️ Servidor no disponible. Ejecuta <code className="px-1 py-0.5 bg-black/10 rounded">npm run server</code> para habilitar.
+                                        </span>
+                                    )}
+                                </p>
+                            </div>
+                        </label>
+                    </div>
+                )}
             </div>
 
             <ModalFooter>
@@ -206,9 +337,17 @@ export default function ImportModal({ open, onClose, onImport }) {
                 </Button>
                 <Button
                     onClick={handleImport}
-                    disabled={!validation?.success || loading}
+                    disabled={!validation?.success || loading || saving}
                 >
-                    Importar Rutina
+                    {saving ? (
+                        <>
+                            {saveToDatabase && serverAvailable ? '💾 Guardando...' : '📥 Importando...'}
+                        </>
+                    ) : (
+                        <>
+                            {saveToDatabase && serverAvailable ? '📥 Importar y Guardar' : '📥 Importar Rutina'}
+                        </>
+                    )}
                 </Button>
             </ModalFooter>
         </Modal>
