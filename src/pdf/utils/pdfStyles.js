@@ -5,25 +5,25 @@ export const palette = {
   background: themeColors.surfaceAlt,
   card: themeColors.surface,
   neutral: "#787878",
-  accent: "#0ef2a0", // Dashboard accent color
-  secondary: "#00c0a3", // Darker shade of accent
+  accent: "#7c3aed", // Púrpura vibrante (estilo Grind-Lab)
+  secondary: "#6366f1", // Púrpura azulado para acentos secundarios
   text: themeColors.text,
 };
 
 export const spacing = {
-  pagePadding: 36,
-  sectionGap: 24,
-  dayGap: 16,
-  indexCardPadding: 16,
-  tableCellPadding: 8,
+  pagePadding: 40, // ✨ 36 → 40 (más margen)
+  sectionGap: 28, // ✨ 24 → 28 (más respiro entre secciones)
+  dayGap: 18, // ✨ 16 → 18 (más separación entre días)
+  indexCardPadding: 18, // ✨ 16 → 18 (más padding en cards)
+  tableCellPadding: 10, // ✨ 8 → 10 (celdas más espaciosas)
 };
 
 export const typography = {
-  base: 12,
-  small: 10,
-  medium: 14,
-  large: 20,
-  xlarge: 28,
+  base: 11, // ✨ 12 → 11 (tabla más legible sin ser muy grande)
+  small: 9, // ✨ 10 → 9 (metadata)
+  medium: 13, // ✨ 14 → 13 (ajustado)
+  large: 18, // ✨ 20 → 18 (títulos de semana)
+  xlarge: 24, // ✨ 28 → 24 (título principal)
 };
 
 export const createBaseStyles = () =>
@@ -106,7 +106,7 @@ export const createBaseStyles = () =>
       backgroundColor: "rgba(32,32,32,0.95)",
       borderRadius: 8,
       borderWidth: 1,
-      borderColor: "rgba(14,242,160,0.15)",
+      borderColor: "rgba(124, 58, 237, 0.15)", // Usando palette.accent
       padding: 12,
       minWidth: 100,
       alignItems: "center",
@@ -128,10 +128,10 @@ export const createBaseStyles = () =>
     tag: {
       fontSize: typography.small - 1,
       color: palette.accent,
-      backgroundColor: "rgba(14,242,160,0.08)",
+      backgroundColor: "rgba(124, 58, 237, 0.08)",
       borderRadius: 6,
       borderWidth: 1,
-      borderColor: "rgba(14,242,160,0.2)",
+      borderColor: "rgba(124, 58, 237, 0.2)",
       paddingVertical: 4,
       paddingHorizontal: 10,
       fontWeight: 500,
@@ -151,10 +151,10 @@ export const createBaseStyles = () =>
       marginTop: 18,
       marginBottom: 20,
       padding: 14,
-      backgroundColor: "rgba(14,242,160,0.05)",
+      backgroundColor: "rgba(124, 58, 237, 0.05)",
       borderRadius: 8,
       borderWidth: 1,
-      borderColor: "rgba(14,242,160,0.25)",
+      borderColor: "rgba(124, 58, 237, 0.25)",
     },
     notesTitle: {
       fontSize: typography.small,
@@ -281,10 +281,10 @@ export const createBaseStyles = () =>
       textTransform: "uppercase",
     },
     dayTypeTraining: {
-      backgroundColor: "rgba(14,242,160,0.15)",
+      backgroundColor: "rgba(124, 58, 237, 0.15)",
       color: palette.accent,
       borderWidth: 1,
-      borderColor: "rgba(14,242,160,0.35)",
+      borderColor: "rgba(124, 58, 237, 0.35)",
     },
     dayTypeRest: {
       backgroundColor: "rgba(120,120,120,0.15)",

@@ -21,6 +21,8 @@ import { copyPromptToClipboard } from "../utils/promptGenerator.js";
 import JSONEditor from "../components/Editor/JSONEditor.jsx";
 import TutorialOverlay from "../components/Tutorial/TutorialOverlay.jsx";
 import { useSnackbar, TUTORIAL_SNACKBARS } from "../components/Tutorial/Snackbar.jsx";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/ui/Tabs.jsx";
+import PasswordProtected from "../components/Auth/PasswordProtected.jsx";
 
 const buildContextValue = (planEditor) => ({
   plan: planEditor.plan,
@@ -199,9 +201,60 @@ export default function RoutineEditorPage() {
                 onChange={handleJSONEditorChange}
               />
             ) : (
-              <div id="metadata-form" className="p-6 space-y-6">
-                <PlanMetadataForm />
-                <WeekEditor />
+              <div className="p-6">
+                <Tabs defaultValue="basic" className="w-full">
+                  <TabsList className="mb-6">
+                    <TabsTrigger value="basic">
+                      Configuración Básica
+                    </TabsTrigger>
+                    <TabsTrigger value="advanced">
+                      Configuración Avanzada
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="basic">
+                    <div className="space-y-6">
+                      <PlanMetadataForm />
+
+                      <div className="rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] p-5">
+                        <div className="flex items-center gap-2 mb-4">
+                          <div className="h-2 w-2 rounded-full bg-accent"></div>
+                          <h3 className="text-sm font-semibold text-white">
+                            Información Importante
+                          </h3>
+                        </div>
+                        <p className="text-xs text-gray-400 leading-relaxed">
+                          Completá los datos básicos de la plantilla y luego generá el <strong>Prompt Maestro</strong> usando el botón "Copiar Prompt para IA". Pegalo en ChatGPT o Claude para obtener el JSON de la rutina completa.
+                        </p>
+                        <p className="text-xs text-gray-400 leading-relaxed mt-3">
+                          Si necesitás hacer ajustes manuales en la estructura de semanas, días y ejercicios, usá la pestaña <strong>"Configuración Avanzada"</strong>.
+                        </p>
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="advanced">
+                    <PasswordProtected
+                      password="GRND-MAX"
+                      title="Edición Avanzada de Rutina"
+                    >
+                      <div className="space-y-4">
+                        <div className="rounded-xl border border-accent/20 bg-accent/5 p-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="h-2 w-2 rounded-full bg-accent"></div>
+                            <h3 className="text-sm font-semibold text-white">
+                              Modo Avanzado Activado
+                            </h3>
+                          </div>
+                          <p className="text-xs text-gray-400 leading-relaxed">
+                            Ahora podés editar manualmente la estructura de semanas, días y ejercicios (ABMC completo). Estos cambios son avanzados y requieren conocimiento del sistema.
+                          </p>
+                        </div>
+                        <WeekEditor />
+                      </div>
+                    </PasswordProtected>
+                  </TabsContent>
+                </Tabs>
               </div>
             )}
           </div>
