@@ -14,6 +14,7 @@ import PlanMetadataForm from "../components/Trainer/editor/PlanMetadataForm.jsx"
 import RoutinePreview from "../components/Trainer/preview/RoutinePreview.jsx";
 import ImportModal from "../components/Editor/ImportModal.jsx";
 import ExportModal from "../components/Editor/ExportModal.jsx";
+import PDFExportModal from "../components/Editor/PDFExportModal.jsx";
 import WeekEditor from "../components/Trainer/editor/WeekEditor.jsx";
 import { Button } from "../components/ui";
 import { copyPromptToClipboard } from "../utils/promptGenerator.js";
@@ -48,6 +49,7 @@ export default function RoutineEditorPage() {
 
   const [showImportModal, setShowImportModal] = React.useState(false);
   const [showExportModal, setShowExportModal] = React.useState(false);
+  const [showPDFExportModal, setShowPDFExportModal] = React.useState(false);
   const [showJSONEditor, setShowJSONEditor] = useState(false);
 
   // Inicializar el editor sin templates previos (siempre nueva rutina)
@@ -72,10 +74,15 @@ export default function RoutineEditorPage() {
     navigate("/");
   }, [navigate, planEditor.dirty]);
 
-  const handleExportPdf = useCallback(async () => {
+  const handleExportPdf = useCallback(() => {
+    // Abrir modal de selección de tipo de PDF
+    setShowPDFExportModal(true);
+  }, []);
+
+  const handlePDFTypeSelect = useCallback(async (type) => {
     try {
-      console.log("Exporting PDF with planForPdf:", planEditor.planForPdf);
-      await exportPDF(planEditor.planForPdf);
+      console.log(`Exporting PDF as ${type} with planForPdf:`, planEditor.planForPdf);
+      await exportPDF(planEditor.planForPdf, type);
       snackbar.success(TUTORIAL_SNACKBARS.pdfExported);
     } catch (error) {
       console.error("PDF Export Error:", error);
@@ -223,6 +230,13 @@ export default function RoutineEditorPage() {
         open={showExportModal}
         onClose={() => setShowExportModal(false)}
         planData={planEditor.plan}
+      />
+
+      {/* PDF Export Type Selection Modal */}
+      <PDFExportModal
+        open={showPDFExportModal}
+        onClose={() => setShowPDFExportModal(false)}
+        onSelectType={handlePDFTypeSelect}
       />
     </PlanProvider>
   );

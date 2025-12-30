@@ -70,7 +70,8 @@ ESQUEMA EXACTO:
               "rir": "2",
               "tempo": "3010",
               "rest": "90s",
-              "notes": "Controla la fase excéntrica"
+              "notes": "Controla la fase excéntrica (3s bajada). Mantén escápulas retraídas y pies firmes en el suelo",
+              "video": "https://www.youtube.com/watch?v=EJEMPLO1"
             },
             {
               "name": "Press Inclinado con Mancuernas",
@@ -79,7 +80,8 @@ ESQUEMA EXACTO:
               "rir": "2",
               "tempo": "2010",
               "rest": "60s",
-              "notes": "45 grados de inclinación"
+              "notes": "Banco a 45 grados. Baja hasta sentir estiramiento en pecho superior. Evita arquear excesivamente la espalda",
+              "video": "https://www.youtube.com/watch?v=EJEMPLO2"
             }
           ]
         }
@@ -98,13 +100,31 @@ ESQUEMA EXACTO:
    - Cada día debe tener entre 5-8 ejercicios
 
 2. CAMPOS OBLIGATORIOS por ejercicio:
-   - name: Nombre claro del ejercicio
+   ⚠️ TODOS los campos deben estar completos. NO dejes ningún campo vacío.
+   
+   - name: Nombre claro y específico del ejercicio
    - sets: Número de series (ej: "3", "4", "3-4")
-   - reps: Rango de repeticiones (ej: "8-12", "10-15")
+   - reps: Rango de repeticiones (ej: "8-12", "10-15") o duración si es isométrico
    - rir: Repeticiones en Reserva (0-3, donde 0=fallo, 3=fácil)
    - tempo: Cadencia 4 dígitos (ej: "3010" = 3s bajar, 0s pausa, 1s subir, 0s arriba)
    - rest: Descanso entre series (ej: "60s", "90s", "120s")
-   - notes: Consejos técnicos o instrucciones específicas
+   - notes: Consejos técnicos, instrucciones de forma, precauciones y tips explicativos
+   - video: URL de YouTube con demostración del ejercicio
+   
+   📹 VIDEOS DE YOUTUBE:
+   - OBLIGATORIO: Cada ejercicio DEBE incluir un link de YouTube válido
+   - Usa videos de canales reconocidos de fitness (AthleanX, Jeff Nippard, Buff Academy, etc.)
+   - Verifica que los videos estén disponibles públicamente hasta DICIEMBRE 2025
+   - El formato debe ser: "https://www.youtube.com/watch?v=CODIGO_VIDEO"
+   - Busca videos que demuestren la técnica correcta con ángulos claros
+   - Si un ejercicio tiene variaciones, elige el video que mejor muestre la versión específica
+   
+   📝 NOTAS EXPLICATIVAS:
+   - Las notas deben ser DETALLADAS y ÚTILES, no genéricas
+   - Incluye puntos clave de técnica (ej: "Mantén los codos a 45°, escápulas retraídas")
+   - Agrega precauciones si el ejercicio es técnicamente complejo
+   - Menciona errores comunes a evitar cuando sea relevante
+   - Si aplica una técnica especial (drop set, superserie), especifícalo claramente
 
 3. ADAPTACIÓN AL OBJETIVO:
 
@@ -295,7 +315,8 @@ Al pegar este prompt en ChatGPT/Claude, obtendrás:
               "rir": "2",
               "tempo": "3010",
               "rest": "90s",
-              "notes": "Drop set en última serie"
+              "notes": "Drop set en última serie: reduce 20% del peso y continúa hasta el fallo. Mantén escápulas retraídas durante todo el movimiento",
+              "video": "https://www.youtube.com/watch?v=ejemplo_press_banca"
             },
             {
               "name": "Press Inclinado + Aperturas",
@@ -304,7 +325,8 @@ Al pegar este prompt en ChatGPT/Claude, obtendrás:
               "rir": "2",
               "tempo": "2010",
               "rest": "60s",
-              "notes": "Superserie"
+              "notes": "Superserie: Press Inclinado seguido inmediatamente de Aperturas. Banco a 30-45°. Enfoca en squeeze al contraer",
+              "video": "https://www.youtube.com/watch?v=ejemplo_press_inclinado"
             }
             // ... +5 ejercicios más
           ]

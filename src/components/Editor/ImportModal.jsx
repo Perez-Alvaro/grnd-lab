@@ -4,12 +4,10 @@
  */
 
 import { useState, useCallback } from 'react';
-import { Upload, AlertCircle, CheckCircle2, FileJson, Database } from 'lucide-react';
+import { Upload, AlertCircle, CheckCircle2, FileJson } from 'lucide-react';
 import Modal, { ModalFooter } from '../ui/Modal.jsx';
 import Button from '../ui/Button.jsx';
 import { importToEditor } from '../../lib/transformers/routineTransformer.js';
-import { useRoutinesAPI } from '../../hooks/useRoutinesAPI.js';
-import { editorToAPI } from '../../lib/utils/routineTransform.js';
 
 export default function ImportModal({ open, onClose, onImport }) {
     const [file, setFile] = useState(null);
@@ -17,10 +15,6 @@ export default function ImportModal({ open, onClose, onImport }) {
     const [validation, setValidation] = useState(null);
     const [loading, setLoading] = useState(false);
     const [dragActive, setDragActive] = useState(false);
-    const [saveToDatabase, setSaveToDatabase] = useState(true);
-    const [saving, setSaving] = useState(false);
-
-    const { saveRoutine, serverAvailable } = useRoutinesAPI();
 
     const handleReset = () => {
         setFile(null);
@@ -84,41 +78,12 @@ export default function ImportModal({ open, onClose, onImport }) {
         }
     }, [handleFileSelect]);
 
-    const handleImport = async () => {
+    const handleImport = () => {
         if (!validation?.success || !validation?.data) return;
 
-        setSaving(true);
-        try {
-            // Siempre importar al editor
-            onImport(validation.data);
-
-            // Guardar en base de datos si está habilitado y el servidor está disponible
-            if (saveToDatabase && serverAvailable) {
-                try {
-                    const apiData = editorToAPI(validation.data);
-                    const saved = await saveRoutine(apiData);
-                    console.log('✅ Rutina guardada en base de datos:', saved.nombre);
-
-                    // Opcional: mostrar notificación de éxito
-                    if (window.confirm) {
-                        setTimeout(() => {
-                            alert(`✅ Rutina "${saved.nombre}" importada y guardada en la base de datos`);
-                        }, 100);
-                    }
-                } catch (dbError) {
-                    console.error('❌ Error al guardar en base de datos:', dbError);
-                    alert(`⚠️ Rutina importada al editor, pero hubo un error al guardar en la base de datos:\n${dbError.message}`);
-                }
-            }
-
-            handleReset();
-            onClose();
-        } catch (error) {
-            console.error('Error en importación:', error);
-            alert(`Error al importar: ${error.message}`);
-        } finally {
-            setSaving(false);
-        }
+        onImport(validation.data);
+        handleReset();
+        onClose();
     };
 
     const handleClose = () => {
@@ -295,40 +260,6 @@ export default function ImportModal({ open, onClose, onImport }) {
                         </div>
                     </div>
                 )}
-
-                {/* Opción para guardar en base de datos */}
-                {validation?.success && (
-                    <div className="rounded-lg border border-accent/20 bg-accent/5 p-4">
-                        <label className="flex items-start gap-3 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                checked={saveToDatabase}
-                                onChange={(e) => setSaveToDatabase(e.target.checked)}
-                                className="mt-1 h-4 w-4 rounded border-border text-accent focus:ring-accent cursor-pointer"
-                                disabled={!serverAvailable}
-                            />
-                            <div className="flex-1">
-                                <div className="flex items-center gap-2">
-                                    <Database className="h-4 w-4 text-accent" />
-                                    <h4 className="font-semibold text-text-primary">
-                                        Guardar en base de datos local
-                                    </h4>
-                                </div>
-                                <p className="mt-1 text-sm text-text-secondary">
-                                    {serverAvailable ? (
-                                        <>
-                                            La rutina se guardará automáticamente en tu base de datos SQLite para acceso persistente.
-                                        </>
-                                    ) : (
-                                        <span className="text-warning">
-                                            ⚠️ Servidor no disponible. Ejecuta <code className="px-1 py-0.5 bg-black/10 rounded">npm run server</code> para habilitar.
-                                        </span>
-                                    )}
-                                </p>
-                            </div>
-                        </label>
-                    </div>
-                )}
             </div>
 
             <ModalFooter>
@@ -337,17 +268,9 @@ export default function ImportModal({ open, onClose, onImport }) {
                 </Button>
                 <Button
                     onClick={handleImport}
-                    disabled={!validation?.success || loading || saving}
+                    disabled={!validation?.success || loading}
                 >
-                    {saving ? (
-                        <>
-                            {saveToDatabase && serverAvailable ? '💾 Guardando...' : '📥 Importando...'}
-                        </>
-                    ) : (
-                        <>
-                            {saveToDatabase && serverAvailable ? '📥 Importar y Guardar' : '📥 Importar Rutina'}
-                        </>
-                    )}
+                    📥 Importar Rutina
                 </Button>
             </ModalFooter>
         </Modal>

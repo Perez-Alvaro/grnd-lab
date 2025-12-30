@@ -52,12 +52,13 @@ const CoverPage = ({ plan, styles }) => {
 
         {/* Metadata Section */}
         <View style={styles.metadataSection}>
-          {/* First row: Objective and Level */}
-          {(objectiveLabel || plan.level) && (
+          {/* First row: Objetivo, Nivel, Género */}
+          {(objectiveLabel || plan.level || plan.gender || plan.genre) && (
             <MetadataRow
               items={[
                 { label: "OBJETIVO", value: objectiveLabel },
                 { label: "NIVEL", value: plan.level },
+                { label: "GÉNERO", value: plan.gender || plan.genre },
               ]}
               styles={styles}
             />

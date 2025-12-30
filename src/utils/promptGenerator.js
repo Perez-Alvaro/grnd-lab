@@ -74,7 +74,8 @@ ESQUEMA EXACTO:
               "rir": "2",
               "tempo": "3010",
               "rest": "90s",
-              "notes": "Controla la fase excéntrica"
+              "notes": "Controla la fase excéntrica (3s bajada). Mantén escápulas retraídas y pies firmes en el suelo. Barra debe tocar pecho medio-bajo",
+              "video": "https://www.youtube.com/watch?v=EJEMPLO1"
             },
             {
               "name": "Press Inclinado con Mancuernas",
@@ -83,7 +84,8 @@ ESQUEMA EXACTO:
               "rir": "2",
               "tempo": "2010",
               "rest": "60s",
-              "notes": "45 grados de inclinación"
+              "notes": "Banco a 45 grados. Baja hasta sentir estiramiento en pecho superior. Evita arquear excesivamente la espalda",
+              "video": "https://www.youtube.com/watch?v=EJEMPLO2"
             }
           ]
         }
@@ -102,13 +104,31 @@ ESQUEMA EXACTO:
    - Cada día debe tener entre 5-8 ejercicios
 
 2. CAMPOS OBLIGATORIOS por ejercicio:
-   - name: Nombre claro del ejercicio
+   ⚠️ TODOS los campos deben estar completos. NO dejes ningún campo vacío.
+
+   - name: Nombre claro y específico del ejercicio
    - sets: Número de series (ej: "3", "4", "3-4")
-   - reps: Rango de repeticiones (ej: "8-12", "10-15")
+   - reps: Rango de repeticiones (ej: "8-12", "10-15") o duración si es isométrico
    - rir: Repeticiones en Reserva (0-3, donde 0=fallo, 3=fácil)
    - tempo: Cadencia 4 dígitos (ej: "3010" = 3s bajar, 0s pausa, 1s subir, 0s arriba)
    - rest: Descanso entre series (ej: "60s", "90s", "120s")
-   - notes: Consejos técnicos o instrucciones específicas
+   - notes: Consejos técnicos, instrucciones de forma, precauciones y tips explicativos
+   - video: URL de YouTube con demostración del ejercicio
+
+   📹 VIDEOS DE YOUTUBE:
+   - OBLIGATORIO: Cada ejercicio DEBE incluir un link de YouTube válido
+   - Usa videos de canales reconocidos de fitness (AthleanX, Jeff Nippard, Buff Academy, etc.)
+   - Verifica que los videos estén disponibles públicamente hasta DICIEMBRE 2025
+   - El formato debe ser: "https://www.youtube.com/watch?v=CODIGO_VIDEO"
+   - Busca videos que demuestren la técnica correcta con ángulos claros
+   - Si un ejercicio tiene variaciones, elige el video que mejor muestre la versión específica
+
+   📝 NOTAS EXPLICATIVAS:
+   - Las notas deben ser DETALLADAS y ÚTILES, no genéricas
+   - Incluye puntos clave de técnica (ej: "Mantén los codos a 45°, escápulas retraídas")
+   - Agrega precauciones si el ejercicio es técnicamente complejo
+   - Menciona errores comunes a evitar cuando sea relevante
+   - Si aplica una técnica especial (drop set, superserie), especifícalo claramente
 
 3. ADAPTACIÓN AL OBJETIVO:
 
@@ -214,6 +234,19 @@ ESQUEMA EXACTO:
 ⚠️ NO agregues explicaciones antes ni después
 ⚠️ EMPIEZA directamente con { y TERMINA con }
 ⚠️ Asegúrate de que sea JSON VÁLIDO (sin comas finales, comillas correctas)
+
+🔴 RECORDATORIO CRÍTICO:
+Cada ejercicio DEBE incluir TODOS estos campos sin excepción:
+✓ name (nombre del ejercicio)
+✓ sets (número de series)
+✓ reps (repeticiones o duración)
+✓ rest (descanso entre series)
+✓ rir (repeticiones en reserva)
+✓ tempo (cadencia 4 dígitos)
+✓ notes (explicación técnica detallada)
+✓ video (URL de YouTube válida y disponible hasta diciembre 2025)
+
+NO omitas ningún campo. El PDF necesita todos los datos completos.
 
 ${notes ? `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n📌 NOTAS ADICIONALES DEL ENTRENADOR\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n${notes}\n` : ''}
 

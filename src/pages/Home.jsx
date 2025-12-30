@@ -11,7 +11,7 @@ import {
     Users, GraduationCap, Wrench, Terminal
 } from 'lucide-react';
 import { Button } from '../components/ui';
-import Hyperspeed from '../components/ui/Hyperspeed';
+import DotGrid from '../components/ui/DotGrid';
 
 export default function Home() {
     const navigate = useNavigate();
@@ -24,9 +24,19 @@ export default function Home() {
         <div className="min-h-screen bg-primary-bg">
             {/* ===== HERO SECTION ===== */}
             <div className="relative min-h-screen flex items-center overflow-hidden border-b border-border">
-                {/* Hyperspeed Background - Interactive speed tunnel */}
-                <div className="absolute inset-0 z-0 opacity-50">
-                    <Hyperspeed />
+                {/* DotGrid Background - Interactive dots (subtle) */}
+                <div className="absolute inset-0 z-0 opacity-30">
+                    <DotGrid
+                        dotSize={6}
+                        gap={20}
+                        baseColor="#1a1a24"
+                        activeColor="#2d2d3d"
+                        proximity={120}
+                        shockRadius={250}
+                        shockStrength={5}
+                        resistance={750}
+                        returnDuration={1.5}
+                    />
                 </div>
 
                 {/* Vertical gradient overlay - Enhances text readability */}
@@ -44,7 +54,7 @@ export default function Home() {
                     <div className="flex justify-center mb-8 animate-fade-in-up">
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm font-medium backdrop-blur-sm">
                             <Brain className="h-4 w-4" />
-                            <span>IA como cerebro externo</span>
+                            <span>IA como entrenador de alto rendimiento</span>
                         </div>
                     </div>
 
@@ -97,7 +107,7 @@ export default function Home() {
                         {/* Interaction hint - Appears on desktop only */}
                         <div className="hidden md:block pt-12 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
                             <p className="text-xs text-text-quaternary uppercase tracking-wider">
-                                Click & hold para acelerar →
+                                llevate al siguiente nivel →
                             </p>
                         </div>
                     </div>
