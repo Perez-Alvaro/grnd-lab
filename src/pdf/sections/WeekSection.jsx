@@ -37,17 +37,10 @@ const ExerciseTable = ({ exercises, styles }) => {
         const reps = repsValue === 0 || repsValue ? repsValue : "–";
         const restValue = exercise.rest ?? exercise.descanso;
         const rest = restValue === 0 || restValue ? restValue : "–";
-        const durationValue = exercise.duracion ?? exercise.duration;
-        const duration = durationValue === 0 || durationValue ? durationValue : "–";
         const rir = exercise.rir === 0 || exercise.rir ? exercise.rir : "–";
         const tempoValue = exercise.tempo ?? exercise.cadencia;
         const tempo = tempoValue === 0 || tempoValue ? tempoValue : "–";
-        let videoUrl = exercise.video || exercise.videoUrl;
-
-        // Ensure absolute URL for PDF compatibility
-        if (videoUrl && !videoUrl.startsWith('http://') && !videoUrl.startsWith('https://')) {
-          videoUrl = `https://${videoUrl}`;
-        }
+        const videoUrl = exercise.video || exercise.videoUrl;
 
         return (
           <View
@@ -61,7 +54,6 @@ const ExerciseTable = ({ exercises, styles }) => {
             <Text style={[styles.tableCell, styles.seriesCol]}>{sets}</Text>
             <Text style={[styles.tableCell, styles.repsCol]}>{reps}</Text>
             <Text style={[styles.tableCell, styles.restCol]}>{rest}</Text>
-            <Text style={[styles.tableCell, styles.durationCol]}>{duration}</Text>
             <Text style={[styles.tableCell, styles.rirCol]}>{rir}</Text>
             <Text style={[styles.tableCell, styles.tempoCol]}>{tempo}</Text>
             {videoUrl ? (
@@ -69,7 +61,7 @@ const ExerciseTable = ({ exercises, styles }) => {
                 src={videoUrl}
                 style={[styles.tableCell, styles.videoCol, styles.videoLink]}
               >
-                🎥 Ver
+                Ver
               </Link>
             ) : (
               <Text style={[styles.tableCell, styles.videoCol]}>-</Text>
