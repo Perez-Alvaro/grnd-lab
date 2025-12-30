@@ -1,5 +1,97 @@
-import jsPDF from 'jspdf';
-import { isBlockStart } from '../utils/blockDetector.js';
+import jsPDF from "jspdf";
+import { getPdfDesignSystem, hexToRgb } from "../pdf-design-system/index.js";
+
+const formatValue = (value) =>
+  value === 0 || value ? String(value) : "—";
+
+const resolveValue = (source, keys) => {
+  const hasKey = keys.some((key) => Object.prototype.hasOwnProperty.call(source, key));
+  const value = keys.reduce(
+    (found, key) => (found !== undefined ? found : source?.[key]),
+    undefined,
+  );
+
+  return {
+    exists: hasKey || value !== undefined,
+    value: formatValue(value),
+  };
+};
+
+const resolveNotes = (source) => {
+  const keys = ["notes", "note", "notas"];
+  const hasKey = keys.some((key) => Object.prototype.hasOwnProperty.call(source, key));
+  const raw = keys.reduce(
+    (found, key) => (found !== undefined ? found : source?.[key]),
+    undefined,
+  );
+
+  if (Array.isArray(raw)) {
+    const merged = raw.filter(Boolean).join(" • ");
+    return {
+      exists: hasKey || raw.length > 0,
+      value: merged || "—",
+    };
+  }
+
+  return {
+    exists: hasKey || raw !== undefined,
+    value: formatValue(raw),
+  };
+};
+
+const resolveVideo = (source) => {
+  const keys = ["videoUrl", "video", "youtubeLink"];
+  const hasKey = keys.some((key) => Object.prototype.hasOwnProperty.call(source, key));
+  const url = keys.reduce(
+    (found, key) => (found !== undefined ? found : source?.[key]),
+    undefined,
+  );
+
+  return {
+    exists: hasKey || Boolean(url),
+    url: url || "",
+  };
+};
+
+const chunkArray = (array, size) => {
+  const result = [];
+  for (let i = 0; i < array.length; i += size) {
+    result.push(array.slice(i, i + size));
+  }
+  return result;
+};
+
+const drawRoundedCard = (doc, config) => {
+  const { x, y, width, height, radius, fill, border, borderWidth } = config;
+  doc.setFillColor(...fill);
+  doc.setDrawColor(...border);
+  doc.setLineWidth(borderWidth);
+  doc.roundedRect(x, y, width, height, radius, radius, "FD");
+};
+
+const parseTags = (tags) => {
+  if (!tags) return [];
+  if (Array.isArray(tags)) return tags.filter(Boolean).map(String);
+  return String(tags)
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+};
+
+const addCoverImage = (doc, imageData, x, y, width, height) => {
+  if (!imageData || typeof imageData !== "string" || !imageData.startsWith("data:")) {
+    return 0;
+  }
+
+  const format = imageData.split(";")[0].split("/")[1] || "JPEG";
+  try {
+    doc.addImage(imageData, format.toUpperCase(), x, y, width, height, undefined, "FAST");
+    return height;
+  } catch (error) {
+    console.warn("No se pudo renderizar la imagen de portada", error);
+    return 0;
+  }
+};
 
 /**
  * Genera un PDF de una rutina de entrenamiento en formato MOBILE (estilo Mynter)
@@ -10,370 +102,528 @@ import { isBlockStart } from '../utils/blockDetector.js';
  */
 export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
   const doc = new jsPDF();
+  const design = getPdfDesignSystem({ variant: "mobile" });
+  const { colors, spacing, typography, cards } = design;
+  const { sizes } = typography;
 
   // Configuración
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 14;
+  const margin = spacing.pageMargin;
   let yPos = margin;
-  const pagePadding = 12;
-  const cardRadius = 8;
-  const cardBorderWidth = 1.1;
-  const cardGap = 8;
-  const sectionGap = 14;
+  const pagePadding = spacing.cardPadding;
+  const cardRadius = cards.elevatedRadius;
+  const cardBorderWidth = cards.borderWidth;
+  const cardGap = spacing.cardGap;
+  const sectionGap = spacing.sectionGap;
 
-  // Colores estilo Mynter - MEJORADOS CON MEJOR CONTRASTE
-  const bgDark = [34, 34, 36]; // #222224 - Fondo principal
-  const neonGreen = [181, 255, 0]; // #B5FF00 - Verde neón para títulos
-  const orangeBorder = [255, 159, 10]; // #FF9F0A - Naranja/dorado para bordes
-  const cardBg = [52, 52, 56]; // #343438 - Fondo de tarjetas
-  const textWhite = [255, 255, 255]; // Texto principal
-  const textGray = [198, 198, 210]; // #C6C6D2 - Texto secundario
-  const textTertiary = [146, 146, 164]; // #9292A4 - Detalles menores
+  // Colores
+  const background = hexToRgb(colors.background);
+  const surface = hexToRgb(colors.surface);
+  const accent = hexToRgb(colors.accent);
+  const accentStrong = hexToRgb(colors.accentStrong);
+  const textPrimary = hexToRgb(colors.text);
+  const textSecondary = hexToRgb(colors.textSecondary);
+  const border = hexToRgb(colors.borderLight);
 
-  // Colores de bloques semánticos (fondos sutiles para badges)
-  const blockColors = {
-    warmup: [255, 159, 10],      // #FF9F0A - Naranja (calentamiento)
-    main: [14, 242, 160],         // #0EF2A0 - Verde (principal)
-    accessory: [120, 120, 130],   // #78787F - Gris (accesorios)
-    core: [255, 100, 100],        // #FF6464 - Rojo (core)
-    cooldown: [100, 150, 255],    // #6496FF - Azul (elongación)
-  };
+  const routineTitle =
+    routine.name || routine.title || routine.planName || "Plan de Entrenamiento";
+  const routineObjective = routine.objective || "";
+  const routineFrequency = routine.frequency || "";
+  const routineDuration = routine.durationWeeks || routine.duration || "";
+  const routineLevel = routine.level || "";
+  const routineGender = routine.gender || routine.genre || "";
+  const routineCoach = routine.author || routine.coach || routine.user || "";
+  const routineEquipment = routine.equipment || "";
+  const routinePrice = routine.price || "";
+  const routineNotes = routine.notes || "";
+  const routineTags = parseTags(routine.tags);
+  const routineImage = routine.image || routine.imagen || routine.cover || "";
 
   // ============================================
   // PORTADA CON ÍNDICE DE SEMANAS CLICKEABLE
   // ============================================
 
   // Fondo oscuro de toda la página
-  doc.setFillColor(...bgDark);
-  doc.rect(0, 0, pageWidth, pageHeight, 'F');
+  doc.setFillColor(...background);
+  doc.rect(0, 0, pageWidth, pageHeight, "F");
 
-  yPos = 26;
+  yPos = margin + sectionGap;
 
-  // Título de la rutina - GRANDE Y LLAMATIVO
-  doc.setFontSize(24);
-  doc.setTextColor(...textWhite);
-  doc.setFont('helvetica', 'bold');
-  const routineNameLines = doc.splitTextToSize(routine.name || routine.title || 'Plan de Entrenamiento', pageWidth - 2 * margin);
-  doc.text(routineNameLines, margin, yPos);
-  yPos += routineNameLines.length * 10 + sectionGap;
-
-  // Info del plan en verde neón
-  doc.setFontSize(11);
-  doc.setTextColor(...neonGreen);
-  doc.setFont('helvetica', 'normal');
-  const planInfo = `${routine.objective || 'Objetivo'} • ${routine.frequency || 3} días/semana`;
-  doc.text(planInfo, margin, yPos);
-  yPos += 10;
-
-  // Nivel y duración
-  doc.setFontSize(9);
-  doc.setTextColor(...textGray);
-  doc.text(`Nivel: ${routine.level || 'Intermedio'} • Duración: ${routine.durationWeeks || 4} semanas`, margin, yPos);
-  yPos += 10;
-
-  // NUEVO: Coach Badge
-  if (routine.author || routine.coach) {
-    doc.setFontSize(9);
-    doc.setTextColor(...textWhite);
-    doc.setFont('helvetica', 'bold');
-    doc.text('👤 COACH', margin, yPos);
-    
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(...neonGreen);
-    doc.text(routine.author || routine.coach, margin + 32, yPos);
-    yPos += 12;
-  } else {
-    yPos += 2;
+  // Imagen de portada (si existe)
+  if (routineImage) {
+    const imageHeight = 46;
+    const imageWidth = pageWidth - 2 * margin;
+    const renderedHeight = addCoverImage(
+      doc,
+      routineImage,
+      margin,
+      yPos,
+      imageWidth,
+      imageHeight,
+    );
+    if (renderedHeight) {
+      yPos += renderedHeight + spacing.mediaGap;
+    }
   }
 
-  yPos += sectionGap;
+  // Título de la rutina
+  doc.setFontSize(sizes.display);
+  doc.setTextColor(...textPrimary);
+  doc.setFont("helvetica", "bold");
+  const routineNameLines = doc.splitTextToSize(
+    routineTitle,
+    pageWidth - 2 * margin,
+  );
+  doc.text(routineNameLines, margin, yPos);
+  yPos += routineNameLines.length * (sizes.display * 0.45) + spacing.rowGap;
 
-  // ÍNDICE DE SEMANAS - TÍTULOS GRANDES Y LLAMATIVOS
-  doc.setFontSize(15);
-  doc.setTextColor(...textWhite);
-  doc.setFont('helvetica', 'bold');
-  doc.text('ÍNDICE DE SEMANAS', margin, yPos);
-  yPos += 14;
+  // Info del plan
+  doc.setFontSize(sizes.bodySmall);
+  doc.setTextColor(...accent);
+  doc.setFont("helvetica", "normal");
+  const planInfo = [routineObjective, routineFrequency]
+    .filter(Boolean)
+    .join(" • ");
+  if (planInfo) {
+    doc.text(planInfo, margin, yPos);
+    yPos += sizes.bodySmall + 4;
+  }
+
+  // Nivel y duración
+  doc.setFontSize(sizes.label);
+  doc.setTextColor(...textSecondary);
+  const secondaryInfo = [
+    routineLevel ? `Nivel: ${routineLevel}` : null,
+    routineDuration ? `Duración: ${routineDuration}` : null,
+  ]
+    .filter(Boolean)
+    .join(" • ");
+  if (secondaryInfo) {
+    doc.text(secondaryInfo, margin, yPos);
+    yPos += sizes.label + 6;
+  }
+
+  if (routineCoach) {
+    doc.setFontSize(sizes.label);
+    doc.setTextColor(...accent);
+    doc.setFont("helvetica", "bold");
+    doc.text("COACH", margin, yPos);
+
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(...textPrimary);
+    doc.text(routineCoach, margin + 24, yPos);
+    yPos += sizes.label + 6;
+  }
+
+  yPos += spacing.rowGap;
+
+  const metadataItems = [
+    { label: "Objetivo", value: routineObjective },
+    { label: "Frecuencia", value: routineFrequency },
+    { label: "Duración", value: routineDuration },
+    { label: "Género", value: routineGender },
+    { label: "Nivel", value: routineLevel },
+    { label: "Equipo", value: routineEquipment },
+    { label: "Precio", value: routinePrice },
+  ].filter((item) => item.value);
+
+  if (metadataItems.length) {
+    const cardWidth = (pageWidth - 2 * margin - spacing.columnGap) / 2;
+    const cardsPerRow = 2;
+
+    chunkArray(metadataItems, cardsPerRow).forEach((rowItems) => {
+      const heights = rowItems.map((item) => {
+        const valueLines = doc.splitTextToSize(
+          String(item.value),
+          cardWidth - pagePadding * 2,
+        );
+        return (
+          pagePadding * 1.5 +
+          sizes.label +
+          4 +
+          valueLines.length * (sizes.bodySmall + 2)
+        );
+      });
+      const rowHeight = Math.max(...heights, 24);
+
+      rowItems.forEach((item, idx) => {
+        const x = margin + idx * (cardWidth + spacing.columnGap);
+        drawRoundedCard(doc, {
+          x,
+          y: yPos,
+          width: cardWidth,
+          height: rowHeight,
+          radius: cards.radius,
+          fill: surface,
+          border,
+          borderWidth: cardBorderWidth,
+        });
+
+        doc.setFontSize(sizes.label);
+        doc.setTextColor(...accent);
+        doc.setFont("helvetica", "bold");
+        doc.text(item.label.toUpperCase(), x + pagePadding, yPos + pagePadding + 4);
+
+        doc.setFontSize(sizes.bodySmall);
+        doc.setTextColor(...textPrimary);
+        doc.setFont("helvetica", "normal");
+        const valueLines = doc.splitTextToSize(
+          String(item.value),
+          cardWidth - pagePadding * 2,
+        );
+        doc.text(
+          valueLines,
+          x + pagePadding,
+          yPos + pagePadding + sizes.label + 8,
+        );
+      });
+
+      yPos += rowHeight + spacing.rowGap;
+    });
+  }
+
+  if (routineTags.length) {
+    doc.setFontSize(sizes.label);
+    doc.setTextColor(...accent);
+    doc.setFont("helvetica", "bold");
+    doc.text("TAGS", margin, yPos);
+    yPos += sizes.label + 4;
+
+    let tagX = margin;
+    let tagY = yPos;
+    routineTags.forEach((tag) => {
+      const tagText = `#${tag}`;
+      const tagWidth = doc.getTextWidth(tagText) + 10;
+      if (tagX + tagWidth > pageWidth - margin) {
+        tagX = margin;
+        tagY += sizes.label + 6;
+      }
+      drawRoundedCard(doc, {
+        x: tagX,
+        y: tagY - sizes.label + 1,
+        width: tagWidth,
+        height: sizes.label + 6,
+        radius: 6,
+        fill: surface,
+        border: accentStrong,
+        borderWidth: 0.6,
+      });
+      doc.setTextColor(...accent);
+      doc.setFont("helvetica", "normal");
+      doc.text(tagText, tagX + 5, tagY + 2);
+      tagX += tagWidth + 6;
+    });
+    yPos = tagY + sizes.label + spacing.rowGap;
+  }
+
+  if (routineNotes) {
+    const notesTitle = "Notas generales";
+    doc.setFontSize(sizes.bodySmall);
+    doc.setTextColor(...accent);
+    doc.setFont("helvetica", "bold");
+    doc.text(notesTitle.toUpperCase(), margin, yPos);
+    yPos += sizes.bodySmall + 4;
+
+    doc.setFontSize(sizes.bodySmall);
+    doc.setTextColor(...textSecondary);
+    doc.setFont("helvetica", "normal");
+    const noteLines = doc.splitTextToSize(routineNotes, pageWidth - 2 * margin);
+    doc.text(noteLines, margin, yPos);
+    yPos += noteLines.length * (sizes.bodySmall + 2) + spacing.rowGap;
+  }
+
+  // ÍNDICE DE SEMANAS
+  doc.setFontSize(sizes.sectionTitle);
+  doc.setTextColor(...textPrimary);
+  doc.setFont("helvetica", "bold");
+  doc.text("ÍNDICE DE SEMANAS", margin, yPos);
+  yPos += sizes.sectionTitle + 6;
 
   const weeks = routine.weeks || [];
-  
+
   // Crear un mapa de páginas para los links (calcularemos las páginas dinámicamente)
   const weekPageMap = {};
   let currentPage = 2; // La portada es página 1, contenido empieza en 2
 
   weeks.forEach((week, weekIndex) => {
-    const weekNum = week.weekNumber || weekIndex + 1;
+    const weekNum = week.weekNumber || week.number || weekIndex + 1;
     weekPageMap[weekNum] = currentPage;
-    
+
     // Calcular páginas que ocupará esta semana (1 página por día aproximadamente)
     const days = week.days || [];
-    currentPage += days.length;
+    currentPage += days.length || 1;
   });
 
-  // Dibujar el índice con links clickeables
   weeks.forEach((week, weekIndex) => {
-    const weekNum = week.weekNumber || weekIndex + 1;
+    const weekNum = week.weekNumber || week.number || weekIndex + 1;
     const cardHeight = 32;
-    
-    // Verificar espacio
+
     if (yPos > pageHeight - 40) {
       doc.addPage();
-      doc.setFillColor(...bgDark);
-      doc.rect(0, 0, pageWidth, pageHeight, 'F');
-      yPos = 22;
+      doc.setFillColor(...background);
+      doc.rect(0, 0, pageWidth, pageHeight, "F");
+      yPos = margin + 8;
     }
-    
-    // Tarjeta clickeable de semana - PREMIUM STYLE
-    doc.setFillColor(...cardBg);
-    doc.setDrawColor(...orangeBorder);
-    doc.setLineWidth(cardBorderWidth);
-    doc.roundedRect(margin, yPos, pageWidth - 2 * margin, cardHeight, cardRadius, cardRadius, 'FD');
-    
-    // TÍTULO DE SEMANA - GRANDE Y LLAMATIVO en VERDE NEÓN
-    doc.setFontSize(13);
-    doc.setTextColor(...neonGreen);
-    doc.setFont('helvetica', 'bold');
+
+    drawRoundedCard(doc, {
+      x: margin,
+      y: yPos,
+      width: pageWidth - 2 * margin,
+      height: cardHeight,
+      radius: cards.radius,
+      fill: surface,
+      border: accentStrong,
+      borderWidth: cardBorderWidth,
+    });
+
+    doc.setFontSize(sizes.body);
+    doc.setTextColor(...accent);
+    doc.setFont("helvetica", "bold");
     doc.text(`SEMANA ${weekNum}`, margin + pagePadding, yPos + 11);
-    
-    // Descripción de la semana
+
     if (week.summary || week.title) {
-      doc.setFontSize(9);
-      doc.setTextColor(...textGray);
-      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(sizes.label);
+      doc.setTextColor(...textSecondary);
+      doc.setFont("helvetica", "normal");
       const desc = week.summary || week.title;
-      const descLines = doc.splitTextToSize(desc, pageWidth - 2 * margin - pagePadding * 2);
-      // MEJORADO: Mostrar hasta 2 líneas en lugar de solo 1
+      const descLines = doc.splitTextToSize(
+        desc,
+        pageWidth - 2 * margin - pagePadding * 2,
+      );
       const linesToShow = Math.min(descLines.length, 2);
-      for (let i = 0; i < linesToShow; i++) {
-        doc.text(descLines[i], margin + pagePadding, yPos + 14 + (i * 4));
+      for (let i = 0; i < linesToShow; i += 1) {
+        doc.text(descLines[i], margin + pagePadding, yPos + 14 + i * 4);
       }
     }
-    
-    // Número de días
+
     const dayCount = (week.days || []).length;
-    doc.setFontSize(8);
-    doc.setTextColor(...textWhite);
-    doc.text(`${dayCount} día${dayCount !== 1 ? 's' : ''} de entrenamiento`, margin + pagePadding, yPos + 25);
-    
-    // Link interno al inicio de la semana (simulado con anotación)
-    doc.link(margin, yPos, pageWidth - 2 * margin, cardHeight, { pageNumber: weekPageMap[weekNum] });
-    
+    doc.setFontSize(sizes.label);
+    doc.setTextColor(...textPrimary);
+    doc.text(
+      `${dayCount} día${dayCount !== 1 ? "s" : ""} de entrenamiento`,
+      margin + pagePadding,
+      yPos + 25,
+    );
+
+    doc.link(margin, yPos, pageWidth - 2 * margin, cardHeight, {
+      pageNumber: weekPageMap[weekNum],
+    });
+
     yPos += cardHeight + cardGap;
   });
 
-  // Instrucción para el usuario
-  yPos += sectionGap;
-  doc.setFontSize(9);
-  doc.setTextColor(...textGray);
-  doc.setFont('helvetica', 'italic');
-  doc.text('Toca sobre cada semana para ir directamente a su contenido', margin, yPos);
+  yPos += spacing.rowGap;
+  doc.setFontSize(sizes.label);
+  doc.setTextColor(...textSecondary);
+  doc.setFont("helvetica", "italic");
+  doc.text(
+    "Toca sobre cada semana para ir directamente a su contenido",
+    margin,
+    yPos,
+  );
 
   // ============================================
-  // CONTENIDO: DÍAS Y EJERCICIOS (ESTILO MYNTER EXACTO)
+  // CONTENIDO: DÍAS Y EJERCICIOS
   // ============================================
 
   weeks.forEach((week, weekIndex) => {
     const days = week.days || [];
 
     days.forEach((day, dayIndex) => {
-      // Nueva página para cada día
       doc.addPage();
-      
-      // Fondo oscuro
-      doc.setFillColor(...bgDark);
-      doc.rect(0, 0, pageWidth, pageHeight, 'F');
-      
-      yPos = 20;
+      doc.setFillColor(...background);
+      doc.rect(0, 0, pageWidth, pageHeight, "F");
 
-      // NUEVO: Badge de Semana para contexto
-      doc.setFontSize(9);
-      doc.setTextColor(...textGray);
-      doc.setFont('helvetica', 'normal');
-      doc.text(`📋 Semana ${week.weekNumber || weekIndex + 1}`, margin, yPos);
-      yPos += 8;
+      yPos = margin;
 
-      // HEADER: Nombre de la rutina - Exacto a la imagen
-      doc.setFontSize(11);
-      doc.setTextColor(...textWhite);
-      doc.setFont('helvetica', 'bold');
-      doc.text(routine.name || routine.title || 'Rutina', margin, yPos);
-      yPos += 8;
+      doc.setFontSize(sizes.label);
+      doc.setTextColor(...textSecondary);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Semana ${week.weekNumber || week.number || weekIndex + 1}`, margin, yPos);
+      yPos += sizes.label + 4;
 
-      // Subtítulo: Info de la rutina - Exacto a la imagen
-      doc.setFontSize(8);
-      doc.setTextColor(...textGray);
-      doc.setFont('helvetica', 'normal');
-      const subtitle = `${routine.gender || routine.genre || 'Fuerza'} y potencia • ${routine.frequency || 6} días/semana`;
-      doc.text(subtitle, margin, yPos);
-      yPos += sectionGap;
+      doc.setFontSize(sizes.body);
+      doc.setTextColor(...textPrimary);
+      doc.setFont("helvetica", "bold");
+      doc.text(routineTitle, margin, yPos);
+      yPos += sizes.body + 4;
 
-      // TÍTULO DEL DÍA EN VERDE NEÓN - EXACTO A LA IMAGEN
-      doc.setFontSize(18);
-      doc.setTextColor(...neonGreen);
-      doc.setFont('helvetica', 'bold');
+      const subtitle = [routineGender, routineFrequency]
+        .filter(Boolean)
+        .join(" • ");
+      if (subtitle) {
+        doc.setFontSize(sizes.label);
+        doc.setTextColor(...textSecondary);
+        doc.setFont("helvetica", "normal");
+        doc.text(subtitle, margin, yPos);
+        yPos += sizes.label + sectionGap * 0.4;
+      } else {
+        yPos += sectionGap * 0.4;
+      }
+
+      doc.setFontSize(sizes.title);
+      doc.setTextColor(...accent);
+      doc.setFont("helvetica", "bold");
       doc.text(day.name || `Día ${day.dayNumber || dayIndex + 1}`, margin, yPos);
-      yPos += 14;
+      yPos += sizes.title * 0.6 + spacing.rowGap;
 
-      // Subtítulo "Entrenamiento Principal"
-      doc.setFontSize(12);
-      doc.setTextColor(...textWhite);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Entrenamiento Principal', margin, yPos);
-      yPos += sectionGap;
+      doc.setFontSize(sizes.body);
+      doc.setTextColor(...textPrimary);
+      doc.setFont("helvetica", "bold");
+      doc.text("Entrenamiento principal", margin, yPos);
+      yPos += sectionGap * 0.6;
 
-      // Tipo de día
-      if (day.type === 'DESCANSO') {
+      if (day.type === "DESCANSO") {
         const restCardHeight = 28;
-        doc.setFillColor(...cardBg);
-        doc.setDrawColor(...orangeBorder);
-        doc.setLineWidth(cardBorderWidth);
-        doc.roundedRect(margin, yPos, pageWidth - 2 * margin, restCardHeight, cardRadius, cardRadius, 'FD');
-        doc.setFontSize(11);
-        doc.setTextColor(...textGray);
-        doc.setFont('helvetica', 'italic');
-        doc.text('Día de descanso activo', margin + pagePadding, yPos + 16);
+        drawRoundedCard(doc, {
+          x: margin,
+          y: yPos,
+          width: pageWidth - 2 * margin,
+          height: restCardHeight,
+          radius: cardRadius,
+          fill: surface,
+          border: accentStrong,
+          borderWidth: cardBorderWidth,
+        });
+        doc.setFontSize(sizes.bodySmall);
+        doc.setTextColor(...textSecondary);
+        doc.setFont("helvetica", "italic");
+        doc.text("Día de descanso activo", margin + pagePadding, yPos + 16);
         yPos += restCardHeight + cardGap;
         return;
       }
 
-      // EJERCICIOS - FORMATO EXACTO DE LA IMAGEN
       const exercises = day.exercises || [];
 
-      exercises.forEach((exercise, exIndex) => {
-        // Calcular altura de la tarjeta DINÁMICAMENTE
-        const hasNotes = exercise.notes || exercise.note;
-        const baseCardHeight = 40;
-        
-        let extraHeight = 0;
-        if (hasNotes) {
-          const noteText = exercise.notes || exercise.note;
-          const noteLines = doc.splitTextToSize(noteText, pageWidth - 2 * margin - pagePadding * 2);
-          extraHeight = noteLines.length * 4 + 8;
-        }
-        
-        const cardHeight = baseCardHeight + extraHeight;
+      exercises.forEach((exercise) => {
+        const normalized = {
+          name: exercise.name || exercise.nombre || exercise.ejercicio || "Ejercicio",
+          series: resolveValue(exercise, ["series", "sets"]),
+          reps: resolveValue(exercise, ["reps"]),
+          rest: resolveValue(exercise, ["descanso", "rest"]),
+          duration: resolveValue(exercise, ["duracion", "duration"]),
+          cadence: resolveValue(exercise, ["cadencia", "tempo"]),
+          rir: resolveValue(exercise, ["rir", "rpe"]),
+          notes: resolveNotes(exercise),
+          video: resolveVideo(exercise),
+        };
 
-        // Verificar espacio
-        if (yPos > pageHeight - cardHeight - 8) {
+        const hasNotes = normalized.notes.exists;
+        const hasVideo = normalized.video.url;
+        const nameLines = doc.splitTextToSize(
+          normalized.name,
+          pageWidth - 2 * margin - pagePadding * 2,
+        );
+        const noteLines = hasNotes
+          ? doc.splitTextToSize(
+              normalized.notes.value,
+              pageWidth - 2 * margin - pagePadding * 2,
+            )
+          : [];
+
+        const baseCardHeight = 42 + nameLines.length * (sizes.bodySmall * 0.6);
+        const notesHeight = hasNotes
+          ? noteLines.length * (sizes.bodySmall * 0.6) + 6
+          : 0;
+        const videoHeight = hasVideo ? 10 : 0;
+        const cardHeight = baseCardHeight + notesHeight + videoHeight;
+
+        if (yPos > pageHeight - cardHeight - margin) {
           doc.addPage();
-          doc.setFillColor(...bgDark);
-          doc.rect(0, 0, pageWidth, pageHeight, 'F');
-          yPos = 20;
+          doc.setFillColor(...background);
+          doc.rect(0, 0, pageWidth, pageHeight, "F");
+          yPos = margin;
         }
 
-        // TARJETA DEL EJERCICIO - PREMIUM STYLE
-        doc.setFillColor(...cardBg);
-        doc.setDrawColor(...orangeBorder);
-        doc.setLineWidth(cardBorderWidth);
-        doc.roundedRect(margin, yPos, pageWidth - 2 * margin, cardHeight, cardRadius, cardRadius, 'FD');
+        drawRoundedCard(doc, {
+          x: margin,
+          y: yPos,
+          width: pageWidth - 2 * margin,
+          height: cardHeight,
+          radius: cardRadius,
+          fill: surface,
+          border: accentStrong,
+          borderWidth: cardBorderWidth,
+        });
 
-        let cardYPos = yPos + 13;
+        let cardYPos = yPos + pagePadding;
 
-        // NOMBRE DEL EJERCICIO - JERARQUÍA DOMINANTE
-        doc.setFontSize(14);
-        doc.setTextColor(...textWhite);
-        doc.setFont('helvetica', 'bold');
-        
-        const exerciseNameLines = doc.splitTextToSize(exercise.name, pageWidth - 2 * margin - pagePadding * 2);
-        doc.text(exerciseNameLines, margin + pagePadding, cardYPos);
-        
-        // Ajustar posición si el nombre ocupa más de una línea
-        if (exerciseNameLines.length > 1) {
-          cardYPos += (exerciseNameLines.length - 1) * 6;
-        }
-        cardYPos += 12;
+        doc.setFontSize(sizes.body);
+        doc.setTextColor(...textPrimary);
+        doc.setFont("helvetica", "bold");
+        doc.text(nameLines, margin + pagePadding, cardYPos + sizes.body);
+        cardYPos += nameLines.length * (sizes.bodySmall * 0.9) + 10;
 
-        // DETALLES EN 2 FILAS - PREMIUM LAYOUT
-        // Reorganizar para que TODAS las columnas entren sin solapamiento
-        
+        const detailFields = [
+          { label: "Series", value: normalized.series.value },
+          { label: "Reps", value: normalized.reps.value },
+          { label: "Desc", value: normalized.rest.value },
+          { label: "Dur", value: normalized.duration.value },
+          { label: "Cad", value: normalized.cadence.value },
+          { label: "RIR", value: normalized.rir.value },
+        ];
+
+        const columnsPerRow = 3;
         const detailsX = margin + pagePadding;
         const detailsWidth = pageWidth - 2 * margin - pagePadding * 2;
-        const columnsPerRow = 3;
         const detailSpacing = detailsWidth / columnsPerRow;
 
-        // Recopilar detalles
-        const details = [];
-        if (exercise.sets) details.push({ label: 'Series', value: exercise.sets });
-        if (exercise.reps) details.push({ label: 'Reps', value: exercise.reps });
-        if (exercise.rest) details.push({ label: 'Desc.', value: exercise.rest });
-        if (exercise.tempo) details.push({ label: 'Cadencia', value: exercise.tempo });
-        if (exercise.rir !== undefined && exercise.rir !== null) details.push({ label: 'RIR', value: exercise.rir });
-
-        // Dividir en 2 filas si hay más de 3 columnas
-        const firstRow = details.slice(0, 3);
-        const secondRow = details.slice(3);
-
-        // PRIMERA FILA
-        doc.setFontSize(8);
-        doc.setTextColor(...textGray);
-        doc.setFont('helvetica', 'normal');
-        firstRow.forEach((detail, idx) => {
-          const x = detailsX + (idx * detailSpacing);
-          doc.text(detail.label, x, cardYPos);
-        });
-
-        cardYPos += 5;
-
-        doc.setFontSize(11);
-        doc.setTextColor(...textWhite);
-        doc.setFont('helvetica', 'bold');
-        firstRow.forEach((detail, idx) => {
-          const x = detailsX + (idx * detailSpacing);
-          doc.text(`${detail.value}`, x, cardYPos);
-        });
-
-        cardYPos += 9;
-
-        // SEGUNDA FILA (si existe)
-        if (secondRow.length > 0) {
-          doc.setFontSize(8);
-          doc.setTextColor(...textGray);
-          doc.setFont('helvetica', 'normal');
-          secondRow.forEach((detail, idx) => {
-            const x = detailsX + (idx * detailSpacing);
+        const renderDetailRow = (rowFields) => {
+          doc.setFontSize(sizes.label);
+          doc.setTextColor(...textSecondary);
+          doc.setFont("helvetica", "normal");
+          rowFields.forEach((detail, idx) => {
+            const x = detailsX + idx * detailSpacing;
             doc.text(detail.label, x, cardYPos);
           });
 
-          cardYPos += 5;
+          cardYPos += sizes.label + 2;
 
-          doc.setFontSize(11);
-          doc.setTextColor(...textWhite);
-          doc.setFont('helvetica', 'bold');
-          secondRow.forEach((detail, idx) => {
-            const x = detailsX + (idx * detailSpacing);
-            doc.text(`${detail.value}`, x, cardYPos);
+          doc.setFontSize(sizes.bodySmall);
+          doc.setTextColor(...textPrimary);
+          doc.setFont("helvetica", "bold");
+          rowFields.forEach((detail, idx) => {
+            const x = detailsX + idx * detailSpacing;
+            doc.text(detail.value, x, cardYPos);
           });
 
-          cardYPos += 9;
-        } else {
-          cardYPos += 6;
-        }
+          cardYPos += sizes.bodySmall + 6;
+        };
 
-        // NOTAS - SEPARACIÓN CLARA
+        const rows = chunkArray(detailFields, columnsPerRow);
+        rows.forEach(renderDetailRow);
+
         if (hasNotes) {
-          doc.setFontSize(8);
-          doc.setFont('helvetica', 'normal');
-          doc.setTextColor(...textGray);
-          const noteText = exercise.notes || exercise.note;
-          const noteLines = doc.splitTextToSize(noteText, pageWidth - 2 * margin - pagePadding * 2);
+          doc.setFontSize(sizes.label);
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(...textSecondary);
           doc.text(noteLines, margin + pagePadding, cardYPos);
-          cardYPos += noteLines.length * 4 + 6;
+          cardYPos += noteLines.length * (sizes.bodySmall * 0.6) + 4;
         }
 
-        // Video link (si existe) - ESTILO PREMIUM
-        if (exercise.video || exercise.videoUrl) {
-          doc.setFontSize(8);
-          doc.setFont('helvetica', 'normal');
-          doc.setTextColor(...neonGreen);
-          
-          const videoText = '🎥 Ver técnica';
-          doc.text(videoText, margin + pagePadding, cardYPos);
-          
-          // Link clickeable
-          const videoUrl = exercise.video || exercise.videoUrl;
-          doc.link(margin + pagePadding, cardYPos - 3, 44, 5, { url: videoUrl });
-          cardYPos += 6;
+        if (hasVideo) {
+          const buttonText = "Ver video";
+          doc.setFontSize(sizes.label);
+          doc.setFont("helvetica", "bold");
+          doc.setTextColor(...accent);
+          const buttonWidth = doc.getTextWidth(buttonText) + 14;
+          const buttonHeight = sizes.label + 6;
+          drawRoundedCard(doc, {
+            x: margin + pagePadding,
+            y: cardYPos - 2,
+            width: buttonWidth,
+            height: buttonHeight,
+            radius: 6,
+            fill: background,
+            border: accentStrong,
+            borderWidth: 0.6,
+          });
+          doc.text(buttonText, margin + pagePadding + 6, cardYPos + sizes.label / 2);
+          doc.link(margin + pagePadding, cardYPos - 2, buttonWidth, buttonHeight, {
+            url: normalized.video.url,
+          });
+          cardYPos += buttonHeight + 2;
         }
 
         yPos += cardHeight + cardGap;
@@ -386,70 +636,66 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
   // ============================================
 
   doc.addPage();
-  
-  // Fondo oscuro
-  doc.setFillColor(...bgDark);
-  doc.rect(0, 0, pageWidth, pageHeight, 'F');
-  
-  yPos = 26;
 
-  doc.setFontSize(18);
-  doc.setTextColor(...neonGreen);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Consejos Importantes', margin, yPos);
-  yPos += 15;
+  doc.setFillColor(...background);
+  doc.rect(0, 0, pageWidth, pageHeight, "F");
 
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(...textWhite);
+  yPos = margin + sectionGap;
+
+  doc.setFontSize(sizes.sectionTitle);
+  doc.setTextColor(...accent);
+  doc.setFont("helvetica", "bold");
+  doc.text("Consejos Importantes", margin, yPos);
+  yPos += sizes.sectionTitle + 8;
+
+  doc.setFontSize(sizes.bodySmall);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(...textPrimary);
 
   const tips = [
-    '📊 Registra tus cargas y progresiones semanalmente',
-    '💧 Mantén una hidratación adecuada durante el entrenamiento',
-    '🍽️ Asegura un consumo proteico adecuado para la recuperación',
-    '😴 Prioriza 7-9 horas de sueño de calidad',
-    '🧘 Incluye trabajo de movilidad y estiramiento regular',
-    '⚠️ Si sientes dolor, consulta con un profesional',
-    '📈 El progreso requiere consistencia y paciencia',
+    "Registra tus cargas y progresiones semanalmente",
+    "Mantén una hidratación adecuada durante el entrenamiento",
+    "Asegura un consumo proteico adecuado para la recuperación",
+    "Prioriza 7-9 horas de sueño de calidad",
+    "Incluye trabajo de movilidad y estiramiento regular",
+    "Si sientes dolor, consulta con un profesional",
+    "El progreso requiere consistencia y paciencia",
   ];
 
-  tips.forEach(tip => {
-    const tipLines = doc.splitTextToSize(tip, pageWidth - 2 * margin);
+  tips.forEach((tip) => {
+    const tipLines = doc.splitTextToSize(`• ${tip}`, pageWidth - 2 * margin);
     doc.text(tipLines, margin, yPos);
-    yPos += tipLines.length * 6 + 4;
+    yPos += tipLines.length * (sizes.bodySmall + 2) + 2;
   });
 
-  yPos += 10;
+  yPos += spacing.rowGap;
 
-  // NUEVO: Información de compra (si existe)
   if (purchaseInfo.userName || purchaseInfo.purchaseDate) {
-    doc.setFontSize(9);
-    doc.setTextColor(...textGray);
-    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(sizes.label);
+    doc.setTextColor(...textSecondary);
+    doc.setFont("helvetica", "normal");
 
     if (purchaseInfo.userName) {
-      doc.text(`👤 Cliente: ${purchaseInfo.userName}`, margin, yPos);
-      yPos += 6;
+      doc.text(`Cliente: ${purchaseInfo.userName}`, margin, yPos);
+      yPos += sizes.label + 4;
     }
 
     if (purchaseInfo.purchaseDate) {
-      const date = new Date(purchaseInfo.purchaseDate).toLocaleDateString('es-AR');
-      doc.text(`📅 Fecha de compra: ${date}`, margin, yPos);
-      yPos += 6;
+      const date = new Date(purchaseInfo.purchaseDate).toLocaleDateString("es-AR");
+      doc.text(`Fecha de compra: ${date}`, margin, yPos);
+      yPos += sizes.label + 4;
     }
 
-    yPos += 6;
+    yPos += sizes.label + 4;
   }
 
-  // Footer
   yPos = pageHeight - 12;
-  doc.setFontSize(7);
-  doc.setTextColor(...textTertiary);
-  doc.setFont('helvetica', 'italic');
-  doc.text('Generado por Grind-Lab', margin, yPos);
+  doc.setFontSize(sizes.micro);
+  doc.setTextColor(...textSecondary);
+  doc.setFont("helvetica", "italic");
+  doc.text("Generado por Grind-Lab", margin, yPos);
 
-  // Generar el PDF como blob
-  const pdfBlob = doc.output('blob');
+  const pdfBlob = doc.output("blob");
   return pdfBlob;
 };
 
@@ -461,11 +707,11 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
 export const downloadRoutinePDFMobile = (routine, purchaseInfo = {}) => {
   const pdfBlob = generateRoutinePDFMobile(routine, purchaseInfo);
 
-  const fileName = `${(routine.name || routine.title || 'rutina').replace(/\s+/g, '_')}_mobile.pdf`;
+  const fileName = `${(routine.name || routine.title || "rutina").replace(/\s+/g, "_")}_mobile.pdf`;
 
   // Crear link de descarga
   const url = URL.createObjectURL(pdfBlob);
-  const a = document.createElement('a');
+  const a = document.createElement("a");
   a.href = url;
   a.download = fileName;
   document.body.appendChild(a);

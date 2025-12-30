@@ -1,3 +1,5 @@
+import { imageToBase64 } from "./imageUtils.js";
+
 const toArray = (value) => {
   if (!value) return [];
   if (Array.isArray(value)) return value.filter(Boolean).map(String);
@@ -33,15 +35,18 @@ const normalizeExercise = (exercise, blockTitle) => {
     .concat(progresion ? [`Progresión: ${progresion}`] : [])
     .filter(Boolean);
 
+  const formatValue = (value) =>
+    value === 0 || value ? String(value) : "";
+
   return {
     name:
       exercise?.ejercicio || exercise?.title || exercise?.name || exercise?.nombre || "Ejercicio",
-    series: series ? String(series) : "",
-    reps: reps ? String(reps) : "",
-    descanso: descanso ? String(descanso) : "",
-    duracion: duracion ? String(duracion) : "",
-    rir: (rir === 0 || rir) ? String(rir) : "",
-    tempo: (tempo === 0 || tempo) ? String(tempo) : "",
+    series: formatValue(series),
+    reps: formatValue(reps),
+    descanso: formatValue(descanso),
+    duracion: formatValue(duracion),
+    rir: formatValue(rir),
+    tempo: formatValue(tempo),
     videoUrl:
       exercise?.videoUrl || exercise?.youtubeLink || exercise?.video || "",
     notes: baseNotes,
@@ -175,6 +180,18 @@ export const normalizePlanData = async (planData) => {
     ? tagsRaw 
     : String(tagsRaw).split(",").map((tag) => tag.trim()).filter(Boolean);
 
+  const imageSource =
+    metadata?.image ||
+    metadata?.imagen ||
+    metadata?.cover ||
+    metadata?.portada ||
+    planData?.image ||
+    planData?.imagen ||
+    planData?.cover ||
+    planData?.portada ||
+    "";
+  const coverImage = imageSource ? await imageToBase64(imageSource) : "";
+
   return {
     // Keep existing fields for backward compatibility
     title:
@@ -193,14 +210,28 @@ export const normalizePlanData = async (planData) => {
     objective: metadata?.objective || metadata?.objetivo || metadata?.foco || "",
 
     // Add new metadata fields for enhanced PDF
-    image: "",  // No images in PDF
+    image: coverImage || imageSource,
     description: metadata?.description || metadata?.descripcion || "",
     level: metadata?.level || metadata?.nivel || "",
     author: metadata?.author || metadata?.coach || metadata?.trainer || metadata?.autor || "",
     durationWeeks: metadata?.durationWeeks || metadata?.semanas || metadata?.duracion || "",
+    gender:
+      metadata?.gender ||
+      metadata?.genero ||
+      metadata?.genre ||
+      planData?.gender ||
+      planData?.genero ||
+      planData?.genre ||
+      "",
     equipment: metadata?.equipment || metadata?.equipamiento || "",
     tags: tagsArray,
     notes: metadata?.notes || metadata?.notas || "",
+    price:
+      metadata?.price ||
+      metadata?.precio ||
+      planData?.price ||
+      planData?.precio ||
+      "",
 
     weeks,
     progress: normalizeProgress(progressSource),

@@ -603,13 +603,18 @@ export const useRoutineEditor = ({
       planName: plan.metadata.name,
       objective: plan.metadata.objective,
       duration: plan.metadata.durationWeeks,
+      durationWeeks: plan.metadata.durationWeeks,
       frequency: plan.metadata.frequency
         ? `${plan.metadata.frequency} días/semana`
         : "",
       author: plan.metadata.author,
+      gender: plan.metadata.gender,
       notes: plan.metadata.notes,
       description: plan.metadata.description,
       level: plan.metadata.level,
+      tags: plan.metadata.tags,
+      image: plan.metadata.image,
+      price: plan.metadata.price,
       weeks: plan.weeks.map((week, index) => ({
         title: week.title || `Semana ${index + 1}`,
         summary: week.summary,

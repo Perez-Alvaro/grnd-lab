@@ -1,4 +1,4 @@
-import { View, Text, Link } from "@react-pdf/renderer";
+import { View, Text, Link, Image } from "@react-pdf/renderer";
 import { INDEX_ANCHOR, weekLinkTarget } from "../utils/pdfAnchors.js";
 import { TRAINING_GOAL_LABELS } from "../../constants/objectives.js";
 
@@ -37,11 +37,35 @@ const CoverPage = ({ plan, styles }) => {
     : plan.duration || "—";
 
   // Format frequency
-  const frequencyText = plan.frequency ? `${plan.frequency}x/semana` : "—";
+  const frequencyValue = plan.frequency ? String(plan.frequency) : "";
+  const frequencyText = frequencyValue
+    ? frequencyValue.includes("semana")
+      ? frequencyValue
+      : `${frequencyValue}x/semana`
+    : "—";
+
+  const metadataItems = [
+    { label: "OBJETIVO", value: objectiveLabel },
+    { label: "NIVEL", value: plan.level },
+    { label: "GÉNERO", value: plan.gender || plan.genre },
+    { label: "DURACIÓN", value: durationText !== "—" ? durationText : "" },
+    { label: "FRECUENCIA", value: frequencyText !== "—" ? frequencyText : "" },
+    { label: "EQUIPO", value: plan.equipment },
+    { label: "COACH", value: plan.author || plan.user },
+    { label: "PRECIO", value: plan.price },
+  ].filter((item) => item.value);
+
+  const metadataRows = metadataItems.reduce((rows, item, index) => {
+    const rowIndex = Math.floor(index / 3);
+    if (!rows[rowIndex]) rows[rowIndex] = [];
+    rows[rowIndex].push(item);
+    return rows;
+  }, []);
 
   return (
     <View style={styles.coverWrapper} id={INDEX_ANCHOR}>
       <View style={styles.coverHeader}>
+        {plan.image ? <Image src={plan.image} style={styles.coverImage} /> : null}
         {/* Header Section */}
         <View style={styles.headerSection}>
           <Text style={styles.planTitle}>{plan.title}</Text>
@@ -52,29 +76,9 @@ const CoverPage = ({ plan, styles }) => {
 
         {/* Metadata Section */}
         <View style={styles.metadataSection}>
-          {/* First row: Objetivo, Nivel, Género */}
-          {(objectiveLabel || plan.level || plan.gender || plan.genre) && (
-            <MetadataRow
-              items={[
-                { label: "OBJETIVO", value: objectiveLabel },
-                { label: "NIVEL", value: plan.level },
-                { label: "GÉNERO", value: plan.gender || plan.genre },
-              ]}
-              styles={styles}
-            />
-          )}
-
-          {/* Second row: Duration, Frequency, Coach */}
-          {(durationText !== "—" || frequencyText !== "—" || plan.author || plan.user) && (
-            <MetadataRow
-              items={[
-                { label: "DURACIÓN", value: durationText },
-                { label: "FRECUENCIA", value: frequencyText },
-                { label: "COACH", value: plan.author || plan.user },
-              ]}
-              styles={styles}
-            />
-          )}
+          {metadataRows.map((row, idx) => (
+            <MetadataRow key={`metadata-row-${idx}`} items={row} styles={styles} />
+          ))}
         </View>
 
         {/* Tags */}

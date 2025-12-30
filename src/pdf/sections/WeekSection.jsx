@@ -18,6 +18,19 @@ const DayNotes = ({ notes, styles }) => {
 
 const ExerciseTable = ({ exercises, styles }) => {
   if (!exercises || !exercises.length) return null;
+
+  const formatValue = (value) =>
+    value === 0 || value ? String(value) : "—";
+
+  const formatNotes = (value) => {
+    if (!value) return "—";
+    if (Array.isArray(value)) {
+      const filtered = value.filter(Boolean);
+      return filtered.length ? filtered.join(" • ") : "—";
+    }
+    return String(value);
+  };
+
   return (
     <View style={styles.table}>
       <View style={[styles.tableRow, styles.tableHeaderRow]}>
@@ -25,22 +38,27 @@ const ExerciseTable = ({ exercises, styles }) => {
         <Text style={[styles.tableCell, styles.seriesCol]}>Series</Text>
         <Text style={[styles.tableCell, styles.repsCol]}>Reps</Text>
         <Text style={[styles.tableCell, styles.restCol]}>Desc</Text>
+        <Text style={[styles.tableCell, styles.durationCol]}>Dur</Text>
         <Text style={[styles.tableCell, styles.rirCol]}>RIR</Text>
         <Text style={[styles.tableCell, styles.tempoCol]}>Cadencia</Text>
+        <Text style={[styles.tableCell, styles.notesCol]}>Notas</Text>
         <Text style={[styles.tableCell, styles.videoCol]}>Video</Text>
       </View>
       {exercises.map((exercise, idx) => {
         const name = exercise.name || "—";
         const setsValue = exercise.series ?? exercise.sets;
-        const sets = setsValue === 0 || setsValue ? setsValue : "–";
+        const sets = formatValue(setsValue);
         const repsValue = exercise.reps;
-        const reps = repsValue === 0 || repsValue ? repsValue : "–";
+        const reps = formatValue(repsValue);
         const restValue = exercise.rest ?? exercise.descanso;
-        const rest = restValue === 0 || restValue ? restValue : "–";
-        const rir = exercise.rir === 0 || exercise.rir ? exercise.rir : "–";
+        const rest = formatValue(restValue);
+        const durationValue = exercise.duracion ?? exercise.duration ?? exercise.tiempo;
+        const duration = formatValue(durationValue);
+        const rir = formatValue(exercise.rir);
         const tempoValue = exercise.tempo ?? exercise.cadencia;
-        const tempo = tempoValue === 0 || tempoValue ? tempoValue : "–";
+        const tempo = formatValue(tempoValue);
         const videoUrl = exercise.video || exercise.videoUrl;
+        const notes = formatNotes(exercise.notes);
 
         return (
           <View
@@ -54,17 +72,24 @@ const ExerciseTable = ({ exercises, styles }) => {
             <Text style={[styles.tableCell, styles.seriesCol]}>{sets}</Text>
             <Text style={[styles.tableCell, styles.repsCol]}>{reps}</Text>
             <Text style={[styles.tableCell, styles.restCol]}>{rest}</Text>
+            <Text style={[styles.tableCell, styles.durationCol]}>{duration}</Text>
             <Text style={[styles.tableCell, styles.rirCol]}>{rir}</Text>
             <Text style={[styles.tableCell, styles.tempoCol]}>{tempo}</Text>
+            <Text style={[styles.tableCell, styles.notesCol]}>{notes}</Text>
             {videoUrl ? (
               <Link
                 src={videoUrl}
-                style={[styles.tableCell, styles.videoCol, styles.videoLink]}
+                style={[
+                  styles.tableCell,
+                  styles.videoCol,
+                  styles.videoLink,
+                  styles.videoButton,
+                ]}
               >
-                Ver
+                Ver video
               </Link>
             ) : (
-              <Text style={[styles.tableCell, styles.videoCol]}>-</Text>
+              <Text style={[styles.tableCell, styles.videoCol]}>—</Text>
             )}
           </View>
         );
