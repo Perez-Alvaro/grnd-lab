@@ -641,7 +641,7 @@ export default function Home() {
                             <Button
                                 size="lg"
                                 variant="outline"
-                                onClick={() => window.open('https://github.com/Perez-Alvaro/grind-lab', '_blank')}
+                                onClick={() => window.open('https://github.com/Perez-Alvaro/grnd-lab/blob/main/README.md', '_blank')}
                                 className="text-base px-8"
                             >
                                 <Terminal className="mr-2 h-5 w-5" />
