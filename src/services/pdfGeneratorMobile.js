@@ -1,5 +1,4 @@
 import jsPDF from 'jspdf';
-import { isBlockStart } from '../utils/blockDetector.js';
 
 /**
  * Genera un PDF de una rutina de entrenamiento en formato MOBILE (A4 vertical)
@@ -18,15 +17,23 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
   let yPos = margin;
   const pagePadding = 10;
   const cardRadius = 6;
-  const cardBorderWidth = 0.6;
-  const cardGap = 8;
-  const sectionGap = 14;
+  const cardGap = 10;
+  const sectionGap = 16;
+  const dayHeaderGap = 18;
+  const exerciseGap = 12;
+  const exerciseTopPadding = 4;
+  const exerciseBottomPadding = 6;
+  const exerciseNameSpacing = 8;
+  const metricsLabelOffset = 4;
+  const metricsRowGap = 8;
+  const noteSpacing = 6;
 
   // Colores del sistema visual (impresión)
   const textPrimary = [28, 28, 28]; // #1C1C1C
   const textSecondary = [110, 110, 110]; // #6E6E6E
   const accent = [46, 74, 95]; // #2E4A5F
   const divider = [224, 224, 224]; // #E0E0E0
+  const dividerWidth = 0.6;
 
   // ============================================
   // PORTADA CON ÍNDICE DE SEMANAS CLICKEABLE
@@ -111,7 +118,7 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
 
     // Tarjeta de semana
     doc.setDrawColor(...divider);
-    doc.setLineWidth(cardBorderWidth);
+    doc.setLineWidth(dividerWidth);
     doc.roundedRect(margin, yPos, pageWidth - 2 * margin, cardHeight, cardRadius, cardRadius, 'S');
 
     // Título de semana
@@ -185,7 +192,7 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
       doc.setFont('helvetica', 'normal');
       const subtitle = `${routine.gender || routine.genre || 'Fuerza'} y potencia • ${routine.frequency || 6} días/semana`;
       doc.text(subtitle, margin, yPos);
-      yPos += sectionGap;
+      yPos += dayHeaderGap;
 
       // TÍTULO DEL DÍA
       doc.setFontSize(16);
@@ -203,61 +210,63 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
 
       // Tipo de día
       if (day.type === 'DESCANSO') {
-        const restCardHeight = 26;
-        doc.setDrawColor(...divider);
-        doc.setLineWidth(cardBorderWidth);
-        doc.roundedRect(margin, yPos, pageWidth - 2 * margin, restCardHeight, cardRadius, cardRadius, 'S');
         doc.setFontSize(10);
         doc.setTextColor(...textSecondary);
         doc.setFont('helvetica', 'italic');
-        doc.text('Día de descanso activo', margin + pagePadding, yPos + 16);
-        yPos += restCardHeight + cardGap;
+        doc.text('Día de descanso activo', margin, yPos);
+        yPos += cardGap;
         return;
       }
 
       // EJERCICIOS
       const exercises = day.exercises || [];
 
-      exercises.forEach((exercise, exIndex) => {
-        // Calcular altura de la tarjeta DINÁMICAMENTE
+      exercises.forEach((exercise) => {
         const hasNotes = exercise.notes || exercise.note;
-        const baseCardHeight = 38;
+        const hasVideo = exercise.video || exercise.videoUrl;
+        const exerciseNameLines = doc.splitTextToSize(
+          exercise.name,
+          pageWidth - 2 * margin - pagePadding * 2,
+        );
+        const nameHeight = exerciseNameLines.length * 6;
+        const metricsRowHeight = 9;
+        const metricsSectionHeight = metricsRowHeight * 2 + metricsRowGap;
+        const noteLines = hasNotes
+          ? doc.splitTextToSize(
+            exercise.notes || exercise.note,
+            pageWidth - 2 * margin - pagePadding * 2,
+          )
+          : [];
+        const noteHeight = noteLines.length * 4;
+        const videoHeight = hasVideo ? 6 : 0;
 
-        let extraHeight = 0;
-        if (hasNotes) {
-          const noteText = exercise.notes || exercise.note;
-          const noteLines = doc.splitTextToSize(noteText, pageWidth - 2 * margin - pagePadding * 2);
-          extraHeight = noteLines.length * 4 + 8;
-        }
+        const blockHeight =
+          exerciseTopPadding +
+          nameHeight +
+          exerciseNameSpacing +
+          metricsSectionHeight +
+          (hasNotes ? noteSpacing + noteHeight : 0) +
+          (hasVideo ? noteSpacing + videoHeight : 0) +
+          exerciseBottomPadding;
 
-        const cardHeight = baseCardHeight + extraHeight;
-
-        // Verificar espacio
-        if (yPos > pageHeight - cardHeight - 8) {
+        if (yPos > pageHeight - blockHeight - 12) {
           doc.addPage();
           yPos = 20;
         }
 
-        // TARJETA DEL EJERCICIO
-        doc.setDrawColor(...divider);
-        doc.setLineWidth(cardBorderWidth);
-        doc.roundedRect(margin, yPos, pageWidth - 2 * margin, cardHeight, cardRadius, cardRadius, 'S');
-
-        let cardYPos = yPos + 12;
+        let cardYPos = yPos + exerciseTopPadding;
 
         // NOMBRE DEL EJERCICIO
         doc.setFontSize(13);
         doc.setTextColor(...textPrimary);
         doc.setFont('helvetica', 'bold');
-
-        const exerciseNameLines = doc.splitTextToSize(exercise.name, pageWidth - 2 * margin - pagePadding * 2);
         doc.text(exerciseNameLines, margin + pagePadding, cardYPos);
 
         // Ajustar posición si el nombre ocupa más de una línea
         if (exerciseNameLines.length > 1) {
           cardYPos += (exerciseNameLines.length - 1) * 6;
         }
-        cardYPos += 10;
+        cardYPos += exerciseNameSpacing;
 
         // DETALLES EN 2 FILAS
         const detailsX = margin + pagePadding;
@@ -265,63 +274,69 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
         const columnsPerRow = 3;
         const detailSpacing = detailsWidth / columnsPerRow;
 
-        // Recopilar detalles
-        const details = [];
-        if (exercise.sets) details.push({ label: 'Series', value: exercise.sets });
-        if (exercise.reps) details.push({ label: 'Reps', value: exercise.reps });
-        if (exercise.rest) details.push({ label: 'Desc.', value: exercise.rest });
-        if (exercise.tempo) details.push({ label: 'Cadencia', value: exercise.tempo });
-        if (exercise.rir !== undefined && exercise.rir !== null) details.push({ label: 'RIR', value: exercise.rir });
+        const formatValue = value => ((value === 0 || value) ? `${value}` : '');
+        const firstRow = [
+          { label: 'Series', value: formatValue(exercise.sets) },
+          { label: 'Reps', value: formatValue(exercise.reps) },
+          { label: 'Desc.', value: formatValue(exercise.rest) },
+        ];
+        const secondRow = [
+          { label: 'Cadencia', value: formatValue(exercise.tempo) },
+          { label: 'RIR', value: formatValue(exercise.rir) },
+          { label: '', value: '' },
+        ];
 
-        // Dividir en 2 filas si hay más de 3 columnas
-        const firstRow = details.slice(0, 3);
-        const secondRow = details.slice(3);
-
-        // PRIMERA FILA
+        // PRIMERA FILA (labels)
         doc.setFontSize(10);
         doc.setTextColor(...textSecondary);
         doc.setFont('helvetica', 'normal');
         firstRow.forEach((detail, idx) => {
-          const x = detailsX + (idx * detailSpacing);
-          doc.text(detail.label, x, cardYPos);
+          const x = detailsX + (idx * detailSpacing) + detailSpacing / 2;
+          if (detail.label) {
+            doc.text(detail.label, x, cardYPos, { align: 'center' });
+          }
         });
 
-        cardYPos += 5;
+        cardYPos += metricsLabelOffset;
 
+        // PRIMERA FILA (values)
         doc.setFontSize(11);
         doc.setTextColor(...textPrimary);
         doc.setFont('helvetica', 'bold');
         firstRow.forEach((detail, idx) => {
-          const x = detailsX + (idx * detailSpacing);
-          doc.text(`${detail.value}`, x, cardYPos);
+          const x = detailsX + (idx * detailSpacing) + detailSpacing / 2;
+          if (detail.value) {
+            doc.text(detail.value, x, cardYPos, { align: 'center' });
+          }
         });
 
-        cardYPos += 8;
+        cardYPos += metricsRowGap;
 
-        // SEGUNDA FILA (si existe)
-        if (secondRow.length > 0) {
-          doc.setFontSize(10);
-          doc.setTextColor(...textSecondary);
-          doc.setFont('helvetica', 'normal');
-          secondRow.forEach((detail, idx) => {
-            const x = detailsX + (idx * detailSpacing);
-            doc.text(detail.label, x, cardYPos);
-          });
+        // SEGUNDA FILA (labels)
+        doc.setFontSize(10);
+        doc.setTextColor(...textSecondary);
+        doc.setFont('helvetica', 'normal');
+        secondRow.forEach((detail, idx) => {
+          const x = detailsX + (idx * detailSpacing) + detailSpacing / 2;
+          if (detail.label) {
+            doc.text(detail.label, x, cardYPos, { align: 'center' });
+          }
+        });
 
-          cardYPos += 5;
+        cardYPos += metricsLabelOffset;
 
-          doc.setFontSize(11);
-          doc.setTextColor(...textPrimary);
-          doc.setFont('helvetica', 'bold');
-          secondRow.forEach((detail, idx) => {
-            const x = detailsX + (idx * detailSpacing);
-            doc.text(`${detail.value}`, x, cardYPos);
-          });
+        // SEGUNDA FILA (values)
+        doc.setFontSize(11);
+        doc.setTextColor(...textPrimary);
+        doc.setFont('helvetica', 'bold');
+        secondRow.forEach((detail, idx) => {
+          const x = detailsX + (idx * detailSpacing) + detailSpacing / 2;
+          if (detail.value) {
+            doc.text(detail.value, x, cardYPos, { align: 'center' });
+          }
+        });
 
-          cardYPos += 8;
-        } else {
-          cardYPos += 6;
-        }
+        cardYPos += metricsRowGap;
 
         // NOTAS
         if (hasNotes) {
@@ -329,13 +344,12 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
           doc.setFont('helvetica', 'normal');
           doc.setTextColor(...textSecondary);
           const noteText = exercise.notes || exercise.note;
-          const noteLines = doc.splitTextToSize(noteText, pageWidth - 2 * margin - pagePadding * 2);
           doc.text(noteLines, margin + pagePadding, cardYPos);
-          cardYPos += noteLines.length * 4 + 6;
+          cardYPos += noteHeight + noteSpacing;
         }
 
         // Video link (si existe)
-        if (exercise.video || exercise.videoUrl) {
+        if (hasVideo) {
           doc.setFontSize(9);
           doc.setFont('helvetica', 'normal');
           doc.setTextColor(...accent);
@@ -346,10 +360,14 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
           // Link clickeable
           const videoUrl = exercise.video || exercise.videoUrl;
           doc.link(margin + pagePadding, cardYPos - 3, 44, 5, { url: videoUrl });
-          cardYPos += 6;
+          cardYPos += videoHeight;
         }
 
-        yPos += cardHeight + cardGap;
+        doc.setDrawColor(...divider);
+        doc.setLineWidth(dividerWidth);
+        doc.line(margin, yPos + blockHeight, pageWidth - margin, yPos + blockHeight);
+
+        yPos += blockHeight + exerciseGap;
       });
     });
   });
