@@ -1,29 +1,29 @@
 import { StyleSheet } from "@react-pdf/renderer";
-import { themeColors } from "@/styles/theme.js";
 
 export const palette = {
-  background: themeColors.surfaceAlt,
-  card: themeColors.surface,
-  neutral: "#787878",
-  accent: "#7c3aed", // Púrpura vibrante (estilo Grind-Lab)
-  secondary: "#6366f1", // Púrpura azulado para acentos secundarios
-  text: themeColors.text,
+  background: "#FFFFFF",
+  card: "#FFFFFF",
+  neutral: "#6E6E6E",
+  accent: "#2E4A5F",
+  divider: "#E0E0E0",
+  text: "#1C1C1C",
 };
 
 export const spacing = {
-  pagePadding: 40, // ✨ 36 → 40 (más margen)
-  sectionGap: 28, // ✨ 24 → 28 (más respiro entre secciones)
-  dayGap: 18, // ✨ 16 → 18 (más separación entre días)
-  indexCardPadding: 18, // ✨ 16 → 18 (más padding en cards)
-  tableCellPadding: 10, // ✨ 8 → 10 (celdas más espaciosas)
+  pagePadding: 36,
+  sectionGap: 26,
+  dayGap: 16,
+  indexCardPadding: 16,
+  tableCellPadding: 8,
 };
 
 export const typography = {
-  base: 11, // ✨ 12 → 11 (tabla más legible sin ser muy grande)
-  small: 9, // ✨ 10 → 9 (metadata)
-  medium: 13, // ✨ 14 → 13 (ajustado)
-  large: 18, // ✨ 20 → 18 (títulos de semana)
-  xlarge: 24, // ✨ 28 → 24 (título principal)
+  base: 11,
+  small: 10,
+  medium: 15,
+  large: 19,
+  xlarge: 26,
+  tableHeader: 12,
 };
 
 export const createBaseStyles = () =>
@@ -45,39 +45,38 @@ export const createBaseStyles = () =>
     },
     planTitle: {
       fontSize: typography.xlarge,
-      fontWeight: 700,
+      fontWeight: 600,
       color: palette.text,
       textAlign: "center",
-      letterSpacing: 0.5,
-      marginBottom: 8,
+      letterSpacing: 0.2,
+      marginBottom: 10,
     },
     headerSection: {
-      marginBottom: 20,
+      marginBottom: 18,
     },
     divider: {
       width: "100%",
       height: 1,
-      backgroundColor: palette.accent,
-      marginVertical: 16,
+      backgroundColor: palette.divider,
+      marginVertical: 12,
     },
     notesDivider: {
       width: "100%",
       height: 1,
-      backgroundColor: palette.accent,
+      backgroundColor: palette.divider,
       marginTop: 6,
       marginBottom: 10,
-      opacity: 0.3,
     },
     introSection: {
       marginBottom: 24,
     },
     introTitle: {
       fontSize: typography.large,
-      fontWeight: 700,
+      fontWeight: 600,
       color: palette.accent,
       textAlign: "center",
-      letterSpacing: 2,
-      marginBottom: 12,
+      letterSpacing: 1,
+      marginBottom: 10,
     },
     introText: {
       fontSize: typography.base,
@@ -86,11 +85,10 @@ export const createBaseStyles = () =>
       textAlign: "justify",
     },
     planDescription: {
-      fontSize: typography.base,
+      fontSize: typography.medium,
       color: palette.neutral,
-      lineHeight: 1.6,
+      lineHeight: 1.5,
       textAlign: "center",
-      fontStyle: "italic",
     },
     metadataSection: {
       marginBottom: 12,
@@ -103,19 +101,20 @@ export const createBaseStyles = () =>
       flexWrap: "wrap",
     },
     metadataCard: {
-      backgroundColor: "rgba(32,32,32,0.95)",
-      borderRadius: 8,
+      backgroundColor: palette.card,
+      borderRadius: 6,
       borderWidth: 1,
-      borderColor: "rgba(124, 58, 237, 0.15)", // Usando palette.accent
-      padding: 12,
+      borderColor: palette.divider,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
       minWidth: 100,
       alignItems: "center",
     },
     metadataCardLabel: {
-      fontSize: typography.small - 1,
-      color: palette.accent,
+      fontSize: typography.small,
+      color: palette.neutral,
       textTransform: "uppercase",
-      letterSpacing: 1,
+      letterSpacing: 0.8,
       marginBottom: 4,
       fontWeight: 600,
     },
@@ -126,16 +125,15 @@ export const createBaseStyles = () =>
       fontWeight: 500,
     },
     tag: {
-      fontSize: typography.small - 1,
+      fontSize: typography.small,
       color: palette.accent,
-      backgroundColor: "rgba(124, 58, 237, 0.08)",
       borderRadius: 6,
       borderWidth: 1,
-      borderColor: "rgba(124, 58, 237, 0.2)",
+      borderColor: palette.divider,
       paddingVertical: 4,
       paddingHorizontal: 10,
       fontWeight: 500,
-      letterSpacing: 0.3,
+      letterSpacing: 0.2,
     },
     tagsContainer: {
       flexDirection: "row",
@@ -150,18 +148,17 @@ export const createBaseStyles = () =>
     notesSection: {
       marginTop: 18,
       marginBottom: 20,
-      padding: 14,
-      backgroundColor: "rgba(124, 58, 237, 0.05)",
+      padding: 12,
       borderRadius: 8,
       borderWidth: 1,
-      borderColor: "rgba(124, 58, 237, 0.25)",
+      borderColor: palette.divider,
     },
     notesTitle: {
       fontSize: typography.small,
       color: palette.accent,
       fontWeight: 700,
       textTransform: "uppercase",
-      letterSpacing: 1.2,
+      letterSpacing: 0.9,
     },
     notesText: {
       fontSize: typography.base,
@@ -172,7 +169,7 @@ export const createBaseStyles = () =>
       fontSize: typography.small,
       color: palette.neutral,
       textTransform: "uppercase",
-      letterSpacing: 1,
+      letterSpacing: 0.6,
     },
     metadataValue: {
       fontSize: typography.medium,
@@ -183,9 +180,9 @@ export const createBaseStyles = () =>
       marginTop: spacing.sectionGap,
     },
     indexHeader: {
-      marginBottom: 16,
-      borderBottomWidth: 2,
-      borderBottomColor: palette.accent,
+      marginBottom: 14,
+      borderBottomWidth: 1,
+      borderBottomColor: palette.divider,
       paddingBottom: 8,
     },
     indexTitle: {
@@ -193,13 +190,13 @@ export const createBaseStyles = () =>
       fontWeight: 700,
       color: palette.text,
       textTransform: "uppercase",
-      letterSpacing: 1,
+      letterSpacing: 0.8,
     },
     indexSubtitle: {
       fontSize: typography.small,
       color: palette.neutral,
       marginTop: 4,
-      letterSpacing: 0.5,
+      letterSpacing: 0.4,
     },
     indexGrid: {
       flexDirection: "row",
@@ -209,9 +206,9 @@ export const createBaseStyles = () =>
     indexCard: {
       width: "47%",
       backgroundColor: palette.card,
-      borderRadius: 16,
+      borderRadius: 10,
       borderWidth: 1,
-      borderColor: "rgba(120,120,120,0.2)",
+      borderColor: palette.divider,
       padding: spacing.indexCardPadding,
       marginBottom: 12,
       textDecoration: "none",
@@ -221,7 +218,7 @@ export const createBaseStyles = () =>
       fontWeight: 700,
       color: palette.accent,
       marginBottom: 6,
-      letterSpacing: 0.8,
+      letterSpacing: 0.4,
     },
     indexCardDescription: {
       fontSize: typography.base,
@@ -237,7 +234,7 @@ export const createBaseStyles = () =>
     weekTitle: {
       fontSize: typography.large,
       fontWeight: 700,
-      color: palette.secondary,
+      color: palette.accent,
     },
     weekSubtitle: {
       fontSize: typography.base,
@@ -253,9 +250,9 @@ export const createBaseStyles = () =>
     },
     dayContainer: {
       backgroundColor: palette.card,
-      borderRadius: 16,
+      borderRadius: 10,
       borderWidth: 1,
-      borderColor: "rgba(120,120,120,0.2)",
+      borderColor: palette.divider,
       padding: spacing.indexCardPadding,
       marginBottom: spacing.dayGap,
       pageBreakInside: "avoid",
@@ -265,11 +262,11 @@ export const createBaseStyles = () =>
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      marginBottom: 12,
+      marginBottom: 10,
     },
     dayName: {
       fontSize: typography.medium,
-      fontWeight: 600,
+      fontWeight: 700,
       color: palette.text,
     },
     dayType: {
@@ -279,18 +276,15 @@ export const createBaseStyles = () =>
       paddingHorizontal: 10,
       borderRadius: 9999,
       textTransform: "uppercase",
+      borderWidth: 1,
     },
     dayTypeTraining: {
-      backgroundColor: "rgba(124, 58, 237, 0.15)",
       color: palette.accent,
-      borderWidth: 1,
-      borderColor: "rgba(124, 58, 237, 0.35)",
+      borderColor: palette.accent,
     },
     dayTypeRest: {
-      backgroundColor: "rgba(120,120,120,0.15)",
       color: palette.neutral,
-      borderWidth: 1,
-      borderColor: "rgba(120,120,120,0.35)",
+      borderColor: palette.divider,
     },
     restMessage: {
       fontSize: typography.base,
@@ -299,25 +293,30 @@ export const createBaseStyles = () =>
     },
     table: {
       marginTop: 8,
-      borderRadius: 12,
+      borderRadius: 8,
       overflow: "hidden",
       borderWidth: 1,
-      borderColor: "rgba(120,120,120,0.25)",
+      borderColor: palette.divider,
     },
     tableRow: {
       flexDirection: "row",
       borderBottomWidth: 1,
-      borderBottomColor: "rgba(120,120,120,0.2)",
+      borderBottomColor: palette.divider,
     },
     tableHeaderRow: {
-      backgroundColor: "rgba(45,45,45,0.75)",
+      backgroundColor: palette.card,
     },
     tableCell: {
       flexGrow: 1,
       paddingVertical: spacing.tableCellPadding,
       paddingHorizontal: spacing.tableCellPadding,
-      fontSize: typography.small,
+      fontSize: typography.base,
       color: palette.text,
+    },
+    tableHeaderCell: {
+      fontSize: typography.tableHeader,
+      fontWeight: 700,
+      color: palette.accent,
     },
     exerciseCol: {
       flexBasis: "32%",
@@ -364,7 +363,7 @@ export const createBaseStyles = () =>
       fontWeight: 600,
     },
     tableRowAlternate: {
-      backgroundColor: "rgba(32,32,32,0.8)",
+      backgroundColor: palette.card,
     },
     notesList: {
       marginTop: 12,
@@ -373,7 +372,7 @@ export const createBaseStyles = () =>
       fontSize: typography.small,
       color: palette.neutral,
       marginBottom: 4,
-      lineHeight: 1.4,
+      lineHeight: 1.5,
     },
     noteBullet: {
       marginRight: 6,
@@ -386,14 +385,14 @@ export const createBaseStyles = () =>
     progressTitle: {
       fontSize: typography.large,
       fontWeight: 700,
-      color: palette.secondary,
+      color: palette.accent,
       marginBottom: 16,
     },
     progressSection: {
       backgroundColor: palette.card,
-      borderRadius: 16,
+      borderRadius: 10,
       borderWidth: 1,
-      borderColor: "rgba(120,120,120,0.2)",
+      borderColor: palette.divider,
       padding: spacing.indexCardPadding,
       marginBottom: spacing.dayGap,
     },
@@ -415,19 +414,18 @@ export const createBaseStyles = () =>
     },
     metricCard: {
       width: "48%",
-      backgroundColor: "rgba(45,45,45,0.75)",
-      borderRadius: 12,
-      padding: 12,
+      borderRadius: 8,
+      padding: 10,
       marginBottom: 12,
       marginRight: 12,
       borderWidth: 1,
-      borderColor: "rgba(120,120,120,0.2)",
+      borderColor: palette.divider,
     },
     metricLabel: {
       fontSize: typography.small,
       color: palette.neutral,
       textTransform: "uppercase",
-      letterSpacing: 0.5,
+      letterSpacing: 0.4,
     },
     metricValue: {
       fontSize: typography.medium,
