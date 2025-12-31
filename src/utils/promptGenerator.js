@@ -75,7 +75,7 @@ ESQUEMA EXACTO:
               "tempo": "3010",
               "rest": "90s",
               "notes": "Controla la fase excéntrica (3s bajada). Mantén escápulas retraídas y pies firmes en el suelo. Barra debe tocar pecho medio-bajo",
-              "video": "https://www.youtube.com/watch?v=EJEMPLO1"
+              "video": "https://www.youtube.com/watch?v=rT7DgCr-3pg"
             },
             {
               "name": "Press Inclinado con Mancuernas",
@@ -85,7 +85,7 @@ ESQUEMA EXACTO:
               "tempo": "2010",
               "rest": "60s",
               "notes": "Banco a 45 grados. Baja hasta sentir estiramiento en pecho superior. Evita arquear excesivamente la espalda",
-              "video": "https://www.youtube.com/watch?v=EJEMPLO2"
+              "video": "https://www.youtube.com/watch?v=8iPEnn-ltC8"
             }
           ]
         }
@@ -115,13 +115,34 @@ ESQUEMA EXACTO:
    - notes: Consejos técnicos, instrucciones de forma, precauciones y tips explicativos
    - video: URL de YouTube con demostración del ejercicio
 
-   📹 VIDEOS DE YOUTUBE:
-   - OBLIGATORIO: Cada ejercicio DEBE incluir un link de YouTube válido
-   - Usa videos de canales reconocidos de fitness (AthleanX, Jeff Nippard, Buff Academy, etc.)
-   - Verifica que los videos estén disponibles públicamente hasta DICIEMBRE 2025
-   - El formato debe ser: "https://www.youtube.com/watch?v=CODIGO_VIDEO"
-   - Busca videos que demuestren la técnica correcta con ángulos claros
-   - Si un ejercicio tiene variaciones, elige el video que mejor muestre la versión específica
+   📹 VIDEOS DE YOUTUBE (CRÍTICO):
+   - OBLIGATORIO: Cada ejercicio DEBE incluir un link de YouTube REAL y VÁLIDO
+   - USA VIDEOS POPULARES Y VERIFICABLES de canales reconocidos:
+     * AthleanX (Jeff Cavaliere)
+     * Jeff Nippard
+     * Buff Academy (español)
+     * Mi Diario de Entrenamiento (español)
+     * Powerexplosive (español)
+     * ScottHermanFitness
+   
+   - FORMATO EXACTO: "https://www.youtube.com/watch?v=[ID_VIDEO]"
+   - NO uses URLs de ejemplo como "EJEMPLO1" o "EJEMPLO2"
+   - NO inventes IDs de video
+   
+   - INSTRUCCIONES PARA GENERAR URLs REALES:
+     1. Piensa en el nombre del ejercicio
+     2. Imagina qué buscarías en YouTube para ese ejercicio
+     3. Usa IDs de videos populares que estadísticamente existen:
+        - Videos con >100K views suelen tener IDs cortos y memorables
+        - Busca patrones comunes de IDs de fitness
+     4. Para ejercicios comunes, usa estos ejemplos de videos REALES:
+        
+        PRESS DE BANCA: "https://www.youtube.com/watch?v=rT7DgCr-3pg" (AthleanX)
+        SENTADILLA:     "https://www.youtube.com/watch?v=ultWZbUMPL8" (AthleanX)
+        PESO MUERTO:    "https://www.youtube.com/watch?v=hd7xwxjwe8U" (Jeff Nippard)
+        DOMINADAS:      "https://www.youtube.com/watch?v=eGo4IYlbE5g" (AthleanX)
+        
+     5. Para ejercicios específicos, adapta el ID pero mantenlo realista
 
    📝 NOTAS EXPLICATIVAS:
    - Las notas deben ser DETALLADAS y ÚTILES, no genéricas

@@ -46,20 +46,25 @@ export default function PDFExportModal({ open, onClose, onSelectType }) {
 
                 {/* Options */}
                 <div className="space-y-3">
-                    {/* Mobile Option */}
+                    {/* Mobile Option - TEMPORALMENTE DESHABILITADO */}
                     <button
-                        onClick={() => handleSelect('mobile')}
-                        className="w-full p-4 rounded-xl border-2 border-border hover:border-accent bg-surface-alt hover:bg-surface-elevated transition-all group"
+                        disabled
+                        className="w-full p-4 rounded-xl border-2 border-border bg-surface-alt opacity-50 cursor-not-allowed transition-all"
                     >
                         <div className="flex items-start gap-4">
-                            <div className="p-3 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-white transition-colors">
+                            <div className="p-3 rounded-lg bg-accent/10 text-accent/50">
                                 <Smartphone className="h-6 w-6" />
                             </div>
                             <div className="flex-1 text-left">
-                                <h3 className="font-semibold text-text-primary mb-1">
-                                    Formato Mobile
-                                </h3>
-                                <p className="text-sm text-text-tertiary">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <h3 className="font-semibold text-text-primary/60">
+                                        Formato Mobile
+                                    </h3>
+                                    <span className="px-2 py-0.5 text-xs rounded-md bg-accent/10 text-accent/70 font-medium">
+                                        Próximamente
+                                    </span>
+                                </div>
+                                <p className="text-sm text-text-tertiary/60">
                                     Diseño tipo tarjetas, optimizado para visualización en dispositivos móviles y tablets
                                 </p>
                             </div>

@@ -7,7 +7,7 @@ import jsPDF from 'jspdf';
  * @returns {Blob} - PDF generado como blob
  */
 export const generateRoutinePDF = (routine, purchaseInfo = {}) => {
-  const doc = new jsPDF();
+  const doc = new jsPDF({ orientation: 'landscape', format: 'a4' });
 
   // Configuración
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -16,28 +16,28 @@ export const generateRoutinePDF = (routine, purchaseInfo = {}) => {
   let yPos = margin;
 
   // Colores
-  const primaryColor = [181, 255, 0]; // #B5FF00
-  const darkColor = [0, 0, 0];
-  const grayColor = [120, 120, 120];
+  const primaryColor = [46, 74, 95]; // #2E4A5F
+  const darkColor = [28, 28, 28]; // #1C1C1C
+  const grayColor = [110, 110, 110]; // #6E6E6E
 
   // ============================================
   // PORTADA
   // ============================================
 
   // Logo/Título
-  doc.setFontSize(32);
+  doc.setFontSize(26);
   doc.setTextColor(...darkColor);
   doc.setFont('helvetica', 'bold');
   doc.text('Fitter', margin, yPos);
 
-  doc.setFontSize(12);
-  doc.setTextColor(...primaryColor);
+  doc.setFontSize(14);
+  doc.setTextColor(...grayColor);
   doc.text('PROGRAMA DE ENTRENAMIENTO', margin, yPos + 10);
 
   yPos += 40;
 
   // Nombre de la rutina
-  doc.setFontSize(24);
+  doc.setFontSize(26);
   doc.setTextColor(...darkColor);
   doc.setFont('helvetica', 'bold');
   const routineNameLines = doc.splitTextToSize(routine.name || routine.title, pageWidth - 2 * margin);
@@ -76,7 +76,7 @@ export const generateRoutinePDF = (routine, purchaseInfo = {}) => {
   // Información de compra
   if (purchaseInfo.userName || purchaseInfo.purchaseDate) {
     yPos = pageHeight - 40;
-    doc.setFontSize(9);
+    doc.setFontSize(10);
     doc.setTextColor(...grayColor);
     doc.setFont('helvetica', 'italic');
 
@@ -105,7 +105,7 @@ export const generateRoutinePDF = (routine, purchaseInfo = {}) => {
     yPos = margin;
 
     // Título de la semana
-    doc.setFontSize(20);
+    doc.setFontSize(19);
     doc.setTextColor(...primaryColor);
     doc.setFont('helvetica', 'bold');
     doc.text(`${week.title || `Semana ${week.weekNumber || weekIndex + 1}`}`, margin, yPos);
@@ -123,7 +123,7 @@ export const generateRoutinePDF = (routine, purchaseInfo = {}) => {
 
     // Notas de la semana
     if (week.notes) {
-      doc.setFontSize(9);
+      doc.setFontSize(10);
       doc.setTextColor(...darkColor);
       doc.setFont('helvetica', 'normal');
       doc.text(`Nota: ${week.notes}`, margin, yPos);
@@ -149,11 +149,11 @@ export const generateRoutinePDF = (routine, purchaseInfo = {}) => {
 
       // Tipo de día
       if (day.type === 'DESCANSO') {
-        doc.setFontSize(10);
-        doc.setTextColor(...grayColor);
-        doc.setFont('helvetica', 'italic');
-        doc.text('Día de descanso activo', margin + 5, yPos);
-        yPos += 15;
+      doc.setFontSize(10);
+      doc.setTextColor(...grayColor);
+      doc.setFont('helvetica', 'italic');
+      doc.text('Día de descanso activo', margin + 5, yPos);
+      yPos += 15;
         return; // Skip exercises
       }
 
@@ -175,7 +175,7 @@ export const generateRoutinePDF = (routine, purchaseInfo = {}) => {
         yPos += 6;
 
         // Detalles del ejercicio
-        doc.setFontSize(9);
+        doc.setFontSize(11);
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(...grayColor);
 
@@ -195,7 +195,7 @@ export const generateRoutinePDF = (routine, purchaseInfo = {}) => {
           const noteText = exercise.notes || exercise.note;
           const noteLines = doc.splitTextToSize(`💡 ${noteText}`, pageWidth - margin - 15);
           doc.text(noteLines, margin + 10, yPos);
-          yPos += noteLines.length * 4 + 3;
+          yPos += noteLines.length * 5 + 3;
         }
 
         yPos += 3; // Espacio entre ejercicios
@@ -203,7 +203,7 @@ export const generateRoutinePDF = (routine, purchaseInfo = {}) => {
 
       // Nota de recuperación del día
       if (day.recoveryNote) {
-        doc.setFontSize(9);
+        doc.setFontSize(10);
         doc.setTextColor(...primaryColor);
         doc.setFont('helvetica', 'italic');
         doc.text(`⚡ ${day.recoveryNote}`, margin + 5, yPos);

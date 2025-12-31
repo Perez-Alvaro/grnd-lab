@@ -21,13 +21,39 @@ const ExerciseTable = ({ exercises, styles }) => {
   return (
     <View style={styles.table}>
       <View style={[styles.tableRow, styles.tableHeaderRow]}>
-        <Text style={[styles.tableCell, styles.exerciseCol]}>Ejercicio</Text>
-        <Text style={[styles.tableCell, styles.seriesCol]}>Series</Text>
-        <Text style={[styles.tableCell, styles.repsCol]}>Reps</Text>
-        <Text style={[styles.tableCell, styles.restCol]}>Desc</Text>
-        <Text style={[styles.tableCell, styles.rirCol]}>RIR</Text>
-        <Text style={[styles.tableCell, styles.tempoCol]}>Cadencia</Text>
-        <Text style={[styles.tableCell, styles.videoCol]}>Video</Text>
+        <Text
+          style={[styles.tableCell, styles.tableHeaderCell, styles.exerciseCol]}
+        >
+          Ejercicio
+        </Text>
+        <Text
+          style={[styles.tableCell, styles.tableHeaderCell, styles.seriesCol]}
+        >
+          Series
+        </Text>
+        <Text
+          style={[styles.tableCell, styles.tableHeaderCell, styles.repsCol]}
+        >
+          Reps
+        </Text>
+        <Text
+          style={[styles.tableCell, styles.tableHeaderCell, styles.restCol]}
+        >
+          Desc
+        </Text>
+        <Text style={[styles.tableCell, styles.tableHeaderCell, styles.rirCol]}>
+          RIR
+        </Text>
+        <Text
+          style={[styles.tableCell, styles.tableHeaderCell, styles.tempoCol]}
+        >
+          Cadencia
+        </Text>
+        <Text
+          style={[styles.tableCell, styles.tableHeaderCell, styles.videoCol]}
+        >
+          Video
+        </Text>
       </View>
       {exercises.map((exercise, idx) => {
         const name = exercise.name || "—";

@@ -1,7 +1,15 @@
 import { memo, useCallback } from "react";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Info } from "lucide-react";
 import { usePlanContext } from "../../../context/PlanContext.jsx";
 import { TRAINING_GOALS } from "../../../constants/objectives.js";
+
+// Componente Helper Text reutilizable
+const HelperText = ({ children }) => (
+  <div className="mt-1.5 flex items-start gap-2 text-xs text-gray-400">
+    <Info className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-accent/70" />
+    <p className="leading-relaxed">{children}</p>
+  </div>
+);
 
 const PlanMetadataForm = memo(() => {
   const { metadata, updateMetadata } = usePlanContext();
@@ -52,9 +60,12 @@ const PlanMetadataForm = memo(() => {
             type="text"
             value={metadata.name}
             onChange={handleChange("name")}
-            placeholder="Ej. Masculino Volumen FST-7 4x/semana"
+            placeholder='Ej: "Masculino Volumen FST-7 · 4 días por semana"'
             className={`${inputClasses} max-w-[600px]`}
           />
+          <HelperText>
+            Es el nombre con el que el cliente reconocerá este plan. Debe describir claramente el <strong>objetivo</strong>, el <strong>estilo de entrenamiento</strong> y la <strong>frecuencia</strong>. Este nombre se usa como identidad principal del plan en el sistema.
+          </HelperText>
         </div>
 
         <div className="flex flex-col gap-2">
@@ -64,9 +75,12 @@ const PlanMetadataForm = memo(() => {
             rows={3}
             value={metadata.description}
             onChange={handleChange("description")}
-            placeholder="Resumen clave que verá el cliente al explorar la rutina"
+            placeholder='Ej: "Plan enfocado en ganar masa muscular combinando fuerza y técnicas FST-7, ideal para intermedios y avanzados"'
             className={`${inputClasses} min-h-[100px] resize-none`}
           />
+          <HelperText>
+            Breve resumen del plan que verá el cliente antes de comprar o iniciar. Explicá <strong>qué va a lograr</strong> y <strong>cómo se entrena</strong>. Esta descripción se utiliza para contextualizar el enfoque general en el Prompt Maestro.
+          </HelperText>
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -82,6 +96,9 @@ const PlanMetadataForm = memo(() => {
               <option value="Masculino">Masculino</option>
               <option value="Femenino">Femenino</option>
             </select>
+            <HelperText>
+              Define el enfoque general del plan según <strong>características fisiológicas</strong> y preferencias de entrenamiento. Ajusta la selección de ejercicios, volumen y enfoque metabólico.
+            </HelperText>
           </div>
           <div className="flex flex-col gap-2">
             <label className={labelClasses}>Frecuencia (días/semana)</label>
@@ -98,6 +115,9 @@ const PlanMetadataForm = memo(() => {
                 </option>
               ))}
             </select>
+            <HelperText>
+              Cantidad de días que el cliente entrenará por semana. Define cómo se reparten los grupos musculares: <strong>3 días</strong> → Full body o torso/pierna · <strong>5 días</strong> → División por grupos musculares.
+            </HelperText>
           </div>
           <div className="flex flex-col gap-2">
             <label className={labelClasses}>Objetivo</label>
@@ -114,6 +134,9 @@ const PlanMetadataForm = memo(() => {
                 </option>
               ))}
             </select>
+            <HelperText>
+              Objetivo principal del plan. Es uno de los pilares del algoritmo de generación: define <strong>tipo de estímulo</strong>, <strong>volumen</strong>, <strong>descansos</strong> y <strong>progresión</strong>.
+            </HelperText>
           </div>
         </div>
 
@@ -133,6 +156,9 @@ const PlanMetadataForm = memo(() => {
                 </option>
               ))}
             </select>
+            <HelperText>
+              Cantidad total de semanas que dura el plan. Se usa para estructurar mesociclos y progresiones: <strong>4 semanas</strong> → bloque corto · <strong>8–12 semanas</strong> → mesociclo completo.
+            </HelperText>
           </div>
           <div className="flex flex-col gap-2">
             <label className={labelClasses}>Autor / Coach</label>
@@ -141,9 +167,12 @@ const PlanMetadataForm = memo(() => {
               type="text"
               value={metadata.author}
               onChange={handleChange("author")}
-              placeholder="Nombre del entrenador"
+              placeholder='Ej: "Nick Bare" o "Coach MZ"'
               className={inputClasses}
             />
+            <HelperText>
+              Nombre del entrenador o referente del plan. Aparece en la presentación al cliente y se utiliza como referencia de <strong>estilo y branding</strong> en el prompt.
+            </HelperText>
           </div>
           <div className="flex flex-col gap-2">
             <label className={labelClasses}>Nivel</label>
@@ -159,6 +188,9 @@ const PlanMetadataForm = memo(() => {
                 </option>
               ))}
             </select>
+            <HelperText>
+              Nivel del plan según la experiencia del cliente. Ajusta <strong>complejidad</strong>, <strong>volumen</strong> y <strong>selección de ejercicios</strong>: Principiante → ejercicios básicos · Avanzado → técnicas intensivas (FST-7, superseries).
+            </HelperText>
           </div>
         </div>
 
@@ -169,9 +201,12 @@ const PlanMetadataForm = memo(() => {
             type="text"
             value={metadata.tags}
             onChange={handleChange("tags")}
-            placeholder="fst-7, superseries"
+            placeholder='Ej: "hipertrofia, fuerza, funcional, fst-7, superseries"'
             className={inputClasses}
           />
+          <HelperText>
+            Palabras clave que describen el <strong>estilo del plan</strong>. Se usan para búsqueda y categorización. Podés incluir técnicas, metodologías o enfoques específicos.
+          </HelperText>
         </div>
 
         <div className="flex flex-col gap-2">
@@ -181,9 +216,12 @@ const PlanMetadataForm = memo(() => {
             rows={3}
             value={metadata.notes}
             onChange={handleChange("notes")}
-            placeholder="Rutina estilo Hany Rambod con técnicas FST-7."
+            placeholder='Ej: "Rutina estilo Hany Rambod con foco en congestión y control del tempo. Incluir variaciones unilaterales para corrección de asimetrías"'
             className={`${inputClasses} min-h-[120px] resize-none`}
           />
+          <HelperText>
+            Instrucciones especiales para el sistema o el cliente. Acá podés aclarar el <strong>estilo</strong>, <strong>técnicas específicas</strong>, <strong>recomendaciones clave</strong> o cualquier detalle que personalice la generación de la rutina.
+          </HelperText>
         </div>
       </div>
     </section>
