@@ -213,7 +213,7 @@ export default function RoutineEditorPage() {
                   </TabsList>
 
                   <TabsContent value="basic">
-                    <div className="space-y-6">
+                    <div id="metadata-form" className="space-y-6">
                       <PlanMetadataForm />
 
                       <div className="rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] p-5">

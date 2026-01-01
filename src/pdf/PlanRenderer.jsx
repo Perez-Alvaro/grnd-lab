@@ -11,10 +11,10 @@ const PlanDocument = ({ plan }) => {
 
   return (
     <Document>
-      <Page size="A4" orientation="landscape" style={styles.page} wrap>
+      <Page size="A4" orientation="portrait" style={styles.page} wrap>
         <CoverPage plan={plan} styles={styles} />
       </Page>
-      <Page size="A4" orientation="landscape" style={styles.page} wrap>
+      <Page size="A4" orientation="portrait" style={styles.page} wrap>
         {plan.weeks.map((week, index) => (
           <WeekSection
             key={week.number}
@@ -25,7 +25,7 @@ const PlanDocument = ({ plan }) => {
         ))}
       </Page>
       {plan.progress ? (
-        <Page size="A4" orientation="landscape" style={styles.page} wrap>
+        <Page size="A4" orientation="portrait" style={styles.page} wrap>
           <ProgressPage progress={plan.progress} styles={styles} />
         </Page>
       ) : null}

@@ -7,7 +7,7 @@ import jsPDF from 'jspdf';
  * @returns {Blob} - PDF generado como blob
  */
 export const generateRoutinePDF = (routine, purchaseInfo = {}) => {
-  const doc = new jsPDF({ orientation: 'landscape', format: 'a4' });
+  const doc = new jsPDF({ orientation: 'portrait', format: 'a4' });
 
   // Configuración
   const pageWidth = doc.internal.pageSize.getWidth();
