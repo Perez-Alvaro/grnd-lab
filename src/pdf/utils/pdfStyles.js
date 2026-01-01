@@ -365,6 +365,19 @@ export const createBaseStyles = () =>
     tableRowAlternate: {
       backgroundColor: palette.card,
     },
+    exerciseNotesRow: {
+      borderBottomWidth: 1,
+      borderBottomColor: palette.divider,
+    },
+    exerciseNotesCell: {
+      fontSize: typography.small,
+      color: palette.neutral,
+      fontStyle: "italic",
+      lineHeight: 1.5,
+      paddingVertical: spacing.tableCellPadding,
+      paddingHorizontal: spacing.tableCellPadding,
+      flexBasis: "100%",
+    },
     notesList: {
       marginTop: 12,
     },

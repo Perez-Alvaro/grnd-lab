@@ -21,8 +21,8 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   
-  // Márgenes y espaciados (optimizados para densidad)
-  const margin = 8;
+  // Márgenes y espaciados (aumentados para mejor respiración)
+  const margin = 12;  // Aumentado de 8mm a 12mm
   const contentWidth = pageWidth - (margin * 2);
   
   // Sistema de ritmo vertical (8px system: 8/16/24/32)
@@ -32,11 +32,11 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
   const spacing32 = 11.3; // 32px
   const spacing40 = 14;   // 40px
   
-  // Card styling
-  const cardPadding = 6;
+  // Card styling (reducidos para cards más compactas)
+  const cardPadding = 5;  // Reducido de 6mm a 5mm
   const cardRadius = 6;
-  const cardGap = 8.5; // 24px entre cards
-  const cardMinHeight = 24;
+  const cardGap = 7; // Reducido de 8.5mm a 7mm
+  const cardMinHeight = 20;  // Reducido de 24mm a 20mm
   
   // Colores del sistema (NO MODIFICAR)
   const textPrimary = [28, 28, 28];     // #1C1C1C
@@ -86,7 +86,7 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
   // TÍTULO PRINCIPAL (24-28px, bold, line-height 1.3)
   // ============================================
   
-  doc.setFontSize(28); // 28px
+  doc.setFontSize(22); // Reducido de 28px a 22px
   doc.setTextColor(...textPrimary);
   doc.setFont('helvetica', 'bold');
   
@@ -95,13 +95,13 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
   const finalTitleLines = titleLines.slice(0, 2); // Máximo 2 líneas
   
   doc.text(finalTitleLines, margin, yPos);
-  yPos += (finalTitleLines.length * 10) + spacing16; // Margin-bottom: 16px
+  yPos += (finalTitleLines.length * 8) + spacing24; // Más espaciado después del título
 
   // ============================================
   // METADATA (Agrupada, 13-14px, line-height 1.5)
   // ============================================
   
-  doc.setFontSize(14); // 14px
+  doc.setFontSize(12); // Reducido de 14px a 12px
   doc.setTextColor(...textSecondary);
   doc.setFont('helvetica', 'normal');
   
@@ -110,10 +110,10 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
   const subtitle = `${objective} • ${frequency} días por semana`;
   
   doc.text(subtitle, margin, yPos);
-  yPos += 6; // Line-height 1.5 spacing
+  yPos += 7; // Más espaciado vertical
 
   // Metadatos secundarios
-  doc.setFontSize(13); // 13px
+  doc.setFontSize(11); // Reducido de 13px a 11px
   doc.setTextColor(...textSecondary);
   
   const level = routine.level || 'Intermedio';
@@ -121,15 +121,15 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
   const metadata = `Nivel: ${level} • Duración: ${duration} semanas`;
   
   doc.text(metadata, margin, yPos);
-  yPos += 5; // Spacing dentro del bloque
+  yPos += 6; // Más espaciado
 
   // Coach (si existe)
   if (routine.author || routine.coach) {
-    doc.setFontSize(13);
+    doc.setFontSize(11); // Reducido de 13px a 11px
     doc.setTextColor(...accent);
     doc.setFont('helvetica', 'bold');
     doc.text(`Coach: ${routine.author || routine.coach}`, margin, yPos);
-    yPos += 5;
+    yPos += 6; // Más espaciado
   }
 
   // Margin-bottom del bloque metadata: 24px
@@ -141,7 +141,7 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
   // Margin-top: 32px (ya aplicado), Margin-bottom: 12px
   // ============================================
 
-  doc.setFontSize(18); // 18px
+  doc.setFontSize(16); // Reducido de 18px a 16px
   doc.setTextColor(...textPrimary);
   doc.setFont('helvetica', 'bold');
   doc.text('ÍNDICE', margin, yPos);
@@ -361,13 +361,13 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
           const hasVideo = !!(exercise.video || exercise.videoUrl);
           const hasNotes = !!(exercise.notes || exercise.note);
           
-          // Card Container Specs (Sin cambios)
-          const cardPaddingVertical = 7;    // 20px ≈ 7mm
-          const cardPaddingHorizontal = 8.5; // 24px ≈ 8.5mm
+          // Card Container Specs (Reducidos para cards más compactas)
+          const cardPaddingVertical = 5;    // Reducido de 7mm a 5mm
+          const cardPaddingHorizontal = 7; // Reducido de 8.5mm a 7mm
           const cardBorderRadius = 5.6;      // 16px ≈ 5.6mm
           
-          // Spacing Specs (Mejorados para eliminar texto pegado)
-          const titleMarginBottom = 5.6;     // 16px (respiración clara)
+          // Spacing Specs (Reducidos)
+          const titleMarginBottom = 4;     // Reducido de 5.6mm a 4mm
           const metricsGapHorizontal = 5.6;  // 16-20px gap entre métricas
           const notesMarginTop = 4.9;        // 14px antes de notas
           
@@ -378,8 +378,8 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
           // CÁLCULO DE ALTURA DE LA CARD
           // ============================================
           
-          // Título del ejercicio (14pt - AÚN MÁS REDUCIDO, bold, line-height 1.3)
-          const titleFontSize = 14; // pt (antes 16pt, original 20pt)
+          // Título del ejercicio (12pt - Reducido aún más para cards compactas)
+          const titleFontSize = 12; // pt (reducido de 14pt a 12pt)
           const nameLines = doc.splitTextToSize(
             exercise.name || 'Ejercicio sin nombre',
             availableCardWidth
@@ -387,17 +387,17 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
           const titleLineHeight = (titleFontSize * 0.35) * 1.3; // pt to mm * line-height
           const titleHeight = nameLines.length * titleLineHeight;
           
-          // Bloque de métricas (altura fija para consistencia)
-          const metricsBlockHeight = 12; // Label + Value + spacing
+          // Bloque de métricas (altura reducida)
+          const metricsBlockHeight = 10; // Reducido de 12mm a 10mm
           
-          // Nota técnica (max 1 línea, 9pt - AÚN MÁS REDUCIDO)
+          // Notas del ejercicio (ahora con separador + etiqueta + contenido multilínea)
           let notesHeight = 0;
           if (hasNotes) {
             const noteText = exercise.notes || exercise.note;
             const noteLines = doc.splitTextToSize(noteText, availableCardWidth);
-            // Solo mostrar la primera línea
-            const noteFontSize = 9; // pt (antes 11pt, original 13pt)
-            notesHeight = (noteFontSize * 0.35) * 1.4; // pt to mm * line-height
+            const noteFontSize = 10; // pt
+            const lineHeight = (noteFontSize * 0.35) * 1.4; // pt to mm * line-height
+            notesHeight = 4 + 5 + (noteLines.length * lineHeight); // Separador (4mm) + etiqueta (5mm) + contenido
           }
           
           // Altura total de la card
@@ -441,11 +441,11 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
           
           // ============================================
           // 1. TÍTULO DEL EJERCICIO (Jerarquía Principal)
-          // Font-size AÚN MÁS REDUCIDO: 14pt (mucho menos invasivo)
-          // Font-weight: 600-700, Margin-bottom: 16px
+          // Font-size REDUCIDO: 12pt (compacto)
+          // Font-weight: 600-700, Margin-bottom reducido
           // ============================================
           
-          doc.setFontSize(14); // 14pt (antes 16pt, original 20pt - menos invasivo)
+          doc.setFontSize(12); // 12pt (reducido para cards compactas)
           doc.setTextColor(...textPrimary);
           doc.setFont('helvetica', 'bold');
           doc.text(nameLines, cardContentX, cardContentY);
@@ -489,17 +489,17 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
             const metricX = cardContentX + (idx * metricWidth);
             const centerX = metricX + (metricWidth / 2);
             
-            // Label (11-12px, weight 400-500, reducir opacidad visual)
-            doc.setFontSize(12); // 12pt
-            doc.setTextColor(...textSecondary); // Opacidad visual reducida
-            doc.setFont('helvetica', 'normal'); // Weight 400
+            // Label (reducido a 10px)
+            doc.setFontSize(10); // Reducido de 12pt a 10pt
+            doc.setTextColor(...textSecondary);
+            doc.setFont('helvetica', 'normal');
             doc.text(metric.label, centerX, metricsY, { align: 'center' });
             
-            // Valor (14-16px, weight 600, alto contraste)
-            doc.setFontSize(16); // 16pt
-            doc.setTextColor(...textPrimary); // Alto contraste
-            doc.setFont('helvetica', 'bold'); // Weight 600
-            doc.text(metric.value, centerX, metricsY + 6, { align: 'center' });
+            // Valor (reducido a 13px)
+            doc.setFontSize(13); // Reducido de 16pt a 13pt
+            doc.setTextColor(...textPrimary);
+            doc.setFont('helvetica', 'bold');
+            doc.text(metric.value, centerX, metricsY + 5, { align: 'center' });
           });
           
           // ============================================
@@ -536,23 +536,37 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
           cardContentY += metricsBlockHeight;
           
           // ============================================
-          // 4. TEXTO DESCRIPTIVO / NOTA TÉCNICA
-          // Font-size: 13-14px, Weight: 400, Line-height: 1.4
-          // Max 1 línea visible, Margin-top: 12-14px
+          // 4. NOTAS DEL EJERCICIO (Fila separada)
+          // Font-size: 10px, Weight: 400, Line-height: 1.4
+          // Separador visual + etiqueta clara
           // ============================================
           
           if (hasNotes) {
             cardContentY += notesMarginTop;
             
-            doc.setFontSize(9); // 9pt (antes 11pt, original 13pt - mucho menos invasivo)
+            // Separador visual discreto
+            doc.setDrawColor(...divider);
+            doc.setLineWidth(0.3);
+            doc.line(cardContentX, cardContentY, cardContentX + availableCardWidth, cardContentY);
+            cardContentY += 4; // Espacio después del separador
+            
+            // Etiqueta "Notas:" (sin emoji para evitar problemas de encoding)
+            doc.setFontSize(10);
+            doc.setTextColor(...accent);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Notas:', cardContentX, cardContentY);
+            cardContentY += 5;
+            
+            // Contenido de la nota
+            doc.setFontSize(10);
             doc.setTextColor(...textSecondary);
-            doc.setFont('helvetica', 'normal'); // Weight 400
+            doc.setFont('helvetica', 'normal');
             
             const noteText = exercise.notes || exercise.note;
             const noteLines = doc.splitTextToSize(noteText, availableCardWidth);
             
-            // Solo mostrar primera línea (max 1 línea visible)
-            doc.text(noteLines[0], cardContentX, cardContentY);
+            // Mostrar todas las líneas (sin limitación)
+            doc.text(noteLines, cardContentX, cardContentY);
           }
           
           // Actualizar yPos para la siguiente card

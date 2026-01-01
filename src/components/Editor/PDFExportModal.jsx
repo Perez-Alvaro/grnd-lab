@@ -60,8 +60,8 @@ export default function PDFExportModal({ open, onClose, onSelectType }) {
                                     <h3 className="font-semibold text-text-primary">
                                         Formato Mobile
                                     </h3>
-                                    <span className="px-2 py-0.5 text-xs rounded-md bg-green-500/10 text-green-600 font-medium">
-                                        Nuevo
+                                    <span className="px-2 py-0.5 text-xs rounded-md bg-red-500/10 text-red-600 font-medium">
+                                        En desarrollo!
                                     </span>
                                 </div>
                                 <p className="text-sm text-text-tertiary">
@@ -84,8 +84,11 @@ export default function PDFExportModal({ open, onClose, onSelectType }) {
                                 <h3 className="font-semibold text-text-primary mb-1">
                                     Formato Desktop
                                 </h3>
+                                <span className="px-2 py-0.5 text-xs rounded-md bg-green-500/10 text-green-600 font-medium">
+                                        Recomendado
+                                    </span>
                                 <p className="text-sm text-text-tertiary">
-                                    Diseño clásico en tabla, compacto y fácil de imprimir
+                                    Diseño clásico en tabla, compacto y fácil de imprimir, con indice interactivo
                                 </p>
                             </div>
                         </div>

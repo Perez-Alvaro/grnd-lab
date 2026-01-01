@@ -71,6 +71,9 @@ const convertLegacyExercise = (exercise) => {
   const variant = Array.isArray(exercise?.variantes)
     ? exercise.variantes[0] || {}
     : {};
+  
+  const noteValue = exercise?.notes || exercise?.note || exercise?.notas || "";
+  
   return {
     id: createId(),
     name: exercise?.ejercicio || exercise?.name || "",
@@ -80,7 +83,7 @@ const convertLegacyExercise = (exercise) => {
     rir: variant.rir || exercise?.rir || "",
     tempo: variant.cadencia || exercise?.cadencia || exercise?.tempo || "",
     video: exercise?.videoUrl || exercise?.youtubeLink || exercise?.video || "",
-    note: exercise?.notes || exercise?.note || exercise?.notas || "",
+    note: noteValue,
   };
 };
 
@@ -159,6 +162,10 @@ export const buildInitialPlan = (template) => {
     };
   }
 
+  // Detectar si el JSON tiene metadata anidado o campos en raíz
+  const meta = template?.metadata || {};
+  const hasNestedMetadata = Object.keys(meta).length > 0;
+
   const weeksSource =
     Array.isArray(template?.weeks) && template.weeks.length
       ? template.weeks
@@ -177,40 +184,46 @@ export const buildInitialPlan = (template) => {
 
   const tagsString = Array.isArray(template?.tags)
     ? template.tags.join(", ")
-    : template?.tags || "";
+    : hasNestedMetadata && meta.tags
+      ? meta.tags
+      : template?.tags || "";
 
   return {
     metadata: {
-      name: template?.name || "",
-      gender: template?.gender || "",
-      objective: template?.objective || template?.objetivo || "",
-      durationWeeks: template?.duration
-        ? String(template.duration)
-        : template?.duracion
-          ? String(template.duracion)
-          : String(convertedWeeks.length || 1),
-      frequency: template?.frequency
-        ? String(template.frequency)
-        : template?.frecuencia
-          ? String(template.frecuencia).replace(/[^0-9]/g, "") ||
-            String(template.frecuencia)
-          : "",
-      level: template?.level || template?.nivel || "",
-      description:
-        template?.description ||
-        template?.descripcion ||
-        template?.summary ||
-        "",
-      notes: template?.notes || template?.notas || "",
-      author: template?.author || template?.coach || template?.autor || "",
-      tags: tagsString,
-      image: template?.image || template?.cover || template?.portada || "",
-      price:
-        template?.price != null
-          ? String(template.price)
-          : template?.precio != null
-            ? String(template.precio)
+      name: template?.name || meta?.name || "",
+      gender: hasNestedMetadata ? meta?.gender || "" : template?.gender || "",
+      objective: hasNestedMetadata ? meta?.objective || "" : template?.objective || template?.objetivo || "",
+      durationWeeks: hasNestedMetadata 
+        ? meta?.durationWeeks || String(convertedWeeks.length || 1)
+        : template?.duration
+          ? String(template.duration)
+          : template?.duracion
+            ? String(template.duracion)
+            : String(convertedWeeks.length || 1),
+      frequency: hasNestedMetadata
+        ? meta?.frequency || ""
+        : template?.frequency
+          ? String(template.frequency)
+          : template?.frecuencia
+            ? String(template.frecuencia).replace(/[^0-9]/g, "") ||
+              String(template.frecuencia)
             : "",
+      level: hasNestedMetadata ? meta?.level || "" : template?.level || template?.nivel || "",
+      description: template?.description || meta?.description || template?.descripcion || template?.summary || "",
+      notes: hasNestedMetadata ? meta?.notes || "" : template?.notes || template?.notas || "",
+      author: hasNestedMetadata ? meta?.author || "" : template?.author || template?.coach || template?.autor || "",
+      tags: tagsString,
+      image: hasNestedMetadata ? meta?.image || "" : template?.image || template?.cover || template?.portada || "",
+      price:
+        hasNestedMetadata
+          ? meta?.price != null
+            ? String(meta.price)
+            : ""
+          : template?.price != null
+            ? String(template.price)
+            : template?.precio != null
+              ? String(template.precio)
+              : "",
     },
     weeks: convertedWeeks.length ? convertedWeeks : [createEmptyWeek(1)],
   };
@@ -563,10 +576,12 @@ export const useRoutineEditor = ({
   }, [draftKey]);
 
   const loadPlan = useCallback((newPlan) => {
-    if (!newPlan || !newPlan.metadata || !newPlan.weeks) {
+    if (!newPlan) {
       throw new Error("Invalid plan structure");
     }
-    setPlan(newPlan);
+    // Convertir el plan importado usando buildInitialPlan para normalizar campos
+    const normalizedPlan = buildInitialPlan(newPlan);
+    setPlan(normalizedPlan);
     setDirty(true);
   }, []);
 
@@ -600,34 +615,48 @@ export const useRoutineEditor = ({
 
   const planForPdf = useMemo(
     () => ({
-      planName: plan.metadata.name,
+      name: plan.metadata.name,  // Para PDF Mobile
+      title: plan.metadata.name,  // Para PDF Desktop (@react-pdf)
+      planName: plan.metadata.name,  // Compatibilidad legacy
       objective: plan.metadata.objective,
       duration: plan.metadata.durationWeeks,
-      frequency: plan.metadata.frequency
-        ? `${plan.metadata.frequency} días/semana`
-        : "",
+      durationWeeks: plan.metadata.durationWeeks,  // Para PDF Mobile
+      frequency: plan.metadata.frequency,  // Valor numérico directo
+      gender: plan.metadata.gender,  // Para metadata
       author: plan.metadata.author,
+      coach: plan.metadata.author,  // Alias
       notes: plan.metadata.notes,
       description: plan.metadata.description,
       level: plan.metadata.level,
       weeks: plan.weeks.map((week, index) => ({
+        weekNumber: index + 1,  // Para PDF Mobile
+        number: index + 1,  // Para PDF Desktop
         title: week.title || `Semana ${index + 1}`,
+        name: week.title || `Semana ${index + 1}`,  // Alias
         summary: week.summary,
         notes: week.notes,
         days: week.days.map((day) => ({
           name: day.name,
           type: day.type,
           recoveryMessage: day.recoveryNote,
+          recoveryNote: day.recoveryNote,  // Alias
           notes: day.recoveryNote,
           exercises: day.exercises.map((exercise) => ({
             name: exercise.name,
+            // Campos legacy primero (lo que esperan los PDFs)
             series: exercise.sets,
-            reps: exercise.reps,
             descanso: exercise.rest,
-            rir: exercise.rir,
             cadencia: exercise.tempo,
             videoUrl: exercise.video,
+            // Aliases para compatibilidad
+            sets: exercise.sets,
+            reps: exercise.reps,
+            rest: exercise.rest,
+            rir: exercise.rir,
+            tempo: exercise.tempo,
+            video: exercise.video,
             notes: exercise.note,
+            note: exercise.note,
           })),
         })),
       })),

@@ -1,20 +1,5 @@
-import { Fragment } from "react";
 import { View, Text, Link } from "@react-pdf/renderer";
 import { indexLinkTarget, weekAnchorId } from "../utils/pdfAnchors.js";
-
-const DayNotes = ({ notes, styles }) => {
-  if (!notes || !notes.length) return null;
-  return (
-    <View style={styles.notesList}>
-      {notes.map((note, idx) => (
-        <Text key={idx} style={styles.noteItem}>
-          <Text style={styles.noteBullet}>•</Text>
-          {note}
-        </Text>
-      ))}
-    </View>
-  );
-};
 
 const ExerciseTable = ({ exercises, styles }) => {
   if (!exercises || !exercises.length) return null;
@@ -67,8 +52,9 @@ const ExerciseTable = ({ exercises, styles }) => {
         const tempoValue = exercise.tempo ?? exercise.cadencia;
         const tempo = tempoValue === 0 || tempoValue ? tempoValue : "–";
         const videoUrl = exercise.video || exercise.videoUrl;
+        const hasNotes = !!(exercise.notes || exercise.note);
 
-        return (
+        const rows = [
           <View
             key={`${name}-${idx}`}
             style={[
@@ -93,8 +79,27 @@ const ExerciseTable = ({ exercises, styles }) => {
               <Text style={[styles.tableCell, styles.videoCol]}>-</Text>
             )}
           </View>
-        );
-      })}
+        ];
+
+        if (hasNotes) {
+          rows.push(
+            <View
+              key={`${name}-${idx}-notes`}
+              style={[
+                styles.tableRow,
+                styles.exerciseNotesRow,
+                idx % 2 === 0 ? null : styles.tableRowAlternate,
+              ]}
+            >
+              <Text style={[styles.tableCell, styles.exerciseNotesCell]}>
+                Notas: {exercise.notes || exercise.note}
+              </Text>
+            </View>
+          );
+        }
+
+        return rows;
+      }).flat()}
     </View>
   );
 };
@@ -118,10 +123,7 @@ const DayBlock = ({ day, styles }) => {
       {isRestDay ? (
         <Text style={styles.restMessage}>{day.recoveryMessage}</Text>
       ) : (
-        <Fragment>
-          <ExerciseTable exercises={day.exercises} styles={styles} />
-          <DayNotes notes={day.notes} styles={styles} />
-        </Fragment>
+        <ExerciseTable exercises={day.exercises} styles={styles} />
       )}
     </View>
   );

@@ -187,15 +187,17 @@ export const generateRoutinePDF = (routine, purchaseInfo = {}) => {
         if (exercise.tempo) details.push(`Tempo: ${exercise.tempo}`);
 
         doc.text(details.join(' | '), margin + 10, yPos);
-        yPos += 5;
+        yPos += 8; // Espacio antes de las notas
 
-        // Notas del ejercicio
+        // Notas del ejercicio (fila separada debajo)
         if (exercise.notes || exercise.note) {
+          doc.setFontSize(10);
           doc.setFont('helvetica', 'italic');
+          doc.setTextColor(...grayColor);
           const noteText = exercise.notes || exercise.note;
-          const noteLines = doc.splitTextToSize(`💡 ${noteText}`, pageWidth - margin - 15);
+          const noteLines = doc.splitTextToSize(`💡 Notas: ${noteText}`, pageWidth - margin - 15);
           doc.text(noteLines, margin + 10, yPos);
-          yPos += noteLines.length * 5 + 3;
+          yPos += noteLines.length * 5 + 5;
         }
 
         yPos += 3; // Espacio entre ejercicios
