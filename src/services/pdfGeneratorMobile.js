@@ -168,51 +168,51 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
     const days = week.days || [];
     const dayCount = days.length;
     
-    // Padding Material Design: 16px vertical, 24px horizontal
-    const weekCardPaddingV = 5.6;  // 16px
-    const weekCardPaddingH = 8.5;  // 24px (Material Design)
+    // Padding reducido
+    const weekCardPaddingV = 4;  // Reducido
+    const weekCardPaddingH = 6;  // Reducido
     
-    // Altura dinámica de la card
+    // Altura dinámica de la card (reducida)
     const hasDescription = !!(week.summary || week.title);
-    const cardHeight = hasDescription ? 38 : 32;
+    const cardHeight = hasDescription ? 28 : 22;  // Reducido de 38/32 a 28/22
     
     // Verificar espacio
-    checkPageSpace(cardHeight + spacing16);
+    checkPageSpace(cardHeight + spacing8);
     
     const cardY = yPos;
     
     // Dibujar card
     drawCard(margin, cardY, contentWidth, cardHeight, false);
     
-    // Contenido centrado vertical y horizontalmente con padding Material Design
+    // Contenido centrado vertical y horizontalmente
     const cardContentWidth = contentWidth - (weekCardPaddingH * 2);
     
     // Calcular altura total del contenido para centrar verticalmente
-    const lineHeight = 6;
-    let totalContentHeight = 14 * 0.35 * 1.3; // Título
+    const lineHeight = 5;  // Reducido
+    let totalContentHeight = 12 * 0.35 * 1.3; // Título (font reducido)
     totalContentHeight += lineHeight; // Spacing después del título
     if (hasDescription) {
-      totalContentHeight += 10 * 0.35 * 1.3; // Descripción
-      totalContentHeight += 5; // Spacing
+      totalContentHeight += 9 * 0.35 * 1.3; // Descripción (font reducido)
+      totalContentHeight += 3; // Spacing reducido
     }
-    totalContentHeight += 9 * 0.35 * 1.3; // Días de entrenamiento
+    totalContentHeight += 8 * 0.35 * 1.3; // Días de entrenamiento
     
-    // Posición Y inicial centrada
-    let contentY = cardY + (cardHeight - totalContentHeight) / 2;
+    // Posición Y inicial centrada + offset para bajar más
+    let contentY = cardY + (cardHeight - totalContentHeight) / 2 + 3;  // +3 para bajar
     
     // Título de semana (centrado)
-    doc.setFontSize(14);
+    doc.setFontSize(12);  // Reducido de 14 a 12
     doc.setTextColor(...accent);
     doc.setFont('helvetica', 'bold');
     const weekTitle = `SEMANA ${weekNum}`;
     const weekTitleWidth = doc.getTextWidth(weekTitle);
-    const weekTitleX = margin + (contentWidth - weekTitleWidth) / 2; // Centrado
+    const weekTitleX = margin + (contentWidth - weekTitleWidth) / 2;
     doc.text(weekTitle, weekTitleX, contentY);
     contentY += lineHeight;
     
     // Descripción (si existe, centrada, max 1 línea)
     if (hasDescription) {
-      doc.setFontSize(10);
+      doc.setFontSize(9);  // Reducido de 10 a 9
       doc.setTextColor(...textSecondary);
       doc.setFont('helvetica', 'normal');
       
@@ -220,17 +220,17 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
       const descLines = doc.splitTextToSize(desc, cardContentWidth);
       const descText = descLines[0];
       const descWidth = doc.getTextWidth(descText);
-      const descX = margin + (contentWidth - descWidth) / 2; // Centrado
+      const descX = margin + (contentWidth - descWidth) / 2;
       doc.text(descText, descX, contentY);
-      contentY += 5;
+      contentY += 3;  // Reducido de 5 a 3
     }
     
     // Días de entrenamiento (centrado)
-    doc.setFontSize(9);
+    doc.setFontSize(8);  // Reducido de 9 a 8
     doc.setTextColor(...textSecondary);
     const daysText = `${dayCount} día${dayCount !== 1 ? 's' : ''} de entrenamiento`;
     const daysWidth = doc.getTextWidth(daysText);
-    const daysX = margin + (contentWidth - daysWidth) / 2; // Centrado
+    const daysX = margin + (contentWidth - daysWidth) / 2;
     doc.text(daysText, daysX, contentY);
     
     // Link clickeable (toda la card)
@@ -238,8 +238,8 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
       pageNumber: weekPageMap[weekNum] 
     });
     
-    // Margin-bottom: 12px entre items de semana
-    yPos += cardHeight + spacing16;
+    // Margin-bottom reducido entre items de semana
+    yPos += cardHeight + spacing8;  // Reducido de spacing16 a spacing8
   });
 
   // Texto de ayuda
@@ -268,7 +268,7 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
       // ============================================
       
       doc.addPage();
-      yPos = margin + spacing8;
+      yPos = margin + spacing16;  // Aumentado para más espacio arriba
 
       // ============================================
       // HEADER DEL DÍA (Estilo App)
@@ -279,30 +279,40 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
       doc.setTextColor(...textSecondary);
       doc.setFont('helvetica', 'normal');
       doc.text(`Semana ${weekNum}`, margin, yPos);
-      yPos += spacing8;
+      yPos += spacing8 + 2;  // Más espaciado
 
       // Nombre del plan (discreto)
       doc.setFontSize(8);
       doc.setTextColor(...textSecondary);
       const planName = (routine.name || routine.title || '').substring(0, 40);
       doc.text(planName, margin, yPos);
-      yPos += spacing16;
+      yPos += spacing16 + 2;  // Más espaciado
+
+      // Link "Volver al indice" alineado a la derecha (sin emoji)
+      doc.setFontSize(9);
+      doc.setTextColor(...accent);
+      doc.setFont('helvetica', 'normal');
+      const backText = '< Volver al indice';
+      const backTextWidth = doc.getTextWidth(backText);
+      doc.text(backText, pageWidth - margin - backTextWidth, margin + spacing8);
+      // Link clickeable para volver a la primera página
+      doc.link(pageWidth - margin - backTextWidth - 2, margin + spacing8 - 4, backTextWidth + 4, 8, { pageNumber: 1 });
 
       // Título del día (muy dominante)
-      doc.setFontSize(20);
+      doc.setFontSize(18);  // Reducido de 20 a 18
       doc.setTextColor(...textPrimary);
       doc.setFont('helvetica', 'bold');
       
       const dayTitle = day.name || `Día ${day.dayNumber || dayIndex + 1}`;
       const dayTitleLines = doc.splitTextToSize(dayTitle, contentWidth);
       doc.text(dayTitleLines, margin, yPos);
-      yPos += (dayTitleLines.length * 8) + spacing16;
+      yPos += (dayTitleLines.length * 7) + spacing24;  // Más espaciado después del título
 
       // Separación clara antes del contenido
       doc.setDrawColor(...divider);
       doc.setLineWidth(0.3);
       doc.line(margin, yPos, pageWidth - margin, yPos);
-      yPos += spacing16;
+      yPos += spacing24;  // Más espaciado después de la línea
 
       // ============================================
       // DÍA DE DESCANSO (Si aplica)
@@ -361,15 +371,15 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
           const hasVideo = !!(exercise.video || exercise.videoUrl);
           const hasNotes = !!(exercise.notes || exercise.note);
           
-          // Card Container Specs (Reducidos para cards más compactas)
-          const cardPaddingVertical = 5;    // Reducido de 7mm a 5mm
-          const cardPaddingHorizontal = 7; // Reducido de 8.5mm a 7mm
-          const cardBorderRadius = 5.6;      // 16px ≈ 5.6mm
+          // Card Container Specs (Reducidos para cards más pequeñas)
+          const cardPaddingVertical = 4;    // Reducido de 6mm a 4mm
+          const cardPaddingHorizontal = 6; // Reducido de 7mm a 6mm
+          const cardBorderRadius = 4;      // Reducido de 5.6mm a 4mm
           
-          // Spacing Specs (Reducidos)
-          const titleMarginBottom = 4;     // Reducido de 5.6mm a 4mm
-          const metricsGapHorizontal = 5.6;  // 16-20px gap entre métricas
-          const notesMarginTop = 4.9;        // 14px antes de notas
+          // Spacing Specs (reducidos)
+          const titleMarginBottom = 3;     // Reducido de 5mm a 3mm
+          const metricsGapHorizontal = 4;  // Reducido
+          const notesMarginTop = 3;        // Reducido de 4.9mm a 3mm
           
           // Calcular ancho disponible
           const availableCardWidth = contentWidth - (cardPaddingHorizontal * 2);
@@ -388,7 +398,7 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
           const titleHeight = nameLines.length * titleLineHeight;
           
           // Bloque de métricas (altura reducida)
-          const metricsBlockHeight = 10; // Reducido de 12mm a 10mm
+          const metricsBlockHeight = 9; // Reducido de 11mm a 9mm
           
           // Notas del ejercicio (ahora con separador + etiqueta + contenido multilínea)
           let notesHeight = 0;
@@ -400,15 +410,15 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
             notesHeight = 4 + 5 + (noteLines.length * lineHeight); // Separador (4mm) + etiqueta (5mm) + contenido
           }
           
-          // Altura total de la card
+          // Altura total de la card (compacta)
           const cardContentHeight = 
-            cardPaddingVertical +              // Top padding (20px)
+            cardPaddingVertical +              // Top padding
             titleHeight +                      // Título
-            titleMarginBottom +                // Espacio después título (16px)
+            titleMarginBottom +                // Espacio después título
             metricsBlockHeight +               // Bloque de métricas
-            (hasNotes ? notesMarginTop : 0) +  // Espacio antes de notas (14px)
+            (hasNotes ? notesMarginTop : 0) +  // Espacio antes de notas
             notesHeight +                      // Nota (si existe)
-            cardPaddingVertical;               // Bottom padding (20px) - Simétrico
+            cardPaddingVertical;               // Bottom padding
           
           // Verificar espacio en página
           checkPageSpace(cardContentHeight + cardGap);
@@ -436,7 +446,7 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
           // CONTENIDO DE LA CARD
           // ============================================
           
-          let cardContentY = cardY + cardPaddingVertical;
+          let cardContentY = cardY + cardPaddingVertical + 1;  // +1mm para leve offset
           const cardContentX = margin + cardPaddingHorizontal;
           
           // ============================================
@@ -445,7 +455,7 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
           // Font-weight: 600-700, Margin-bottom reducido
           // ============================================
           
-          doc.setFontSize(12); // 12pt (reducido para cards compactas)
+          doc.setFontSize(11); // Reducido de 12pt a 11pt para cards compactas
           doc.setTextColor(...textPrimary);
           doc.setFont('helvetica', 'bold');
           doc.text(nameLines, cardContentX, cardContentY);
@@ -489,17 +499,17 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
             const metricX = cardContentX + (idx * metricWidth);
             const centerX = metricX + (metricWidth / 2);
             
-            // Label (reducido a 10px)
-            doc.setFontSize(10); // Reducido de 12pt a 10pt
+            // Label (reducido)
+            doc.setFontSize(9); // Reducido de 10pt a 9pt
             doc.setTextColor(...textSecondary);
             doc.setFont('helvetica', 'normal');
             doc.text(metric.label, centerX, metricsY, { align: 'center' });
             
-            // Valor (reducido a 13px)
-            doc.setFontSize(13); // Reducido de 16pt a 13pt
+            // Valor (reducido)
+            doc.setFontSize(12); // Reducido de 13pt a 12pt
             doc.setTextColor(...textPrimary);
             doc.setFont('helvetica', 'bold');
-            doc.text(metric.value, centerX, metricsY + 5, { align: 'center' });
+            doc.text(metric.value, centerX, metricsY + 4, { align: 'center' });  // +4 en vez de +5
           });
           
           // ============================================
@@ -570,7 +580,7 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
           }
           
           // Actualizar yPos para la siguiente card
-          yPos += cardContentHeight + cardGap;
+          yPos += cardContentHeight + cardGap - 2;  // -2mm para cards más juntas
         });
       });
     });
