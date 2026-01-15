@@ -11,6 +11,7 @@ import { PlanProvider } from "../context/PlanContext.jsx";
 import useRoutineEditor from "../hooks/useRoutineEditor.js";
 import usePDFExport from "../hooks/usePDFExport.js";
 import PlanMetadataForm from "../components/Trainer/editor/PlanMetadataForm.jsx";
+import FitterOnboarding from "../components/Trainer/editor/FitterOnboarding.jsx";
 import RoutinePreview from "../components/Trainer/preview/RoutinePreview.jsx";
 import ImportModal from "../components/Editor/ImportModal.jsx";
 import ExportModal from "../components/Editor/ExportModal.jsx";
@@ -53,6 +54,7 @@ export default function RoutineEditorPage() {
   const [showExportModal, setShowExportModal] = React.useState(false);
   const [showPDFExportModal, setShowPDFExportModal] = React.useState(false);
   const [showJSONEditor, setShowJSONEditor] = useState(false);
+  const [useAIMode, setUseAIMode] = useState(true); // Default to AI mode
 
   // Inicializar el editor sin templates previos (siempre nueva rutina)
   const planEditor = useRoutineEditor({
@@ -214,22 +216,62 @@ export default function RoutineEditorPage() {
 
                   <TabsContent value="basic">
                     <div id="metadata-form" className="space-y-6">
-                      <PlanMetadataForm />
-
-                      <div className="rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] p-5">
-                        <div className="flex items-center gap-2 mb-4">
-                          <div className="h-2 w-2 rounded-full bg-accent"></div>
-                          <h3 className="text-sm font-semibold text-white">
-                            Información Importante
-                          </h3>
+                      {/* Toggle Switch between AI Mode and Advanced Form */}
+                      <div className="flex items-center justify-between p-4 bg-[#0E0E0E] border border-[#2E2E2E] rounded-xl">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-accent/70 flex items-center justify-center">
+                            <span className="text-lg">🤖</span>
+                          </div>
+                          <div>
+                            <h3 className="text-sm font-semibold text-white">
+                              {useAIMode ? "Modo Asistido con IA" : "Modo Avanzado"}
+                            </h3>
+                            <p className="text-xs text-gray-400">
+                              {useAIMode
+                                ? "Fitter te guía paso a paso"
+                                : "Formulario completo tradicional"}
+                            </p>
+                          </div>
                         </div>
-                        <p className="text-xs text-gray-400 leading-relaxed">
-                          Completá los datos básicos de la plantilla y luego generá el <strong>Prompt Maestro</strong> usando el botón "Copiar Prompt para IA". Pegalo en ChatGPT o Claude para obtener el JSON de la rutina completa.
-                        </p>
-                        <p className="text-xs text-gray-400 leading-relaxed mt-3">
-                          Si necesitás hacer ajustes manuales en la estructura de semanas, días y ejercicios, usá la pestaña <strong>"Configuración Avanzada"</strong>.
-                        </p>
+
+                        <button
+                          onClick={() => setUseAIMode(!useAIMode)}
+                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#0E0E0E] ${useAIMode ? 'bg-accent' : 'bg-gray-600'
+                            }`}
+                        >
+                          <span
+                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${useAIMode ? 'translate-x-6' : 'translate-x-1'
+                              }`}
+                          />
+                        </button>
                       </div>
+
+                      {/* Conditional Rendering: AI Mode or Traditional Form */}
+                      {useAIMode ? (
+                        <FitterOnboarding
+                          onCopyPrompt={handleCopyPrompt}
+                          onImportJSON={handleImport}
+                        />
+                      ) : (
+                        <>
+                          <PlanMetadataForm />
+
+                          <div className="rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] p-5">
+                            <div className="flex items-center gap-2 mb-4">
+                              <div className="h-2 w-2 rounded-full bg-accent"></div>
+                              <h3 className="text-sm font-semibold text-white">
+                                Información Importante
+                              </h3>
+                            </div>
+                            <p className="text-xs text-gray-400 leading-relaxed">
+                              Completá los datos básicos de la plantilla y luego generá el <strong>Prompt Maestro</strong> usando el botón "Copiar Prompt para IA". Pegalo en ChatGPT o Claude para obtener el JSON de la rutina completa.
+                            </p>
+                            <p className="text-xs text-gray-400 leading-relaxed mt-3">
+                              Si necesitás hacer ajustes manuales en la estructura de semanas, días y ejercicios, usá la pestaña <strong>"Configuración Avanzada"</strong>.
+                            </p>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </TabsContent>
 
