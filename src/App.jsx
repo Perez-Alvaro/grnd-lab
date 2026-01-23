@@ -4,6 +4,7 @@ import { ToastProvider, useToast } from "./context/ToastContext.jsx";
 import { setToastInstance } from "./utils/toast.js";
 import { SnackbarProvider } from "./components/Tutorial/Snackbar.jsx";
 import Home from "./pages/Home.jsx";
+import HomeSaaS from "./pages/HomeSaaS.jsx";
 import RoutineEditor from "./pages/RoutineEditor.jsx";
 
 function ToastInitializer() {
@@ -22,8 +23,11 @@ function AppContent() {
       <ToastInitializer />
       <main>
         <Routes>
-          {/* Home/Landing */}
+          {/* Home/Landing - Technical */}
           <Route path="/" element={<Home />} />
+
+          {/* SaaS Landing - B2B for Trainers */}
+          <Route path="/saas" element={<HomeSaaS />} />
 
           {/* Routine Editor */}
           <Route path="/editor" element={<RoutineEditor />} />
