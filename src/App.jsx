@@ -23,17 +23,17 @@ function AppContent() {
       <ToastInitializer />
       <main>
         <Routes>
-          {/* Home/Landing - Technical */}
-          <Route path="/" element={<Home />} />
+          {/* SaaS Landing - B2B for Trainers (Main Page) */}
+          <Route path="/" element={<HomeSaaS />} />
 
-          {/* SaaS Landing - B2B for Trainers */}
-          <Route path="/saas" element={<HomeSaaS />} />
+          {/* Home/Landing - Technical */}
+          <Route path="/technical" element={<Home />} />
 
           {/* Routine Editor */}
           <Route path="/editor" element={<RoutineEditor />} />
 
-          {/* Catch all - redirect to home */}
-          <Route path="*" element={<Home />} />
+          {/* Catch all - redirect to SaaS home */}
+          <Route path="*" element={<HomeSaaS />} />
         </Routes>
       </main>
     </div>

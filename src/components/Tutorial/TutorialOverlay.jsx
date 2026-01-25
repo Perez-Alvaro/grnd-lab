@@ -47,24 +47,27 @@ const TUTORIAL_STEPS = [
     },
 ];
 
-export default function TutorialOverlay({ onComplete }) {
+export default function TutorialOverlay({ onComplete, shouldShow = false }) {
     const [isOpen, setIsOpen] = useState(false);
     const [showWelcome, setShowWelcome] = useState(false);
     const [currentStep, setCurrentStep] = useState(0);
     const [highlightElement, setHighlightElement] = useState(null);
 
     useEffect(() => {
+        // Solo mostrar el tutorial si shouldShow es true
+        if (!shouldShow) return;
+
         // Verificar si el usuario ya completó el tutorial
         const hasCompletedTutorial = localStorage.getItem(TUTORIAL_STORAGE_KEY);
 
         if (!hasCompletedTutorial) {
-            // Mostrar modal de bienvenida después de 1 segundo
+            // Mostrar modal de bienvenida después de 500ms
             const timer = setTimeout(() => {
                 setShowWelcome(true);
-            }, 1000);
+            }, 500);
             return () => clearTimeout(timer);
         }
-    }, []);
+    }, [shouldShow]);
 
     useEffect(() => {
         if (isOpen && TUTORIAL_STEPS[currentStep]) {

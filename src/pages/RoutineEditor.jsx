@@ -55,6 +55,7 @@ export default function RoutineEditorPage() {
   const [showPDFExportModal, setShowPDFExportModal] = React.useState(false);
   const [showJSONEditor, setShowJSONEditor] = useState(false);
   const [useAIMode, setUseAIMode] = useState(true); // Default to AI mode
+  const [showTutorial, setShowTutorial] = useState(false); // Control tutorial activation
 
   // Inicializar el editor sin templates previos (siempre nueva rutina)
   const planEditor = useRoutineEditor({
@@ -129,11 +130,18 @@ export default function RoutineEditorPage() {
     }
   }, [planEditor, snackbar]);
 
+  // Handler para cuando se cambia a la pestaña avanzada
+  const handleTabChange = useCallback((value) => {
+    if (value === 'advanced') {
+      setShowTutorial(true);
+    }
+  }, []);
+
   return (
     <PlanProvider value={planContextValue}>
       <div className="flex h-screen flex-col bg-primary-bg overflow-hidden">
-        {/* Tutorial Overlay */}
-        <TutorialOverlay />
+        {/* Tutorial Overlay - Solo se muestra si showTutorial es true */}
+        <TutorialOverlay shouldShow={showTutorial} />
 
         {/* Top Bar */}
         <header className="flex-shrink-0 border-b border-border bg-primary-surface">
@@ -204,7 +212,7 @@ export default function RoutineEditorPage() {
               />
             ) : (
               <div className="p-6">
-                <Tabs defaultValue="basic" className="w-full">
+                <Tabs defaultValue="basic" className="w-full" onValueChange={handleTabChange}>
                   <TabsList className="mb-6">
                     <TabsTrigger value="basic">
                       Configuración Básica
