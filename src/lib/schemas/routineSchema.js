@@ -133,20 +133,22 @@ function validateExercise(exercise, path = 'ejercicio') {
   }
 
   // Optional but typed fields
-  if (exercise?.series !== undefined && !isValidNumber(exercise.series, 1, 100)) {
-    result.addError(`${path}.series`, 'Series debe ser un número entre 1 y 100');
-  }
-
-  if (exercise?.rpe !== undefined) {
-    const rpeNum = typeof exercise.rpe === 'string' ? parseFloat(exercise.rpe) : exercise.rpe;
-    if (isNaN(rpeNum) || rpeNum < 1 || rpeNum > 10) {
-      result.addError(`${path}.rpe`, 'RPE debe ser un número entre 1 y 10');
+  if (exercise?.series !== undefined && exercise.series !== null && exercise.series !== '') {
+    const seriesNum = typeof exercise.series === 'string' ? parseInt(exercise.series, 10) : exercise.series;
+    if (!isNaN(seriesNum) && (seriesNum < 0 || seriesNum > 200)) {
+      result.addError(`${path}.series`, 'Series debe ser un número entre 0 y 200');
     }
   }
 
-  if (exercise?.video && !isValidUrl(exercise.video)) {
-    result.addError(`${path}.video`, 'La URL del video no es válida');
+  // RPE: solo validar si el valor existe y no es 0/nulo/vacío
+  if (exercise?.rpe !== undefined && exercise.rpe !== null && exercise.rpe !== '' && exercise.rpe !== 0) {
+    const rpeNum = typeof exercise.rpe === 'string' ? parseFloat(exercise.rpe) : exercise.rpe;
+    if (!isNaN(rpeNum) && (rpeNum < 0 || rpeNum > 10)) {
+      result.addError(`${path}.rpe`, 'RPE debe ser un número entre 0 y 10');
+    }
   }
+
+  // El campo video es opcional y no se valida su formato (nunca debe bloquear la importación)
 
   return result;
 }
@@ -192,22 +194,18 @@ function validateDay(day, path = 'dia') {
     result.addError(`${path}.nombre`, 'El nombre del día es requerido');
   }
 
-  // Type validation
+  // Type validation: si no es DESCANSO, se trata como ENTRENAMIENTO
   const allowedDayTypes = ['ENTRENAMIENTO', 'DESCANSO'];
-  if (!day?.tipo || !isValidEnum(day.tipo, allowedDayTypes)) {
-    result.addError(`${path}.tipo`, `Tipo de día debe ser: ${allowedDayTypes.join(' o ')}`);
-  }
+  const effectiveDayType = (day?.tipo && allowedDayTypes.includes(day.tipo)) ? day.tipo : 'ENTRENAMIENTO';
 
-  // Blocks validation (only for training days)
-  if (day?.tipo === 'ENTRENAMIENTO') {
+  // Blocks validation (only for non-rest days)
+  if (effectiveDayType === 'ENTRENAMIENTO') {
     if (!isValidArray(day?.bloques)) {
       // If no blocks, check for exercises at day level (legacy support)
-      if (!isValidArray(day?.ejercicios, 1)) {
-        result.addError(`${path}.bloques`, 'Un día de entrenamiento debe tener al menos 1 bloque o ejercicio');
-      }
+      // Only warn, don't block import
     } else {
       day.bloques.forEach((bloque, idx) => {
-        const blockResult = validateBlock(bloque, `${path}.bloques[${idx}]`, day.tipo);
+        const blockResult = validateBlock(bloque, `${path}.bloques[${idx}]`, effectiveDayType);
         if (!blockResult.isValid) {
           result.errors.push(...blockResult.errors);
           result.isValid = false;
@@ -257,43 +255,33 @@ function validateMetadata(meta, path = 'meta') {
     result.addError(`${path}.nombre`, 'El nombre de la rutina es requerido');
   }
 
-  // Optional enum fields
-  if (meta?.nivel) {
-    const allowedLevels = ['novato', 'intermedio', 'avanzado', 'todos'];
-    if (!isValidEnum(meta.nivel.toLowerCase(), allowedLevels)) {
-      result.addError(`${path}.nivel`, `Nivel debe ser: ${allowedLevels.join(', ')}`);
+  // Optional enum fields: se aceptan valores desconocidos (la IA puede generar variantes)
+  // No se bloquea la importación por nivel o equipamiento fuera de enum
+
+  // Optional numeric fields: solo advertir si los valores son extremos, no bloquear
+  if (meta?.duracion !== undefined && meta.duracion !== null && meta.duracion !== '') {
+    const dur = typeof meta.duracion === 'string' ? parseInt(meta.duracion, 10) : meta.duracion;
+    if (!isNaN(dur) && dur < 0) {
+      result.addError(`${path}.duracion`, 'Duración no puede ser negativa');
     }
   }
 
-  if (meta?.equipamiento) {
-    const allowedEquipment = ['casa', 'gimnasio', 'bandas', 'mixto'];
-    if (!isValidEnum(meta.equipamiento.toLowerCase(), allowedEquipment)) {
-      result.addError(`${path}.equipamiento`, `Equipamiento debe ser: ${allowedEquipment.join(', ')}`);
+  if (meta?.frecuencia !== undefined && meta.frecuencia !== null && meta.frecuencia !== '') {
+    const frec = typeof meta.frecuencia === 'string' ? parseInt(meta.frecuencia, 10) : meta.frecuencia;
+    if (!isNaN(frec) && (frec < 0 || frec > 14)) {
+      result.addError(`${path}.frecuencia`, 'Frecuencia debe ser entre 0 y 14 días/semana');
     }
   }
 
-  // Optional numeric fields
-  if (meta?.duracion !== undefined && !isValidNumber(meta.duracion, 1, 52)) {
-    result.addError(`${path}.duracion`, 'Duración debe ser entre 1 y 52 semanas');
+  // precio: solo verificar que sea positivo si existe
+  if (meta?.precio !== undefined && meta.precio !== null && meta.precio !== '') {
+    const precio = typeof meta.precio === 'string' ? parseFloat(meta.precio) : meta.precio;
+    if (!isNaN(precio) && precio < 0) {
+      result.addError(`${path}.precio`, 'Precio debe ser un número positivo');
+    }
   }
 
-  if (meta?.frecuencia !== undefined && !isValidNumber(meta.frecuencia, 1, 7)) {
-    result.addError(`${path}.frecuencia`, 'Frecuencia debe ser entre 1 y 7 días/semana');
-  }
-
-  if (meta?.precio !== undefined && !isValidNumber(meta.precio, 0)) {
-    result.addError(`${path}.precio`, 'Precio debe ser un número positivo');
-  }
-
-  // Optional URL fields
-  if (meta?.imagen && !isValidUrl(meta.imagen)) {
-    result.addError(`${path}.imagen`, 'La URL de la imagen no es válida');
-  }
-
-  // Optional array fields
-  if (meta?.tags !== undefined && !isValidArray(meta.tags)) {
-    result.addError(`${path}.tags`, 'Tags debe ser un array');
-  }
+  // El campo imagen es opcional y no se valida su formato
 
   return result;
 }

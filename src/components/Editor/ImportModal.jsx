@@ -7,7 +7,7 @@ import { useState, useCallback } from 'react';
 import { Upload, AlertCircle, CheckCircle2, FileJson } from 'lucide-react';
 import Modal, { ModalFooter } from '../ui/Modal.jsx';
 import Button from '../ui/Button.jsx';
-import { importToEditor } from '../../lib/transformers/routineTransformer.js';
+import { universalImport } from '../../lib/transformers/routineTransformer.js';
 
 export default function ImportModal({ open, onClose, onImport }) {
     const [file, setFile] = useState(null);
@@ -32,8 +32,8 @@ export default function ImportModal({ open, onClose, onImport }) {
             const text = await selectedFile.text();
             const data = JSON.parse(text);
 
-            // Validate and transform
-            const result = importToEditor(data);
+            // Validate and transform (auto-detects AI format or Spanish export format)
+            const result = universalImport(data);
 
             setFile(selectedFile);
             setJsonData(data);
@@ -137,15 +137,61 @@ export default function ImportModal({ open, onClose, onImport }) {
 
                 {/* JSON Format Specification */}
                 <div className="space-y-3">
-                    <h3 className="text-sm font-semibold text-text-primary">Formato del JSON</h3>
+                    <h3 className="text-sm font-semibold text-text-primary">Formatos aceptados</h3>
                     <p className="text-sm text-text-secondary">
-                        Tu archivo JSON debe seguir esta estructura:
+                        Se aceptan dos formatos: el JSON generado por la IA (Prompt Maestro) y el JSON exportado desde Grind-Lab.
                     </p>
                     <details className="group rounded-lg border border-border bg-primary-bg">
                         <summary className="cursor-pointer list-none p-3 text-sm font-medium text-text-primary hover:text-accent transition-colors">
                             <span className="inline-flex items-center gap-2">
                                 <span className="transform transition-transform duration-200 group-open:rotate-90">▶</span>
-                                Ver ejemplo de estructura JSON
+                                Formato IA (Prompt Maestro) — recomendado
+                            </span>
+                        </summary>
+                        <div className="border-t border-border p-3">
+                            <pre className="text-xs text-text-secondary overflow-x-auto font-mono whitespace-pre">
+                                {`{
+  "name": "Nombre de la rutina",
+  "metadata": {
+    "author": "Coach",
+    "gender": "Masculino",
+    "objective": "Volumen muscular",
+    "level": "Intermedio",
+    "frequency": "4",
+    "durationWeeks": "8"
+  },
+  "weeks": [
+    {
+      "name": "Semana 1",
+      "days": [
+        {
+          "name": "Día 1 - Push",
+          "type": "training",
+          "exercises": [
+            {
+              "name": "Press de Banca",
+              "sets": "4",
+              "reps": "8-10",
+              "rir": "2",
+              "tempo": "3010",
+              "rest": "90s",
+              "notes": "Controla la bajada",
+              "video": "https://youtube.com/..."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}`}
+                            </pre>
+                        </div>
+                    </details>
+                    <details className="group rounded-lg border border-border bg-primary-bg">
+                        <summary className="cursor-pointer list-none p-3 text-sm font-medium text-text-primary hover:text-accent transition-colors">
+                            <span className="inline-flex items-center gap-2">
+                                <span className="transform transition-transform duration-200 group-open:rotate-90">▶</span>
+                                Formato exportación de Grind-Lab
                             </span>
                         </summary>
                         <div className="border-t border-border p-3">
@@ -154,34 +200,24 @@ export default function ImportModal({ open, onClose, onImport }) {
   "meta": {
     "nombre": "Nombre de la rutina (requerido)",
     "foco": "Objetivo de entrenamiento",
-    "nivel": "novato | intermedio | avanzado",
-    "duracion": 8,
-    "frecuencia": 4,
-    "equipamiento": "casa | gimnasio | bandas | mixto",
-    "autor": "Tu nombre",
-    "descripcion": "Descripción de la rutina",
-    "tags": ["hipertrofia", "fuerza"]
+    "autor": "Tu nombre"
   },
   "semanas": [
     {
       "nombre": "Semana 1",
-      "resumen": "Fase de adaptación",
       "dias": [
         {
-          "nombre": "Día 1 - Tren Superior",
+          "nombre": "Día 1",
           "tipo": "ENTRENAMIENTO",
           "bloques": [
             {
               "tipo": "ENTRENAMIENTO",
               "ejercicios": [
                 {
-                  "nombre": "Press Banca (requerido)",
+                  "nombre": "Press Banca",
                   "series": 4,
                   "reps": "8-10",
-                  "descanso": "90s",
-                  "rpe": 8,
-                  "tempo": "3-0-1-0",
-                  "notas": "Enfocarse en técnica"
+                  "descanso": "90s"
                 }
               ]
             }
