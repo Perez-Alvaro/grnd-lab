@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useRef } from "react";
-import { Plus, Copy, Trash2 } from "lucide-react";
+import { Plus, Copy, Trash2, ChevronUp, ChevronDown } from "lucide-react";
 import { usePlanContext } from "../../../context/PlanContext.jsx";
 import DayEditor from "./DayEditor.jsx";
 
@@ -12,6 +12,7 @@ const WeekEditor = memo(
       removeWeek,
       updateWeekField,
       addDay,
+      reorderDay,
     } = usePlanContext();
     const dayRefs = useRef({});
     const previousDayCountRef = useRef({});
@@ -209,14 +210,38 @@ const WeekEditor = memo(
 
               <div className="flex flex-col gap-4">
                 {week.days.map((day, dayIndex) => (
-                  <DayEditor
-                    key={day.id}
-                    weekId={week.id}
-                    day={day}
-                    index={dayIndex}
-                    onActionError={onActionError}
-                    registerDayRef={registerDayRef(week.id, day.id)}
-                  />
+                  <div key={day.id} className="flex items-start gap-2">
+                    {/* Reorder arrows */}
+                    <div className="flex flex-col gap-1 pt-4 flex-shrink-0">
+                      <button
+                        type="button"
+                        disabled={dayIndex === 0}
+                        onClick={() => reorderDay(week.id, dayIndex, dayIndex - 1)}
+                        className="flex items-center justify-center w-7 h-7 rounded-md border border-[#2E2E2E] bg-[#0A0A0A] text-gray-500 transition-colors hover:border-accent hover:text-accent disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:border-[#2E2E2E] disabled:hover:text-gray-500"
+                        title="Mover arriba"
+                      >
+                        <ChevronUp className="h-3.5 w-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={dayIndex === week.days.length - 1}
+                        onClick={() => reorderDay(week.id, dayIndex, dayIndex + 1)}
+                        className="flex items-center justify-center w-7 h-7 rounded-md border border-[#2E2E2E] bg-[#0A0A0A] text-gray-500 transition-colors hover:border-accent hover:text-accent disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:border-[#2E2E2E] disabled:hover:text-gray-500"
+                        title="Mover abajo"
+                      >
+                        <ChevronDown className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <DayEditor
+                        weekId={week.id}
+                        day={day}
+                        index={dayIndex}
+                        onActionError={onActionError}
+                        registerDayRef={registerDayRef(week.id, day.id)}
+                      />
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>

@@ -71,9 +71,9 @@ const convertLegacyExercise = (exercise) => {
   const variant = Array.isArray(exercise?.variantes)
     ? exercise.variantes[0] || {}
     : {};
-  
+
   const noteValue = exercise?.notes || exercise?.note || exercise?.notas || "";
-  
+
   return {
     id: createId(),
     name: exercise?.ejercicio || exercise?.name || "",
@@ -97,8 +97,8 @@ const convertLegacyDay = (day, index = 0) => {
   const bloques = Array.isArray(day?.bloques) ? day.bloques : [];
   const legacyExercises = bloques.length
     ? bloques.flatMap((block) =>
-        (block?.items || []).map(convertLegacyExercise),
-      )
+      (block?.items || []).map(convertLegacyExercise),
+    )
     : Array.isArray(day?.exercises)
       ? day.exercises.map(convertLegacyExercise)
       : Array.isArray(day?.ejercicios)
@@ -170,13 +170,13 @@ export const buildInitialPlan = (template) => {
     Array.isArray(template?.weeks) && template.weeks.length
       ? template.weeks
       : [
-          {
-            title: "Semana 1",
-            summary: template?.summary || "",
-            notes: template?.notes || "",
-            days: template?.days || [],
-          },
-        ];
+        {
+          title: "Semana 1",
+          summary: template?.summary || "",
+          notes: template?.notes || "",
+          days: template?.days || [],
+        },
+      ];
 
   const convertedWeeks = weeksSource.map((week, index) =>
     convertLegacyWeek(week, index),
@@ -193,7 +193,7 @@ export const buildInitialPlan = (template) => {
       name: template?.name || meta?.name || "",
       gender: hasNestedMetadata ? meta?.gender || "" : template?.gender || "",
       objective: hasNestedMetadata ? meta?.objective || "" : template?.objective || template?.objetivo || "",
-      durationWeeks: hasNestedMetadata 
+      durationWeeks: hasNestedMetadata
         ? meta?.durationWeeks || String(convertedWeeks.length || 1)
         : template?.duration
           ? String(template.duration)
@@ -206,7 +206,7 @@ export const buildInitialPlan = (template) => {
           ? String(template.frequency)
           : template?.frecuencia
             ? String(template.frecuencia).replace(/[^0-9]/g, "") ||
-              String(template.frecuencia)
+            String(template.frecuencia)
             : "",
       level: hasNestedMetadata ? meta?.level || "" : template?.level || template?.nivel || "",
       description: template?.description || meta?.description || template?.descripcion || template?.summary || "",
@@ -234,9 +234,6 @@ const buildDraftKey = (templateId) =>
 
 const PLAN_VALIDATION_MESSAGES = {
   NAME: "El plan debe tener un nombre.",
-  WEEKS: "El plan debe incluir al menos una semana con un día activo.",
-  DAYS: "Cada semana debe tener al menos un día.",
-  EXERCISES: "Cada día de entrenamiento debe tener al menos un ejercicio.",
 };
 
 export const useRoutineEditor = ({
@@ -398,12 +395,7 @@ export const useRoutineEditor = ({
 
   const removeWeek = useCallback(
     (weekId) => {
-      let blocked = false;
       const changed = applyPlanChange((prev) => {
-        if (prev.weeks.length === 1) {
-          blocked = true;
-          return prev;
-        }
         const nextWeeks = prev.weeks.filter((week) => week.id !== weekId);
         if (nextWeeks.length === prev.weeks.length) return prev;
         const metadata = adjustDuration(
@@ -413,10 +405,7 @@ export const useRoutineEditor = ({
         );
         return { ...prev, weeks: nextWeeks, metadata };
       });
-      return {
-        success: changed && !blocked,
-        error: blocked ? PLAN_VALIDATION_MESSAGES.WEEKS : null,
-      };
+      return { success: changed, error: null };
     },
     [applyPlanChange],
   );
@@ -448,19 +437,32 @@ export const useRoutineEditor = ({
 
   const removeDay = useCallback(
     (weekId, dayId) => {
-      let blocked = false;
       const changed = updateWeek(weekId, (week) => {
-        if (week.days.length === 1) {
-          blocked = true;
-          return week;
-        }
         const days = week.days.filter((day) => day.id !== dayId);
         return days.length === week.days.length ? week : { ...week, days };
       });
-      return {
-        success: changed && !blocked,
-        error: blocked ? PLAN_VALIDATION_MESSAGES.DAYS : null,
-      };
+      return { success: changed, error: null };
+    },
+    [updateWeek],
+  );
+
+  const reorderDay = useCallback(
+    (weekId, fromIndex, toIndex) => {
+      return updateWeek(weekId, (week) => {
+        if (
+          fromIndex === toIndex ||
+          fromIndex < 0 ||
+          toIndex < 0 ||
+          fromIndex >= week.days.length ||
+          toIndex >= week.days.length
+        ) {
+          return week;
+        }
+        const days = [...week.days];
+        const [moved] = days.splice(fromIndex, 1);
+        days.splice(toIndex, 0, moved);
+        return { ...week, days };
+      });
     },
     [updateWeek],
   );
@@ -549,12 +551,7 @@ export const useRoutineEditor = ({
 
   const removeExercise = useCallback(
     (weekId, dayId, exerciseId) => {
-      let blocked = false;
       const changed = updateDay(weekId, dayId, (day) => {
-        if (day.exercises.length === 1) {
-          blocked = true;
-          return day;
-        }
         const exercises = day.exercises.filter(
           (exercise) => exercise.id !== exerciseId,
         );
@@ -562,10 +559,7 @@ export const useRoutineEditor = ({
           ? day
           : { ...day, exercises };
       });
-      return {
-        success: changed && !blocked,
-        error: blocked ? PLAN_VALIDATION_MESSAGES.EXERCISES : null,
-      };
+      return { success: changed, error: null };
     },
     [updateDay],
   );
@@ -675,25 +669,25 @@ export const useRoutineEditor = ({
           day.type === "DESCANSO"
             ? []
             : [
-                {
-                  titulo: "Entrenamiento",
-                  color: "",
-                  items: day.exercises.map((exercise) => ({
-                    ejercicio: exercise.name,
-                    variantes: [
-                      {
-                        series: exercise.sets,
-                        reps: exercise.reps,
-                        descanso: exercise.rest,
-                        cadencia: exercise.tempo,
-                        rir: exercise.rir,
-                      },
-                    ],
-                    videoUrl: exercise.video,
-                    notes: exercise.note,
-                  })),
-                },
-              ],
+              {
+                titulo: "Entrenamiento",
+                color: "",
+                items: day.exercises.map((exercise) => ({
+                  ejercicio: exercise.name,
+                  variantes: [
+                    {
+                      series: exercise.sets,
+                      reps: exercise.reps,
+                      descanso: exercise.rest,
+                      cadencia: exercise.tempo,
+                      rir: exercise.rir,
+                    },
+                  ],
+                  videoUrl: exercise.video,
+                  notes: exercise.note,
+                })),
+              },
+            ],
       })),
     );
 
@@ -732,15 +726,15 @@ export const useRoutineEditor = ({
           exercises: day.type === "DESCANSO"
             ? []
             : day.exercises.map((exercise) => ({
-                name: exercise.name,
-                sets: Number(exercise.sets) || 0,
-                reps: exercise.reps || "",
-                rest: exercise.rest || "",
-                rir: Number(exercise.rir) || 0,
-                tempo: exercise.tempo || "",
-                videoUrl: exercise.video || "",
-                notes: exercise.note || "",
-              })),
+              name: exercise.name,
+              sets: Number(exercise.sets) || 0,
+              reps: exercise.reps || "",
+              rest: exercise.rest || "",
+              rir: Number(exercise.rir) || 0,
+              tempo: exercise.tempo || "",
+              videoUrl: exercise.video || "",
+              notes: exercise.note || "",
+            })),
         })),
       })),
       days: flattenedDays,
@@ -760,6 +754,7 @@ export const useRoutineEditor = ({
     addDay,
     duplicateDay,
     removeDay,
+    reorderDay,
     updateWeekField,
     updateDayField,
     setDayType,

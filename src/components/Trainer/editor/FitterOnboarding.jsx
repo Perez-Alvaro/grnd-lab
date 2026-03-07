@@ -36,7 +36,7 @@ const ONBOARDING_STEPS = [
         questions: [
             {
                 text: "Excelente nombre 👌",
-                subtext: "Ahora, describime brevemente qué va a lograr tu cliente con esta rutina"
+                subtext: "Describí el método de entrenamiento, tiempo aproximado de la sesión y volumen de series"
             }
         ],
         fields: ["description"],
@@ -80,7 +80,7 @@ const ONBOARDING_STEPS = [
         questions: [
             {
                 text: "Últimos detalles para personalizar la rutina",
-                subtext: "Agregá tags y notas especiales si querés (opcional)"
+                subtext: "¿Hay excepciones o cosas a tener en cuenta? Lesiones, ejercicios a evitar por molestias, preferencias especiales, etc. (opcional)"
             }
         ],
         fields: ["tags", "notes"],
@@ -302,12 +302,12 @@ const FitterOnboarding = ({ onCopyPrompt, onImportJSON }) => {
             case "description":
                 return (
                     <div key={field} className="flex flex-col gap-2">
-                        <label className={labelClasses}>Descripción breve</label>
+                        <label className={labelClasses}>Método de entrenamiento</label>
                         <textarea
                             rows={4}
                             value={metadata.description}
                             onChange={handleChange("description")}
-                            placeholder='Ej: "Plan enfocado en ganar masa muscular combinando fuerza y técnicas FST-7"'
+                            placeholder='Ej: "Entrenamiento de hipertrofia con técnica FST-7. Sesiones de 60-75 min. Volumen moderado-alto: 4 series por ejercicio, 3-4 ejercicios por grupo muscular."'
                             className={`${inputClasses} min-h-[120px] resize-none`}
                         />
                     </div>
@@ -421,12 +421,12 @@ const FitterOnboarding = ({ onCopyPrompt, onImportJSON }) => {
             case "tags":
                 return (
                     <div key={field} className="flex flex-col gap-2">
-                        <label className={labelClasses}>Tags (opcional)</label>
+                        <label className={labelClasses}>Ejercicios a evitar (opcional)</label>
                         <input
                             type="text"
                             value={metadata.tags}
                             onChange={handleChange("tags")}
-                            placeholder='Ej: "hipertrofia, fuerza, funcional, fst-7"'
+                            placeholder='Ej: "sentadilla profunda, press militar, tracción con peso"'
                             className={inputClasses}
                         />
                     </div>
@@ -435,12 +435,12 @@ const FitterOnboarding = ({ onCopyPrompt, onImportJSON }) => {
             case "notes":
                 return (
                     <div key={field} className="flex flex-col gap-2">
-                        <label className={labelClasses}>Notas especiales (opcional)</label>
+                        <label className={labelClasses}>Excepciones y consideraciones (opcional)</label>
                         <textarea
                             rows={4}
                             value={metadata.notes}
                             onChange={handleChange("notes")}
-                            placeholder='Ej: "Rutina estilo Hany Rambod con foco en congestión y control del tempo"'
+                            placeholder='Ej: "Lesión en hombro derecho, evitar press sobre la cabeza. Prefiere no hacer cardio en cinta. Molestias en rodilla izquierda al bajar escaleras."'
                             className={`${inputClasses} min-h-[120px] resize-none`}
                         />
                     </div>
