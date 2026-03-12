@@ -6,6 +6,7 @@ import { SnackbarProvider } from "./components/Tutorial/Snackbar.jsx";
 import Home from "./pages/Home.jsx";
 import HomeSaaS from "./pages/HomeSaaS.jsx";
 import RoutineEditor from "./pages/RoutineEditor.jsx";
+import EditorLogin from "./components/Auth/EditorLogin.jsx";
 
 function ToastInitializer() {
   const toast = useToast();
@@ -30,7 +31,7 @@ function AppContent() {
           <Route path="/technical" element={<Home />} />
 
           {/* Routine Editor */}
-          <Route path="/editor" element={<RoutineEditor />} />
+          <Route path="/editor" element={<EditorLogin><RoutineEditor /></EditorLogin>} />
 
           {/* Catch all - redirect to SaaS home */}
           <Route path="*" element={<HomeSaaS />} />

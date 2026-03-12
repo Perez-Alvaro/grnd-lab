@@ -23,7 +23,6 @@ import JSONEditor from "../components/Editor/JSONEditor.jsx";
 import TutorialOverlay from "../components/Tutorial/TutorialOverlay.jsx";
 import { useSnackbar, TUTORIAL_SNACKBARS } from "../components/Tutorial/Snackbar.jsx";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/ui/Tabs.jsx";
-import PasswordProtected from "../components/Auth/PasswordProtected.jsx";
 
 const buildContextValue = (planEditor) => ({
   plan: planEditor.plan,
@@ -284,25 +283,20 @@ export default function RoutineEditorPage() {
                   </TabsContent>
 
                   <TabsContent value="advanced">
-                    <PasswordProtected
-                      password="GRND-MAX"
-                      title="Edición Avanzada de Rutina"
-                    >
-                      <div className="space-y-4">
-                        <div className="rounded-xl border border-accent/20 bg-accent/5 p-4">
-                          <div className="flex items-center gap-2 mb-2">
-                            <div className="h-2 w-2 rounded-full bg-accent"></div>
-                            <h3 className="text-sm font-semibold text-white">
-                              Modo Avanzado Activado
-                            </h3>
-                          </div>
-                          <p className="text-xs text-gray-400 leading-relaxed">
-                            Ahora podés editar manualmente la estructura de semanas, días y ejercicios (ABMC completo). Estos cambios son avanzados y requieren conocimiento del sistema.
-                          </p>
+                    <div className="space-y-4">
+                      <div className="rounded-xl border border-accent/20 bg-accent/5 p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="h-2 w-2 rounded-full bg-accent"></div>
+                          <h3 className="text-sm font-semibold text-white">
+                            Modo Avanzado Activado
+                          </h3>
                         </div>
-                        <WeekEditor />
+                        <p className="text-xs text-gray-400 leading-relaxed">
+                          Ahora podés editar manualmente la estructura de semanas, días y ejercicios (ABMC completo). Estos cambios son avanzados y requieren conocimiento del sistema.
+                        </p>
                       </div>
-                    </PasswordProtected>
+                      <WeekEditor />
+                    </div>
                   </TabsContent>
                 </Tabs>
               </div>

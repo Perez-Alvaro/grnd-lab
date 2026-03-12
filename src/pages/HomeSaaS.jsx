@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import {
     TrendingUp, Clock, Users, DollarSign, CheckCircle2, ArrowRight, Zap,
     FileText, Target, Award, Shield, Sparkles, Brain, ChevronDown,
-    Star, Building2, Laptop, Dumbbell, Menu, X, Lock, Headphones, Mail
+    Star, Building2, Laptop, Dumbbell, Menu, X, Lock, Headphones, Mail, MessageCircle
 } from 'lucide-react';
 import { Button } from '../components/ui';
 import DotGrid from '../components/ui/DotGrid';
@@ -931,115 +931,28 @@ function FAQSection() {
 ───────────────────────────────────────────── */
 
 function ContactSection() {
-    const [form, setForm] = useState({ nombre: '', email: '', mensaje: '' });
-    const [enviado, setEnviado] = useState(false);
-
-    const handleChange = (e) => {
-        setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Placeholder — replace with your form handler / email service
-        setEnviado(true);
-    };
-
     return (
         <section id="contact" className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8 border-b border-border">
-            <div className="mx-auto max-w-2xl">
-                <div className="text-center mb-12">
-                    <SectionTag icon={Mail} label="Contacto" />
-                    <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white font-display leading-[1.1]">
-                        Solicitá tu demostración
-                    </h2>
-                    <p className="mt-4 text-lg text-text-secondary">
-                        Contanos sobre tu negocio y te mostramos cómo GRIND LAB puede funcionar para vos.
-                    </p>
-                </div>
-
-                {enviado ? (
-                    <div className="rounded-2xl border border-accent/30 bg-accent/5 p-12 text-center">
-                        <div className="flex justify-center mb-4">
-                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent/10 text-accent">
-                                <CheckCircle2 className="h-8 w-8" />
-                            </div>
-                        </div>
-                        <h3 className="text-2xl font-bold text-white mb-2">¡Mensaje enviado!</h3>
-                        <p className="text-text-secondary">
-                            Te respondemos a la brevedad. Revisá tu bandeja de entrada en los próximos minutos.
-                        </p>
-                    </div>
-                ) : (
-                    <div className="relative">
-                        <div className="absolute -inset-1 bg-gradient-to-r from-accent/20 to-violet-500/10 rounded-3xl blur opacity-50" />
-                        <form
-                            onSubmit={handleSubmit}
-                            className="relative rounded-2xl border border-border bg-primary-surface p-8 space-y-6"
-                        >
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                <div>
-                                    <label htmlFor="nombre" className="block text-sm font-medium text-text-secondary mb-2">
-                                        Nombre *
-                                    </label>
-                                    <input
-                                        id="nombre"
-                                        name="nombre"
-                                        type="text"
-                                        required
-                                        value={form.nombre}
-                                        onChange={handleChange}
-                                        placeholder="Tu nombre"
-                                        className="w-full px-4 py-3 rounded-xl bg-primary-bg border border-border text-white placeholder-text-quaternary text-sm focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/30 transition-colors"
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="email" className="block text-sm font-medium text-text-secondary mb-2">
-                                        Email *
-                                    </label>
-                                    <input
-                                        id="email"
-                                        name="email"
-                                        type="email"
-                                        required
-                                        value={form.email}
-                                        onChange={handleChange}
-                                        placeholder="tu@email.com"
-                                        className="w-full px-4 py-3 rounded-xl bg-primary-bg border border-border text-white placeholder-text-quaternary text-sm focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/30 transition-colors"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <label htmlFor="mensaje" className="block text-sm font-medium text-text-secondary mb-2">
-                                    Contanos sobre tu negocio
-                                </label>
-                                <textarea
-                                    id="mensaje"
-                                    name="mensaje"
-                                    rows={4}
-                                    value={form.mensaje}
-                                    onChange={handleChange}
-                                    placeholder="¿Cuántos clientes tenés? ¿Cómo programás actualmente? ¿Qué querés mejorar?"
-                                    className="w-full px-4 py-3 rounded-xl bg-primary-bg border border-border text-white placeholder-text-quaternary text-sm focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/30 transition-colors resize-none"
-                                />
-                            </div>
-
-                            <Button
-                                type="submit"
-                                size="lg"
-                                className="w-full h-12 shadow-lg shadow-accent/20 group"
-                            >
-                                <Mail className="mr-2 h-4 w-4" />
-                                Enviar solicitud de demo
-                                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                            </Button>
-
-                            <p className="text-xs text-text-quaternary text-center">
-                                Respondemos en menos de 24 horas. Sin compromisos.
-                            </p>
-                        </form>
-                    </div>
-                )}
+            <div className="mx-auto max-w-2xl text-center">
+                <SectionTag icon={MessageCircle} label="Contacto Directo" />
+                <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white font-display leading-[1.1] mb-6">
+                    Escribinos por WhatsApp
+                </h2>
+                <p className="mt-4 text-lg text-text-secondary mb-10">
+                    Sacate las dudas, contanos sobre tu negocio y te mostramos cómo GRIND LAB puede funcionar para vos. ¡Te respondemos enseguida!
+                </p>
+                <a
+                    href="https://wa.me/5492996086076"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center h-14 px-8 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-black font-bold text-lg transition-all hover:scale-105 shadow-lg shadow-emerald-500/20"
+                >
+                    <MessageCircle className="mr-2 h-6 w-6" />
+                    Contactar al 2996086076
+                </a>
+                <p className="mt-6 text-sm text-text-quaternary">
+                    Sin bots, hablás directamente con nosotros.
+                </p>
             </div>
         </section>
     );

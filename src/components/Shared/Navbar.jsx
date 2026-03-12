@@ -59,11 +59,11 @@ function Navbar({ menuItems = [], className = "" }) {
     };
 
     const handleLogin = () => {
-        navigate('/mz-admin-access');
+        navigate('/editor');
     };
 
     const handleRegister = () => {
-        navigate('/mz-admin-access');
+        navigate('/editor');
     };
 
     const closeMobileMenu = () => {
@@ -136,19 +136,13 @@ function Navbar({ menuItems = [], className = "" }) {
         <>
             <button
                 onClick={handleLogin}
-                className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors hover:bg-zinc-800/50"
+                className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors hover:bg-zinc-800/50 border border-border"
             >
                 <LogIn className="h-4 w-4" />
-                <span>Login</span>
+                <span>Acceso Editor</span>
             </button>
 
-            <button
-                onClick={handleRegister}
-                className="hidden sm:flex items-center gap-2 px-5 py-2 rounded-lg bg-emerald-500 text-sm font-bold text-black transition-all hover:bg-emerald-600 hover:scale-105"
-            >
-                <UserPlus className="h-4 w-4" />
-                <span>Register</span>
-            </button>
+
         </>
     );
 
@@ -201,21 +195,10 @@ function Navbar({ menuItems = [], className = "" }) {
                                     className="flex w-full items-center gap-3 px-4 py-3 rounded-lg text-left text-sm text-white transition-colors hover:bg-zinc-800/50"
                                 >
                                     <LogIn className="h-4 w-4" />
-                                    <span>Login</span>
+                                    <span>Acceso Editor</span>
                                 </button>
                             </li>
-                            <li>
-                                <button
-                                    onClick={() => {
-                                        handleRegister();
-                                        closeMobileMenu();
-                                    }}
-                                    className="flex w-full items-center gap-3 px-4 py-3 rounded-lg bg-emerald-500 text-left text-sm font-bold text-black transition-colors hover:bg-emerald-600"
-                                >
-                                    <UserPlus className="h-4 w-4" />
-                                    <span>Register</span>
-                                </button>
-                            </li>
+
                         </>
                     ) : (
                         <>
