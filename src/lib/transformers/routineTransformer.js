@@ -150,11 +150,19 @@ function importFromAIFormat(jsonData) {
           const rawExercises = day.exercises || day.ejercicios ||
             (day.bloques ? day.bloques.flatMap(b => b.ejercicios || b.exercises || []) : []);
 
+          // Entrada en calor: campo warmup del formato IA
+          const rawWarmup = day.warmup || day.entradaEnCalor || [];
+
           return {
             id: day.id || createId(),
             name: day.name || day.nombre || `Día ${dayIdx + 1}`,
             type: typeNormalized,
             recoveryNote: day.recoveryNote || day.notaRecuperacion || day.notes || '',
+            warmupExercises: isRest ? [] : rawWarmup.map(ex => ({
+              name: ex.name || ex.nombre || '',
+              duration: ex.duration || ex.duracion || '',
+              notes: ex.notes || ex.notas || '',
+            })),
             exercises: isRest ? [] : rawExercises.map(ex => ({
               id: ex.id || createId(),
               name: ex.name || ex.nombre || '',
@@ -326,11 +334,17 @@ export function editorToPDF(planData) {
       title: week.title || `Semana ${index + 1}`,
       summary: week.summary || '',
       notes: week.notes ? [week.notes] : [],
-      days: week.days.map(day => ({
+      days: week.days.map((day, dayIdx) => ({
         name: day.name || '',
         type: day.type || 'ENTRENAMIENTO',
         recoveryMessage: day.recoveryNote || '',
         notes: day.recoveryNote || '',
+        dayNumber: dayIdx + 1,
+        warmupExercises: (day.warmupExercises || []).map(ex => ({
+          name: ex.name || '',
+          duration: ex.duration || '',
+          notes: ex.notes || '',
+        })),
         exercises: (day.exercises || []).map(exercise => ({
           name: exercise.name || '',
           series: exercise.sets || '',

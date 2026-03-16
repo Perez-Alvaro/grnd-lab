@@ -8,7 +8,9 @@
       "mcp__supabase__list_tables",
       "Bash(cat:*)",
       "WebSearch",
-      "WebFetch(domain:www.mercadopago.com.ar)"
+      "WebFetch(domain:www.mercadopago.com.ar)",
+      "Bash(find 'c:\\\\Users\\\\perez\\\\VSProyects\\\\SAS PROYECTS\\\\grnd-lab' -type f -name *prompt* -o -name *maestro*)",
+      "Bash(npm install:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

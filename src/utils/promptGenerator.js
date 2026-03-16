@@ -66,6 +66,23 @@ ESQUEMA EXACTO:
         {
           "name": "Día 1 - Push (Pecho, Hombros, Tríceps)",
           "type": "training",
+          "warmup": [
+            {
+              "name": "Trote en cinta o bicicleta",
+              "duration": "5 min",
+              "notes": "Ritmo moderado (60-65% FC máx) para elevar temperatura corporal"
+            },
+            {
+              "name": "Rotaciones de hombro + círculos de brazos",
+              "duration": "2 min",
+              "notes": "Movilidad activa de la articulación del hombro. 10 repeticiones cada dirección"
+            },
+            {
+              "name": "Flexiones de activación",
+              "duration": "2 series x 10",
+              "notes": "Sin carga, enfocado en activar pectorales y estabilizadores de escápula"
+            }
+          ],
           "exercises": [
             {
               "name": "Press de Banca con Barra",
@@ -101,9 +118,26 @@ ESQUEMA EXACTO:
 1. ESTRUCTURA:
    - Genera ${durationWeeks} semanas completas
    - Cada semana debe tener ${frequency} días de entrenamiento
-   - Cada día debe tener entre 5-8 ejercicios
+   - Cada día DEBE tener: una sección "warmup" + una sección "exercises" (5-8 ejercicios)
 
-2. CAMPOS OBLIGATORIOS por ejercicio:
+2. ENTRADA EN CALOR (campo "warmup" por día):
+   ⚠️ OBLIGATORIO: cada día debe incluir 3-4 ejercicios de entrada en calor ESPECÍFICOS para el grupo muscular del día.
+
+   CAMPOS por ejercicio de warmup:
+   - name: Nombre del ejercicio de calentamiento
+   - duration: Tiempo o series (ej: "5 min", "2 series x 10")
+   - notes: Objetivo del ejercicio y puntos clave de ejecución
+
+   📋 TABLA DE IMPRESIÓN: el bloque warmup se imprimirá como tabla con título
+   "Entrada en calor del Día X" — el X corresponde al número de día dentro de la semana.
+
+   Tipos de warmup según el día:
+   - Push: cardio leve 3-5 min + movilidad de hombros + activación de pecho
+   - Pull: cardio leve 3-5 min + movilidad escapular + activación de dorsales
+   - Pierna: cardio leve 5 min + movilidad de cadera + activación de glúteos
+   - Full Body: cardio leve 5 min + movilidad articular general + activación core
+
+3. CAMPOS OBLIGATORIOS por ejercicio principal:
    ⚠️ TODOS los campos deben estar completos. NO dejes ningún campo vacío.
 
    - name: Nombre claro y específico del ejercicio
@@ -112,46 +146,19 @@ ESQUEMA EXACTO:
    - rir: Repeticiones en Reserva (0-3, donde 0=fallo, 3=fácil)
    - tempo: Cadencia 4 dígitos (ej: "3010" = 3s bajar, 0s pausa, 1s subir, 0s arriba)
    - rest: Descanso entre series (ej: "60s", "90s", "120s")
-   - notes: Consejos técnicos, instrucciones de forma, precauciones y tips explicativos
-   - video: URL de YouTube con demostración del ejercicio
+   - notes: Puntos clave de técnica, precauciones y errores comunes a evitar
+   - video: URL de YouTube REAL y VÁLIDA con demostración del ejercicio
 
    📹 VIDEOS DE YOUTUBE (CRÍTICO):
-   - OBLIGATORIO: Cada ejercicio DEBE incluir un link de YouTube REAL y VÁLIDO
-   - USA VIDEOS POPULARES Y VERIFICABLES de canales reconocidos:
-     * AthleanX (Jeff Cavaliere)
-     * Jeff Nippard
-     * Buff Academy (español)
-     * Mi Diario de Entrenamiento (español)
-     * Powerexplosive (español)
-     * ScottHermanFitness
-   
    - FORMATO EXACTO: "https://www.youtube.com/watch?v=[ID_VIDEO]"
-   - NO uses URLs de ejemplo como "EJEMPLO1" o "EJEMPLO2"
-   - NO inventes IDs de video
-   
-   - INSTRUCCIONES PARA GENERAR URLs REALES:
-     1. Piensa en el nombre del ejercicio
-     2. Imagina qué buscarías en YouTube para ese ejercicio
-     3. Usa IDs de videos populares que estadísticamente existen:
-        - Videos con >100K views suelen tener IDs cortos y memorables
-        - Busca patrones comunes de IDs de fitness
-     4. Para ejercicios comunes, usa estos ejemplos de videos REALES:
-        
-        PRESS DE BANCA: "https://www.youtube.com/watch?v=rT7DgCr-3pg" (AthleanX)
-        SENTADILLA:     "https://www.youtube.com/watch?v=ultWZbUMPL8" (AthleanX)
-        PESO MUERTO:    "https://www.youtube.com/watch?v=hd7xwxjwe8U" (Jeff Nippard)
-        DOMINADAS:      "https://www.youtube.com/watch?v=eGo4IYlbE5g" (AthleanX)
-        
-     5. Para ejercicios específicos, adapta el ID pero mantenlo realista
+   - USA canales reconocidos: AthleanX, Jeff Nippard, Powerexplosive, ScottHermanFitness
+   - IDs de referencia REALES:
+     PRESS DE BANCA: "https://www.youtube.com/watch?v=rT7DgCr-3pg"
+     SENTADILLA:     "https://www.youtube.com/watch?v=ultWZbUMPL8"
+     PESO MUERTO:    "https://www.youtube.com/watch?v=hd7xwxjwe8U"
+     DOMINADAS:      "https://www.youtube.com/watch?v=eGo4IYlbE5g"
 
-   📝 NOTAS EXPLICATIVAS:
-   - Las notas deben ser DETALLADAS y ÚTILES, no genéricas
-   - Incluye puntos clave de técnica (ej: "Mantén los codos a 45°, escápulas retraídas")
-   - Agrega precauciones si el ejercicio es técnicamente complejo
-   - Menciona errores comunes a evitar cuando sea relevante
-   - Si aplica una técnica especial (drop set, superserie), especifícalo claramente
-
-3. ADAPTACIÓN AL OBJETIVO:
+4. ADAPTACIÓN AL OBJETIVO:
 
    ${objective === 'Volumen muscular' ? `
    📈 VOLUMEN MUSCULAR:
@@ -183,7 +190,7 @@ ESQUEMA EXACTO:
    - Incluye ejercicios compuestos y multiarticulares
    ` : ''}
 
-4. NIVEL DE DIFICULTAD:
+5. NIVEL DE DIFICULTAD:
 
    ${level === 'Principiante' ? `
    🌱 PRINCIPIANTE:
@@ -209,7 +216,7 @@ ESQUEMA EXACTO:
    - Periodización dentro de las semanas
    ` : ''}
 
-5. TÉCNICAS ESPECÍFICAS (Tags):
+6. TÉCNICAS ESPECÍFICAS (Tags):
    ${tags ? `
    Aplica estas técnicas: ${tags}
    
@@ -220,13 +227,13 @@ ESQUEMA EXACTO:
    ${tags.toLowerCase().includes('giant set') ? '- Crea giant sets con 4 ejercicios consecutivos' : ''}
    ` : '- Usa progresión estándar'}
 
-6. VARIACIÓN ENTRE SEMANAS:
+7. VARIACIÓN ENTRE SEMANAS:
    - Semana 1-2: Volumen base
    - Semana 3-4: Incrementa intensidad (más peso, menos reps) o volumen (más sets)
    - Varía los ejercicios pero mantén los patrones de movimiento
    - Incorpora periodización ondulante si es nivel avanzado
 
-7. GROUPS MUSCULARES (para ${frequency} días/semana):
+8. GRUPOS MUSCULARES (para ${frequency} días/semana):
    ${frequency === '3' ? `
    - Día 1: Full Body A
    - Día 2: Full Body B
@@ -257,15 +264,14 @@ ESQUEMA EXACTO:
 ⚠️ Asegúrate de que sea JSON VÁLIDO (sin comas finales, comillas correctas)
 
 🔴 RECORDATORIO CRÍTICO:
-Cada ejercicio DEBE incluir TODOS estos campos sin excepción:
-✓ name (nombre del ejercicio)
-✓ sets (número de series)
-✓ reps (repeticiones o duración)
-✓ rest (descanso entre series)
-✓ rir (repeticiones en reserva)
-✓ tempo (cadencia 4 dígitos)
-✓ notes (explicación técnica detallada)
-✓ video (URL de YouTube válida y disponible hasta diciembre 2025)
+
+Cada día DEBE contener:
+✓ "warmup" → array con 3-4 ejercicios de entrada en calor (name, duration, notes)
+   → Se imprime como tabla "Entrada en calor del Día X"
+✓ "exercises" → array con 5-8 ejercicios principales
+
+Cada ejercicio principal DEBE incluir TODOS estos campos sin excepción:
+✓ name · sets · reps · rest · rir · tempo · notes · video
 
 NO omitas ningún campo. El PDF necesita todos los datos completos.
 

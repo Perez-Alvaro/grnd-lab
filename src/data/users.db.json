@@ -1,0 +1,24 @@
+{
+  "_comment": "Mock user database. To add users run: node src/scripts/createUser.js — paste the output here. In DEV mode only, __devPassword is hashed automatically on first load so the app works out of the box. Remove __devPassword before deploying to production.",
+  "users": [
+    {
+  "id": "usr_1773694759170",
+  "name": "admin",
+  "email": "perezalvaroraul26@gmail.com",
+  "passwordHash": "$2b$10$FSgCfJgY29.WcQGY.fT5eeOcFeGtoKdGqs3eW6w5TuaNrdTLz4aEu",
+  "role": "admin",
+  "active": true,
+  "createdAt": "2026-03-16T20:59:19.170Z"
+},
+    {
+      "id": "usr_02",
+      "name": "Coach Demo",
+      "email": "coach@grindlab.dev",
+      "__devPassword": "coach123",
+      "passwordHash": "REPLACE_VIA_createUser_SCRIPT",
+      "role": "coach",
+      "active": true,
+      "createdAt": "2024-01-01T00:00:00Z"
+    }
+  ]
+}

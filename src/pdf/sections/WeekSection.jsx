@@ -104,7 +104,35 @@ const ExerciseTable = ({ exercises, styles }) => {
   );
 };
 
-const DayBlock = ({ day, styles }) => {
+const WarmupTable = ({ warmupExercises, dayNumber, styles }) => {
+  if (!warmupExercises || !warmupExercises.length) return null;
+  return (
+    <View style={{ marginBottom: 6 }}>
+      <Text style={[styles.dayName, { fontSize: 9, marginBottom: 3, opacity: 0.75 }]}>
+        Entrada en calor del Día {dayNumber}
+      </Text>
+      <View style={styles.table}>
+        <View style={[styles.tableRow, styles.tableHeaderRow]}>
+          <Text style={[styles.tableCell, styles.tableHeaderCell, { flex: 3 }]}>Ejercicio</Text>
+          <Text style={[styles.tableCell, styles.tableHeaderCell, { flex: 1 }]}>Duración</Text>
+          <Text style={[styles.tableCell, styles.tableHeaderCell, { flex: 4 }]}>Notas</Text>
+        </View>
+        {warmupExercises.map((ex, idx) => (
+          <View
+            key={`warmup-${idx}`}
+            style={[styles.tableRow, idx % 2 !== 0 ? styles.tableRowAlternate : null]}
+          >
+            <Text style={[styles.tableCell, { flex: 3 }]}>{ex.name || "—"}</Text>
+            <Text style={[styles.tableCell, { flex: 1 }]}>{ex.duration || "—"}</Text>
+            <Text style={[styles.tableCell, { flex: 4 }]}>{ex.notes || "—"}</Text>
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+};
+
+const DayBlock = ({ day, dayNumber, styles }) => {
   const isRestDay = day.type === "DESCANSO";
 
   return (
@@ -123,7 +151,14 @@ const DayBlock = ({ day, styles }) => {
       {isRestDay ? (
         <Text style={styles.restMessage}>{day.recoveryMessage}</Text>
       ) : (
-        <ExerciseTable exercises={day.exercises} styles={styles} />
+        <>
+          <WarmupTable
+            warmupExercises={day.warmupExercises}
+            dayNumber={dayNumber}
+            styles={styles}
+          />
+          <ExerciseTable exercises={day.exercises} styles={styles} />
+        </>
       )}
     </View>
   );
@@ -145,7 +180,7 @@ const WeekSection = ({ week, styles, breakBefore = false }) => (
       </Link>
     </View>
     {week.days.map((day, idx) => (
-      <DayBlock key={`${week.number}-${idx}`} day={day} styles={styles} />
+      <DayBlock key={`${week.number}-${idx}`} day={day} dayNumber={day.dayNumber ?? idx + 1} styles={styles} />
     ))}
   </View>
 );
