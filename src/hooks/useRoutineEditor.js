@@ -21,6 +21,7 @@ export const createDay = (label = "Día 1") => ({
   name: label,
   type: "ENTRENAMIENTO",
   recoveryNote: "",
+  warmupExercises: [],
   exercises: [createExercise()],
 });
 
@@ -40,6 +41,7 @@ const cloneExercise = (exercise) => ({
 const cloneDay = (day) => ({
   ...day,
   id: createId(),
+  warmupExercises: (day.warmupExercises || []).map(ex => ({ ...ex })),
   exercises: day.exercises.map(cloneExercise),
 });
 
@@ -105,6 +107,16 @@ const convertLegacyDay = (day, index = 0) => {
         ? day.ejercicios.map(convertLegacyExercise)
         : [];
 
+  // Extraer warmup exercises del formato IA (warmup) o legacy (entradaEnCalor)
+  const warmupSource = day?.warmup || day?.warmupExercises || day?.entradaEnCalor || [];
+  const warmupExercises = Array.isArray(warmupSource)
+    ? warmupSource.map(ex => ({
+      name: ex.name || ex.nombre || '',
+      duration: ex.duration || ex.duracion || '',
+      notes: ex.notes || ex.notas || '',
+    }))
+    : [];
+
   return {
     id: createId(),
     name: day?.title || day?.name || day?.nombre || `Día ${index + 1}`,
@@ -115,6 +127,7 @@ const convertLegacyDay = (day, index = 0) => {
       day?.notes ||
       day?.notas ||
       "",
+    warmupExercises,
     exercises: legacyExercises.length ? legacyExercises : [createExercise()],
   };
 };

@@ -69,12 +69,25 @@ const ExerciseTable = ({ exercises, styles }) => {
             <Text style={[styles.tableCell, styles.rirCol]}>{rir}</Text>
             <Text style={[styles.tableCell, styles.tempoCol]}>{tempo}</Text>
             {videoUrl ? (
-              <Link
-                src={videoUrl}
-                style={[styles.tableCell, styles.videoCol, styles.videoLink]}
-              >
-                Ver
-              </Link>
+              <View style={[styles.tableCell, styles.videoCol, { padding: 0 }]}>
+                <Link
+                  src={videoUrl}
+                  style={{
+                    backgroundColor: '#2E4A5F',
+                    borderRadius: 4,
+                    marginVertical: 4,
+                    marginHorizontal: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minHeight: 18
+                  }}
+                >
+                  <Text style={{ color: '#FFFFFF', fontWeight: 700, fontSize: 8 }}>
+                    VER VIDEO
+                  </Text>
+                </Link>
+              </View>
             ) : (
               <Text style={[styles.tableCell, styles.videoCol]}>-</Text>
             )}

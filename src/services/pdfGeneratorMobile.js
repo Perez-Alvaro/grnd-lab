@@ -519,28 +519,15 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
           // ============================================
           
           if (hasVideo) {
-            const buttonWidth = 18;        // ~50px
-            const buttonHeight = 11;       // ~31px (32-36px target)
-            const buttonRadius = 2.8;      // 8px
-            const buttonX = cardContentX + metricsAvailableWidth + 2;
-            const buttonY = metricsY - 1.5; // Centrado con métricas
-            
-            // Fondo del botón (acción secundaria)
-            doc.setFillColor(...accent);
-            doc.roundedRect(buttonX, buttonY, buttonWidth, buttonHeight, buttonRadius, buttonRadius, 'F');
-            
-            // Texto del botón (no competir visualmente)
-            doc.setFontSize(8); // Texto más discreto
-            doc.setTextColor(255, 255, 255);
-            doc.setFont('helvetica', 'bold');
-            const buttonText = 'VIDEO';
-            const textWidth = doc.getTextWidth(buttonText);
-            const textX = buttonX + (buttonWidth - textWidth) / 2;
-            doc.text(buttonText, textX, buttonY + 7);
-            
-            // Link clickeable
             const videoUrl = exercise.video || exercise.videoUrl;
-            doc.link(buttonX, buttonY, buttonWidth, buttonHeight, { url: videoUrl });
+            if (videoUrl) {
+              doc.setFontSize(8);
+              doc.setTextColor(...accent);
+              doc.setFont('helvetica', 'bold');
+
+              const videoLinkText = 'VER VIDEO';
+              doc.textWithLink(videoLinkText, cardContentX + metricsAvailableWidth, metricsY, { url: videoUrl });
+            }
           }
           
           cardContentY += metricsBlockHeight;
@@ -587,75 +574,15 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
   });
 
   // ============================================
-  // ÚLTIMA PÁGINA: CONSEJOS IMPORTANTES
-  // ============================================
-
-  doc.addPage();
-  yPos = spacing32 + 6;
-
-  // Título de la sección
-  doc.setFontSize(20);
-  doc.setTextColor(...accent);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Consejos Importantes', margin, yPos);
-  yPos += spacing24;
-
-  // Lista de consejos
-  doc.setFontSize(11);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(...textPrimary);
-
-  const tips = [
-    '📊 Registra tus cargas y progresiones semanalmente',
-    '💧 Mantén una hidratación adecuada durante el entrenamiento',
-    '🍽️ Asegura un consumo proteico adecuado para la recuperación',
-    '😴 Prioriza 7-9 horas de sueño de calidad',
-    '🧘 Incluye trabajo de movilidad y estiramiento regular',
-    '⚠️ Si sientes dolor, consulta con un profesional',
-    '📈 El progreso requiere consistencia y paciencia',
-  ];
-
-  tips.forEach(tip => {
-    const tipLines = doc.splitTextToSize(tip, contentWidth);
-    doc.text(tipLines, margin, yPos);
-    yPos += (tipLines.length * 6) + spacing8;
-  });
-
-  yPos += spacing16;
-
-  // ============================================
-  // Información de compra (si existe)
-  // ============================================
-  
-  if (purchaseInfo.userName || purchaseInfo.purchaseDate) {
-    doc.setFontSize(9);
-    doc.setTextColor(...textSecondary);
-    doc.setFont('helvetica', 'normal');
-
-    if (purchaseInfo.userName) {
-      doc.text(`Cliente: ${purchaseInfo.userName}`, margin, yPos);
-      yPos += spacing8;
-    }
-
-    if (purchaseInfo.purchaseDate) {
-      const date = new Date(purchaseInfo.purchaseDate).toLocaleDateString('es-AR');
-      doc.text(`Fecha de compra: ${date}`, margin, yPos);
-      yPos += spacing8;
-    }
-
-    yPos += spacing16;
-  }
-
-  // ============================================
   // Footer discreto
   // ============================================
-  
+
   const footerY = pageHeight - margin;
   doc.setFontSize(8);
   doc.setTextColor(...textSecondary);
   doc.setFont('helvetica', 'italic');
-  doc.text('Generado por Grind-Lab', margin, footerY);
-  
+  doc.text('Generado por BaseRutina', margin, footerY);
+
   const currentDate = new Date().toLocaleDateString('es-AR');
   doc.text(currentDate, pageWidth - margin, footerY, { align: 'right' });
 

@@ -187,15 +187,45 @@ export const generateRoutinePDF = (routine, purchaseInfo = {}) => {
         if (exercise.tempo) details.push(`Tempo: ${exercise.tempo}`);
 
         doc.text(details.join(' | '), margin + 10, yPos);
-        yPos += 8; // Espacio antes de las notas
+        yPos += 8; // Espacio antes de las notas/video
+
+        // Botón de video (si existe)
+        const videoUrl = exercise.video || exercise.videoUrl;
+        if (videoUrl) {
+          const linkText = 'VER VIDEO';
+          const btnWidth = doc.getTextWidth(linkText) + 6;
+          const btnHeight = 6;
+          const btnX = margin + 10;
+          const btnY = yPos - 4; // Ajuste para centrar verticalmente sobre el texto principal
+
+          // Dibujar el fondo del botón
+          doc.setFillColor(...primaryColor);
+          doc.roundedRect(btnX - 3, btnY, btnWidth, btnHeight, 1.5, 1.5, 'F');
+          
+          // Escribir el texto sobre el botón
+          doc.setFontSize(8);
+          doc.setTextColor(255, 255, 255);
+          doc.setFont('helvetica', 'bold');
+          doc.text(linkText, btnX, btnY + 4.5);
+          
+          // Área de link interactiva (cubriendo todo el botón)
+          doc.link(btnX - 3, btnY, btnWidth, btnHeight, { url: videoUrl });
+
+          yPos += 8;
+        }
 
         // Notas del ejercicio (fila separada debajo)
-        if (exercise.notes || exercise.note) {
+        const rawNoteText = exercise.notes || exercise.note;
+        // Filtramos las notas para que no se duplique la URL del vídeo en el PDF
+        const cleanNoteText = Array.isArray(rawNoteText) 
+          ? rawNoteText.filter(note => note.trim() !== videoUrl.trim()).join(' | ') 
+          : (String(rawNoteText).trim() === videoUrl.trim() ? '' : rawNoteText);
+
+        if (cleanNoteText && cleanNoteText !== 'undefined') {
           doc.setFontSize(10);
           doc.setFont('helvetica', 'italic');
           doc.setTextColor(...grayColor);
-          const noteText = exercise.notes || exercise.note;
-          const noteLines = doc.splitTextToSize(`💡 Notas: ${noteText}`, pageWidth - margin - 15);
+          const noteLines = doc.splitTextToSize(`💡 Notas: ${cleanNoteText}`, pageWidth - margin - 15);
           doc.text(noteLines, margin + 10, yPos);
           yPos += noteLines.length * 5 + 5;
         }
@@ -217,47 +247,19 @@ export const generateRoutinePDF = (routine, purchaseInfo = {}) => {
   });
 
   // ============================================
-  // ÚLTIMA PÁGINA: INFORMACIÓN ADICIONAL
+  // Footer
   // ============================================
 
+  // Nueva página para el footer
   doc.addPage();
-  yPos = margin;
-
-  doc.setFontSize(18);
-  doc.setTextColor(...darkColor);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Consejos Importantes', margin, yPos);
-  yPos += 15;
-
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
-  doc.setTextColor(...darkColor);
-
-  const tips = [
-    '📊 Registra tus cargas y progresiones semanalmente',
-    '💧 Mantén una hidratación adecuada durante el entrenamiento',
-    '🍽️ Asegura un consumo proteico adecuado para la recuperación',
-    '😴 Prioriza 7-9 horas de sueño de calidad',
-    '🧘 Incluye trabajo de movilidad y estiramiento regular',
-    '⚠️ Si sientes dolor, detén el ejercicio y consulta un profesional',
-    '📈 El progreso requiere consistencia y paciencia',
-  ];
-
-  tips.forEach(tip => {
-    const tipLines = doc.splitTextToSize(tip, pageWidth - 2 * margin);
-    doc.text(tipLines, margin, yPos);
-    yPos += tipLines.length * 6 + 4;
-  });
-
-  yPos += 20;
-
-  // Footer
+  const footerY = pageHeight - margin;
   doc.setFontSize(8);
   doc.setTextColor(...grayColor);
   doc.setFont('helvetica', 'italic');
-  doc.text('Este programa fue generado por Fitter - Tu plataforma de entrenamiento personalizado', margin, yPos);
-  yPos += 5;
-  doc.text('Para más información, visita nuestra plataforma', margin, yPos);
+  doc.text('Generado por BaseRutina', margin, footerY);
+
+  const currentDate = new Date().toLocaleDateString('es-AR');
+  doc.text(currentDate, pageWidth - margin, footerY, { align: 'right' });
 
   // Generar el PDF como blob
   const pdfBlob = doc.output('blob');

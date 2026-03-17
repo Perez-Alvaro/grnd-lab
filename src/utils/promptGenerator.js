@@ -23,29 +23,26 @@ export function generateAIPrompt(metadata) {
     author = 'Coach'
   } = metadata;
 
-  const prompt = `ACTÚA COMO UN ENTRENADOR PERSONAL EXPERTO CON AÑOS DE EXPERIENCIA.
+  const prompt = `ERES UN ENTRENADOR PERSONAL DE ÉLITE CON EXPERIENCIA EN PERIODIZACIÓN Y PSICOLOGÍA DEL RENDIMIENTO.
 
-Tu misión es crear una rutina de entrenamiento PROFESIONAL y DETALLADA en formato JSON.
+Tu misión es crear una rutina de entrenamiento PROFESIONAL, MOTIVADORA y DETALLADA en formato JSON puro.
+Las notas de cada ejercicio deben reflejar excelencia técnica COMBINADA con un poco de motivación directa e inspiradora.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋 INFORMACIÓN DEL CLIENTE
+📋 CLIENTE Y CONTEXTO DE ENTRENAMIENTO
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 👤 Género: ${gender}
-🎯 Objetivo: ${objective}
+🎯 Objetivo principal: ${objective}
 📊 Nivel: ${level}
-📅 Frecuencia: ${frequency} días por semana
+📅 Frecuencia: ${frequency} días/semana
 ⏱️ Duración: ${durationWeeks} semanas
-🏷️ Técnicas/Tags: ${tags || 'Entrenamiento estándar'}
-📝 Notas especiales: ${notes || 'Ninguna'}
+❌ Ejercicios a EVITAR: ${tags || 'Ninguno (sin restricciones)'}
+📝 Excepciones y consideraciones del coach: ${notes || 'Ninguna especial'}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📐 ESTRUCTURA REQUERIDA (COPIA EXACTA)
+📐 ESTRUCTURA REQUERIDA - JSON PURO (SIN BLOQUES DE CÓDIGO)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Debes responder ÚNICAMENTE con un objeto JSON válido. NO agregues texto antes ni después.
-
-ESQUEMA EXACTO:
 
 {
   "name": "${name}",
@@ -66,24 +63,37 @@ ESQUEMA EXACTO:
         {
           "name": "Día 1 - Push (Pecho, Hombros, Tríceps)",
           "type": "training",
-          "warmup": [
-            {
-              "name": "Trote en cinta o bicicleta",
-              "duration": "5 min",
-              "notes": "Ritmo moderado (60-65% FC máx) para elevar temperatura corporal"
-            },
-            {
-              "name": "Rotaciones de hombro + círculos de brazos",
-              "duration": "2 min",
-              "notes": "Movilidad activa de la articulación del hombro. 10 repeticiones cada dirección"
-            },
-            {
-              "name": "Flexiones de activación",
-              "duration": "2 series x 10",
-              "notes": "Sin carga, enfocado en activar pectorales y estabilizadores de escápula"
-            }
-          ],
           "exercises": [
+            {
+              "name": "[ENTRADA EN CALOR] Movilidad torácica y cadera",
+              "sets": "1",
+              "reps": "2 min",
+              "rir": "3",
+              "tempo": "0000",
+              "rest": "0s",
+              "notes": "Movilidad articular: extensiones torácicas + apertura de cadera en cuadrupedia. Respira profundo, prioriza rango sin dolor. Calienta articulaciones clave antes de cargar.",
+              "video": "https://www.youtube.com/watch?v=QOVaHwm-Q6U"
+            },
+            {
+              "name": "[ENTRADA EN CALOR] Rotaciones de hombro + círculos de brazos",
+              "sets": "1",
+              "reps": "2 min (10 reps c/dirección)",
+              "rir": "3",
+              "tempo": "0000",
+              "rest": "0s",
+              "notes": "Movilidad articular específica: rotación escapular controlada, 10 reps adelante y atrás. Postura alta, sin dolor. Hombros listos, cero lesiones mañana.",
+              "video": "https://www.youtube.com/watch?v=Uvn65Eqk0SM"
+            },
+            {
+              "name": "[ENTRADA EN CALOR] Flexiones de pecho activación",
+              "sets": "2",
+              "reps": "10",
+              "rir": "3",
+              "tempo": "2010",
+              "rest": "30s",
+              "notes": "TÉCNICA: Flexiones controladas sin carga. Activar pectorales y escápula. Cada rep cuenta. Disciplina en detalles es hábito diario.",
+              "video": "https://www.youtube.com/watch?v=IODxDxX7oi4"
+            },
             {
               "name": "Press de Banca con Barra",
               "sets": "4",
@@ -91,7 +101,7 @@ ESQUEMA EXACTO:
               "rir": "2",
               "tempo": "3010",
               "rest": "90s",
-              "notes": "Controla la fase excéntrica (3s bajada). Mantén escápulas retraídas y pies firmes en el suelo. Barra debe tocar pecho medio-bajo",
+              "notes": "TÉCNICA: Pies firmes. Omóplatos retraídos. Baja 3 seg, pausa mínima, sube explosivo 1 seg. Tu movimiento base. No negocies forma por peso. Sufre hoy, celebra después.",
               "video": "https://www.youtube.com/watch?v=rT7DgCr-3pg"
             },
             {
@@ -101,8 +111,28 @@ ESQUEMA EXACTO:
               "rir": "2",
               "tempo": "2010",
               "rest": "60s",
-              "notes": "Banco a 45 grados. Baja hasta sentir estiramiento en pecho superior. Evita arquear excesivamente la espalda",
+              "notes": "TÉCNICA: Banco 45°. Mancuernas a hombros. Baja hasta estiramiento sin sacrificar forma. 2 seg bajada, 1 seg subida. Pecho superior. Cuando duela, estás creciendo.",
               "video": "https://www.youtube.com/watch?v=8iPEnn-ltC8"
+            },
+            {
+              "name": "Fondos en Paralelas o Tríceps Cuerda",
+              "sets": "3",
+              "reps": "10-12",
+              "rir": "2",
+              "tempo": "2010",
+              "rest": "60s",
+              "notes": "TÉCNICA: Fondos cuerpo vertical, codos al torso, baja 2 seg hasta 90°. Cuerda inclinado, codos fijos, extiende explosivo. Elige tu variante. Incomodidad = progreso.",
+              "video": "https://www.youtube.com/watch?v=pDMXNSucLco"
+            },
+            {
+              "name": "Elevaciones Laterales con Mancuernas",
+              "sets": "3",
+              "reps": "12-15",
+              "rir": "2",
+              "tempo": "2020",
+              "rest": "45s",
+              "notes": "TÉCNICA: De pie, torso neutral. Sube hasta altura hombros (NO más). Codos flectados. Pausa 1 seg arriba, baja 2 seg. Hombros anchos se construyen. Cada rep es ladrillo.",
+              "video": "https://www.youtube.com/watch?v=q-g_Yy-T90w"
             }
           ]
         }
@@ -112,172 +142,438 @@ ESQUEMA EXACTO:
 }
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-⚙️ REGLAS DE GENERACIÓN
+🏋️ FORMAS DE ENTRENAMIENTO DISPONIBLES - ELIGE LA MEJOR SEGÚN CONTEXTO
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-1. ESTRUCTURA:
-   - Genera ${durationWeeks} semanas completas
-   - Cada semana debe tener ${frequency} días de entrenamiento
-   - Cada día DEBE tener: una sección "warmup" + una sección "exercises" (5-8 ejercicios)
+INSTRUCCIÓN: Elige la MEJOR forma de entrenamiento basada en:
+- OBJETIVO del atleta
+- NIVEL (Principiante/Intermedio/Avanzado)
+- GÉNERO (considera diferencias biomecánicas y objetivos típicos)
+- FRECUENCIA de entrenamientos
 
-2. ENTRADA EN CALOR (campo "warmup" por día):
-   ⚠️ OBLIGATORIO: cada día debe incluir 3-4 ejercicios de entrada en calor ESPECÍFICOS para el grupo muscular del día.
+📌 FORMAS DE ENTRENAMIENTO PRINCIPALES:
 
-   CAMPOS por ejercicio de warmup:
-   - name: Nombre del ejercicio de calentamiento
-   - duration: Tiempo o series (ej: "5 min", "2 series x 10")
-   - notes: Objetivo del ejercicio y puntos clave de ejecución
+1️⃣ PPL - PUSH/PULL/LEGS SPLIT (RECOMENDADO PARA HIPERTROFIA)
+   ✓ Mejor para: Volumen muscular, nivel intermedio-avanzado
+   ✓ Estructura: 3 días (P/P/L) o 6 días (P/P/L x2)
+   ✓ Volumen: Alto (15-20 sets por grupo muscular)
+   ✓ Recuperación: Excelente para músculos específicos
+   ✓ Nota: Perfecto para hombres y mujeres con objetivo de hipertrofia
 
-   📋 TABLA DE IMPRESIÓN: el bloque warmup se imprimirá como tabla con título
-   "Entrada en calor del Día X" — el X corresponde al número de día dentro de la semana.
+2️⃣ UPPER/LOWER SPLIT (RECOMENDADO PARA EQUILIBRIO)
+   ✓ Mejor para: Fuerza + hipertrofia, nivel intermedio
+   ✓ Estructura: 4 días (U/L/U/L) o 5+ días
+   ✓ Volumen: Moderado-alto (12-16 sets por sesión)
+   ✓ Recuperación: Buena, permite entrenar tren superior 2x/semana
+   ✓ Nota: Excelente para mujeres que buscan equilibrio inferior/superior
 
-   Tipos de warmup según el día:
-   - Push: cardio leve 3-5 min + movilidad de hombros + activación de pecho
-   - Pull: cardio leve 3-5 min + movilidad escapular + activación de dorsales
-   - Pierna: cardio leve 5 min + movilidad de cadera + activación de glúteos
-   - Full Body: cardio leve 5 min + movilidad articular general + activación core
+3️⃣ FULL BODY (RECOMENDADO PARA PRINCIPIANTES Y FUERZA)
+   ✓ Mejor para: Principiantes, fuerza pura, frecuencia baja (3-4 días)
+   ✓ Estructura: 3 días (A/B/C rotación) o 4 días estándar
+   ✓ Volumen: Moderado (10-15 sets por sesión)
+   ✓ Recuperación: Muy buena, entrenar cada grupo 3x/semana
+   ✓ Nota: Ideal para que aprendan técnica y construyan base. Mujeres + coordinación
 
-3. CAMPOS OBLIGATORIOS por ejercicio principal:
-   ⚠️ TODOS los campos deben estar completos. NO dejes ningún campo vacío.
+4️⃣ BODY PART SPLIT / BROSPLIT (RECOMENDADO PARA VOLUMEN EXTREMO)
+   ✓ Mejor para: Hipertrofia extrema, avanzados, 5-6 días
+   ✓ Estructura: Pecho | Espalda | Pierna | Hombros | Brazos | Accesorios
+   ✓ Volumen: MUY alto (20-25 sets por grupo muscular)
+   ✓ Recuperación: Necesita 7-10 días de recuperación por grupo
+   ✓ Nota: Solo para atletas avanzados con experiencia
 
-   - name: Nombre claro y específico del ejercicio
-   - sets: Número de series (ej: "3", "4", "3-4")
-   - reps: Rango de repeticiones (ej: "8-12", "10-15") o duración si es isométrico
-   - rir: Repeticiones en Reserva (0-3, donde 0=fallo, 3=fácil)
-   - tempo: Cadencia 4 dígitos (ej: "3010" = 3s bajar, 0s pausa, 1s subir, 0s arriba)
-   - rest: Descanso entre series (ej: "60s", "90s", "120s")
-   - notes: Puntos clave de técnica, precauciones y errores comunes a evitar
-   - video: URL de YouTube REAL y VÁLIDA con demostración del ejercicio
+5️⃣ CONJUGATE METHOD - PERIODIZACIÓN CONJUGADA (RECOMENDADO PARA FUERZA)
+   ✓ Mejor para: Fuerza máxima, composición corporal, aletlas avanzados
+   ✓ Estructura: 4 días (Max Effort / Dynamic Effort / Repetition / Accesories)
+   ✓ Volumen: Bajo-moderado (6-12 sets de movimientos principales)
+   ✓ Recuperación: Excelente, cambia estímulos constantemente
+   ✓ Nota: Alto rendimiento, muy eficiente
 
-   📹 VIDEOS DE YOUTUBE (CRÍTICO):
-   - FORMATO EXACTO: "https://www.youtube.com/watch?v=[ID_VIDEO]"
-   - USA canales reconocidos: AthleanX, Jeff Nippard, Powerexplosive, ScottHermanFitness
-   - IDs de referencia REALES:
-     PRESS DE BANCA: "https://www.youtube.com/watch?v=rT7DgCr-3pg"
-     SENTADILLA:     "https://www.youtube.com/watch?v=ultWZbUMPL8"
-     PESO MUERTO:    "https://www.youtube.com/watch?v=hd7xwxjwe8U"
-     DOMINADAS:      "https://www.youtube.com/watch?v=eGo4IYlbE5g"
+6️⃣ PERIODIZACIÓN LINEAL (RECOMENDADO PARA FUERZA PROGRESIVA)
+   ✓ Mejor para: Ganancia consistente de fuerza, principiantes avanzados
+   ✓ Estructura: Semana 1-2 volumen alto, Semana 3-4 intensidad alta
+   ✓ Volumen: Progresa de + reps a + peso
+   ✓ Recuperación: Buena, cambio semanal previene meseta
+   ✓ Nota: Perfecto para deportistas, menores variaciones
 
-4. ADAPTACIÓN AL OBJETIVO:
+7️⃣ PERIODIZACIÓN ONDULANTE (RECOMENDADO PARA VERSATILIDAD)
+   ✓ Mejor para: Objetivos mixtos (fuerza + hipertrofia), intermedio-avanzado
+   ✓ Estructura: Cambia dentro de MISMA SEMANA (día A=fuerza, día B=hipertrofia)
+   ✓ Volumen: Varía cada sesión (3-5 reps día 1, 8-12 reps día 2)
+   ✓ Recuperación: Óptima, evita adaptación
+   ✓ Nota: Excelente para atletas que buscan una solución completa
+
+8️⃣ CIRCUIT TRAINING / CONDITIONING (RECOMENDADO PARA PÉRDIDA DE GRASA)
+   ✓ Mejor para: Pérdida de grasa, conditioning, resilencia cardiovascular
+   ✓ Estructura: 4-6 ejercicios sin descanso o mínimo descanso
+   ✓ Volumen: Moderado-alto, densidad muy alta
+   ✓ Recuperación: Demanda metabólica alta = quema calórica
+   ✓ Nota: Perfecto para personas con tiempo limitado
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 CRITERIOS DE SELECCIÓN DE FORMA DE ENTRENAMIENTO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SELECCIONA según OBJETIVO:
+
+${objective === 'Volumen muscular' ? `
+📈 VOLUMEN MUSCULAR → Usa: PPL (mejor) o Body Part Split o Upper/Lower
+   Razón: Alto volumen es crítico. Los grupos musculares necesitan 12-20 sets/semana
+   Rango de sets: 15-20 por grupo muscular
+   Frecuencia: 2x/semana por grupo
+` : ''}
+
+${objective === 'Fuerza' ? `
+💪 FUERZA MÁXIMA → Usa: Conjugate (mejor) o Periodización Lineal o Full Body
+   Razón: Requiere baja rep, alta intensidad, frecuencia 2x/semana por patrón
+   Rango de sets: 6-12 sets de movimientos principales
+   Frecuencia: 2x/semana por patrón de movimiento
+` : ''}
+
+${objective === 'Pérdida de grasa' ? `
+🔥 PÉRDIDA DE GRASA → Usa: Circuit Training (mejor) o Upper/Lower o Full Body
+   Razón: Volumen moderado, densidad alta, poco descanso = gasto calórico
+   Rango de sets: 10-15 sets con 30-45s rest
+   Frecuencia: 3-4 días/semana, alta densidad
+` : ''}
+
+${objective === 'Resistencia' ? `
+🏃 RESISTENCIA/CONDITIONING → Usa: Circuit Training o Periodización Ondulante
+   Razón: Estímulo constante, no permite recuperación = adaptación cardiovascular
+   Rango de sets: 15-20 sets con 30s rest máximo
+   Frecuencia: 3-4 días/semana, trabajo metabólico
+` : ''}
+
+SELECCIONA según NIVEL:
+
+${level === 'Principiante' ? `
+🌱 PRINCIPIANTE → Usa: Full Body (mejor) o Upper/Lower
+   Razón: Necesita aprender patrones de movimiento, recuperación frecuente
+   Frecuencia: 3 o 4 días/semana
+   Nota: Éxito = consistencia. Los principiantes NO necesitan complejidad
+` : ''}
+
+${level === 'Intermedio' ? `
+🏃 INTERMEDIO → Usa: PPL (mejor) o Upper/Lower o Periodización Ondulante
+   Razón: Ya domina técnica. Ahora puede aumentar volumen y variación
+   Frecuencia: 4-5 días/semana
+   Nota: Este es el nivel más versátil. Casi cualquier forma funciona
+` : ''}
+
+${level === 'Avanzado' ? `
+⚡ AVANZADO → Usa: Conjugate (mejor) o Body Part Split o Periodización Lineal
+   Razón: Músculo adapta rápido. Necesita variación inteligente y periodización
+   Frecuencia: 5-6 días/semana
+   Nota: La sofisticación compensa el tiempo. Aprovecha knowlewdge avanzado
+` : ''}
+
+SELECCIONA según GÉNERO (CONSIDERACIONES):
+
+${gender?.toLowerCase().includes('femenino') || gender?.toLowerCase().includes('mujer') ? `
+👩 ATLETA MUJER → Considera:
+   ✓ Frecuencia higher en tren inferior (glúteos/pierna): 2x/semana
+   ✓ Volumen moderado upper body inicialmente
+   ✓ Formas recomendadas: PPL (enfoque pierna), Upper/Lower, Full Body
+   ✓ Nota: Mujeres tipicamente tienen recuperación más rápida en lower body
+` : ''}
+
+${gender?.toLowerCase().includes('masculino') || gender?.toLowerCase().includes('hombre') ? `
+👨 ATLETA HOMBRE → Considera:
+   ✓ Énfasis torso superior es más efectivo típicamente
+   ✓ Volumen alto en pecho, espalda, hombros produce mejores resultados
+   ✓ Formas recomendadas: PPL, Body Part Split, Conjugate
+   ✓ Nota: Aprox 70% de hombres responden mejor a volumen alto directo
+` : ''}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚙️ INSTRUCCIONES CRÍTICAS DE GENERACIÓN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣ ESTRUCTURA DE DÍAS:
+   • Genera ${durationWeeks} semanas completas
+   • Cada semana: ${frequency} días de entrenamiento
+   • ELIGE LA FORMA DE ENTRENAMIENTO que mejor se adapte (ver sección anterior)
+   • BASÁNDOTE en: Objetivo, Nivel, Género y Frecuencia
+   • CADA DÍA debe iniciar con 3-4 ejercicios de ENTRADA EN CALOR
+   • El calentamiento SIEMPRE incluye movilidad articular específica con breve explicación
+   • SOLO agrega cardio en el calentamiento cuando el objetivo sea "Pérdida de grasa"
+   • TODOS los ejercicios van en un array "exercises" (no hay campo "warmup" separado)
+   • Ejercicios de entrada en calor tienen prefijo "[ENTRADA EN CALOR]" en el nombre (solo en name, NO en notes)
+
+2️⃣ ENTRADA EN CALOR (primeros ejercicios del día):
+   OBLIGATORIO para CADA día de entrenamiento:
+
+   Sets: "1" o "2" (nunca múltiples series pesadas)
+   Reps: Duración o rango ligero (ej: "5 min", "2 min", "10 reps", "10-15 reps")
+   RIR: "3" (siempre sencillo, nunca a fatiga)
+   Tempo: "0000" o movimiento natural (no cuenta)
+   Rest: "0s" o tiempo natural entre movimientos
+
+   Condiciones:
+   - Cardio SÓLO si el objetivo es "Pérdida de grasa" (5 min a 60-65% FC máx). Si no, reemplaza cardio por activación articular o patrones ligeros sin impacto.
+   - SIEMPRE incluye movilidad articular específica con explicación del propósito (ej: escapular, cadera, tobillo, torácica).
+
+   Los tipos según el día (aplica la regla de cardio según objetivo):
+   - Push/Pecho: movilidad hombros/escápula + flexiones de activación (cardio solo si Pérdida de grasa)
+   - Pull/Espalda: movilidad escapular + dominadas asistidas o remo técnico (cardio solo si Pérdida de grasa)
+   - Pierna: movilidad cadera/tobillo + sentadilla corporal o leg press ligero (cardio solo si Pérdida de grasa)
+   - Full Body: movilidad articular completa + movimiento compuesto ligero (cardio solo si Pérdida de grasa)
+
+3️⃣ NOTAS DE EJERCICIOS (CRÍTICO - Breve y profesional para PDF):
+
+   ESTRUCTURA DE NOTAS (MÁXIMO 2-3 RENGLONES):
+   - Línea 1: TIPO + Descripción técnica concisa
+   - Línea 2: Detalles forma + cuidado crítico
+   - Línea 3 (opcional): Frase motivacional breve tipo Goggins
+
+   ⚠️ REGLA DE ORO: Cada nota DEBE ser BREVE. Máximo 250 caracteres, ~2.5 renglones en PDF.
+
+   PARA ENTRADA EN CALOR:
+   "[PROPÓSITO breve + movilidad o activación específica]. [TÉCNICA en 1 línea]. [Goggins de 1 línea]. NO repitas el tag [ENTRADA EN CALOR] en las notas."
+
+   PARA EJERCICIOS PRINCIPALES:
+   "TÉCNICA: [DESCRIPCIÓN breve]. [CUIDADO crítico]. [Goggins breve]."
+
+   MOTIVACIÓN GOGGINS (brevísimos, punzantes):
+   ✓ "No negocies forma por ego."
+   ✓ "El peso sigue la técnica."
+   ✓ "Cada rep es un ladrillo."
+   ✓ "Sufre hoy, celebra después."
+   ✓ "Incomodidad = progreso."
+   ✓ "Vuelve mañana y hazlo de nuevo."
+   ✓ "Haz tu trabajo, sin excusas."
+
+
+4️⃣ CAMPOS OBLIGATORIOS CADA EJERCICIO:
+
+   name: Exacto y claro. Prefijo "[ENTRADA EN CALOR]" para calentamiento. Ej: "[ENTRADA EN CALOR] Trote en cinta"
+   sets: Número (string). "1", "2", "3", "4", etc
+   reps: Rango o duración (string). "8-10", "10-12", "3 min", "2 min (10 reps)", etc
+   rir: Rango en reserva (0-3, donde 0=fallo, 3=fácil). String. Para warmup: "3"
+   tempo: Cadencia 4 dígitos o "0000" para natural. "3010", "2020", "0000"
+   rest: Descanso entre series. "30s", "60s", "90s", "120s", "0s"
+   notes: MÁXIMO 2-3 RENGLONES (~250 caracteres). TÉCNICA + MOTIVACIÓN BREVE. NUNCA excedas para que PDF imprima bien.
+   video: URL YouTube REAL y VERIFICADA.
+
+5️⃣ VIDEOS DE YOUTUBE - CRÍTICO PARA PROFESIONALISMO:
+
+   FORMATO: "https://www.youtube.com/watch?v=[ID_VIDEO]"
+
+   CANALES VERIFICADOS Y CONFIABLES:
+   ✓ AthleanX (Jeff Cavaliere) - Biomecánica perfecta
+   ✓ Jeff Nippard - Ciencia basada en evidencia
+   ✓ Powerexplosive - Técnica hispana de élite
+   ✓ ScottHermanFitness - Demos claras técnica
+   ✓ Omar Isuf (OMarcusFlexington) - Análisis profundo
+   ✓ Stronger by Science - Investigación aplicada
+
+   REFERENCIAS VERIFICADAS (Base de datos de calidad):
+   - Press de Banca: https://www.youtube.com/watch?v=rT7DgCr-3pg (AthleanX)
+   - Sentadilla: https://www.youtube.com/watch?v=ultWZbUMPL8 (Jeff Nippard)
+   - Peso Muerto: https://www.youtube.com/watch?v=hd7xwxjwe8U (Jeff Nippard)
+   - Dominadas: https://www.youtube.com/watch?v=eGo4IYlbE5g (ScottHermanFitness)
+   - Remo Barra: https://www.youtube.com/watch?v=G8V_GCN3hOE (Powerexplosive)
+   - Flexiones: https://www.youtube.com/watch?v=IODxDxX7oi4 (ScottHermanFitness)
+   - Cardio/Trote: https://www.youtube.com/watch?v=loZXw7aFTQ4 (Generic pero claro)
+
+   ⚠️ REGLA DE ORO CRÍTICA:
+   - SI NO ESTÁS 100% SEGURO que un video existe y está HABILITADO, NO LO INCLUYAS
+   - VIDEOS ROTOS = PÉRDIDA TOTAL DE PROFESIONALISMO
+   - Mejor: Usa referencias verificadas que conoces que funcionan
+   - Búsqueda de alternativas: Mismo canal, mismo ejercicio, si cambia el ID
+
+6️⃣ PARÁMETROS POR OBJETIVO (Niveles de intensidad y volumen):
 
    ${objective === 'Volumen muscular' ? `
    📈 VOLUMEN MUSCULAR:
-   - Sets: 3-5 por ejercicio
-   - Reps: 8-12
-   - RIR: 1-2 (cerca del fallo)
-   - Tempo: 3010 o 3110 (enfatiza excéntrica)
-   - Rest: 60-90s
-   - Incluye técnicas avanzadas: drop sets, superseries si hay tags
+   - Reps primarias: 8-12 (rango de hipertrofia pura)
+   - Series por ejercicio: 3-4
+   - RIR promedio: 1-2 (cerca del fallo mecánico)
+   - Rest entre series: 60-90s (compuestos), 45-60s (aislados)
+   - Tempo énfasis: Excéntrica controlada (3 seg bajada típicamente)
+   - Formas recomendadas: PPL, Body Part Split, Upper/Lower
    ` : ''}
 
    ${objective === 'Fuerza' ? `
-   💪 FUERZA:
-   - Sets: 4-6 por ejercicio
-   - Reps: 3-6
-   - RIR: 2-3 (más conservador)
-   - Tempo: X010 (explosivo en concéntrica)
-   - Rest: 120-180s
-   - Prioriza ejercicios compuestos: Squat, Bench, Deadlift
+   💪 FUERZA MÁXIMA:
+   - Reps primarias: 3-6 (fuerza pura)
+   - Series por ejercicio: 4-6
+   - RIR promedio: 2-3 (técnica perfecta siempre)
+   - Rest entre series: 120-180s (recuperación nerviosa completa)
+   - Tempo énfasis: Concéntrica explosiva (1 seg subida)
+   - Formas recomendadas: Conjugate, Periodización Lineal, Full Body
    ` : ''}
 
    ${objective === 'Pérdida de grasa' ? `
-   🔥 PÉRDIDA DE GRASA:
-   - Sets: 3-4 por ejercicio
-   - Reps: 12-15
-   - RIR: 2-3
-   - Tempo: 2010 (ritmo constante)
-   - Rest: 30-45s (circuitos si es posible)
-   - Incluye ejercicios compuestos y multiarticulares
+   🔥 PÉRDIDA DE GRASA / CONDITIONING:
+   - Reps primarias: 12-15 (volumen metabolito)
+   - Series por ejercicio: 3-4
+   - RIR promedio: 1-2
+   - Rest entre series: 30-45s (poco descanso = gasto calórico)
+   - Tempo énfasis: Moderado constante (2010 tipicamente)
+   - Estructura: Compuestos + circuitos, densidad alta
+   - Formas recomendadas: Circuit Training, Upper/Lower, Full Body
    ` : ''}
 
-5. NIVEL DE DIFICULTAD:
-
-   ${level === 'Principiante' ? `
-   🌱 PRINCIPIANTE:
-   - Ejercicios básicos y seguros
-   - Énfasis en técnica
-   - Volumen moderado
-   - Evita técnicas avanzadas
+   ${objective === 'Resistencia' ? `
+   🏃 RESISTENCIA/CONDITIONING:
+   - Reps primarias: 15-20 o trabajo de duración (30-45 seg)
+   - Series por ejercicio: 3-4
+   - RIR promedio: 2-3
+   - Rest entre series: 30-45s máximo (alto volumen, poco descanso)
+   - Tempo énfasis: Acelerado naturalmente (densidad de trabajo)
+   - Estructura: Circuitos, EMOM, o tabata-like
+   - Formas recomendadas: Circuit Training, Periodización Ondulante
    ` : ''}
 
-   ${level === 'Intermedio' ? `
-   🏃 INTERMEDIO:
-   - Mezcla de ejercicios básicos y aislados
-   - Introduce variaciones
-   - Volumen medio-alto
-   - Puedes usar superseries básicas
-   ` : ''}
+7️⃣ VARIACIÓN Y PERIODIZACIÓN ENTRE SEMANAS:
 
-   ${level === 'Avanzado' ? `
-   ⚡ AVANZADO:
-   - Ejercicios complejos y variaciones avanzadas
-   - Técnicas intensas: drop sets, rest-pause, etc.
-   - Alto volumen
-   - Periodización dentro de las semanas
-   ` : ''}
+   Diferencia SEMANAS para prevenir meseta de adaptación:
 
-6. TÉCNICAS ESPECÍFICAS (Tags):
+   PARADIGMA A - VOLUMEN PROGRESIVO (para hipertrofia):
+   - Semana 1-2: Sets base, reps superiores (~8-12)
+   - Semana 3-4: AUMENTA sets (+1 set por ejercicio), mantén o baja reps
+   - Progresión: Volumen total = sets x reps x peso
+
+   PARADIGMA B - INTENSIDAD PROGRESIVA (para fuerza):
+   - Semana 1-2: Reps base, peso controlado (aprendizaje)
+   - Semana 3-4: MANTÉN sets, REDUCE reps, AUMENTA peso
+   - Progresión: Peso lineal semana a semana (~2.5-5%)
+
+   PARADIGMA C - VARIACIÓN TÉCNICA (para versatilidad):
+   - Semana 1: Ejercicio A con técnica X
+   - Semana 2: Ejercicio A con técnica Y (ej: pausa, tiempo)
+   - Semana 3: Ejercicio A con técnica Z (ej: tempo, ROM)
+   - Propósito: Estimula músculos constantemente, previene aburrimiento
+
+   REGLA GENERAL:
+   - Varía EJERCICIOS pero MANTÉN PATRONES DE MOVIMIENTO
+   - Si Semana 1: Press de Banca → Semana 3: Press Inclinado (igual patrón, distinto ángulo)
+   - Mantén consistencia: Mismo split, mismo volumen, diferente estímulo
+
+8️⃣ DISTRIBUCIÓN DE GRUPOS MUSCULARES (Depende de forma elegida):
+
+   ⚠️ FLEXIBILIDAD: La distribución de grupos musculares DEPENDE DE LA FORMA ELEGIDA.
+
+   EJEMPLO si elegiste PPL (Push/Pull/Legs):
+   - Día 1 (Push): Pecho, Hombros, Tríceps
+   - Día 2 (Pull): Espalda, Bíceps
+   - Día 3 (Legs): Cuádriceps, Femorales, Glúteos
+   - Si 6 días: Repite ciclo
+
+   EJEMPLO si elegiste Upper/Lower:
+   - Día 1 (Upper): Pecho, Espalda, Hombros
+   - Día 2 (Lower): Cuádriceps, Femorales, Glúteos, Core
+   - Alternancia: U/L/U/L/U/L
+
+   EJEMPLO si elegiste Full Body A/B/C:
+   - Día A: Push énfasis + Pull asistencia + Pierna ligera
+   - Día B: Pull énfasis + Push asistencia + Pierna ligera
+   - Día C: Pierna énfasis + Upper full + Core
+
+   NOTA: Distribución es FLEXIBLE según objetivo y forma elegida. Tú decides basado en contexto.
+
+9️⃣ RESTRICCIONES ESPECIALES (Ejercicios a evitar):
+
    ${tags ? `
-   Aplica estas técnicas: ${tags}
-   
-   ${tags.toLowerCase().includes('fst-7') ? '- Incluye series de FST-7 (7 sets de 8-12 reps con 30-45s rest) en ejercicios clave' : ''}
-   ${tags.toLowerCase().includes('drop set') || tags.toLowerCase().includes('dropset') ? '- Usa drop sets en los últimos sets de ejercicios principales' : ''}
-   ${tags.toLowerCase().includes('superserie') || tags.toLowerCase().includes('superset') ? '- Combina ejercicios en superseries (sin descanso entre ellos)' : ''}
-   ${tags.toLowerCase().includes('rest-pause') ? '- Aplica rest-pause en ejercicios compuestos (set + 15s rest + continuar)' : ''}
-   ${tags.toLowerCase().includes('giant set') ? '- Crea giant sets con 4 ejercicios consecutivos' : ''}
-   ` : '- Usa progresión estándar'}
+   ⚠️ EVITA estos ejercicios: ${tags}
 
-7. VARIACIÓN ENTRE SEMANAS:
-   - Semana 1-2: Volumen base
-   - Semana 3-4: Incrementa intensidad (más peso, menos reps) o volumen (más sets)
-   - Varía los ejercicios pero mantén los patrones de movimiento
-   - Incorpora periodización ondulante si es nivel avanzado
+   NO incluyas estos movimientos bajo NINGUNA circunstancia.
+   Si un ejercicio es la única opción para un patrón, REEMPLÁZALO con una variante segura.
 
-8. GRUPOS MUSCULARES (para ${frequency} días/semana):
-   ${frequency === '3' ? `
-   - Día 1: Full Body A
-   - Día 2: Full Body B
-   - Día 3: Full Body C
-   ` : ''}
-   ${frequency === '4' ? `
-   - Día 1: Push (Pecho, Hombros, Tríceps)
-   - Día 2: Pull (Espalda, Bíceps)
-   - Día 3: Pierna (Cuádriceps, Femorales, Glúteos)
-   - Día 4: Upper (Torso completo)
-   ` : ''}
-   ${frequency === '5' ? `
-   - Día 1: Pecho + Tríceps
-   - Día 2: Espalda + Bíceps
-   - Día 3: Pierna (Cuádriceps énfasis)
-   - Día 4: Hombros + Core
-   - Día 5: Pierna (Femorales/Glúteos énfasis)
-   ` : ''}
+   Ejemplos de reemplazos:
+   - Si evitas "Sentadilla": Usa Leg Press, Hack Squat, o Smith Machine Squat
+   - Si evitas "Peso Muerto": Usa Trap Bar Deadlift, Rack Pull, o máquina Leg Press
+   - Si evitas "Banco Plano": Usa Mancuernas, Banco Smith, o máquina Pectoral
+   ` : '✓ SIN RESTRICCIONES: Todos los ejercicios están disponibles. Elige según biomecánica y objetivos.'}
+
+🔟 CONSIDERACIONES ADICIONALES DEL COACH:
+
+   ${notes ? `
+   📌 CONSIDERACIONES ESPECIALES:
+   ${notes}
+
+   Integra estas consideraciones en la rutina:
+   - Adapta los ejercicios seleccionados
+   - Ajusta volumen/intensidad si es necesario
+   - Considera limitaciones biomecánicas o lesiones previas
+   ` : '✓ SIN CONSIDERACIONES ESPECIALES: Crea una rutina estándar sin restricciones adicionales.'}
+
+🔴 RECORDATORIO FINAL - ESTE ES EL ESTÁNDAR:
+
+Cada EJERCICIO (incluido calentamiento) debe tener:
+✅ name (con [ENTRADA EN CALOR] si aplica)
+✅ sets (número como string)
+✅ reps (rango o duración como string)
+✅ rir (0-3 como string)
+✅ tempo (4 dígitos o "0000")
+✅ rest (duración con "s")
+✅ notes (MÍNIMO 2-3 renglones: TÉCNICA + MOTIVACIÓN)
+✅ video (URL YouTube VERIFICADA - SIN VIDEOS ROTOS)
+
+NO FALTES en notas. Las notas separan profesionales de amateurs. Cada ejercicio tiene una historia técnica que contar + un mensaje de mentalidad que recortar.
+
+Video roto = rutina incompleta. Referencias verificadas SIEMPRE.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚨 IMPORTANTE - FORMATO DE RESPUESTA
+🚨 FORMATO DE RESPUESTA - CRÍTICO PARA TODAS LAS IAS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-⚠️ RESPONDE ÚNICAMENTE CON EL JSON. SIN TEXTO ADICIONAL.
-⚠️ NO uses bloques de código markdown (\`\`\`json)
-⚠️ NO agregues explicaciones antes ni después
-⚠️ EMPIEZA directamente con { y TERMINA con }
-⚠️ Asegúrate de que sea JSON VÁLIDO (sin comas finales, comillas correctas)
+⚠️ RESPONDE ÚNICAMENTE CON JSON PURO TEXTO PLANO. NADA MÁS. NADA MENOS.
 
-🔴 RECORDATORIO CRÍTICO:
+❌ PROHIBIDO - No hagas NINGUNO de estos:
+❌ NO uses bloques de código markdown (\`\`\`json)
+❌ NO uses bloques de código así (\`\`\`)
+❌ NO agregues explicaciones antes
+❌ NO agregues explicaciones después
+❌ NO agregues resúmenes
+❌ NO agregues títulos
+❌ NO agregues comentarios
+❌ NO agregues "Aquí está tu rutina:"
+❌ NO agregues "El JSON que solicitaste:"
+❌ NO agreguesque nada de texto adicional AL FINAL
+❌ NO cierres con frases como "¡Éxito!" o "Espero que funcione"
+❌ NO uses formato Markdown para nada
 
-Cada día DEBE contener:
-✓ "warmup" → array con 3-4 ejercicios de entrada en calor (name, duration, notes)
-   → Se imprime como tabla "Entrada en calor del Día X"
-✓ "exercises" → array con 5-8 ejercicios principales
+✅ REQUERIDO - Debes hacer EXACTAMENTE esto:
+✅ COMIENZA exactamente con: {
+✅ TERMINA exactamente con: }
+✅ Solo JSON puro, texto plano
+✅ Sin espacios antes del primer {
+✅ Sin saltos de línea al final
+✅ Sin nada después del último }
 
-Cada ejercicio principal DEBE incluir TODOS estos campos sin excepción:
-✓ name · sets · reps · rest · rir · tempo · notes · video
+FORMATO EXACTO:
+{
+  "name": "...
 
-NO omitas ningún campo. El PDF necesita todos los datos completos.
+            }
+  ]
+}
 
-${notes ? `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n📌 NOTAS ADICIONALES DEL ENTRENADOR\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n${notes}\n` : ''}
+Una sola línea en blanco después del cierre es OK, pero NADA de texto.
 
-Genera la rutina AHORA:`;
+INSTRUCCIÓN ESPECIAL PARA GEMINI (y todos):
+Si eres Gemini, Claude, GPT, o cualquier IA:
+- Tu ÚNIQUE respuesta será el JSON puro
+- Sin explicaciones previas
+- Sin frases de cierre
+- Sin markdown
+- Sin bloques de código
+- Solo el objeto JSON completo y válido
+
+VALIDACIÓN FINAL ANTES DE RESPONDER:
+Antes de responder, verifica:
+1. ¿Comienza con { exactamente?
+2. ¿Termina con } exactamente?
+3. ¿No hay texto adicional antes ni después?
+4. ¿No hay bloques de código?
+5. ¿Es JSON válido?
+
+Si algo falla en la validación, no respondas. Di "Espera" y intenta de nuevo.
+
+${notes ? `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n📌 CONTEXTO ADICIONAL DEL COACH\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n${notes}\n` : ''}
+
+Genera la rutina AHORA. Professional. Motivadora. Videos verificados. Notas épicas.`;
 
   return prompt;
 }

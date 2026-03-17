@@ -168,6 +168,37 @@ const DayEditor = memo(
                   </p>
                 ) : (
                   <div className="flex flex-col gap-5">
+                    {/* Entrada en calor section */}
+                    {day.warmupExercises && day.warmupExercises.length > 0 && (
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center justify-between">
+                          <h5 className="text-sm font-semibold uppercase tracking-wide text-gray-400">
+                            Entrada en calor ({day.warmupExercises.length})
+                          </h5>
+                        </div>
+                        <div className="rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] p-3 overflow-x-auto">
+                          <table className="w-full text-sm text-text-primary">
+                            <thead>
+                              <tr className="border-b border-[#2E2E2E] text-xs uppercase text-text-muted">
+                                <th className="text-left px-3 py-2">Ejercicio</th>
+                                <th className="text-left px-3 py-2">Duración</th>
+                                <th className="text-left px-3 py-2">Notas</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {day.warmupExercises.map((warmup, idx) => (
+                                <tr key={idx} className="border-b border-[#1E1E1E] hover:bg-[#0E0E0E]">
+                                  <td className="px-3 py-2">{warmup.name}</td>
+                                  <td className="px-3 py-2 text-gray-400">{warmup.duration}</td>
+                                  <td className="px-3 py-2 text-gray-400 text-xs">{warmup.notes}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="flex items-center justify-between">
                       <h5 className="text-sm font-semibold uppercase tracking-wide text-gray-400">
                         Ejercicios ({day.exercises.length})

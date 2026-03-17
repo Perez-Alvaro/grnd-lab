@@ -6,7 +6,7 @@
 
 import React, { useMemo, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, FileDown, FileJson, Download, Copy, Code } from "lucide-react";
+import { ArrowLeft, FileDown, MoreVertical, Copy, Code, FileJson, Download } from "lucide-react";
 import { PlanProvider } from "../context/PlanContext.jsx";
 import useRoutineEditor from "../hooks/useRoutineEditor.js";
 import usePDFExport from "../hooks/usePDFExport.js";
@@ -53,6 +53,7 @@ export default function RoutineEditorPage() {
   const [showExportModal, setShowExportModal] = React.useState(false);
   const [showPDFExportModal, setShowPDFExportModal] = React.useState(false);
   const [showJSONEditor, setShowJSONEditor] = useState(false);
+  const [showToolsMenu, setShowToolsMenu] = useState(false);
   const [useAIMode, setUseAIMode] = useState(true); // Default to AI mode
   const [showTutorial, setShowTutorial] = useState(false); // Control tutorial activation
 
@@ -152,7 +153,7 @@ export default function RoutineEditorPage() {
               </Button>
               <div>
                 <h1 className="text-xl font-semibold text-text-primary font-display">
-                  Grind-Lab - Editor de Rutinas
+                  BaseRutina - Editor de Rutinas
                 </h1>
                 <p className="text-sm text-text-muted">
                   {planEditor.metadata.name || 'Rutina sin nombre'}
@@ -160,42 +161,71 @@ export default function RoutineEditorPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Button
-                id="copy-prompt-button"
-                variant="accent"
-                size="sm"
-                onClick={handleCopyPrompt}
-              >
-                <Copy className="h-4 w-4" />
-                Copiar Prompt para IA
-              </Button>
-              <Button
-                id="json-editor-button"
-                variant={showJSONEditor ? "default" : "outline"}
-                size="sm"
-                onClick={() => setShowJSONEditor(!showJSONEditor)}
-              >
-                <Code className="h-4 w-4" />
-                {showJSONEditor ? 'Modo Visual' : 'Editor JSON'}
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => setShowImportModal(true)}>
-                <FileJson className="h-4 w-4" />
-                Importar JSON
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => setShowExportModal(true)}>
-                <Download className="h-4 w-4" />
-                Exportar JSON
-              </Button>
+            <div className="flex items-center gap-2 relative">
               <Button
                 id="export-pdf-button"
-                variant="outline"
+                variant="accent"
                 size="sm"
                 onClick={handleExportPdf}
               >
                 <FileDown className="h-4 w-4" />
                 Exportar PDF
               </Button>
+
+              <div className="relative">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowToolsMenu(!showToolsMenu)}
+                >
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+
+                {showToolsMenu && (
+                  <div className="absolute right-0 mt-2 w-56 bg-secondary-bg border border-border rounded-lg shadow-lg z-50">
+                    <button
+                      onClick={() => {
+                        handleCopyPrompt();
+                        setShowToolsMenu(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 bg-primary-bg hover:bg-primary-bg/80 transition-colors text-sm text-text-primary border-b border-border"
+                    >
+                      <Copy className="h-4 w-4" />
+                      Copiar Prompt para IA
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowJSONEditor(!showJSONEditor);
+                        setShowToolsMenu(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 bg-primary-bg hover:bg-primary-bg/80 transition-colors text-sm text-text-primary border-b border-border"
+                    >
+                      <Code className="h-4 w-4" />
+                      Editor JSON
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowImportModal(true);
+                        setShowToolsMenu(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 bg-primary-bg hover:bg-primary-bg/80 transition-colors text-sm text-text-primary border-b border-border"
+                    >
+                      <FileJson className="h-4 w-4" />
+                      Importar JSON
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowExportModal(true);
+                        setShowToolsMenu(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 bg-primary-bg hover:bg-primary-bg/80 transition-colors text-sm text-text-primary"
+                    >
+                      <Download className="h-4 w-4" />
+                      Exportar JSON
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </header>
@@ -261,7 +291,7 @@ export default function RoutineEditorPage() {
                         />
                       ) : (
                         <>
-                          <PlanMetadataForm />
+                          <PlanMetadataForm onCopyPrompt={handleCopyPrompt} />
 
                           <div className="rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] p-5">
                             <div className="flex items-center gap-2 mb-4">

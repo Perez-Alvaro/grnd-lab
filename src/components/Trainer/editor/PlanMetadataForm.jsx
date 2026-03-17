@@ -1,5 +1,6 @@
 import { memo, useCallback } from "react";
-import { ChevronRight, Info } from "lucide-react";
+import { ChevronRight, Info, Copy } from "lucide-react";
+import { Button } from "../../ui";
 import { usePlanContext } from "../../../context/PlanContext.jsx";
 import { TRAINING_GOALS } from "../../../constants/objectives.js";
 
@@ -11,7 +12,7 @@ const HelperText = ({ children }) => (
   </div>
 );
 
-const PlanMetadataForm = memo(() => {
+const PlanMetadataForm = memo(({ onCopyPrompt }) => {
   const { metadata, updateMetadata } = usePlanContext();
 
   const handleChange = useCallback(
@@ -223,6 +224,23 @@ const PlanMetadataForm = memo(() => {
             Instrucciones especiales para el sistema o el cliente. Acá podés aclarar el <strong>estilo</strong>, <strong>técnicas específicas</strong>, <strong>recomendaciones clave</strong> o cualquier detalle que personalice la generación de la rutina.
           </HelperText>
         </div>
+
+        {/* Botón para copiar prompt - Solo en modo no asistido */}
+        {onCopyPrompt && (
+          <div className="pt-4 border-t border-[#2E2E2E]">
+            <Button
+              onClick={onCopyPrompt}
+              variant="accent"
+              className="w-full sm:w-auto"
+            >
+              <Copy className="h-4 w-4" />
+              Copiar Prompt para IA
+            </Button>
+            <p className="text-xs text-gray-400 mt-3 leading-relaxed">
+              Una vez completada la plantilla, copia el prompt y pégalo en <strong>ChatGPT, Claude o Gemini</strong> para generar automáticamente tu rutina completa con ejercicios, series, repeticiones y notas técnicas.
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );

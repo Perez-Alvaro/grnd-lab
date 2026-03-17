@@ -219,12 +219,12 @@ const PRICING_TIERS = [
     {
         id: 'mensual',
         name: 'Mensual',
-        totalUSD: 20,
-        perMonthUSD: 20,
-        perMonthARS: 20000,
+        totalUSD: 10,
+        perMonthUSD: 10,
+        perMonthARS: 10000,
         period: '/mes',
-        billedAs: 'Facturado mes a mes',
-        description: 'Para probar sin compromisos.',
+        billedAs: 'Se renueva cada mes',
+        description: 'Acceso sin compromisos. Cancela cuando quieras.',
         cta: 'Empezar ahora',
         ctaVariant: 'outline',
         savings: null,
@@ -234,49 +234,51 @@ const PRICING_TIERS = [
             'Rutinas ilimitadas',
             'Exportación PDF profesional',
             'Compatible con ChatGPT, Claude y Gemini',
-            'Soporte incluido',
+            'Soporte por email',
         ],
     },
     {
         id: 'trimestral',
         name: 'Trimestral',
-        totalUSD: 48,
-        perMonthUSD: 16,
-        perMonthARS: 16000,
+        totalUSD: 27,
+        perMonthUSD: 9,
+        perMonthARS: 9000,
         period: '/mes',
-        billedAs: 'USD 48 cada 3 meses · 1 mes de regalo',
-        description: 'El más elegido. Mejor precio por mes.',
+        billedAs: 'Pago único: USD 27 por 3 meses completos',
+        description: 'El balance perfecto. Pago único, ahorro garantizado.',
         cta: 'Elegir este plan',
         ctaVariant: 'default',
-        savings: { label: '1 mes gratis', pct: '20% off', monthlySaved: 4 },
+        savings: { label: 'Ahorrás $3 vs mensual', pct: '10% off', monthlySaved: 1 },
         highlight: true,
         badge: 'Más elegido',
         features: [
             'Rutinas ilimitadas',
             'Exportación PDF profesional',
             'Compatible con ChatGPT, Claude y Gemini',
-            'Soporte prioritario',
+            'Soporte prioritario por email',
+            'Acceso a nuevas features antes',
         ],
     },
     {
-        id: 'semestral',
-        name: 'Semestral',
-        totalUSD: 108,
-        perMonthUSD: 18,
-        perMonthARS: 18000,
+        id: 'anual',
+        name: 'Anual',
+        totalUSD: 48,
+        perMonthUSD: 4,
+        perMonthARS: 4000,
         period: '/mes',
-        billedAs: 'USD 108 cada 6 meses',
-        description: 'Para quienes prefieren pagar menos seguido.',
+        billedAs: 'Pago único: USD 48 por 12 meses completos',
+        description: 'Lleva tu coaching al siguiente nivel. Pago único, máximo ahorro garantizado.',
         cta: 'Elegir este plan',
         ctaVariant: 'outline',
-        savings: { label: 'Ahorrás $12/total', pct: '10% off', monthlySaved: 2 },
+        savings: { label: 'Ahorrás $72 vs pagar mensual', pct: '60% off', monthlySaved: 6 },
         highlight: false,
         badge: null,
         features: [
             'Rutinas ilimitadas',
             'Exportación PDF profesional',
             'Compatible con ChatGPT, Claude y Gemini',
-            'Soporte incluido',
+            'Soporte prioritario + WhatsApp',
+            'Acceso a nuevas features antes',
         ],
     },
 ];
@@ -417,22 +419,13 @@ function Navbar({ onScrollTo }) {
                         {user ? (
                             <UserMenu />
                         ) : (
-                            <>
-                                <button
-                                    onClick={openLoginModal}
-                                    className="text-sm text-text-secondary hover:text-white font-medium transition-colors px-3 py-1.5"
-                                >
-                                    Iniciar sesión
-                                </button>
-                                <Button
-                                    size="sm"
-                                    onClick={() => onScrollTo('contact')}
-                                    className="text-sm shadow-md shadow-accent/20"
-                                >
-                                    <Sparkles className="mr-1.5 h-3.5 w-3.5" />
-                                    Probá gratis
-                                </Button>
-                            </>
+                            <Button
+                                size="sm"
+                                onClick={openLoginModal}
+                                className="text-sm shadow-md shadow-accent/20"
+                            >
+                                Iniciar sesión
+                            </Button>
                         )}
                     </div>
 
@@ -464,14 +457,10 @@ function Navbar({ onScrollTo }) {
                                     Sesión activa como <span className="text-white">{user.name}</span>
                                 </div>
                             ) : (
-                                <Button variant="outline" size="sm" onClick={() => { openLoginModal(); setMobileOpen(false); }} className="w-full text-sm">
+                                <Button size="sm" onClick={() => { openLoginModal(); setMobileOpen(false); }} className="w-full text-sm shadow-md shadow-accent/20">
                                     Iniciar sesión
                                 </Button>
                             )}
-                            <Button size="sm" onClick={() => { onScrollTo('contact'); setMobileOpen(false); }} className="w-full text-sm">
-                                <Sparkles className="mr-1.5 h-3.5 w-3.5" />
-                                Probá gratis
-                            </Button>
                         </div>
                     </div>
                 </div>
@@ -509,72 +498,84 @@ function HeroSection({ onScrollTo }) {
             <div className="absolute inset-0 bg-gradient-to-b from-primary-bg/30 via-transparent to-primary-bg z-[2] pointer-events-none" />
 
             <div
-                className="relative z-10 w-full mx-auto max-w-5xl px-6 text-center"
+                className="relative z-10 w-full mx-auto max-w-6xl px-6"
                 style={{ paddingTop: 'clamp(120px, 16vw, 180px)', paddingBottom: 'clamp(100px, 12vw, 150px)' }}
             >
-                <div className="flex justify-center mb-8 scroll-reveal">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm font-medium backdrop-blur-sm">
-                        <Zap className="h-4 w-4 flex-shrink-0" />
-                        <span>Para entrenadores personales y coaches online</span>
-                    </div>
-                </div>
-
-                <h1
-                    className="text-white font-display scroll-reveal reveal-delay-1"
-                    style={{
-                        fontSize: 'var(--text-display)',
-                        lineHeight: 'var(--leading-display)',
-                        fontWeight: 900,
-                        letterSpacing: '-0.03em',
-                    }}
-                >
-                    Creá rutinas profesionales{' '}
-                    <span className="bg-gradient-to-r from-accent via-violet-400 to-accent-light bg-clip-text text-transparent">
-                        en segundos.
-                    </span>
-                </h1>
-
-                <p className="mt-6 text-xl sm:text-2xl text-text-secondary max-w-2xl mx-auto leading-relaxed scroll-reveal reveal-delay-2">
-                    BaseRutina te ayuda a generar la base de cualquier plan de entrenamiento para tus clientes en menos de 5 minutos.
-                </p>
-
-                <p className="mt-4 text-lg text-text-secondary max-w-xl mx-auto scroll-reveal reveal-delay-2">
-                    Menos tiempo escribiendo rutinas. Más tiempo entrenando clientes.
-                </p>
-
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-10 scroll-reveal reveal-delay-3">
-                    <button
-                        onClick={() => onScrollTo('contact')}
-                        className="btn-hero-primary group inline-flex items-center justify-center gap-2 h-14 px-8 rounded-xl bg-accent text-white font-bold text-base w-full sm:w-auto"
-                    >
-                        <Sparkles className="h-5 w-5 flex-shrink-0" />
-                        Probar gratis
-                        <ArrowRight className="h-5 w-5 flex-shrink-0 transition-transform group-hover:translate-x-1" />
-                    </button>
-                    <button
-                        onClick={() => onScrollTo('how-it-works')}
-                        className="group inline-flex items-center justify-center h-14 px-8 rounded-xl border border-text-tertiary/30 text-text-secondary hover:border-accent/50 hover:text-white font-semibold text-base transition-all w-full sm:w-auto"
-                    >
-                        Ver cómo funciona
-                    </button>
-                </div>
-
-                <p className="mt-6 text-sm text-text-tertiary scroll-reveal reveal-delay-4">
-                    Compatible con las herramientas que ya usás:{' '}
-                    <span className="text-text-secondary font-medium">ChatGPT · Claude · Gemini</span>
-                </p>
-
-                <div className="flex flex-wrap items-center justify-center gap-6 pt-8 scroll-reveal reveal-delay-4">
-                    {[
-                        'Tu primera rutina en menos de 5 minutos',
-                        'Sin planillas ni copiar y pegar',
-                        'Vos decidís cada detalle del plan',
-                    ].map((bullet, i) => (
-                        <div key={i} className="flex items-center gap-2 text-sm text-text-secondary">
-                            <CheckCircle2 className="h-4 w-4 text-accent flex-shrink-0" />
-                            {bullet}
+                <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
+                    <div className="text-center lg:text-left">
+                        <div className="flex justify-center lg:justify-start mb-8 scroll-reveal">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm font-medium backdrop-blur-sm">
+                                <Zap className="h-4 w-4 flex-shrink-0" />
+                                <span>Para entrenadores personales y coaches online</span>
+                            </div>
                         </div>
-                    ))}
+
+                        <h1
+                            className="text-white font-display scroll-reveal reveal-delay-1"
+                            style={{
+                                fontSize: 'var(--text-display)',
+                                lineHeight: 'var(--leading-display)',
+                                fontWeight: 900,
+                                letterSpacing: '-0.03em',
+                            }}
+                        >
+                            Creá rutinas profesionales{' '}
+                            <span className="bg-gradient-to-r from-accent via-violet-400 to-accent-light bg-clip-text text-transparent">
+                                en segundos.
+                            </span>
+                        </h1>
+
+                        <p className="mt-6 text-xl sm:text-2xl text-text-secondary max-w-2xl lg:max-w-none mx-auto lg:mx-0 leading-relaxed scroll-reveal reveal-delay-2">
+                            BaseRutina te ayuda a generar la base de cualquier plan de entrenamiento para tus clientes en menos de 5 minutos.
+                        </p>
+
+                        <p className="mt-4 text-lg text-text-secondary max-w-xl mx-auto lg:mx-0 scroll-reveal reveal-delay-2">
+                            Menos tiempo escribiendo rutinas. Más tiempo entrenando clientes.
+                        </p>
+
+                        <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-4 pt-10 scroll-reveal reveal-delay-3">
+                            <button
+                                onClick={() => onScrollTo('pricing')}
+                                className="btn-hero-primary group inline-flex items-center justify-center gap-2 h-14 px-8 rounded-xl bg-accent text-white font-bold text-base w-full sm:w-auto"
+                            >
+                                <Sparkles className="h-5 w-5 flex-shrink-0" />
+                                Conocer planes
+                                <ArrowRight className="h-5 w-5 flex-shrink-0 transition-transform group-hover:translate-x-1" />
+                            </button>
+                            <button
+                                onClick={() => onScrollTo('how-it-works')}
+                                className="group inline-flex items-center justify-center h-14 px-8 rounded-xl border border-text-tertiary/30 text-text-secondary hover:border-accent/50 hover:text-white font-semibold text-base transition-all w-full sm:w-auto"
+                            >
+                                Ver cómo funciona
+                            </button>
+                        </div>
+
+                        <p className="mt-6 text-sm text-text-tertiary scroll-reveal reveal-delay-4">
+                            Compatible con las herramientas que ya usás:{' '}
+                            <span className="text-text-secondary font-medium">ChatGPT · Claude · Gemini</span>
+                        </p>
+
+                        <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 pt-8 scroll-reveal reveal-delay-4">
+                            {[
+                                'Tu primera rutina en menos de 5 minutos',
+                                'Sin planillas ni copiar y pegar',
+                                'Vos decidís cada detalle del plan',
+                            ].map((bullet, i) => (
+                                <div key={i} className="flex items-center gap-2 text-sm text-text-secondary">
+                                    <CheckCircle2 className="h-4 w-4 text-accent flex-shrink-0" />
+                                    {bullet}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="relative w-full max-w-[440px] mx-auto lg:ml-auto scroll-reveal reveal-delay-2">
+                        <img
+                            src="/assets/mobile.png"
+                            alt="Vista móvil de BaseRutina"
+                            className="w-full h-full object-contain drop-shadow-2xl"
+                        />
+                    </div>
                 </div>
 
                 <div className="mt-14 flex justify-center animate-bounce">
@@ -584,11 +585,6 @@ function HeroSection({ onScrollTo }) {
         </div>
     );
 }
-
-/* ─────────────────────────────────────────────
-   SOCIAL PROOF STRIP
-───────────────────────────────────────────── */
-
 function LogoTicker() {
     const items = [...TICKER_ITEMS, ...TICKER_ITEMS];
     return (
@@ -695,22 +691,32 @@ function BenefitsSection() {
                     </p>
                 </div>
 
-                <div className="mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                    {BENEFITS.map((benefit, i) => (
-                        <div key={i} className={`scroll-reveal reveal-delay-${(i % 2) + 1}`}>
-                            <GlowCard className="p-8">
-                                <div className="flex items-start gap-5">
-                                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">
-                                        <benefit.icon className="h-6 w-6" />
+                <div className="mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+                    <div className="relative w-full scroll-reveal">
+                        <img
+                            src="/assets/editor.png"
+                            alt="Editor de rutinas de BaseRutina"
+                            className="w-full h-full object-contain drop-shadow-2xl"
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-5">
+                        {BENEFITS.map((benefit, i) => (
+                            <div key={i} className={`scroll-reveal reveal-delay-${(i % 2) + 1}`}>
+                                <GlowCard className="p-8 h-full">
+                                    <div className="flex items-start gap-5">
+                                        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">
+                                            <benefit.icon className="h-6 w-6" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-bold text-white mb-2 font-display leading-snug">{benefit.title}</h3>
+                                            <p className="text-sm text-text-secondary leading-relaxed">{benefit.description}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3 className="text-lg font-bold text-white mb-2 font-display leading-snug">{benefit.title}</h3>
-                                        <p className="text-sm text-text-secondary leading-relaxed">{benefit.description}</p>
-                                    </div>
-                                </div>
-                            </GlowCard>
-                        </div>
-                    ))}
+                                </GlowCard>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>
@@ -1042,8 +1048,7 @@ function PricingSection({ onScrollTo }) {
 
                 <div className="mx-auto max-w-3xl mb-8 text-center scroll-reveal">
                     <p className="text-sm text-text-tertiary">
-                        💡 <span className="text-text-secondary">El plan mensual cuesta <strong className="text-white">$20 USD</strong>/mes.
-                        Con el trimestral pagás <strong className="text-accent">$16 USD/mes</strong> — es como tener un mes gratis.</span>
+                        💡 <span className="text-text-secondary">Pago único, sin suscripción. <strong className="text-white">Mensual: $10</strong> · <strong className="text-accent">Trimestral: $27</strong> · <strong className="text-green-400">Anual: $48</strong></span>
                     </p>
                 </div>
 
@@ -1051,7 +1056,7 @@ function PricingSection({ onScrollTo }) {
                     <div className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-accent/5 border border-accent/20">
                         <Shield className="h-5 w-5 text-accent flex-shrink-0" />
                         <div className="text-left">
-                            <div className="text-sm font-semibold text-white">7 días sin riesgo</div>
+                            <div className="text-sm font-semibold text-white">Probalo 24 hs luego de la compra</div>
                             <div className="text-xs text-text-secondary mt-0.5">
                                 Probalo con rutinas reales. Si no funciona para vos, cancelás sin preguntas.
                             </div>
@@ -1088,14 +1093,14 @@ function PricingSection({ onScrollTo }) {
                                 <div className="mb-2">
                                     {tier.id === 'trimestral' && (
                                         <div className="flex items-center gap-2 mb-1">
-                                            <span className="text-sm text-text-quaternary line-through">$20 USD/mes</span>
-                                            <span className="text-xs font-bold text-green-400 bg-green-400/10 px-2 py-0.5 rounded-full">−20%</span>
+                                            <span className="text-sm text-text-quaternary line-through">$30 USD (3 × $10)</span>
+                                            <span className="text-xs font-bold text-green-400 bg-green-400/10 px-2 py-0.5 rounded-full">−10%</span>
                                         </div>
                                     )}
-                                    {tier.id === 'semestral' && (
+                                    {tier.id === 'anual' && (
                                         <div className="flex items-center gap-2 mb-1">
-                                            <span className="text-sm text-text-quaternary line-through">$20 USD/mes</span>
-                                            <span className="text-xs font-bold text-yellow-400 bg-yellow-400/10 px-2 py-0.5 rounded-full">−10%</span>
+                                            <span className="text-sm text-text-quaternary line-through">$120 USD (12 × $10)</span>
+                                            <span className="text-xs font-bold text-green-400 bg-green-400/10 px-2 py-0.5 rounded-full">−60%</span>
                                         </div>
                                     )}
                                     {tier.id === 'mensual' && <div className="mb-1 h-5" />}
@@ -1120,7 +1125,9 @@ function PricingSection({ onScrollTo }) {
                                             : 'bg-primary-bg border border-border text-text-secondary'
                                     }`}>
                                         {tier.id === 'trimestral' ? (
-                                            <span>🎁 <strong>1 mes de regalo</strong> por periodo · Ahorrás ${tier.savings.monthlySaved * 3} USD</span>
+                                            <span>🎁 Pago único de <strong>3 meses</strong> · {tier.savings.label}</span>
+                                        ) : tier.id === 'anual' ? (
+                                            <span>🔥 Pago único de <strong>12 meses</strong> · {tier.savings.label}</span>
                                         ) : (
                                             <span>✓ {tier.savings.label} vs plan mensual</span>
                                         )}
@@ -1164,15 +1171,15 @@ function PricingSection({ onScrollTo }) {
                     </p>
                     <div className="flex flex-wrap items-center justify-center gap-6 pt-2">
                         <div className="flex items-center gap-2 text-sm text-text-tertiary">
-                            <CheckCircle2 className="h-4 w-4 text-accent" />
-                            Cancelás cuando querés
+                            <Zap className="h-4 w-4 text-accent" />
+                            Pago único, sin suscripción
                         </div>
                         <div className="flex items-center gap-2 text-sm text-text-tertiary">
                             <Shield className="h-4 w-4 text-accent" />
-                            7 días de devolución garantizada
+                            24 hs luego de la compra
                         </div>
                         <div className="flex items-center gap-2 text-sm text-text-tertiary">
-                            <Zap className="h-4 w-4 text-accent" />
+                            <CheckCircle2 className="h-4 w-4 text-accent" />
                             Todo incluido en cada plan
                         </div>
                     </div>
