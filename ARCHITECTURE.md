@@ -1,4 +1,4 @@
-# 🏗️ GRIND-LAB - Arquitectura y Decisiones Técnicas
+# 🏗️ BaseRutina - Arquitectura y Decisiones Técnicas
 
 ## 📐 Principios de Diseño
 

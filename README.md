@@ -1,12 +1,12 @@
-# 🏋️ Grind-Lab
+# 🏋️ BaseRutina
 
-**Herramienta gratuita para crear rutinas de entrenamiento profesionales usando IA**
+**Generá la base de tus rutinas de entrenamiento profesionales usando IA**
 
 ---
 
-## 🎯 ¿Qué es Grind-Lab?
+## 🎯 ¿Qué es BaseRutina?
 
-Grind-Lab es una aplicación web **completamente client-side** que te permite generar rutinas de entrenamiento personalizadas usando cualquier IA gratuita (ChatGPT, Claude, Gemini).
+BaseRutina es una aplicación web **completamente client-side** que te permite generar la base de rutinas de entrenamiento personalizadas usando cualquier IA gratuita (ChatGPT, Claude, Gemini).
 
 ### ✨ Características principales:
 
@@ -64,7 +64,7 @@ La app estará disponible en `http://localhost:5173`
 ### Client-Side Only
 ```
 ┌─────────────────────────────────────┐
-│         Grind-Lab (Browser)          │
+│         BaseRutina (Browser)          │
 ├─────────────────────────────────────┤
 │  • Hero/Landing Page                │
 │  • Editor de Rutinas                │

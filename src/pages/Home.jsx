@@ -1,5 +1,5 @@
 /**
- * GRIND LAB - Landing Page
+ * BaseRutina - Landing Page
  * "IA como cerebro externo"
  * Landing técnica, profesional, sin bullshit marketinero
  */
@@ -151,7 +151,7 @@ export default function Home() {
                                         </div>
                                         <p className="text-sm text-text-secondary leading-relaxed">
                                             Completa los metadatos: objetivo, nivel, frecuencia.
-                                            GRIND LAB genera un <span className="text-white font-medium">Prompt Maestro</span> optimizado
+                                            BaseRutina genera un <span className="text-white font-medium">Prompt Maestro</span> optimizado
                                             con instrucciones precisas para la IA.
                                         </p>
                                     </div>
@@ -472,7 +472,7 @@ export default function Home() {
                         <div className="rounded-2xl border border-accent/30 bg-accent/5 p-6">
                             <div className="flex items-center gap-2 mb-4">
                                 <CheckCircle2 className="h-5 w-5 text-accent" />
-                                <h4 className="text-sm font-semibold text-white">GRIND LAB Prompt Maestro</h4>
+                                <h4 className="text-sm font-semibold text-white">BaseRutina Prompt Maestro</h4>
                             </div>
                             <div className="rounded-lg bg-black/20 p-3 font-mono text-xs text-text-secondary">
                                 ACTÚA COMO ENTRENADOR EXPERTO.<br />
@@ -501,7 +501,7 @@ export default function Home() {
             <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8 border-b border-border">
                 <div className="mx-auto max-w-2xl text-center mb-16">
                     <h2 className="text-3xl font-bold tracking-tight text-white sm:text-5xl font-display">
-                        ¿Para quién es GRIND LAB?
+                        ¿Para quién es BaseRutina?
                     </h2>
                     <p className="mt-4 text-lg text-text-secondary">
                         Profesionales que valoran control y criterio
@@ -626,7 +626,7 @@ export default function Home() {
                         </h2>
                         <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-text-secondary">
                             Sin registros. Sin pagos. Sin complicaciones.<br />
-                            Solo tú, tu IA favorita, y GRIND LAB.
+                            Solo tú, tu IA favorita, y BaseRutina.
                         </p>
                         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
                             <Button
@@ -674,14 +674,14 @@ export default function Home() {
                     <div className="flex flex-col items-center justify-center gap-4">
                         <div className="flex items-center gap-2">
                             <Dumbbell className="h-6 w-6 text-accent" />
-                            <span className="text-lg font-bold text-white font-display">GRIND LAB</span>
+                            <span className="text-lg font-bold text-white font-display">BaseRutina</span>
                         </div>
                         <p className="text-center text-sm text-text-muted max-w-2xl">
                             Herramienta de ingeniería de prompts para crear rutinas de entrenamiento.
                             IA como cerebro externo. JSON editable. Export profesional.
                         </p>
                         <div className="flex items-center gap-4 text-xs text-text-muted">
-                            <span>© 2025 GRIND LAB</span>
+                            <span>© 2025 BaseRutina</span>
                             <span>•</span>
                             <a href="https://github.com/Perez-Alvaro/grnd-lab" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">
                                 GitHub

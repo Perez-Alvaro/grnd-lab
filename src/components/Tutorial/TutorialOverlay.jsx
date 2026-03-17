@@ -1,5 +1,5 @@
 /**
- * Tutorial Overlay - Sistema de Onboarding para GRIND LAB
+ * Tutorial Overlay - Sistema de Onboarding para BaseRutina
  * Guía paso a paso para nuevos usuarios
  */
 
@@ -164,7 +164,7 @@ export default function TutorialOverlay({ onComplete, shouldShow = false }) {
                                 </div>
                                 <div>
                                     <h2 className="text-2xl font-bold text-white font-display">
-                                        ¡Bienvenido a GRIND LAB!
+                                        ¡Bienvenido a BaseRutina!
                                     </h2>
                                     <p className="text-sm text-text-muted">Tu herramienta de generación de rutinas</p>
                                 </div>

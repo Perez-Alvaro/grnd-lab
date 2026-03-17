@@ -1,15 +1,17 @@
 /**
  * HomeSaaS.jsx
- * GRIND LAB — Landing page SaaS optimizada para conversión
+ * BaseRutina — Landing page SaaS optimizada para conversión
  * Audiencia: Entrenadores personales, coaches online, preparadores físicos
  * Idioma: Español Argentina (vos)
+ * Copy: claro, directo, sin jerga técnica — orientado a resultados
  */
 
 import { useNavigate } from 'react-router-dom';
 import {
     TrendingUp, Clock, Users, DollarSign, CheckCircle2, ArrowRight, Zap,
     FileText, Target, Award, Shield, Sparkles, Brain, ChevronDown,
-    Star, Building2, Laptop, Dumbbell, Menu, X, Lock, Headphones, Mail, MessageCircle
+    Star, Building2, Laptop, Dumbbell, Menu, X, Lock, Headphones, Mail,
+    MessageCircle, Calendar
 } from 'lucide-react';
 import { Button } from '../components/ui';
 import DotGrid from '../components/ui/DotGrid';
@@ -17,6 +19,7 @@ import FAQ from '../components/ui/FAQ';
 import UserMenu from '../components/navbar/UserMenu.jsx';
 import { useAuth } from '../store/authStore.jsx';
 import { useState, useEffect } from 'react';
+//imageSrc: '../assets/paso-2.webp',
 
 /* ─────────────────────────────────────────────
    DATA CONSTANTS
@@ -32,55 +35,50 @@ const NAV_LINKS = [
 const PAIN_POINTS = [
     {
         icon: Clock,
-        title: '3 horas por rutina',
-        description: 'Planificar semanas, días, ejercicios, series y repeticiones desde cero — para cada cliente. Una y otra vez.',
+        title: 'Horas escribiendo rutinas',
+        description: 'Cada cliente nuevo suma más tiempo frente a la pantalla. Y ese tiempo lo perdés de entrenar, de crecer o de descansar.',
         tag: 'Tiempo perdido'
     },
     {
         icon: FileText,
-        title: 'Excel y Word',
-        description: 'Plantillas desactualizadas, copiar y pegar errores, formatear PDFs a mano. Tu trabajo merece mejores herramientas.',
+        title: 'Excel, Word y copiar y pegar',
+        description: 'Tus clientes merecen algo mejor que una planilla. Y vos merecés mejores herramientas para trabajar.',
         tag: 'Poco profesional'
     },
     {
         icon: Brain,
-        title: 'Fatiga mental',
-        description: 'Decidir progresiones, periodización y volumen para 10+ clientes drena tu energía antes de que empiece el entrenamiento.',
-        tag: 'Riesgo de burnout'
+        title: 'Energía mental agotada',
+        description: 'Programar para 10 clientes distintos consume antes de que empiece el día. Esa energía debería ir al coaching.',
+        tag: 'Desgaste'
     },
     {
         icon: Users,
-        title: 'El crecimiento se frena',
-        description: 'Sumar clientes significa más horas escribiendo rutinas. El crecimiento genera el mismo cuello de botella que lo limita.',
-        tag: 'Barrera de escala'
+        title: 'No podés crecer',
+        description: 'Cada cliente nuevo es más tiempo de programación. Llegás a un techo y no podés aceptar más.',
+        tag: 'Freno al crecimiento'
     },
 ];
 
 const BENEFITS = [
     {
         icon: Clock,
-        title: 'Ahorrás horas cada semana',
-        description: 'Generá la estructura completa de un programa al instante para enfocarte en el coaching y en los resultados de tus clientes.',
+        title: 'Hacés rutinas en minutos, no en horas',
+        description: 'Generás la base del plan al instante. Vos ajustás los detalles con tu criterio.',
     },
     {
         icon: Award,
-        title: 'Entregás planes consistentes y profesionales',
-        description: 'Cada rutina sigue un sistema estructurado que elimina las planillas desordenadas y los errores de copiar y pegar.',
+        title: 'Entregás algo profesional',
+        description: 'Planes estructurados y prolijos, listos para mandar en PDF. Sin planillas ni formatos desprolijos.',
     },
     {
         icon: Users,
-        title: 'Escalás tu negocio de coaching',
-        description: 'Atendé más clientes sin dedicar más horas a escribir rutinas.',
+        title: 'Podés atender más clientes',
+        description: 'Al escribir menos, tenés tiempo para crecer. Más clientes sin más horas de trabajo.',
     },
     {
         icon: Target,
-        title: 'Mantenés el control profesional',
-        description: 'La IA genera la estructura base — vos refinás cada detalle con tu experiencia.',
-    },
-    {
-        icon: Sparkles,
-        title: 'Mejorás la experiencia de tus clientes',
-        description: 'Entregá planes de entrenamiento estructurados y prolijos con exportación a PDF con tu marca.',
+        title: 'Siempre sos vos quien decide',
+        description: 'La IA genera la base. Vos revisás, ajustás y firmás el plan con tu nombre.',
     },
 ];
 
@@ -89,31 +87,31 @@ const STATS = [
         icon: Clock,
         number: '40 hs',
         label: 'ahorradas por mes',
-        description: 'Estimado en base a 3 horas por rutina × 4 rutinas por semana',
+        description: 'Tiempo promedio que los entrenadores dedican a escribir rutinas cada mes.',
     },
     {
         icon: Users,
         number: '3×',
         label: 'más clientes',
-        description: 'Con la misma carga de programación — la automatización reduce el tiempo de creación ~80%',
+        description: 'Más clientes que podés manejar cuando no empezás las rutinas desde cero.',
     },
     {
         icon: Zap,
         number: '<5 min',
-        label: 'para tu primer resultado',
-        description: 'Generá el prompt → pegalo en la IA → importá el JSON → exportá la rutina',
+        label: 'para tu primera rutina',
+        description: 'Tiempo para generar la base de un plan con BaseRutina.',
     },
     {
         icon: CheckCircle2,
         number: '100%',
-        label: 'planes estructurados',
-        description: 'Cada rutina sigue la misma estructura de datos — calidad consistente en todos tus clientes',
+        label: 'rutinas estructuradas',
+        description: 'Cada plan sigue la misma lógica — sin errores de copiar y pegar.',
     },
     {
         icon: TrendingUp,
         number: '90%',
         label: 'más rápido',
-        description: 'Medido en comparación con flujos de programación manual',
+        description: 'Comparado con programación manual desde cero.',
     },
 ];
 
@@ -121,57 +119,102 @@ const HOW_IT_WORKS = [
     {
         step: '01',
         icon: Target,
-        title: 'Configurá la rutina',
-        description: 'Ingresá los parámetros básicos: objetivo, nivel, frecuencia de entrenamiento. GRIND LAB genera el prompt optimizado — sin necesidad de ingeniería de prompts.',
-        detail: 'Objetivo · Nivel · Frecuencia semanal',
+        title: 'Configurás el objetivo',
+        description: 'Completás un formulario simple: objetivo del cliente, nivel, días por semana. Sin tecnicismos, sin prompts complicados.',
+        detail: 'Objetivo · Nivel · Frecuencia',
     },
     {
         step: '02',
         icon: Sparkles,
-        title: 'Generá el prompt con IA',
-        description: 'Copiá el prompt optimizado y pegalo en ChatGPT, Claude o Gemini. En segundos obtenés un plan de entrenamiento completamente estructurado.',
+        title: 'Generás la rutina',
+        description: 'BaseRutina crea el prompt listo para usar. Lo pegás en ChatGPT, Claude o Gemini y obtenés el plan completo en segundos.',
         detail: 'ChatGPT · Claude · Gemini (cuentas gratuitas)',
     },
     {
         step: '03',
         icon: FileText,
-        title: 'Refiná y entregá',
-        description: 'Editá la rutina, ajustá cada detalle con tu criterio profesional, y exportá un plan de entrenamiento profesional.',
-        detail: 'Editor en vivo · Exportación PDF · Backup JSON',
+        title: 'Ajustás y exportás',
+        description: 'Editás lo que quieras con tu criterio profesional y mandás el PDF con tu marca. Listo para el cliente.',
+        detail: 'Editor en vivo · PDF con tu marca',
+    },
+];
+
+// 4 pasos del editor con imágenes — reemplaza StatsDeckSection
+const EDITOR_STEPS = [
+    {
+        number: '01',
+        icon: Users,
+        label: 'Tu cliente',
+        title: 'Describí a tu cliente',
+        description: 'Respondé preguntas simples sobre tu cliente: edad, experiencia, historial de lesiones, disponibilidad. Sin formularios complicados.',
+        detail: ['Edad', 'Nivel', 'Historial', 'Disponibilidad'],
+        // Reemplazá con la ruta real del screenshot cuando lo tengas
+        imageSrc: '/assets/paso-1.png',
+        imageAlt: 'Editor — datos del cliente',
+        highlight: false,
+    },
+    {
+        number: '02',
+        icon: Target,
+        label: 'Objetivo y método',
+        title: 'Especificá el objetivo y el método',
+        description: 'Elegís el objetivo principal — fuerza, hipertrofia, pérdida de grasa — y el método de entrenamiento que mejor le va a tu cliente.',
+        detail: ['Fuerza', 'Hipertrofia', 'Cardio', 'Funcional'],
+        imageSrc: '/assets/paso-2.png',
+        imageAlt: 'Editor — objetivos y métodos',
+        highlight: false,
+    },
+    {
+        number: '03',
+        icon: Calendar,
+        label: 'Estructura',
+        title: 'Ingresá las semanas y los días',
+        description: 'Definís cuántas semanas dura el programa y cuántos días por semana entrena. BaseRutina arma la estructura automáticamente.',
+        detail: ['Semanas', 'Días por semana', 'Distribución'],
+        imageSrc: '/assets/paso-3.png',
+        imageAlt: 'Editor — semanas y días',
+        highlight: false,
+    },
+    {
+        number: '04',
+        icon: Sparkles,
+        label: 'Generación con IA',
+        title: 'Generá la base de tu planificación',
+        description: 'Con un clic generás el prompt optimizado, lo pegás en ChatGPT o Claude y obtenés la planificación completa lista para editar y exportar.',
+        detail: ['ChatGPT', 'Claude', 'Gemini', 'PDF'],
+        imageSrc: '/assets/paso-4.png',
+        imageAlt: 'Editor — generación con IA',
+        highlight: true,
     },
 ];
 
 const USE_CASES = [
     {
         icon: Laptop,
-        archetype: 'Entrenadores personales independientes',
-        description: 'Creá programas estructurados para cada cliente en minutos.',
-        metric: 'Más tiempo entrenando, menos escribiendo',
+        archetype: 'Entrenador independiente',
+        description: 'Manejás muchos clientes y poco tiempo. Hacés los planes más rápido y le dedicás más tiempo a lo que importa.',
+        metric: 'Más tiempo para entrenar',
     },
     {
         icon: Users,
-        archetype: 'Coaches online',
-        description: 'Escalá tu coaching sin gastar horas en programación.',
-        metric: '3× capacidad de clientes',
+        archetype: 'Coach online',
+        description: 'Querés escalar sin trabajar el doble. Sumás clientes sin sumar horas de programación.',
+        metric: '3× más clientes',
     },
     {
         icon: Building2,
-        archetype: 'Box y estudios de entrenamiento',
-        description: 'Estandarizá la programación entre todos los coaches.',
-        metric: 'Calidad consistente a escala',
+        archetype: 'Entrenador de gimnasio',
+        description: 'Necesitás estandarizar la programación. Todos los clientes reciben planes con la misma calidad.',
+        metric: 'Calidad consistente',
     },
     {
         icon: Dumbbell,
-        archetype: 'Coaches híbridos',
-        description: 'Combiná la eficiencia de la IA con tu experiencia profesional.',
-        metric: 'Programación de élite en minutos',
+        archetype: 'Preparador físico',
+        description: 'Combinás la velocidad de la IA con tu experiencia. El resultado es tuyo, generado en minutos.',
+        metric: 'Tu criterio, más rápido',
     },
 ];
 
-// Pricing recalculado para que el plan trimestral sea el punto óptimo:
-// Mensual $20/mes (precio base, sin descuento)
-// Trimestral $48 → $16/mes — 20% off — 1 mes de regalo ← mejor precio por mes
-// Semestral $108 → $18/mes — 10% off — mismo ahorro total pero más plata adelante
 const PRICING_TIERS = [
     {
         id: 'mensual',
@@ -181,16 +224,16 @@ const PRICING_TIERS = [
         perMonthARS: 20000,
         period: '/mes',
         billedAs: 'Facturado mes a mes',
-        description: 'Ideal para probar la plataforma. Sin compromisos.',
+        description: 'Para probar sin compromisos.',
         cta: 'Empezar ahora',
         ctaVariant: 'outline',
         savings: null,
         highlight: false,
         badge: null,
         features: [
-            'Todos los beneficios de la plataforma',
             'Rutinas ilimitadas',
             'Exportación PDF profesional',
+            'Compatible con ChatGPT, Claude y Gemini',
             'Soporte incluido',
         ],
     },
@@ -202,16 +245,16 @@ const PRICING_TIERS = [
         perMonthARS: 16000,
         period: '/mes',
         billedAs: 'USD 48 cada 3 meses · 1 mes de regalo',
-        description: 'El punto óptimo entre precio y flexibilidad.',
+        description: 'El más elegido. Mejor precio por mes.',
         cta: 'Elegir este plan',
         ctaVariant: 'default',
         savings: { label: '1 mes gratis', pct: '20% off', monthlySaved: 4 },
         highlight: true,
         badge: 'Más elegido',
         features: [
-            'Todos los beneficios de la plataforma',
             'Rutinas ilimitadas',
             'Exportación PDF profesional',
+            'Compatible con ChatGPT, Claude y Gemini',
             'Soporte prioritario',
         ],
     },
@@ -223,16 +266,16 @@ const PRICING_TIERS = [
         perMonthARS: 18000,
         period: '/mes',
         billedAs: 'USD 108 cada 6 meses',
-        description: 'Para quienes prefieren pagar con menos frecuencia.',
+        description: 'Para quienes prefieren pagar menos seguido.',
         cta: 'Elegir este plan',
         ctaVariant: 'outline',
         savings: { label: 'Ahorrás $12/total', pct: '10% off', monthlySaved: 2 },
         highlight: false,
         badge: null,
         features: [
-            'Todos los beneficios de la plataforma',
             'Rutinas ilimitadas',
             'Exportación PDF profesional',
+            'Compatible con ChatGPT, Claude y Gemini',
             'Soporte incluido',
         ],
     },
@@ -241,41 +284,40 @@ const PRICING_TIERS = [
 const FAQ_ITEMS = [
     {
         question: '¿Esto reemplaza al entrenador?',
-        answer: 'No. La IA genera una estructura base. Vos controlás cada ajuste — selección de ejercicios, progresiones, volumen, notas. El plan siempre es tuyo. Tu experiencia como coach es lo que lo hace funcionar.',
+        answer: 'No. La IA genera una base. Vos revisás cada ejercicio, progresión y volumen antes de mandar el plan. El criterio profesional siempre es tuyo.',
     },
     {
-        question: '¿Necesito conocimientos técnicos?',
-        answer: 'Para nada. El flujo funciona con las herramientas de IA que ya usás — ChatGPT, Claude o Gemini. Completás un formulario, copiás un prompt, lo pegás e importás el resultado. Sin APIs, sin configuración, sin pasos técnicos.',
+        question: '¿Necesito saber de tecnología?',
+        answer: 'No hace falta nada especial. Completás un formulario, copiás el prompt que genera BaseRutina y lo pegás en ChatGPT o cualquier IA que ya usás. Eso es todo.',
     },
     {
-        question: '¿Qué pasa con mis datos?',
-        answer: 'Tus rutinas quedan privadas y bajo tu control. GRIND LAB funciona completamente en tu navegador — no hay servidor backend que almacene tus datos. Cuando exportás, los archivos van directamente a tu dispositivo.',
+        question: '¿Puedo modificar las rutinas?',
+        answer: 'Sí, completamente. Tenés un editor para cambiar cualquier ejercicio, serie, repetición o nota. El plan es tuyo y lo ajustás como querés antes de exportarlo.',
     },
     {
         question: '¿Puedo cancelar cuando quiero?',
-        answer: 'Sí. Todos los planes pagos se pueden cancelar sin compromiso. Podés cancelar desde la configuración de tu cuenta en cualquier momento y conservás el acceso hasta el final del período de facturación.',
+        answer: 'Sí. Cancelás desde tu cuenta en cualquier momento, sin penalidades ni trámites. Seguís teniendo acceso hasta que termine el período que pagaste.',
     },
 ];
 
 const TRUST_SIGNALS = [
     {
         icon: Shield,
-        title: 'Privacidad',
-        description: 'Tus datos de rutinas son privados y no se almacenan ni venden.',
+        title: 'Tus datos son tuyos',
+        description: 'Las rutinas no se guardan en ningún servidor. Todo queda en tu navegador.',
     },
     {
         icon: Lock,
-        title: 'Seguridad',
-        description: 'No se requieren API keys. Funciona completamente en tu navegador.',
+        title: 'Sin complicaciones técnicas',
+        description: 'No necesitás API keys ni configurar nada. Funciona desde el primer día.',
     },
     {
         icon: Headphones,
-        title: 'Soporte',
-        description: 'Onboarding guiado y documentación incluida.',
+        title: 'Soporte real',
+        description: 'Hablás con personas que entienden el negocio del coaching.',
     },
 ];
 
-// Logo ticker items (tools + feature highlights)
 const TICKER_ITEMS = [
     { icon: Sparkles, label: 'ChatGPT' },
     { icon: Brain,    label: 'Claude' },
@@ -349,7 +391,6 @@ function Navbar({ onScrollTo }) {
         <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-primary-bg/95 backdrop-blur-md border-b border-border shadow-lg' : 'bg-transparent'}`}>
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
-                    {/* Logo */}
                     <div
                         className="flex items-center gap-3 cursor-pointer"
                         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -357,10 +398,9 @@ function Navbar({ onScrollTo }) {
                         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-white shadow-md shadow-accent/30">
                             <Zap className="h-4 w-4" />
                         </div>
-                        <span className="text-white font-bold text-lg tracking-tight font-display">GRIND LAB</span>
+                        <span className="text-white font-bold text-lg tracking-tight font-display">BaseRutina</span>
                     </div>
 
-                    {/* Desktop links */}
                     <div className="hidden md:flex items-center gap-8">
                         {NAV_LINKS.map(link => (
                             <button
@@ -373,7 +413,6 @@ function Navbar({ onScrollTo }) {
                         ))}
                     </div>
 
-                    {/* Desktop CTAs */}
                     <div className="hidden md:flex items-center gap-3">
                         {user ? (
                             <UserMenu />
@@ -391,13 +430,12 @@ function Navbar({ onScrollTo }) {
                                     className="text-sm shadow-md shadow-accent/20"
                                 >
                                     <Sparkles className="mr-1.5 h-3.5 w-3.5" />
-                                    Solicitar demo
+                                    Probá gratis
                                 </Button>
                             </>
                         )}
                     </div>
 
-                    {/* Mobile toggle */}
                     <button
                         className="md:hidden p-2 text-text-secondary hover:text-white transition-colors"
                         onClick={() => setMobileOpen(!mobileOpen)}
@@ -408,7 +446,6 @@ function Navbar({ onScrollTo }) {
                 </div>
             </div>
 
-            {/* Mobile menu */}
             {mobileOpen && (
                 <div className="md:hidden bg-primary-bg/98 backdrop-blur-md border-b border-border">
                     <div className="px-6 py-4 space-y-4">
@@ -433,7 +470,7 @@ function Navbar({ onScrollTo }) {
                             )}
                             <Button size="sm" onClick={() => { onScrollTo('contact'); setMobileOpen(false); }} className="w-full text-sm">
                                 <Sparkles className="mr-1.5 h-3.5 w-3.5" />
-                                Solicitar demo
+                                Probá gratis
                             </Button>
                         </div>
                     </div>
@@ -450,7 +487,6 @@ function Navbar({ onScrollTo }) {
 function HeroSection({ onScrollTo }) {
     return (
         <div className="relative min-h-screen flex items-center overflow-hidden border-b border-border">
-            {/* DotGrid interactive background */}
             <div className="absolute inset-0 z-0 opacity-30">
                 <DotGrid
                     dotSize={6} gap={20} baseColor="#1a1a24" activeColor="#2d2d3d"
@@ -459,7 +495,6 @@ function HeroSection({ onScrollTo }) {
                 />
             </div>
 
-            {/* Atmospheric radial glows */}
             <div className="absolute inset-0 z-[1] pointer-events-none">
                 <div
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[700px] rounded-full"
@@ -469,29 +504,21 @@ function HeroSection({ onScrollTo }) {
                     className="absolute -top-32 right-0 w-[600px] h-[600px] rounded-full"
                     style={{ background: 'radial-gradient(ellipse, rgba(107,66,255,0.07) 0%, transparent 70%)' }}
                 />
-                <div
-                    className="absolute -bottom-32 left-0 w-[500px] h-[500px] rounded-full"
-                    style={{ background: 'radial-gradient(ellipse, rgba(82,39,255,0.05) 0%, transparent 70%)' }}
-                />
             </div>
 
-            {/* Gradient vignette to ground the section */}
             <div className="absolute inset-0 bg-gradient-to-b from-primary-bg/30 via-transparent to-primary-bg z-[2] pointer-events-none" />
 
-            {/* Content */}
             <div
                 className="relative z-10 w-full mx-auto max-w-5xl px-6 text-center"
                 style={{ paddingTop: 'clamp(120px, 16vw, 180px)', paddingBottom: 'clamp(100px, 12vw, 150px)' }}
             >
-                {/* Eyebrow badge */}
                 <div className="flex justify-center mb-8 scroll-reveal">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm font-medium backdrop-blur-sm">
-                        <Brain className="h-4 w-4 flex-shrink-0" />
-                        <span>Generador de planes de entrenamiento con IA para entrenadores personales</span>
+                        <Zap className="h-4 w-4 flex-shrink-0" />
+                        <span>Para entrenadores personales y coaches online</span>
                     </div>
                 </div>
 
-                {/* Headline — display size, weight 900 */}
                 <h1
                     className="text-white font-display scroll-reveal reveal-delay-1"
                     style={{
@@ -501,48 +528,47 @@ function HeroSection({ onScrollTo }) {
                         letterSpacing: '-0.03em',
                     }}
                 >
-                    Dejá de escribir planes.{' '}
+                    Creá rutinas profesionales{' '}
                     <span className="bg-gradient-to-r from-accent via-violet-400 to-accent-light bg-clip-text text-transparent">
-                        Empezá a entrenar.
+                        en segundos.
                     </span>
                 </h1>
 
-                {/* Subheadline */}
                 <p className="mt-6 text-xl sm:text-2xl text-text-secondary max-w-2xl mx-auto leading-relaxed scroll-reveal reveal-delay-2">
-                    Generá planes de entrenamiento completos y estructurados en segundos.
-                    Refiná con tu criterio profesional y entregá PDFs que tus clientes van a confiar.
+                    BaseRutina te ayuda a generar la base de cualquier plan de entrenamiento para tus clientes en menos de 5 minutos.
                 </p>
 
-                {/* CTAs */}
+                <p className="mt-4 text-lg text-text-secondary max-w-xl mx-auto scroll-reveal reveal-delay-2">
+                    Menos tiempo escribiendo rutinas. Más tiempo entrenando clientes.
+                </p>
+
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-10 scroll-reveal reveal-delay-3">
                     <button
                         onClick={() => onScrollTo('contact')}
                         className="btn-hero-primary group inline-flex items-center justify-center gap-2 h-14 px-8 rounded-xl bg-accent text-white font-bold text-base w-full sm:w-auto"
                     >
                         <Sparkles className="h-5 w-5 flex-shrink-0" />
-                        Solicitar una demostración
+                        Probar gratis
                         <ArrowRight className="h-5 w-5 flex-shrink-0 transition-transform group-hover:translate-x-1" />
                     </button>
                     <button
-                        onClick={() => onScrollTo('pricing')}
+                        onClick={() => onScrollTo('how-it-works')}
                         className="group inline-flex items-center justify-center h-14 px-8 rounded-xl border border-text-tertiary/30 text-text-secondary hover:border-accent/50 hover:text-white font-semibold text-base transition-all w-full sm:w-auto"
                     >
-                        Ver planes y precios
+                        Ver cómo funciona
                     </button>
                 </div>
 
-                {/* AI tools trust line */}
                 <p className="mt-6 text-sm text-text-tertiary scroll-reveal reveal-delay-4">
-                    Funciona con las herramientas de IA que ya usás:{' '}
+                    Compatible con las herramientas que ya usás:{' '}
                     <span className="text-text-secondary font-medium">ChatGPT · Claude · Gemini</span>
                 </p>
 
-                {/* Credibility bullets */}
                 <div className="flex flex-wrap items-center justify-center gap-6 pt-8 scroll-reveal reveal-delay-4">
                     {[
-                        'Generá rutinas en segundos, no en horas',
-                        'Mantené el control profesional de cada programa',
-                        'Entregá planes listos para el cliente al instante',
+                        'Tu primera rutina en menos de 5 minutos',
+                        'Sin planillas ni copiar y pegar',
+                        'Vos decidís cada detalle del plan',
                     ].map((bullet, i) => (
                         <div key={i} className="flex items-center gap-2 text-sm text-text-secondary">
                             <CheckCircle2 className="h-4 w-4 text-accent flex-shrink-0" />
@@ -551,7 +577,6 @@ function HeroSection({ onScrollTo }) {
                     ))}
                 </div>
 
-                {/* Scroll indicator */}
                 <div className="mt-14 flex justify-center animate-bounce">
                     <ChevronDown className="h-6 w-6 text-text-quaternary" />
                 </div>
@@ -561,11 +586,10 @@ function HeroSection({ onScrollTo }) {
 }
 
 /* ─────────────────────────────────────────────
-   SOCIAL PROOF STRIP — immediately after hero
+   SOCIAL PROOF STRIP
 ───────────────────────────────────────────── */
 
 function LogoTicker() {
-    // Duplicate for seamless infinite loop
     const items = [...TICKER_ITEMS, ...TICKER_ITEMS];
     return (
         <div className="ticker-mask py-1" aria-hidden="true">
@@ -588,7 +612,6 @@ function LogoTicker() {
 function SocialProofStrip() {
     return (
         <section className="section-elevated-bg border-b border-border" style={{ padding: 'clamp(56px, 8vw, 96px) 0' }}>
-            {/* Key stats — large display numbers */}
             <div className="mx-auto max-w-6xl px-6 lg:px-8">
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 lg:gap-4 text-center">
                     {STATS.map((stat, i) => (
@@ -605,12 +628,8 @@ function SocialProofStrip() {
                         </div>
                     ))}
                 </div>
-
-                {/* Separator */}
                 <div className="mt-12 border-t border-border" />
             </div>
-
-            {/* Logo / feature ticker */}
             <div className="mt-8">
                 <LogoTicker />
             </div>
@@ -626,21 +645,19 @@ function PainPointsSection() {
     return (
         <section className="mx-auto max-w-7xl px-6 lg:px-8 border-b border-border" style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}>
             <SectionHeader
-                headline="¿Te suena familiar?"
-                subline="El costo real de programar rutinas a mano"
+                headline="¿Te pasa esto?"
+                subline="El costo real de programar rutinas a mano."
             />
             <div className="mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {PAIN_POINTS.map((pain, i) => (
                     <div key={i} className={`relative group scroll-reveal reveal-delay-${i + 1}`}>
                         <div className="absolute -inset-0.5 bg-gradient-to-br from-red-500/20 to-red-500/0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur" />
                         <div className="relative rounded-2xl border border-border bg-primary-surface p-7 h-full flex flex-col">
-                            {/* Tag badge at top */}
                             <div className="mb-5">
                                 <span className="inline-block text-xs font-bold text-red-400 bg-red-500/10 border border-red-500/20 px-3 py-1 rounded-full font-mono tracking-wide uppercase">
                                     {pain.tag}
                                 </span>
                             </div>
-                            {/* Icon */}
                             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-500/10 text-red-400 mb-4">
                                 <pain.icon className="h-5 w-5" />
                             </div>
@@ -662,33 +679,35 @@ function BenefitsSection() {
     return (
         <section id="benefits" className="section-elevated-bg border-b border-border" style={{ padding: 'var(--space-section) 0' }}>
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
-                {/* Header with keyword highlight */}
                 <div className="mx-auto max-w-2xl text-center mb-16 scroll-reveal">
-                    <SectionTag icon={TrendingUp} label="Lo que ganás como entrenador" />
+                    <SectionTag icon={TrendingUp} label="Lo que ganás" />
                     <h2
                         className="font-bold tracking-tight text-white font-display"
                         style={{ fontSize: 'var(--text-h2)', lineHeight: '1.1' }}
                     >
-                        Construido para resultados{' '}
+                        Menos tiempo escribiendo.{' '}
                         <span className="bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent">
-                            reales
+                            Más tiempo entrenando.
                         </span>
                     </h2>
                     <p className="mt-4 text-lg text-text-secondary">
-                        No funcionalidades. No mecánicas de IA. Resultados concretos para tu negocio de coaching.
+                        Resultados concretos para tu negocio de coaching. Sin promesas vacías.
                     </p>
                 </div>
 
-                {/* Cards — min 32px internal padding, max 2 lines description */}
-                <div className="mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                     {BENEFITS.map((benefit, i) => (
-                        <div key={i} className={`scroll-reveal reveal-delay-${(i % 3) + 1}`}>
+                        <div key={i} className={`scroll-reveal reveal-delay-${(i % 2) + 1}`}>
                             <GlowCard className="p-8">
-                                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent mb-5">
-                                    <benefit.icon className="h-6 w-6" />
+                                <div className="flex items-start gap-5">
+                                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">
+                                        <benefit.icon className="h-6 w-6" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-white mb-2 font-display leading-snug">{benefit.title}</h3>
+                                        <p className="text-sm text-text-secondary leading-relaxed">{benefit.description}</p>
+                                    </div>
                                 </div>
-                                <h3 className="text-lg font-bold text-white mb-3 font-display leading-snug">{benefit.title}</h3>
-                                <p className="text-sm text-text-secondary leading-relaxed">{benefit.description}</p>
                             </GlowCard>
                         </div>
                     ))}
@@ -699,45 +718,191 @@ function BenefitsSection() {
 }
 
 /* ─────────────────────────────────────────────
-   STATS DECK — elevated with gradient border glow
+   EDITOR STEPS — reemplaza StatsDeckSection
+   Mobile-first: imagen arriba, texto abajo en mobile
+   Desktop: alternado izquierda / derecha
 ───────────────────────────────────────────── */
 
-function StatsDeckSection() {
+function StepImageFrame({ step }) {
     return (
-        <section className="mx-auto max-w-7xl px-6 lg:px-8 border-b border-border" style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}>
-            <SectionHeader
-                tag="Benchmarks de rendimiento"
-                icon={TrendingUp}
-                headline="Los números que le importan a los coaches"
-                subline="Estimaciones basadas en flujos de programación manual típicos. Los resultados pueden variar."
-            />
+        <div className="relative">
+            {/* Número flotante sobre la imagen */}
+            <div className="absolute -top-4 -left-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-accent text-white font-black text-sm font-mono shadow-lg shadow-accent/40 border-2 border-primary-bg">
+                {step.number}
+            </div>
 
-            <div className="mx-auto max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {STATS.map((stat, i) => (
-                    <div key={i} className={`gradient-card scroll-reveal reveal-delay-${(i % 3) + 1}`}>
-                        <div className="rounded-2xl bg-primary-surface p-8 text-center flex flex-col items-center h-full">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent mb-5">
-                                <stat.icon className="h-6 w-6" />
+            {/* Glow ambiental para el paso destacado */}
+            {step.highlight && (
+                <div className="absolute -inset-2 rounded-3xl bg-gradient-to-br from-accent/25 to-accent/5 blur-xl" />
+            )}
+
+            {/* Frame estilo browser */}
+            <div className={`
+                relative rounded-2xl overflow-hidden border
+                ${step.highlight ? 'border-accent/40' : 'border-border'}
+                bg-primary-surface aspect-[4/3]
+                shadow-2xl ${step.highlight ? 'shadow-accent/10' : 'shadow-black/30'}
+            `}>
+                {/* Chrome bar */}
+                <div className="flex items-center gap-1.5 px-4 py-3 border-b border-border bg-primary-bg">
+                    <div className="h-2.5 w-2.5 rounded-full bg-red-500/60" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/60" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-green-500/60" />
+                    <div className="ml-3 h-4 flex-1 rounded-full bg-border/50 max-w-[140px]" />
+                </div>
+
+                {/* Imagen real o placeholder */}
+                <div className="h-[calc(100%-44px)]">
+                    {step.imageSrc ? (
+                        <img
+                            src={step.imageSrc}
+                            alt={step.imageAlt}
+                            className="w-full h-full object-cover object-top"
+                        />
+                    ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center gap-4 p-8">
+                            <div className={`flex h-16 w-16 items-center justify-center rounded-2xl ${
+                                step.highlight
+                                    ? 'bg-accent text-white shadow-lg shadow-accent/40'
+                                    : 'bg-accent/10 text-accent'
+                            }`}>
+                                <step.icon className="h-8 w-8" />
                             </div>
-                            {/* Number — min 48px */}
-                            <div
-                                className="font-black text-accent leading-none mb-2 font-display"
-                                style={{ fontSize: 'clamp(48px, 5vw, 64px)' }}
-                            >
-                                {stat.number}
+                            <div className="text-center">
+                                <p className="text-xs font-mono text-text-tertiary mb-1 uppercase tracking-widest">Preview</p>
+                                <p className="text-sm text-text-secondary">{step.imageAlt}</p>
                             </div>
-                            <div className="text-base font-semibold text-white mb-3">{stat.label}</div>
-                            <p className="text-sm text-text-secondary leading-relaxed flex-1">{stat.description}</p>
+                            <div className="w-full max-w-xs space-y-2 mt-2">
+                                {[80, 60, 70, 50].map((w, i) => (
+                                    <div
+                                        key={i}
+                                        className="h-2.5 rounded-full bg-border/60"
+                                        style={{ width: `${w}%`, opacity: 1 - i * 0.15 }}
+                                    />
+                                ))}
+                            </div>
                         </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function EditorStepCard({ step, index }) {
+    const isEven = index % 2 === 0;
+    return (
+        <div className={`scroll-reveal reveal-delay-${(index % 3) + 1}`}>
+            <div className={`
+                flex flex-col gap-8
+                lg:flex-row lg:items-center lg:gap-16
+                ${!isEven ? 'lg:flex-row-reverse' : ''}
+            `}>
+                {/* Imagen — arriba en mobile, lado en desktop */}
+                <div className="w-full lg:w-1/2 flex-shrink-0">
+                    <StepImageFrame step={step} />
+                </div>
+
+                {/* Texto — abajo en mobile, lado en desktop */}
+                <div className="w-full lg:w-1/2 flex flex-col gap-5">
+                    {/* Badge */}
+                    <div className="inline-flex items-center gap-2 self-start">
+                        <span className={`
+                            text-xs font-bold px-3 py-1.5 rounded-full border font-mono tracking-widest uppercase
+                            ${step.highlight
+                                ? 'text-accent bg-accent/10 border-accent/30'
+                                : 'text-text-tertiary bg-primary-surface border-border'
+                            }
+                        `}>
+                            Paso {step.number}
+                        </span>
+                        <span className="text-xs text-text-tertiary font-medium">{step.label}</span>
+                    </div>
+
+                    {/* Título */}
+                    <h3
+                        className="font-bold text-white font-display leading-tight"
+                        style={{ fontSize: 'clamp(22px, 3vw, 32px)' }}
+                    >
+                        {step.title}
+                    </h3>
+
+                    {/* Descripción */}
+                    <p className="text-base text-text-secondary leading-relaxed">
+                        {step.description}
+                    </p>
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-2">
+                        {step.detail.map((tag, i) => (
+                            <span
+                                key={i}
+                                className={`
+                                    text-xs px-3 py-1.5 rounded-lg border font-medium
+                                    ${step.highlight
+                                        ? 'bg-accent/10 border-accent/20 text-accent'
+                                        : 'bg-primary-surface border-border text-text-tertiary'
+                                    }
+                                `}
+                            >
+                                {tag}
+                            </span>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function EditorStepsSection() {
+    return (
+        <section
+            id="how-it-works"
+            className="mx-auto max-w-7xl px-6 lg:px-8 border-b border-border"
+            style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}
+        >
+            {/* Header */}
+            <div className="mx-auto max-w-2xl text-center mb-16 scroll-reveal">
+                <SectionTag icon={Sparkles} label="4 pasos simples" />
+                <h2
+                    className="font-bold tracking-tight text-white font-display"
+                    style={{ fontSize: 'var(--text-h2)', lineHeight: '1.1' }}
+                >
+                    De cero al plan{' '}
+                    <span className="bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent">
+                        en minutos.
+                    </span>
+                </h2>
+                <p className="mt-4 text-lg text-text-secondary">
+                    Seguís los pasos y BaseRutina arma todo. Vos ajustás los detalles.
+                </p>
+            </div>
+
+            {/* Lista de pasos */}
+            <div className="mx-auto max-w-5xl flex flex-col gap-16 lg:gap-24">
+                {EDITOR_STEPS.map((step, i) => (
+                    <div key={step.number}>
+                        <EditorStepCard step={step} index={i} />
+
+                        {/* Conector visual entre pasos — solo desktop */}
+                        {i < EDITOR_STEPS.length - 1 && (
+                            <div className="hidden lg:flex items-center justify-center mt-12" aria-hidden="true">
+                                <div className="flex flex-col items-center gap-1">
+                                    <div className="h-6 w-px bg-gradient-to-b from-border to-accent/30" />
+                                    <div className="h-1.5 w-1.5 rounded-full bg-accent/40" />
+                                    <div className="h-6 w-px bg-gradient-to-b from-accent/30 to-border" />
+                                </div>
+                            </div>
+                        )}
                     </div>
                 ))}
             </div>
 
-            {/* Disclosure */}
-            <div className="mt-10 mx-auto max-w-2xl text-center">
+            {/* Nota al pie */}
+            <div className="mt-16 mx-auto max-w-2xl text-center scroll-reveal">
                 <p className="text-xs text-text-quaternary leading-relaxed">
-                    Las métricas mostradas son estimaciones basadas en flujos de programación manual típicos de entrenadores personales.
-                    El ahorro real de tiempo puede variar según el estilo de coaching y la complejidad de los clientes.
+                    Compatible con ChatGPT, Claude y Gemini gratuitos. No necesitás API keys ni conocimientos técnicos.
                 </p>
             </div>
         </section>
@@ -745,37 +910,34 @@ function StatsDeckSection() {
 }
 
 /* ─────────────────────────────────────────────
-   HOW IT WORKS — numbered vertical steps
+   HOW IT WORKS
 ───────────────────────────────────────────── */
 
 function HowItWorksSection({ onScrollTo }) {
     return (
-        <section id="how-it-works" className="section-elevated-bg border-b border-border" style={{ padding: 'var(--space-section) 0' }}>
+        <section className="section-elevated-bg border-b border-border" style={{ padding: 'var(--space-section) 0' }}>
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
                 <SectionHeader
-                    tag="Flujo de trabajo en 3 pasos"
+                    tag="3 pasos simples"
                     icon={Brain}
                     headline="¿Cómo funciona?"
-                    subline="Sin conocimientos técnicos. Sin ingeniería de prompts. Solo coaching."
+                    subline="Sin tecnicismos. Sin configuración. Empezás en minutos."
                 />
 
                 <div className="mx-auto max-w-3xl">
                     <div className="relative space-y-4">
                         {HOW_IT_WORKS.map((step, i) => (
                             <div key={i} className={`relative flex gap-6 scroll-reveal reveal-delay-${i + 1}`}>
-                                {/* Connector line between steps */}
                                 {i < HOW_IT_WORKS.length - 1 && (
                                     <div className="step-connector" />
                                 )}
 
-                                {/* Step number badge */}
                                 <div className="flex-shrink-0 relative z-10">
                                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-white font-black text-sm font-mono shadow-lg shadow-accent/40">
                                         {step.step}
                                     </div>
                                 </div>
 
-                                {/* Step card */}
                                 <div className="flex-1 pb-4">
                                     <GlowCard className="p-6 sm:p-8">
                                         <div className="flex items-start gap-4">
@@ -808,7 +970,7 @@ function HowItWorksSection({ onScrollTo }) {
                             className="group text-base px-8 h-12 shadow-lg shadow-accent/20"
                         >
                             <Sparkles className="mr-2 h-5 w-5" />
-                            Quiero empezar
+                            Crear mi primera rutina
                             <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                         </Button>
                         <p className="mt-3 text-xs text-text-muted">Sin registro requerido. Tu primera rutina en menos de 5 minutos.</p>
@@ -827,10 +989,10 @@ function UseCasesSection() {
     return (
         <section className="mx-auto max-w-7xl px-6 lg:px-8 border-b border-border" style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}>
             <SectionHeader
-                tag="Hecho para cada tipo de coach"
+                tag="Para todo tipo de coach"
                 icon={Users}
-                headline="Tu negocio de entrenamiento, a escala"
-                subline="Ya sea que tengas 5 clientes o 500, GRIND LAB se adapta a tu flujo de trabajo."
+                headline="Funciona para tu forma de trabajar"
+                subline="Tengas 5 clientes o 50, BaseRutina se adapta a tu ritmo."
             />
 
             <div className="mx-auto max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -855,59 +1017,54 @@ function UseCasesSection() {
 }
 
 /* ─────────────────────────────────────────────
-   PRICING — clear visual hierarchy, badge above recommended
+   PRICING
 ───────────────────────────────────────────── */
 
 function PricingSection({ onScrollTo }) {
     return (
         <section id="pricing" className="section-elevated-bg border-b border-border" style={{ padding: 'var(--space-section) 0' }}>
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
-                {/* Header */}
                 <div className="mx-auto max-w-2xl text-center mb-6 scroll-reveal">
-                    <SectionTag icon={DollarSign} label="Planes de suscripción" />
+                    <SectionTag icon={DollarSign} label="Planes" />
                     <h2
                         className="font-bold tracking-tight text-white font-display"
                         style={{ fontSize: 'var(--text-h2)', lineHeight: '1.1' }}
                     >
-                        Un solo plan, tres formas{' '}
+                        Empezar es{' '}
                         <span className="bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent">
-                            de pagarlo.
+                            fácil.
                         </span>
                     </h2>
                     <p className="mt-4 text-lg text-text-secondary">
-                        Todas las funcionalidades incluidas en cada plan. Solo elegís cada cuánto pagás.
+                        Todas las funciones incluidas en cada plan. Solo elegís cada cuánto pagás.
                     </p>
                 </div>
 
-                {/* Anchoring message */}
                 <div className="mx-auto max-w-3xl mb-8 text-center scroll-reveal">
                     <p className="text-sm text-text-tertiary">
-                        💡 <span className="text-text-secondary">El plan mensual cuesta <strong className="text-white">$20 USD</strong> por mes.
-                        Con el plan trimestral pagás <strong className="text-accent">$16 USD/mes</strong> — ahorrás un mes entero por cada trimestre.</span>
+                        💡 <span className="text-text-secondary">El plan mensual cuesta <strong className="text-white">$20 USD</strong>/mes.
+                        Con el trimestral pagás <strong className="text-accent">$16 USD/mes</strong> — es como tener un mes gratis.</span>
                     </p>
                 </div>
 
-                {/* Guarantee banner */}
                 <div className="mx-auto max-w-xl mb-14 text-center scroll-reveal">
                     <div className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-accent/5 border border-accent/20">
                         <Shield className="h-5 w-5 text-accent flex-shrink-0" />
                         <div className="text-left">
-                            <div className="text-sm font-semibold text-white">7 días de prueba sin riesgo</div>
+                            <div className="text-sm font-semibold text-white">7 días sin riesgo</div>
                             <div className="text-xs text-text-secondary mt-0.5">
-                                Probalo con rutinas reales. Si no mejora tu flujo de trabajo, cancelás cuando quieras.
+                                Probalo con rutinas reales. Si no funciona para vos, cancelás sin preguntas.
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Cards — equal height grid, badge positioned ABOVE highlighted card */}
                 <div className="mx-auto max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
                     {PRICING_TIERS.map((tier, i) => (
                         <div
                             key={i}
                             className={`relative group scroll-reveal reveal-delay-${i + 1} ${tier.highlight ? 'pt-6' : ''}`}
                         >
-                            {/* "Más elegido" badge — positioned ABOVE the card */}
                             {tier.highlight && tier.badge && (
                                 <div className="absolute top-0 left-1/2 -translate-x-1/2 z-20">
                                     <span className="inline-flex items-center gap-1.5 text-xs font-black text-white bg-accent px-5 py-1.5 rounded-full shadow-lg shadow-accent/40 tracking-wide uppercase">
@@ -917,21 +1074,17 @@ function PricingSection({ onScrollTo }) {
                                 </div>
                             )}
 
-                            {/* Ambient glow for highlighted tier */}
                             {tier.highlight && (
                                 <div className="absolute inset-0 -inset-1 rounded-3xl bg-gradient-to-b from-accent/30 to-accent/5 blur-xl opacity-50 transition-opacity duration-300 group-hover:opacity-75" />
                             )}
 
-                            {/* Card */}
                             <div className={`relative rounded-3xl border p-7 h-full flex flex-col ${
                                 tier.highlight
                                     ? 'border-accent/50 bg-primary-surface pricing-card-glow'
                                     : 'border-border bg-primary-surface'
                             }`}>
-                                {/* Plan name */}
                                 <h3 className="text-xl font-bold text-white font-display mb-3">{tier.name}</h3>
 
-                                {/* Price block */}
                                 <div className="mb-2">
                                     {tier.id === 'trimestral' && (
                                         <div className="flex items-center gap-2 mb-1">
@@ -960,7 +1113,6 @@ function PricingSection({ onScrollTo }) {
                                     <p className="text-xs text-text-quaternary mt-0.5">≈ ${tier.perMonthARS.toLocaleString('es-AR')} ARS/mes*</p>
                                 </div>
 
-                                {/* Savings highlight */}
                                 {tier.savings && (
                                     <div className={`my-4 px-4 py-2.5 rounded-xl text-sm font-medium ${
                                         tier.highlight
@@ -975,10 +1127,8 @@ function PricingSection({ onScrollTo }) {
                                     </div>
                                 )}
 
-                                {/* Description */}
                                 <p className="text-sm text-text-secondary mb-5">{tier.description}</p>
 
-                                {/* Features — pushed to fill height */}
                                 <ul className="space-y-3 flex-1 mb-7">
                                     {tier.features.map((f, j) => (
                                         <li key={j} className="flex items-start gap-3 text-sm text-text-secondary">
@@ -990,7 +1140,6 @@ function PricingSection({ onScrollTo }) {
                                     ))}
                                 </ul>
 
-                                {/* CTA — pushed to card bottom */}
                                 <Button
                                     variant={tier.ctaVariant}
                                     size="md"
@@ -1009,15 +1158,14 @@ function PricingSection({ onScrollTo }) {
                     ))}
                 </div>
 
-                {/* ARS note + reassurances */}
                 <div className="mt-10 mx-auto max-w-3xl text-center space-y-3 scroll-reveal">
                     <p className="text-xs text-text-quaternary">
-                        * El equivalente en pesos argentinos es aproximado y se actualiza según la cotización del dólar al momento de la facturación.
+                        * El equivalente en pesos es aproximado y se actualiza según la cotización del dólar al momento de la facturación.
                     </p>
                     <div className="flex flex-wrap items-center justify-center gap-6 pt-2">
                         <div className="flex items-center gap-2 text-sm text-text-tertiary">
                             <CheckCircle2 className="h-4 w-4 text-accent" />
-                            Cancelás cuando querés, sin penalidades
+                            Cancelás cuando querés
                         </div>
                         <div className="flex items-center gap-2 text-sm text-text-tertiary">
                             <Shield className="h-4 w-4 text-accent" />
@@ -1025,7 +1173,7 @@ function PricingSection({ onScrollTo }) {
                         </div>
                         <div className="flex items-center gap-2 text-sm text-text-tertiary">
                             <Zap className="h-4 w-4 text-accent" />
-                            Todas las funciones en todos los planes
+                            Todo incluido en cada plan
                         </div>
                     </div>
                 </div>
@@ -1057,7 +1205,7 @@ function TrustSignalsSection() {
 }
 
 /* ─────────────────────────────────────────────
-   FAQ — accordion (handled by FAQ component)
+   FAQ
 ───────────────────────────────────────────── */
 
 function FAQSection() {
@@ -1065,10 +1213,10 @@ function FAQSection() {
         <section id="faq" className="section-elevated-bg border-b border-border" style={{ padding: 'var(--space-section) 0' }}>
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
                 <SectionHeader
-                    tag="Respuestas directas"
+                    tag="Dudas frecuentes"
                     icon={CheckCircle2}
                     headline="Preguntas frecuentes"
-                    subline="Respuestas claras a las dudas más comunes de los entrenadores."
+                    subline="Las preguntas que más nos hacen los entrenadores."
                 />
                 <div className="mx-auto max-w-3xl scroll-reveal">
                     <FAQ items={FAQ_ITEMS} defaultOpen={0} />
@@ -1086,15 +1234,15 @@ function ContactSection() {
     return (
         <section id="contact" className="mx-auto max-w-7xl px-6 lg:px-8 border-b border-border" style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}>
             <div className="mx-auto max-w-2xl text-center scroll-reveal">
-                <SectionTag icon={MessageCircle} label="Contacto Directo" />
+                <SectionTag icon={MessageCircle} label="Contacto" />
                 <h2
                     className="font-bold tracking-tight text-white font-display mb-6"
                     style={{ fontSize: 'var(--text-h2)', lineHeight: '1.1' }}
                 >
-                    Escribinos por WhatsApp
+                    ¿Querés ahorrar horas de trabajo entregando rutinas? Escribime.
                 </h2>
                 <p className="mt-4 text-lg text-text-secondary mb-10">
-                    Sacate las dudas, contanos sobre tu negocio y te mostramos cómo GRIND LAB puede funcionar para vos. ¡Te respondemos enseguida!
+                    Contanos sobre tu negocio y te mostramos cómo funciona BaseRutina para vos. Te respondemos enseguida.
                 </p>
                 <a
                     href="https://wa.me/5492996086076"
@@ -1103,10 +1251,10 @@ function ContactSection() {
                     className="inline-flex items-center justify-center h-14 px-8 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-black font-bold text-lg transition-all hover:scale-105 shadow-lg shadow-emerald-500/20"
                 >
                     <MessageCircle className="mr-2 h-6 w-6" />
-                    Contactar al 2996086076
+                    Escribir por WhatsApp
                 </a>
                 <p className="mt-6 text-sm text-text-quaternary">
-                    Sin bots, hablás directamente con nosotros.
+                    Sin bots. Hablás directo con Álvaro.
                 </p>
             </div>
         </section>
@@ -1114,7 +1262,7 @@ function ContactSection() {
 }
 
 /* ─────────────────────────────────────────────
-   FINAL CTA — full-width gradient banner
+   FINAL CTA
 ───────────────────────────────────────────── */
 
 function FinalCTASection({ onScrollTo }) {
@@ -1123,7 +1271,6 @@ function FinalCTASection({ onScrollTo }) {
             className="relative w-full overflow-hidden cta-gradient-banner noise-overlay"
             style={{ padding: 'var(--space-section) 0' }}
         >
-            {/* Decorative orbs */}
             <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
                 <div
                     className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full"
@@ -1135,24 +1282,22 @@ function FinalCTASection({ onScrollTo }) {
                 />
             </div>
 
-            {/* Border top/bottom for definition */}
             <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
 
-            {/* Content */}
             <div className="relative mx-auto max-w-4xl px-6 text-center">
                 <h2
                     className="text-white font-bold tracking-tight font-display scroll-reveal"
                     style={{ fontSize: 'clamp(36px, 6vw, 72px)', lineHeight: 1.05, letterSpacing: '-0.025em' }}
                 >
-                    Dejá de escribir rutinas.{' '}
+                    Dejá de escribir rutinas desde cero.{' '}
                     <span className="bg-gradient-to-r from-accent via-violet-400 to-accent-light bg-clip-text text-transparent">
-                        Empezá a escalar tu coaching.
+                        Empezá hoy.
                     </span>
                 </h2>
 
                 <p className="mx-auto mt-6 max-w-xl text-lg text-text-secondary leading-relaxed scroll-reveal reveal-delay-1">
-                    Generá programas de entrenamiento estructurados en segundos y enfocate en entregar resultados.
+                    Dejá de empezar las rutinas desde cero. Con BaseRutina podés generar la base de cualquier plan en minutos.
                 </p>
 
                 <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 scroll-reveal reveal-delay-2">
@@ -1161,23 +1306,22 @@ function FinalCTASection({ onScrollTo }) {
                         className="btn-hero-primary group inline-flex items-center justify-center gap-2 h-14 px-10 rounded-xl bg-accent text-white font-bold text-base w-full sm:w-auto"
                     >
                         <Sparkles className="h-5 w-5 flex-shrink-0" />
-                        Solicitar una demostración
+                        Crear mi primera rutina
                         <ArrowRight className="h-5 w-5 flex-shrink-0 transition-transform group-hover:translate-x-1" />
                     </button>
                     <button
                         onClick={() => onScrollTo('pricing')}
                         className="group inline-flex items-center justify-center h-14 px-8 rounded-xl border border-text-tertiary/30 text-text-secondary hover:border-accent/50 hover:text-white font-semibold text-base transition-all w-full sm:w-auto"
                     >
-                        Ver planes y precios
+                        Ver planes
                     </button>
                 </div>
 
-                {/* Micro trust signals */}
                 <div className="mt-10 flex flex-wrap items-center justify-center gap-6 scroll-reveal reveal-delay-3">
                     {[
-                        { icon: Shield,       text: '100% privado — sin datos almacenados' },
-                        { icon: Clock,        text: 'Tu primer plan en menos de 5 minutos' },
-                        { icon: CheckCircle2, text: 'Cancelá cualquier plan cuando quieras' },
+                        { icon: Shield,       text: 'Tus datos no se guardan en ningún servidor' },
+                        { icon: Clock,        text: 'Primera rutina en menos de 5 minutos' },
+                        { icon: CheckCircle2, text: 'Cancelás cuando querás' },
                     ].map((item, i) => (
                         <div key={i} className="flex items-center gap-2 text-sm text-text-tertiary">
                             <item.icon className="h-4 w-4 text-accent flex-shrink-0" />
@@ -1204,11 +1348,10 @@ function Footer({ onScrollTo }) {
                             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-white">
                                 <Zap className="h-4 w-4" />
                             </div>
-                            <span className="text-white font-bold text-lg font-display">GRIND LAB</span>
+                            <span className="text-white font-bold text-lg font-display">BaseRutina</span>
                         </div>
                         <p className="text-sm text-text-secondary leading-relaxed max-w-xs">
-                            El editor de planes de entrenamiento potenciado por IA, creado para coaches profesionales.
-                            Generá, refiná y entregá programas estructurados que tus clientes van a confiar.
+                            Generá la base de tus rutinas con IA. Ajustá con tu criterio. Entregá PDFs que tus clientes van a confiar.
                         </p>
                         <p className="mt-4 text-xs text-text-quaternary">Hecho para entrenadores. Por entrenadores.</p>
                     </div>
@@ -1235,9 +1378,9 @@ function Footer({ onScrollTo }) {
                         <h4 className="text-sm font-semibold text-white mb-4">Contacto</h4>
                         <ul className="space-y-3">
                             {[
-                                { label: 'Solicitar demo', action: () => onScrollTo('contact') },
+                                { label: 'Escribir por WhatsApp', action: () => onScrollTo('contact') },
                                 { label: 'Soporte', action: () => onScrollTo('contact') },
-                                { label: 'Privacidad', action: () => { } },
+                                { label: 'Privacidad', action: () => {} },
                             ].map(link => (
                                 <li key={link.label}>
                                     <button onClick={link.action} className="text-sm text-text-secondary hover:text-white transition-colors">
@@ -1251,14 +1394,14 @@ function Footer({ onScrollTo }) {
 
                 <div className="mt-12 pt-8 border-t border-border space-y-4">
                     <p className="text-xs text-text-quaternary leading-relaxed max-w-3xl">
-                        Las métricas de rendimiento mostradas son estimaciones basadas en flujos de programación manual típicos de entrenadores personales.
-                        El ahorro de tiempo y el aumento de capacidad reales pueden variar según el estilo de coaching y la complejidad de cada cliente.
+                        Las métricas mostradas son estimaciones basadas en flujos de programación manual típicos.
+                        Los resultados reales pueden variar según el estilo de coaching y la complejidad de cada cliente.
                     </p>
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                        <p className="text-xs text-text-quaternary">© 2026 GRIND LAB. Todos los derechos reservados.</p>
+                        <p className="text-xs text-text-quaternary">© 2026 BaseRutina. Todos los derechos reservados.</p>
                         <div className="flex items-center gap-2 text-xs text-text-quaternary">
                             <Shield className="h-3.5 w-3.5 text-accent" />
-                            100% del lado del cliente · Tus datos nunca salen de tu navegador
+                            Tus datos nunca salen de tu navegador
                         </div>
                     </div>
                 </div>
@@ -1276,7 +1419,6 @@ export default function HomeSaaS() {
         document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    // Global scroll reveal — IntersectionObserver on all .scroll-reveal elements
     useEffect(() => {
         const targets = document.querySelectorAll('.scroll-reveal');
 
@@ -1303,8 +1445,7 @@ export default function HomeSaaS() {
             <SocialProofStrip />
             <PainPointsSection />
             <BenefitsSection />
-            <StatsDeckSection />
-            <HowItWorksSection onScrollTo={scrollToSection} />
+            <EditorStepsSection onScrollTo={scrollToSection} />
             <UseCasesSection />
             <PricingSection onScrollTo={scrollToSection} />
             <TrustSignalsSection />

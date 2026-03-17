@@ -1,9 +1,9 @@
 {
-  "name": "grind-lab",
+  "name": "baserutina",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Herramienta gratuita para crear rutinas de entrenamiento con IA",
+  "description": "BaseRutina - Generá la base de tus rutinas de entrenamiento con IA",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

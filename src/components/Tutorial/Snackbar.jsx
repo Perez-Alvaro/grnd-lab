@@ -1,5 +1,5 @@
 /**
- * Snackbar - Sistema de notificaciones toast para GRIND LAB
+ * Snackbar - Sistema de notificaciones toast para BaseRutina
  * Feedback visual de acciones del usuario
  */
 

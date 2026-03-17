@@ -1,17 +1,17 @@
-# 🎨 GRIND LAB — Design Rationale
+# 🎨 BaseRutina — Design Rationale
 
 ## Enfoque de Diseño: "IA como Cerebro Externo"
 
 ### 🧠 Filosofía del Producto
 
-**GRIND LAB no es otra herramienta de IA.**  
+**BaseRutina no es otra herramienta de IA.**  
 Es una **herramienta de interpretación visual** que usa IA como motor de razonamiento externo.
 
 #### El Modelo
 
 ```
 ┌──────────────┐      ┌──────────────┐      ┌──────────────┐
-│   GRIND LAB  │─────▶│  ChatGPT/    │─────▶│   GRIND LAB  │
+│   BaseRutina  │─────▶│  ChatGPT/    │─────▶│   BaseRutina  │
 │  (Estructura)│      │  Claude      │      │  (Renderer)  │
 └──────────────┘      └──────────────┘      └──────────────┘
      Genera                Razona               Interpreta
@@ -96,7 +96,7 @@ Configura → Copia Prompt → IA genera → Pega JSON → Edita → Exporta
 
 | Paso | Título | Microcopy | Ícono |
 |------|--------|-----------|-------|
-| **1** | **Configura tu rutina** | "Completa los metadatos: objetivo, nivel, frecuencia. GRIND LAB genera un Prompt Maestro optimizado." | `Settings` |
+| **1** | **Configura tu rutina** | "Completa los metadatos: objetivo, nivel, frecuencia. BaseRutina genera un Prompt Maestro optimizado." | `Settings` |
 | **2** | **Copia el Prompt** | "Botón 'Copiar Prompt para IA'. Un solo clic, listo para pegar." | `Copy` |
 | **3** | **IA genera el JSON** | "Pega en ChatGPT, Claude o Gemini (gratis). La IA devuelve un JSON estructurado." | `Sparkles` |
 | **4** | **Edita y exporta** | "Pega el JSON en el editor. Ve cambios en vivo. Exporta a PDF profesional." | `FileDown` |
@@ -170,7 +170,7 @@ Configura → Copia Prompt → IA genera → Pega JSON → Edita → Exporta
 🔍 Prompt estándar:
 "Crea una rutina de 4 días"
 
-🎯 GRIND LAB Prompt Maestro:
+🎯 BaseRutina Prompt Maestro:
 "ACTÚA COMO ENTRENADOR EXPERTO.
 Genera JSON válido con esta estructura exacta:
 { name, metadata: {...}, weeks: [...] }

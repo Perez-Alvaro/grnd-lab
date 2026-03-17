@@ -153,7 +153,7 @@ export default function LoginModal() {
                 Iniciar sesión
               </h2>
               <p className="text-sm text-text-secondary">
-                Accedé a tu cuenta de GRIND LAB
+                Accedé a tu cuenta de BaseRutina
               </p>
             </div>
 
