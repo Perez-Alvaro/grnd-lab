@@ -294,8 +294,8 @@ ${gender?.toLowerCase().includes('masculino') || gender?.toLowerCase().includes(
    • ELIGE LA FORMA DE ENTRENAMIENTO que mejor se adapte (ver sección anterior)
    • BASÁNDOTE en: Objetivo, Nivel, Género y Frecuencia
    • CADA DÍA debe iniciar con 3-4 ejercicios de ENTRADA EN CALOR
-   • El calentamiento SIEMPRE incluye movilidad articular específica con breve explicación
-   • SOLO agrega cardio en el calentamiento cuando el objetivo sea "Pérdida de grasa"
+   • El calentamiento SIEMPRE es de ZONA MEDIA/CORE + movilidad articular específica del día. NUNCA cardio genérico.
+   • ⚠️ CARDIO EN CALENTAMIENTO: PROHIBIDO a menos que el objetivo sea "Pérdida de grasa". En ese caso, máx 5 min cardio moderado.
    • TODOS los ejercicios van en un array "exercises" (no hay campo "warmup" separado)
    • Ejercicios de entrada en calor tienen prefijo "[ENTRADA EN CALOR]" en el nombre (solo en name, NO en notes)
 
@@ -303,20 +303,46 @@ ${gender?.toLowerCase().includes('masculino') || gender?.toLowerCase().includes(
    OBLIGATORIO para CADA día de entrenamiento:
 
    Sets: "1" o "2" (nunca múltiples series pesadas)
-   Reps: Duración o rango ligero (ej: "5 min", "2 min", "10 reps", "10-15 reps")
+   Reps: Duración o rango ligero (ej: "2 min", "10 reps", "12 reps", "30 seg")
    RIR: "3" (siempre sencillo, nunca a fatiga)
    Tempo: "0000" o movimiento natural (no cuenta)
-   Rest: "0s" o tiempo natural entre movimientos
+   Rest: "0s" o "30s" entre movimientos
 
-   Condiciones:
-   - Cardio SÓLO si el objetivo es "Pérdida de grasa" (5 min a 60-65% FC máx). Si no, reemplaza cardio por activación articular o patrones ligeros sin impacto.
-   - SIEMPRE incluye movilidad articular específica con explicación del propósito (ej: escapular, cadera, tobillo, torácica).
+   🔴 REGLA ABSOLUTA DE CALENTAMIENTO:
+   - ❌ CARDIO PROHIBIDO (trote, elíptica, bici, saltar soga, etc.) a menos que el objetivo sea EXACTAMENTE "Pérdida de grasa".
+   - ✅ En objetivos de Hipertrofia, Fuerza, Resistencia, Fitness: el calentamiento SOLO incluye ZONA MEDIA/CORE + movilidad articular.
+   - Si el objetivo es "Pérdida de grasa": PERMITIDO incluir 1 ejercicio de cardio moderado (5 min, 60-65% FC máx) como parte del calentamiento.
 
-   Los tipos según el día (aplica la regla de cardio según objetivo):
-   - Push/Pecho: movilidad hombros/escápula + flexiones de activación (cardio solo si Pérdida de grasa)
-   - Pull/Espalda: movilidad escapular + dominadas asistidas o remo técnico (cardio solo si Pérdida de grasa)
-   - Pierna: movilidad cadera/tobillo + sentadilla corporal o leg press ligero (cardio solo si Pérdida de grasa)
-   - Full Body: movilidad articular completa + movimiento compuesto ligero (cardio solo si Pérdida de grasa)
+   COMPOSICIÓN OBLIGATORIA DEL CALENTAMIENTO (para objetivos NO pérdida de grasa):
+   1. Ejercicio de ZONA MEDIA/CORE (planchas, bird-dog, dead bug, hollow hold, McGill curl-up, etc.)
+   2. Movilidad articular ESPECÍFICA del día (ver tipos por día abajo)
+   3. Opcionalmente: 1 ejercicio de activación ligera del patrón principal del día (sin carga o muy ligero)
+
+   TIPOS DE CALENTAMIENTO SEGÚN DÍA (sin cardio salvo Pérdida de grasa):
+   - Push/Pecho/Hombros/Tríceps:
+     • Core: Planchas frontales o dead bug
+     • Movilidad: Rotaciones de hombro, movilidad torácica, apertura escapular
+     • Activación: Flexiones de activación controladas (sin carga)
+
+   - Pull/Espalda/Bíceps:
+     • Core: Bird-dog o McGill curl-up
+     • Movilidad: Movilidad escapular, retracción de omóplatos, movilidad torácica
+     • Activación: Remo con banda elástica o dominadas asistidas muy ligeras
+
+   - Pierna/Glúteos/Femorales:
+     • Core: Hollow hold o plancha lateral
+     • Movilidad: Movilidad de cadera (rotaciones, apertura), movilidad de tobillo, movilidad lumbar
+     • Activación: Sentadilla corporal lenta y controlada o puente de glúteo
+
+   - Full Body:
+     • Core: Dead bug o bird-dog
+     • Movilidad: Secuencia articular completa (tobillo → cadera → torácica → hombros)
+     • Activación: Movimiento compuesto muy ligero (sentadilla goblet con peso mínimo)
+
+   - Hombros / Brazos:
+     • Core: Planchas o hollow hold
+     • Movilidad: Círculos de hombro, rotaciones de codo, movilidad de muñeca
+     • Activación: Rotaciones externas con banda o flexiones de activación
 
 3️⃣ NOTAS DE EJERCICIOS (CRÍTICO - Breve y profesional para PDF):
 
@@ -345,7 +371,7 @@ ${gender?.toLowerCase().includes('masculino') || gender?.toLowerCase().includes(
 
 4️⃣ CAMPOS OBLIGATORIOS CADA EJERCICIO:
 
-   name: Exacto y claro. Prefijo "[ENTRADA EN CALOR]" para calentamiento. Ej: "[ENTRADA EN CALOR] Trote en cinta"
+   name: Exacto y claro. Prefijo "[ENTRADA EN CALOR]" para calentamiento. Ej: "[ENTRADA EN CALOR] Plancha frontal" o "[ENTRADA EN CALOR] Movilidad de cadera en cuadrupedia"
    sets: Número (string). "1", "2", "3", "4", etc
    reps: Rango o duración (string). "8-10", "10-12", "3 min", "2 min (10 reps)", etc
    rir: Rango en reserva (0-3, donde 0=fallo, 3=fácil). String. Para warmup: "3"

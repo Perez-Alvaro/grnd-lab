@@ -69,12 +69,21 @@ const adjustDuration = (metadata, previousWeekCount, nextWeekCount) => {
   return metadata;
 };
 
+const normalizeUrlValue = (url) => {
+  if (!url || typeof url !== 'string') return '';
+  const trimmed = url.trim();
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  if (trimmed.startsWith('//')) return `https:${trimmed}`;
+  return `https://${trimmed}`;
+};
+
 const convertLegacyExercise = (exercise) => {
   const variant = Array.isArray(exercise?.variantes)
     ? exercise.variantes[0] || {}
     : {};
 
   const noteValue = exercise?.notes || exercise?.note || exercise?.notas || "";
+  const rawVideoUrl = exercise?.videoUrl || exercise?.youtubeLink || exercise?.video || "";
 
   return {
     id: createId(),
@@ -84,7 +93,7 @@ const convertLegacyExercise = (exercise) => {
     rest: variant.descanso || exercise?.descanso || exercise?.rest || "",
     rir: variant.rir || exercise?.rir || "",
     tempo: variant.cadencia || exercise?.cadencia || exercise?.tempo || "",
-    video: exercise?.videoUrl || exercise?.youtubeLink || exercise?.video || "",
+    video: normalizeUrlValue(rawVideoUrl),
     note: noteValue,
   };
 };

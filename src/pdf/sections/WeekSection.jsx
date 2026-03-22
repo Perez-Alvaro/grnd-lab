@@ -1,6 +1,15 @@
 import { View, Text, Link } from "@react-pdf/renderer";
 import { indexLinkTarget, weekAnchorId } from "../utils/pdfAnchors.js";
 
+const normalizeUrl = (url) => {
+  if (!url || typeof url !== 'string') return '';
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  if (trimmed.startsWith('//')) return `https:${trimmed}`;
+  return `https://${trimmed}`;
+};
+
 const ExerciseTable = ({ exercises, styles }) => {
   if (!exercises || !exercises.length) return null;
   return (
@@ -69,25 +78,14 @@ const ExerciseTable = ({ exercises, styles }) => {
             <Text style={[styles.tableCell, styles.rirCol]}>{rir}</Text>
             <Text style={[styles.tableCell, styles.tempoCol]}>{tempo}</Text>
             {videoUrl ? (
-              <View style={[styles.tableCell, styles.videoCol, { padding: 0 }]}>
-                <Link
-                  src={videoUrl}
-                  style={{
-                    backgroundColor: '#2E4A5F',
-                    borderRadius: 4,
-                    marginVertical: 4,
-                    marginHorizontal: 2,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    minHeight: 18
-                  }}
-                >
-                  <Text style={{ color: '#FFFFFF', fontWeight: 700, fontSize: 8 }}>
-                    VER VIDEO
-                  </Text>
-                </Link>
-              </View>
+              <Link
+                src={normalizeUrl(videoUrl)}
+                style={[styles.tableCell, styles.videoCol, styles.videoLink, { position: 'relative' }]}
+              >
+                {/* Capa visual: Texto real invisible 'tapado' por el botón visual */}
+                <Text style={{ position: 'absolute', opacity: 0, fontSize: 1 }}>{normalizeUrl(videoUrl)}</Text>
+                <Text>VER VIDEO</Text>
+              </Link>
             ) : (
               <Text style={[styles.tableCell, styles.videoCol]}>-</Text>
             )}

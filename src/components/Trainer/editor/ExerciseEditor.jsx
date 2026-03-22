@@ -62,9 +62,14 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
 
       case 'video':
         if (!trimmedValue) return null; // Opcional
+        // Normalizar provisoriamente para validación
+        let urlToTest = trimmedValue;
+        if (!/^https?:\/\//i.test(urlToTest)) {
+          urlToTest = `https://${urlToTest}`;
+        }
         // Validar que sea una URL válida
         try {
-          new URL(trimmedValue);
+          new URL(urlToTest);
           return null;
         } catch {
           return 'URL inválida';
@@ -79,7 +84,7 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
     (field) => (event) => {
       const value = event.target.value;
 
-      // Actualizar el valor
+      // Actualizar el valor original
       updateExerciseField(
         weekId,
         dayId,
@@ -88,7 +93,7 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
         value,
       );
 
-      // Validar el campo
+      // Validar el campo original o semi-normalizado
       const error = validateField(field, value);
       setErrors(prev => ({
         ...prev,
@@ -97,6 +102,24 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
     },
     [dayId, exercise.id, updateExerciseField, weekId, validateField],
   );
+
+  const handleBlurVideo = useCallback(
+    (event) => {
+      const value = event.target.value.trim();
+      if (!value) return;
+      if (!/^https?:\/\//i.test(value)) {
+        const normalized = `https://${value}`;
+        // Si la url completada pasa la validación, la guardo autocorregida
+        try {
+          new URL(normalized);
+          updateExerciseField(weekId, dayId, exercise.id, "video", normalized);
+          setErrors(prev => ({ ...prev, video: null }));
+        } catch {}
+      }
+    },
+    [dayId, exercise.id, updateExerciseField, weekId]
+  );
+
 
   const handleDuplicate = useCallback(() => {
     duplicateExercise(weekId, dayId, exercise.id);
@@ -224,6 +247,7 @@ const ExerciseEditor = memo(({ weekId, dayId, exercise, onActionError }) => {
             type="url"
             value={exercise.video}
             onChange={handleChange("video")}
+            onBlur={handleBlurVideo}
             placeholder="URL del video (ej. YouTube, Drive, etc.)"
             className={`${inputClasses} ${errors.video ? 'border-red-500' : ''}`}
           />

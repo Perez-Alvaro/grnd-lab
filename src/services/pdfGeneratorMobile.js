@@ -1,5 +1,13 @@
 import jsPDF from 'jspdf';
 
+const normalizeUrlText = (url) => {
+  if (!url || typeof url !== 'string') return '';
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+};
+
 /**
  * Genera un PDF de una rutina de entrenamiento en formato MOBILE (A4 vertical)
  * Sistema visual 100% mobile-first con cards tipo app y flujo continuo Mynter-style
@@ -520,13 +528,25 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
           
           if (hasVideo) {
             const videoUrl = exercise.video || exercise.videoUrl;
-            if (videoUrl) {
+            const normalized = normalizeUrlText(videoUrl);
+            if (normalized) {
               doc.setFontSize(8);
               doc.setTextColor(...accent);
               doc.setFont('helvetica', 'bold');
 
               const videoLinkText = 'VER VIDEO';
-              doc.textWithLink(videoLinkText, cardContentX + metricsAvailableWidth, metricsY, { url: videoUrl });
+              
+              const btnWidth = doc.getTextWidth(videoLinkText) + 6;
+              const btnHeight = 6;
+              const linkX = cardContentX + metricsAvailableWidth - btnWidth / 2;
+              const linkY = metricsY - 2;
+
+              doc.textWithLink(normalized, linkX, linkY + 4, { url: normalized });
+              doc.setFillColor(...bgLight); // Color de la card (tapa text real)
+              doc.roundedRect(linkX - 3, linkY - 1, btnWidth, btnHeight, 1.5, 1.5, 'F');
+              
+              doc.text(videoLinkText, linkX, linkY + 4);
+              doc.link(linkX - 3, linkY - 1, btnWidth, btnHeight, { url: normalized });
             }
           }
           

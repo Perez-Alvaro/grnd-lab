@@ -23,8 +23,6 @@ const normalizeExercise = (exercise, blockTitle) => {
   const cues = exercise.cues ?? "";
   const progresion = exercise.progresion ?? "";
 
-  const videoUrl = exercise?.videoUrl || exercise?.youtubeLink || exercise?.video || exercise?.link || "";
-
   const baseNotes = [
     blockTitle && blockTitle !== "Entrenamiento"
       ? `Bloque: ${blockTitle}`
@@ -33,9 +31,7 @@ const normalizeExercise = (exercise, blockTitle) => {
     .concat(toArray(exercise?.notes || exercise?.notas))
     .concat(cues ? [`Cues: ${cues}`] : [])
     .concat(progresion ? [`Progresión: ${progresion}`] : [])
-    .filter(Boolean)
-    // Filtramos cualquier nota que coincida exactamente con la URL del video para que no se vea duplicada abajo
-    .filter(note => note.trim() !== videoUrl.trim());
+    .filter(Boolean);
 
   return {
     name:
@@ -46,7 +42,8 @@ const normalizeExercise = (exercise, blockTitle) => {
     duracion: duracion ? String(duracion) : "",
     rir: (rir === 0 || rir) ? String(rir) : "",
     tempo: (tempo === 0 || tempo) ? String(tempo) : "",
-    videoUrl,
+    videoUrl:
+      exercise?.videoUrl || exercise?.youtubeLink || exercise?.video || "",
     notes: baseNotes,
   };
 };

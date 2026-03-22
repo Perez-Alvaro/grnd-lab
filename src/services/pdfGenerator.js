@@ -1,5 +1,14 @@
 import jsPDF from 'jspdf';
 
+/** Garantiza que la URL tenga protocolo absoluto para que jsPDF pueda procesarla como link */
+const normalizeUrl = (url) => {
+  if (!url || typeof url !== 'string') return '';
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+};
+
 /**
  * Genera un PDF de una rutina de entrenamiento
  * @param {Object} routine - Rutina completa con todos los detalles
@@ -189,37 +198,47 @@ export const generateRoutinePDF = (routine, purchaseInfo = {}) => {
         doc.text(details.join(' | '), margin + 10, yPos);
         yPos += 8; // Espacio antes de las notas/video
 
-        // Botón de video (si existe)
-        const videoUrl = exercise.video || exercise.videoUrl;
+        // Botón de video interactivo y capas (Overlay Hack)
+        const rawVideoUrl = exercise.video || exercise.videoUrl;
+        const videoUrl = rawVideoUrl ? normalizeUrl(rawVideoUrl) : null;
         if (videoUrl) {
           const linkText = 'VER VIDEO';
           const btnWidth = doc.getTextWidth(linkText) + 6;
           const btnHeight = 6;
           const btnX = margin + 10;
-          const btnY = yPos - 4; // Ajuste para centrar verticalmente sobre el texto principal
+          const btnY = yPos - 4; // Ajuste vertical
 
-          // Dibujar el fondo del botón
-          doc.setFillColor(...primaryColor);
-          doc.roundedRect(btnX - 3, btnY, btnWidth, btnHeight, 1.5, 1.5, 'F');
+          // 1) FONDO/CAPA BASE: Escribimos el link TEXTUALMENTE e interactivo con el SDK
+          // Esto soluciona compatibilidad forzosa en móviles/lectores que ignoran áreas transparentes
+          doc.setFontSize(8);
+          doc.setTextColor(255, 255, 255); // Color invisible debajo del bloque o disimulable
+          doc.textWithLink(videoUrl, btnX, btnY + 4.5, { url: videoUrl });
           
-          // Escribir el texto sobre el botón
+          // Además, para garantizar que la URL textual ocupe espacio clickable, usamos la info natural
+          
+          // 2) TAPA / CAPA VISUAL: Dibujamos un rectángulo sólido POR ENCIMA del texto real
+          doc.setFillColor(...primaryColor);
+          doc.roundedRect(btnX - 3, btnY, doc.getTextWidth(videoUrl) > btnWidth ? doc.getTextWidth(videoUrl) + 6 : btnWidth, btnHeight, 1.5, 1.5, 'F');
+
+          // 3) TEXTO FINAL: Ponemos el texto de "VER VIDEO"
           doc.setFontSize(8);
           doc.setTextColor(255, 255, 255);
           doc.setFont('helvetica', 'bold');
           doc.text(linkText, btnX, btnY + 4.5);
-          
-          // Área de link interactiva (cubriendo todo el botón)
-          doc.link(btnX - 3, btnY, btnWidth, btnHeight, { url: videoUrl });
+
+          // 4) LINK FINAL: Capa interactiva clásica por si las dudas
+          doc.link(btnX - 3, btnY, doc.getTextWidth(videoUrl) > btnWidth ? doc.getTextWidth(videoUrl) + 6 : btnWidth, btnHeight, { url: videoUrl });
 
           yPos += 8;
         }
 
         // Notas del ejercicio (fila separada debajo)
         const rawNoteText = exercise.notes || exercise.note;
-        // Filtramos las notas para que no se duplique la URL del vídeo en el PDF
-        const cleanNoteText = Array.isArray(rawNoteText) 
-          ? rawNoteText.filter(note => note.trim() !== videoUrl.trim()).join(' | ') 
-          : (String(rawNoteText).trim() === videoUrl.trim() ? '' : rawNoteText);
+        const rawVideoStripped = (exercise.video || exercise.videoUrl || '').trim();
+        // Filtramos las notas para que no se duplique la URL del video en el PDF
+        const cleanNoteText = Array.isArray(rawNoteText)
+          ? rawNoteText.filter(note => note.trim() !== rawVideoStripped).join(' | ')
+          : (String(rawNoteText).trim() === rawVideoStripped ? '' : rawNoteText);
 
         if (cleanNoteText && cleanNoteText !== 'undefined') {
           doc.setFontSize(10);

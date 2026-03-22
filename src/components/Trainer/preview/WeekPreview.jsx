@@ -1,6 +1,15 @@
 import { Fragment, memo } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
+/** Asegura que la URL tenga protocolo absoluto para que el navegador no la trate como ruta relativa */
+const normalizeUrl = (url) => {
+  if (!url || typeof url !== 'string') return "";
+  const trimmed = url.trim();
+  if (!trimmed) return "";
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+};
+
 const DayPreview = ({ day }) => {
   const isRest = day.type === "DESCANSO";
 
@@ -85,18 +94,18 @@ const DayPreview = ({ day }) => {
                           {tempo}
                         </td>
                         <td className="px-3 py-3 text-right align-top">
-                          {videoUrl ? (
+                          {videoUrl && normalizeUrl(videoUrl) ? (
                             <a
-                              href={videoUrl}
+                              href={normalizeUrl(videoUrl)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              aria-label="Ver video del ejercicio"
-                              className="text-sm font-semibold text-accent hover:underline"
+                              aria-label="Ver video del ejercicio en YouTube"
+                              className="text-xs font-semibold text-[#2E4A5F] underline hover:text-white transition-colors"
                             >
-                              Ver
+                              Link YouTube
                             </a>
                           ) : (
-                            <span className="text-[#787878]">Sin video</span>
+                            <span className="text-[#787878]">–</span>
                           )}
                         </td>
                       </tr>
