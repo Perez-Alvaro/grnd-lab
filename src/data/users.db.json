@@ -10,16 +10,15 @@
   "active": true,
   "createdAt": "2026-03-16T20:59:19.170Z"
 },
-    {
-      "id": "usr_02",
-      "name": "Coach Demo",
-      "email": "coach@grindlab.dev",
-      "__devPassword": "coach123",
-      "passwordHash": "REPLACE_VIA_createUser_SCRIPT",
-      "role": "coach",
-      "active": true,
-      "createdAt": "2024-01-01T00:00:00Z"
-    },
+   {
+  "id": "usr_1774795496669",
+  "name": "demo",
+  "email": "coachdemo@gmail.com",
+  "passwordHash": "$2b$10$dLQ4HEGXzKLaAN0h6Khuhu3Ftq6Xtdcvj3mjbWkbXQzmmi12Fyg.2", 
+  "role": "coach",
+  "active": true,
+  "createdAt": "2026-03-29T14:44:56.669Z"
+},
     {
   "id": "usr_1774795019084",
   "name": "ALEJO VALDES",
