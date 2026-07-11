@@ -4,40 +4,42 @@ export default {
   theme: {
     extend: {
       colors: {
-        // GRIND LAB Theme - Technical Precision Aesthetic
+        // Tokens temáticos: canal RGB en CSS vars (ver src/styles/theme.css).
+        // rgb(var(--x) / <alpha-value>) preserva las utilidades de opacidad
+        // (bg-accent/10, shadow-accent/30, …) y permite swap dark/light.
         primary: {
-          bg: "#0B0B0F", // Deep black foundation
-          surface: "#141419", // Elevated surfaces
-          "surface-alt": "#1A1A20", // Alternative surface
-          "surface-elevated": "#20202A", // Highest elevation
+          bg: "rgb(var(--c-bg) / <alpha-value>)",
+          surface: "rgb(var(--c-surface) / <alpha-value>)",
+          "surface-alt": "rgb(var(--c-surface-alt) / <alpha-value>)",
+          "surface-elevated": "rgb(var(--c-surface-elevated) / <alpha-value>)",
         },
         accent: {
-          DEFAULT: "#5227FF", // Purple - technical precision
-          light: "#6B42FF",
-          dark: "#3D1FCC",
-          subtle: "rgba(82, 39, 255, 0.1)",
-          secondary: "#FF9FFC", // Pink analog (rare use)
+          DEFAULT: "rgb(var(--c-accent) / <alpha-value>)",
+          light: "rgb(var(--c-accent-light) / <alpha-value>)",
+          dark: "rgb(var(--c-accent-dark) / <alpha-value>)",
+          subtle: "rgb(var(--c-accent) / 0.1)",
+          secondary: "rgb(var(--c-accent-secondary) / <alpha-value>)",
         },
         border: {
-          DEFAULT: "#2A2A35", // Subtle borders
-          strong: "#35354A", // Emphasized borders
-          muted: "#1F1F28", // Very subtle borders
+          DEFAULT: "rgb(var(--c-border) / <alpha-value>)",
+          strong: "rgb(var(--c-border-strong) / <alpha-value>)",
+          muted: "rgb(var(--c-border-muted) / <alpha-value>)",
         },
         text: {
-          primary: "#FFFFFF",
-          secondary: "#C8C8D2",
-          tertiary: "#8C8CA0",
-          quaternary: "#646478",
-          muted: "#8C8CA0",
-          accent: "#5227FF",
+          primary: "rgb(var(--c-text-primary) / <alpha-value>)",
+          secondary: "rgb(var(--c-text-secondary) / <alpha-value>)",
+          tertiary: "rgb(var(--c-text-tertiary) / <alpha-value>)",
+          quaternary: "rgb(var(--c-text-quaternary) / <alpha-value>)",
+          muted: "rgb(var(--c-text-tertiary) / <alpha-value>)",
+          accent: "rgb(var(--c-text-accent) / <alpha-value>)",
         },
-        // Legacy compatibility
-        base: "#0B0B0F",
-        surface: "#141419",
-        "surface-alt": "#1A1A20",
-        "brand-border": "#2A2A35",
-        "brand-border-strong": "#35354A",
-        muted: "#8C8CA0",
+        // Legacy compatibility → mismos tokens temáticos
+        base: "rgb(var(--c-bg) / <alpha-value>)",
+        surface: "rgb(var(--c-surface) / <alpha-value>)",
+        "surface-alt": "rgb(var(--c-surface-alt) / <alpha-value>)",
+        "brand-border": "rgb(var(--c-border) / <alpha-value>)",
+        "brand-border-strong": "rgb(var(--c-border-strong) / <alpha-value>)",
+        muted: "rgb(var(--c-text-tertiary) / <alpha-value>)",
         neutral: {
           950: "#0B0B0F",
           900: "#141419",
@@ -87,13 +89,13 @@ export default {
         128: "32rem",
       },
       boxShadow: {
-        "sm-accent": "0 1px 2px 0 rgba(82, 39, 255, 0.05)",
-        "md-accent": "0 4px 6px -1px rgba(82, 39, 255, 0.1), 0 2px 4px -1px rgba(82, 39, 255, 0.06)",
-        "lg-accent": "0 10px 15px -3px rgba(82, 39, 255, 0.15), 0 4px 6px -2px rgba(82, 39, 255, 0.08)",
-        "xl-accent": "0 20px 25px -5px rgba(82, 39, 255, 0.15), 0 10px 10px -5px rgba(82, 39, 255, 0.08)",
-        "inner-accent": "inset 0 2px 4px 0 rgba(82, 39, 255, 0.06)",
-        glow: "0 0 20px rgba(82, 39, 255, 0.15)",
-        "glow-lg": "0 0 30px rgba(82, 39, 255, 0.2)",
+        "sm-accent": "0 1px 2px 0 rgba(91, 179, 160, 0.05)",
+        "md-accent": "0 4px 6px -1px rgba(91, 179, 160, 0.1), 0 2px 4px -1px rgba(91, 179, 160, 0.06)",
+        "lg-accent": "0 10px 15px -3px rgba(91, 179, 160, 0.15), 0 4px 6px -2px rgba(91, 179, 160, 0.08)",
+        "xl-accent": "0 20px 25px -5px rgba(91, 179, 160, 0.15), 0 10px 10px -5px rgba(91, 179, 160, 0.08)",
+        "inner-accent": "inset 0 2px 4px 0 rgba(91, 179, 160, 0.06)",
+        glow: "0 0 20px rgba(91, 179, 160, 0.15)",
+        "glow-lg": "0 0 30px rgba(91, 179, 160, 0.2)",
         subtle: "0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2)",
         medium: "0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)",
       },
@@ -133,8 +135,8 @@ export default {
           "100%": { transform: "translateY(0)", opacity: "1" },
         },
         subtleGlow: {
-          "0%, 100%": { boxShadow: "0 0 0 0 rgba(82, 39, 255, 0)" },
-          "50%": { boxShadow: "0 0 20px 0 rgba(82, 39, 255, 0.15)" },
+          "0%, 100%": { boxShadow: "0 0 0 0 rgba(91, 179, 160, 0)" },
+          "50%": { boxShadow: "0 0 20px 0 rgba(91, 179, 160, 0.15)" },
         },
       },
     },

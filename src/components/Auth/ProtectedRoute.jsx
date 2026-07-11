@@ -1,79 +1,23 @@
 /**
  * src/components/Auth/ProtectedRoute.jsx
- * Route guard that requires authentication (and optionally a specific role).
+ * Route guard basado en la sesión real de Supabase (via authStore).
  *
- * - Validates token signature + expiry on every render
- * - If authenticated → renders children (the protected content)
- * - If unauthenticated → shows screen to login
- * - If role mismatch → renders inline 403 screen
- * - Prevents users from getting stuck on restricted access screen
+ * - Espera a que la sesión esté lista (sessionReady) para evitar flashes.
+ * - Sin usuario → pantalla de acceso restringido.
+ * - Con requiredRole y rol distinto → pantalla 403.
+ * (La verificación de suscripción activa se agrega en la Fase 3.)
  */
 
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, ShieldOff, Loader2 } from 'lucide-react';
-import { validateToken, isAuthenticated, logout } from '../../lib/auth.js';
 import { useAuth } from '../../store/authStore.jsx';
-import { toast } from '../../utils/toast.js';
-
-const STATUS = {
-  CHECKING: 'checking',
-  AUTHENTICATED: 'authenticated',
-  UNAUTHENTICATED: 'unauthenticated',
-  FORBIDDEN: 'forbidden',
-};
 
 export default function ProtectedRoute({ children, requiredRole }) {
-  const [status, setStatus] = useState(STATUS.CHECKING);
-  const { user } = useAuth();
+  const { user, sessionReady } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    let cancelled = false;
-
-    async function check() {
-      const token = sessionStorage.getItem('auth_token');
-
-      if (!token) {
-        if (!cancelled) {
-          setStatus(STATUS.UNAUTHENTICATED);
-        }
-        return;
-      }
-
-      const result = await validateToken(token);
-
-      if (cancelled) return;
-
-      if (!result.valid) {
-        logout();
-        setStatus(STATUS.UNAUTHENTICATED);
-        if (result.expired) {
-          toast.warning('Tu sesión expiró. Por favor, iniciá sesión nuevamente.');
-        }
-        return;
-      }
-
-      // Role check (optional)
-      if (requiredRole && result.payload.role !== requiredRole) {
-        setStatus(STATUS.FORBIDDEN);
-        return;
-      }
-
-      setStatus(STATUS.AUTHENTICATED);
-    }
-
-    check();
-    return () => {
-      cancelled = true;
-    };
-  // Re-validate whenever the user object changes (e.g. logout)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, requiredRole]);
-
-  // ── Render states ─────────────────────────────────────────────
-
-  if (status === STATUS.CHECKING) {
+  // ── Cargando sesión ───────────────────────────────────────────
+  if (!sessionReady) {
     return (
       <div className="flex h-screen items-center justify-center bg-primary-bg">
         <Loader2 className="h-8 w-8 text-accent animate-spin" />
@@ -81,7 +25,8 @@ export default function ProtectedRoute({ children, requiredRole }) {
     );
   }
 
-  if (status === STATUS.UNAUTHENTICATED) {
+  // ── No autenticado ────────────────────────────────────────────
+  if (!user) {
     return (
       <div className="flex h-screen flex-col items-center justify-center bg-primary-bg gap-6 px-6 text-center">
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
@@ -102,7 +47,7 @@ export default function ProtectedRoute({ children, requiredRole }) {
           </button>
           <button
             onClick={() => window.dispatchEvent(new CustomEvent('auth:required'))}
-            className="px-4 py-2 rounded-lg bg-accent hover:bg-accent/90 text-white transition-colors text-sm font-medium"
+            className="px-4 py-2 rounded-lg bg-accent hover:bg-accent-light text-primary-bg transition-colors text-sm font-medium"
           >
             Iniciar sesión
           </button>
@@ -114,7 +59,8 @@ export default function ProtectedRoute({ children, requiredRole }) {
     );
   }
 
-  if (status === STATUS.FORBIDDEN) {
+  // ── Rol insuficiente ──────────────────────────────────────────
+  if (requiredRole && user.role !== requiredRole) {
     return (
       <div className="flex h-screen flex-col items-center justify-center bg-primary-bg gap-6 px-6 text-center">
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10">
@@ -132,12 +78,6 @@ export default function ProtectedRoute({ children, requiredRole }) {
             className="px-4 py-2 rounded-lg bg-secondary-bg hover:bg-secondary-bg/80 text-text-primary transition-colors text-sm font-medium"
           >
             Volver a inicio
-          </button>
-          <button
-            onClick={() => window.dispatchEvent(new CustomEvent('auth:required'))}
-            className="px-4 py-2 rounded-lg bg-accent hover:bg-accent/90 text-white transition-colors text-sm font-medium"
-          >
-            Iniciar sesión con otra cuenta
           </button>
         </div>
       </div>

@@ -4,6 +4,21 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark light" />
+    <!-- Tema sin flash: estampa data-theme antes del primer paint -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t !== 'light' && t !== 'dark') {
+            t = 'dark'; /* TODO: volver a deteccion de sistema tras tokenizar literales */
+          }
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      })();
+    </script>
     <meta name="description" content="BaseRutina ayuda a entrenadores personales a generar la base de sus rutinas en menos de 5 minutos usando IA." />
     <title>BaseRutina — Creá rutinas de entrenamiento en segundos</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />

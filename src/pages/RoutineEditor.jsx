@@ -4,11 +4,12 @@
  * 2-Panel Layout: Form Editor | Preview
  */
 
-import React, { useMemo, useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft, FileDown, MoreVertical, Copy, Code, FileJson, Download } from "lucide-react";
+import React, { useMemo, useCallback, useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { ArrowLeft, FileDown, MoreVertical, Copy, Code, FileJson, Download, Save } from "lucide-react";
 import { PlanProvider } from "../context/PlanContext.jsx";
 import useRoutineEditor from "../hooks/useRoutineEditor.js";
+import { getRoutine, saveRoutine } from "../lib/routines.js";
 import usePDFExport from "../hooks/usePDFExport.js";
 import PlanMetadataForm from "../components/Trainer/editor/PlanMetadataForm.jsx";
 import FitterOnboarding from "../components/Trainer/editor/FitterOnboarding.jsx";
@@ -69,6 +70,48 @@ export default function RoutineEditorPage() {
     [planEditor],
   );
 
+  // ── Persistencia en la nube ──────────────────────────────────
+  const [searchParams] = useSearchParams();
+  const [routineId, setRoutineId] = useState(searchParams.get("routineId") || null);
+  const [athleteId] = useState(searchParams.get("athleteId") || null);
+  const [saving, setSaving] = useState(false);
+
+  // Cargar rutina existente si viene ?routineId
+  useEffect(() => {
+    const rid = searchParams.get("routineId");
+    if (!rid) return;
+    (async () => {
+      try {
+        const r = await getRoutine(rid);
+        planEditor.loadPlan(r.data);
+        setRoutineId(r.id);
+      } catch (error) {
+        console.error("Error cargando rutina:", error);
+        snackbar.error("No se pudo cargar la rutina");
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleSave = useCallback(async () => {
+    setSaving(true);
+    try {
+      const saved = await saveRoutine({
+        id: routineId,
+        title: planEditor.metadata.name || "Rutina sin título",
+        data: planEditor.plan,
+        athlete_id: athleteId,
+      });
+      setRoutineId(saved.id);
+      snackbar.success("Rutina guardada");
+    } catch (error) {
+      console.error("Error guardando rutina:", error);
+      snackbar.error("No se pudo guardar la rutina");
+    } finally {
+      setSaving(false);
+    }
+  }, [routineId, athleteId, planEditor.metadata.name, planEditor.plan, snackbar]);
+
   const handleBack = useCallback(() => {
     if (
       planEditor.dirty &&
@@ -76,7 +119,7 @@ export default function RoutineEditorPage() {
     ) {
       return;
     }
-    navigate("/");
+    navigate("/dashboard");
   }, [navigate, planEditor.dirty]);
 
   const handleExportPdf = useCallback(() => {
@@ -149,7 +192,7 @@ export default function RoutineEditorPage() {
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="sm" onClick={handleBack}>
                 <ArrowLeft className="h-4 w-4" />
-                Volver al inicio
+                Volver al panel
               </Button>
               <div>
                 <h1 className="text-xl font-semibold text-text-primary font-display">
@@ -163,8 +206,18 @@ export default function RoutineEditorPage() {
 
             <div className="flex items-center gap-2 relative">
               <Button
-                id="export-pdf-button"
                 variant="accent"
+                size="sm"
+                onClick={handleSave}
+                loading={saving}
+              >
+                <Save className="h-4 w-4" />
+                Guardar
+              </Button>
+
+              <Button
+                id="export-pdf-button"
+                variant="outline"
                 size="sm"
                 onClick={handleExportPdf}
               >

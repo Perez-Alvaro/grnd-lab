@@ -10,7 +10,12 @@
       "WebSearch",
       "WebFetch(domain:www.mercadopago.com.ar)",
       "Bash(find 'c:\\\\Users\\\\perez\\\\VSProyects\\\\SAS PROYECTS\\\\grnd-lab' -type f -name *prompt* -o -name *maestro*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npx eslint *)",
+      "Bash(ls node_modules/@supabase)",
+      "Bash(npx supabase *)",
+      "Bash(ls -la .env)",
+      "Bash(npm uninstall *)"
     ]
   },
   "enableAllProjectMcpServers": true,

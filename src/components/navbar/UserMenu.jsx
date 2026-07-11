@@ -7,7 +7,6 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronDown, User, LayoutDashboard, LogOut } from 'lucide-react';
 import { useAuth } from '../../store/authStore.jsx';
-import { useProtectedLink } from '../../lib/routeObfuscator.js';
 
 /* ─────────────────────────────────────────────
    AVATAR — initials circle
@@ -24,7 +23,7 @@ function Avatar({ name }) {
     : '?';
 
   return (
-    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-accent text-white text-xs font-bold select-none">
+    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-accent text-primary-bg text-xs font-bold select-none">
       {initials}
     </div>
   );
@@ -37,7 +36,6 @@ function Avatar({ name }) {
 export default function UserMenu() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const editorPath = useProtectedLink();
 
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
@@ -64,9 +62,9 @@ export default function UserMenu() {
     return () => document.removeEventListener('keydown', handle);
   }, [open]);
 
-  function handleNavigateToEditor() {
+  function handleNavigateToDashboard() {
     setOpen(false);
-    navigate(editorPath);
+    navigate(user.role === 'admin' ? '/admin' : '/dashboard');
   }
 
   function handleLogout() {
@@ -118,14 +116,14 @@ export default function UserMenu() {
             Mi cuenta
           </button>
 
-          {/* Editor de rutinas */}
+          {/* Panel */}
           <button
             className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:bg-white/5 hover:text-white transition-colors"
             role="menuitem"
-            onClick={handleNavigateToEditor}
+            onClick={handleNavigateToDashboard}
           >
             <LayoutDashboard className="h-4 w-4 flex-shrink-0" />
-            Editor de rutinas
+            Mi panel
           </button>
 
           {/* Divider */}

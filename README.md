@@ -1,221 +1,152 @@
-# 🏋️ BaseRutina
+# 🏋️ GRIND LAB
 
-**Generá la base de tus rutinas de entrenamiento profesionales usando IA**
+**SaaS B2B para entrenadores.** Un coach gestiona sus atletas y crea, guarda y exporta rutinas de entrenamiento profesionales. La creación de rutinas se apoya en IA externa (ChatGPT/Claude/Gemini) vía un "Prompt Maestro", pero los datos viven en la nube (Supabase) por coach.
 
----
-
-## 🎯 ¿Qué es BaseRutina?
-
-BaseRutina es una aplicación web **completamente client-side** que te permite generar la base de rutinas de entrenamiento personalizadas usando cualquier IA gratuita (ChatGPT, Claude, Gemini).
-
-### ✨ Características principales:
-
-- ✅ **100% Gratis** - Sin costos de API, sin suscripciones
-- ✅ **Sin backend** - Todo funciona en tu navegador
-- ✅ **Editor en tiempo real** - Split-view con JSON y vista previa
-- ✅ **Exportación local** - PDF profesional o JSON para reutilizar
-- ✅ **Prompts inteligentes** - Adaptados al objetivo, nivel y técnicas
-- ✅ **Sin límites** - Genera rutinas ilimitadas
+> Este README es la fuente de contexto para humanos y agentes de IA. Si vas a
+> trabajar en el repo, leelo entero — describe qué ES la app hoy, no lo que fue.
 
 ---
 
-## 🚀 Inicio Rápido
+## 🎯 Qué es (y qué NO es)
 
-### Instalación
+- **Es:** una plataforma multi-tenant donde cada **coach** (rol `coach`) tiene su
+  cuenta, sus **atletas**, y las **rutinas** de cada atleta. Hay un **admin** (rol
+  `admin`) que gestiona coaches y suscripciones.
+- **Modelo de negocio:** suscripción del coach — planes **Starter $5 / Pro $10 /
+  Studio $15 USD**. Etapa 1: cobro por **transferencia bancaria** con activación
+  manual por el admin. Etapa 2 (diferida): **MercadoPago** (el modelo de datos ya
+  lo contempla, ver `subscriptions.mp_preapproval_id` y tabla `mp_events`).
+- **NO es** un marketplace B2C ni vende rutinas al cliente final. Documentos viejos
+  que hablen de eso ("Fitter", venta directa, etc.) fueron eliminados; si aparece
+  alguna referencia, ignorala.
+
+---
+
+## 🧱 Stack
+
+| Capa | Tecnología |
+|------|-----------|
+| Frontend | React 18 + Vite 5 + React Router 7 |
+| Estilos | Tailwind CSS 3 (dark theme, accent lima `#cbff00`) |
+| Backend | **Supabase** — Auth + Postgres + (Edge Functions, futuro) |
+| PDF | `@react-pdf/renderer` (desktop) y `jsPDF` (mobile) |
+| Animación | framer-motion, gsap (DotGrid del hero) |
+| Iconos | lucide-react |
+| Emails | Resend (sandbox sin dominio; pendiente de cablear en Edge Functions) |
+
+---
+
+## 🚀 Correr en local
 
 ```bash
-# Clonar el repositorio
-git clone https://github.com/tu-usuario/grnd-lab.git
-
-# Instalar dependencias
-cd grnd-lab
 npm install
-
-# Iniciar en desarrollo
-npm run dev
+cp .env.example .env      # completá VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY
+npm run dev               # http://localhost:5173
+npm run build             # build de producción a dist/
+npm run lint              # eslint
 ```
 
-La app estará disponible en `http://localhost:5173`
+### Variables de entorno
+- **Públicas (van al bundle, prefijo `VITE_`):** `VITE_SUPABASE_URL`,
+  `VITE_SUPABASE_ANON_KEY`. Solo claves públicas — la seguridad la aplica RLS.
+- **Server-only (NUNCA `VITE_`, NUNCA en el navegador):** `SUPABASE_SERVICE_ROLE_KEY`,
+  `RESEND_API_KEY`, y a futuro `MP_ACCESS_TOKEN` / `MP_WEBHOOK_SECRET`. Viven en
+  `supabase/functions/.env` (gitignoreado) y en `supabase secrets` para producción.
 
 ---
 
-## 📖 Cómo usar
+## 🗄️ Base de datos (Supabase)
 
-### 1️⃣ Genera el Prompt Maestro
-1. Completa el formulario con los datos de la rutina
-2. Click en **"Copiar Prompt para IA"**
-3. El prompt se copia automáticamente
+Migraciones en [`supabase/migrations/`](supabase/migrations/). Aplicarlas desde el
+**SQL Editor** de Supabase (o `supabase db push`).
 
-### 2️⃣ Usa tu IA favorita
-1. Abre ChatGPT, Claude o Gemini (versión gratis)
-2. Pega el prompt
-3. Copia el JSON que te devuelve
+| Tabla | Descripción | Dueño (RLS) |
+|-------|-------------|-------------|
+| `profiles` | Extiende `auth.users`. Campos: `name`, `role` (`coach`\|`admin`). Se crea sola al registrarse (trigger). | cada uno el suyo; el admin lee todos |
+| `subscriptions` | Suscripción del coach: `plan`, `status`, `payment_method`, `mp_preapproval_id`, `current_period_end`. | coach lee la suya; solo admin activa/edita |
+| `athletes` | Atletas del coach: `name`, `email`, `goal`, `level`, `notes`. | cada coach los suyos |
+| `routines` | Rutina guardada: `title`, `data` (JSON completo del editor), `athlete_id`. | cada coach las suyas |
+| `mp_events` | Idempotencia de webhooks MercadoPago (reservado, MP diferido). | solo service_role |
 
-### 3️⃣ Importa y Edita
-1. Click en **"Editor JSON"**
-2. Pega el JSON de la IA
-3. Edita en tiempo real si necesitas
-4. Click en **"Exportar PDF"** o **"Exportar JSON"**
-
----
-
-## 🏗️ Arquitectura
-
-### Client-Side Only
-```
-┌─────────────────────────────────────┐
-│         BaseRutina (Browser)          │
-├─────────────────────────────────────┤
-│  • Hero/Landing Page                │
-│  • Editor de Rutinas                │
-│  • Generador de Prompts             │
-│  • Editor JSON (Split-View)         │
-│  • Exportación PDF/JSON local       │
-└─────────────────────────────────────┘
-```
-
-**NO tiene:**
-- ❌ Backend/API
-- ❌ Base de datos
-- ❌ Autenticación
-- ❌ Persistencia en servidor
-
-**TODO es local:**
-- ✅ Almacenamiento en memoria (mientras editas)
-- ✅ Exportación a archivos locales
-- ✅ Sin dependencias externas
+**Seguridad:** RLS activo en todas. El cliente usa solo la **anon key**; nunca hay
+secretos en el bundle. La función `is_admin()` (SECURITY DEFINER) habilita las
+políticas del admin sin recursión.
 
 ---
 
-## 🛠️ Stack Tecnológico
+## 🧭 Rutas (`src/App.jsx`)
 
-### Frontend
-- **React 18** - UI library
-- **React Router** - Navegación
-- **Tailwind CSS** - Estilos
-- **Vite** - Build tool
+| Ruta | Página | Protección |
+|------|--------|-----------|
+| `/` | `HomeSaaS` — landing B2B | pública |
+| `/dashboard` | `CoachDashboard` — atletas + rutinas | requiere sesión |
+| `/admin` | `AdminDashboard` — coaches, suscripciones, métricas | requiere `role=admin` |
+| `<ruta ofuscada>` | `RoutineEditor` — editor de rutina | requiere sesión |
+| `*` | redirige a `HomeSaaS` | — |
 
-### Librerías
-- **@react-pdf/renderer** - Generación de PDFs
-- **Lucide React** - Iconos
-- **File Saver** - Descarga de archivos
+La ruta del editor se deriva en runtime desde `src/lib/routeObfuscator.js` (NO es una
+medida de seguridad real, solo evita una URL obvia; la seguridad la da `ProtectedRoute`
++ RLS). Tras el login, el redirect es por rol (`/admin` o `/dashboard`).
 
 ---
 
-## 📂 Estructura del Proyecto
+## 🔄 Flujo principal
+
+1. El coach se registra / inicia sesión (`LoginModal` → Supabase Auth, ver `authStore.jsx`).
+2. En `/dashboard` crea **atletas** y, dentro de cada uno, **rutinas**.
+3. "Nueva rutina" abre el editor con `?athleteId=`. El editor genera un **Prompt
+   Maestro** (`utils/promptGenerator.js`) que el coach pega en una IA gratuita; la IA
+   devuelve un JSON que se importa y edita en vivo. También hay modo formulario manual.
+4. **Guardar** persiste el JSON en `routines` (`lib/routines.js`). Abrir una rutina
+   existente usa `?routineId=`.
+5. **Exportar PDF** (`hooks/usePDFExport.js` → `src/pdf/` para desktop,
+   `src/services/pdfGeneratorMobile.js` para mobile).
+
+---
+
+## 📂 Estructura
 
 ```
-grnd-lab/
-├── src/
-│   ├── pages/
-│   │   ├── Home.jsx                # Landing page
-│   │   └── RoutineEditor.jsx       # Editor principal
-│   ├── components/
-│   │   ├── Editor/                 # JSON Editor + Preview
-│   │   └── Trainer/                # Formularios + Visualización
-│   ├── hooks/
-│   │   ├── useRoutineEditor.js     # Lógica del editor
-│   │   └── usePDFExport.js         # Generación de PDF
-│   ├── utils/
-│   │   ├── promptGenerator.js      # Generador de Prompt Maestro
-│   │   └── routineTransformer.js   # Transformaciones JSON
-│   └── context/
-│       └── PlanContext.jsx         # Estado global
-├── public/                          # Assets estáticos
-├── docs/                            # Documentación adicional
-└── tailwind.config.js               # Tema (Dark Mode + Lime accent)
+src/
+├── App.jsx / main.jsx          # entry + routing
+├── lib/
+│   ├── supabaseClient.js       # cliente Supabase (anon key)
+│   ├── athletes.js routines.js admin.js   # capa de acceso a datos (CRUD + RLS)
+│   ├── routeObfuscator.js      # deriva la ruta del editor
+│   └── schemas/ transformers/  # validación y transformación del JSON de rutina
+├── store/authStore.jsx         # AuthProvider (Supabase Auth) + useAuth()
+├── components/
+│   ├── Auth/                   # ProtectedRoute, LoginModal
+│   ├── navbar/UserMenu.jsx
+│   ├── Editor/                 # JSON editor, import/export modals
+│   ├── Trainer/                # form editor (metadata/semanas/días/ejercicios) + preview
+│   ├── Tutorial/               # onboarding
+│   └── ui/                     # design system (Button, Input, Modal, …) — barrel en index.js
+├── pages/
+│   ├── HomeSaaS.jsx            # landing (monolítica por diseño)
+│   ├── CoachDashboard.jsx AdminDashboard.jsx
+│   └── RoutineEditor.jsx
+├── hooks/useRoutineEditor.js   # estado central del editor de rutina
+├── pdf/                        # generación PDF desktop (@react-pdf/renderer)
+│   └── *.js son shims que re-exportan los *.jsx reales (no borrar los .js)
+├── services/pdfGeneratorMobile.js  # PDF mobile (jsPDF)
+├── constants/ context/ utils/ styles/
+supabase/migrations/            # 0001_init, 0002_athletes_admin
+docs/PLAN_LANZAMIENTO.md        # plan de fases hacia el lanzamiento (fuente de verdad del roadmap)
 ```
 
 ---
 
-## 🎨 Sistema de Diseño
+## 🚧 Estado actual y deuda técnica
 
-### Paleta de Colores (Dark Mode)
+- ✅ Auth real (Supabase), roles, RLS.
+- ✅ Dashboards de coach y admin; atletas; persistencia de rutinas en la nube.
+- ⏳ Suscripción self-service por transferencia (Fase 3) y emails Resend (Fase 5) — pendientes.
+- ⏳ MercadoPago — diferido.
+- ⚠️ Bundle grande (~2.7 MB) sin code-splitting: `@react-pdf/renderer`, `html2canvas`,
+  `jspdf`, `gsap`, `framer-motion` se cargan eager. Candidato a `import()` dinámico.
+- ⚠️ Sin tests (coverage 0%). Recomendado: Vitest + Playwright.
+- ⚠️ `HomeSaaS.jsx` es monolítico (~1.4k líneas).
 
-```css
-/* Base */
---primary-bg: #222222          /* Fondo principal */
---primary-surface: #2A2A2A     /* Superficies elevadas */
-
-/* Accent (Lime) */
---accent: #cbff00              /* Principal */
---accent-light: #d6ff33        /* Hover */
-
-/* Text */
---text-primary: #FFFFFF        /* Blanco puro */
---text-secondary: #C9C9C9      /* Gris claro */
---text-muted: #787878          /* Gris medio */
-```
-
-### Tipografía
-
-```css
-Display: 'Space Grotesk' (Headlines)
-Body:    'Inter' (UI, textos)
-Code:    'JetBrains Mono' (JSON)
-```
-
-Inspiración: **Apple Developer Tools**, **Notion**, **Linear**
-
----
-
-## 🤝 Contribuir
-
-¡Contribuciones bienvenidas!
-
-1. Fork el repositorio
-2. Crea branch (`git checkout -b feature/MiFeature`)
-3. Commit (`git commit -m 'Add: Mi feature'`)
-4. Push (`git push origin feature/MiFeature`)
-5. Abre Pull Request
-
-### Guidelines
-- **Código**: Seguir estilo existente (React + Tailwind)
-- **Commits**: Usar [Conventional Commits](https://www.conventionalcommits.org/)
-- **Tests**: Agregar tests si aplica
-- **Docs**: Actualizar README si cambias funcionalidad
-
----
-
-## 📄 Licencia
-
-MIT License — Ver [LICENSE](LICENSE) para detalles.
-
----
-
-## 👤 Autor
-
-**Álvaro Pérez**
-- GitHub: [@Perez-Alvaro](https://github.com/Perez-Alvaro)
-- LinkedIn: [Álvaro Pérez](https://linkedin.com/in/perez-alvaro)
-
----
-
-## 🙏 Agradecimientos
-
-- Inspirado en herramientas como **Notion**, **Linear**, **Raycast**
-- Para entrenadores que valoran **control** y **criterio**
-- Powered by **prompt engineering** de élite
-
----
-
-## 🔗 Links Útiles
-
-- [Demo en Vivo](https://grind-lab.vercel.app) *(próximamente)*
-- [Documentación Completa](docs/)
-- [Issues](https://github.com/Perez-Alvaro/grnd-lab/issues)
-- [Roadmap](https://github.com/Perez-Alvaro/grnd-lab/projects)
-
----
-
-<div align="center">
-
-**GRIND LAB** — Herramienta de ingeniería de prompts para rutinas de entrenamiento
-
-*IA como cerebro externo • JSON editable • Export profesional*
-
-[![GitHub stars](https://img.shields.io/github/stars/Perez-Alvaro/grnd-lab?style=social)](https://github.com/Perez-Alvaro/grnd-lab)
-
-Made with 💪 for the fitness community
-
-</div>
+Ver [`docs/PLAN_LANZAMIENTO.md`](docs/PLAN_LANZAMIENTO.md) para el plan completo por fases
+y [`ARCHITECTURE.md`](ARCHITECTURE.md) para el detalle técnico.

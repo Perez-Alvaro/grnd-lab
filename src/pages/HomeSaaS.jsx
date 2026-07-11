@@ -397,7 +397,7 @@ function Navbar({ onScrollTo }) {
                         className="flex items-center gap-3 cursor-pointer"
                         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                     >
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-white shadow-md shadow-accent/30">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-primary-bg shadow-md shadow-accent/30">
                             <Zap className="h-4 w-4" />
                         </div>
                         <span className="text-white font-bold text-lg tracking-tight font-display">BaseRutina</span>
@@ -419,13 +419,21 @@ function Navbar({ onScrollTo }) {
                         {user ? (
                             <UserMenu />
                         ) : (
-                            <Button
-                                size="sm"
-                                onClick={openLoginModal}
-                                className="text-sm shadow-md shadow-accent/20"
-                            >
-                                Iniciar sesión
-                            </Button>
+                            <>
+                                <button
+                                    onClick={() => openLoginModal('login')}
+                                    className="text-sm text-text-secondary hover:text-white transition-colors font-medium px-3 py-1.5"
+                                >
+                                    Iniciar sesión
+                                </button>
+                                <Button
+                                    size="sm"
+                                    onClick={() => openLoginModal('signup')}
+                                    className="text-sm shadow-md shadow-accent/20"
+                                >
+                                    Crear cuenta
+                                </Button>
+                            </>
                         )}
                     </div>
 
@@ -457,9 +465,14 @@ function Navbar({ onScrollTo }) {
                                     Sesión activa como <span className="text-white">{user.name}</span>
                                 </div>
                             ) : (
-                                <Button size="sm" onClick={() => { openLoginModal(); setMobileOpen(false); }} className="w-full text-sm shadow-md shadow-accent/20">
-                                    Iniciar sesión
-                                </Button>
+                                <>
+                                    <Button size="sm" onClick={() => { openLoginModal('signup'); setMobileOpen(false); }} className="w-full text-sm shadow-md shadow-accent/20">
+                                        Crear cuenta
+                                    </Button>
+                                    <button onClick={() => { openLoginModal('login'); setMobileOpen(false); }} className="block w-full text-center text-sm text-text-secondary hover:text-white transition-colors py-2">
+                                        Iniciar sesión
+                                    </button>
+                                </>
                             )}
                         </div>
                     </div>
@@ -487,11 +500,11 @@ function HeroSection({ onScrollTo }) {
             <div className="absolute inset-0 z-[1] pointer-events-none">
                 <div
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[700px] rounded-full"
-                    style={{ background: 'radial-gradient(ellipse, rgba(82,39,255,0.13) 0%, transparent 65%)' }}
+                    style={{ background: 'radial-gradient(ellipse, rgba(91,179,160,0.13) 0%, transparent 65%)' }}
                 />
                 <div
                     className="absolute -top-32 right-0 w-[600px] h-[600px] rounded-full"
-                    style={{ background: 'radial-gradient(ellipse, rgba(107,66,255,0.07) 0%, transparent 70%)' }}
+                    style={{ background: 'radial-gradient(ellipse, rgba(123,213,185,0.07) 0%, transparent 70%)' }}
                 />
             </div>
 
@@ -520,7 +533,7 @@ function HeroSection({ onScrollTo }) {
                             }}
                         >
                             Creá rutinas profesionales{' '}
-                            <span className="bg-gradient-to-r from-accent via-violet-400 to-accent-light bg-clip-text text-transparent">
+                            <span className="bg-gradient-to-r from-accent via-accent-light to-accent-secondary bg-clip-text text-transparent">
                                 en segundos.
                             </span>
                         </h1>
@@ -536,7 +549,7 @@ function HeroSection({ onScrollTo }) {
                         <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-4 pt-10 scroll-reveal reveal-delay-3">
                             <button
                                 onClick={() => onScrollTo('pricing')}
-                                className="btn-hero-primary group inline-flex items-center justify-center gap-2 h-14 px-8 rounded-xl bg-accent text-white font-bold text-base w-full sm:w-auto"
+                                className="btn-hero-primary group inline-flex items-center justify-center gap-2 h-14 px-8 rounded-xl bg-accent text-primary-bg font-bold text-base w-full sm:w-auto"
                             >
                                 <Sparkles className="h-5 w-5 flex-shrink-0" />
                                 Conocer planes
@@ -733,7 +746,7 @@ function StepImageFrame({ step }) {
     return (
         <div className="relative">
             {/* Número flotante sobre la imagen */}
-            <div className="absolute -top-4 -left-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-accent text-white font-black text-sm font-mono shadow-lg shadow-accent/40 border-2 border-primary-bg">
+            <div className="absolute -top-4 -left-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-accent text-primary-bg font-black text-sm font-mono shadow-lg shadow-accent/40 border-2 border-primary-bg">
                 {step.number}
             </div>
 
@@ -769,7 +782,7 @@ function StepImageFrame({ step }) {
                         <div className="w-full h-full flex flex-col items-center justify-center gap-4 p-8">
                             <div className={`flex h-16 w-16 items-center justify-center rounded-2xl ${
                                 step.highlight
-                                    ? 'bg-accent text-white shadow-lg shadow-accent/40'
+                                    ? 'bg-accent text-primary-bg shadow-lg shadow-accent/40'
                                     : 'bg-accent/10 text-accent'
                             }`}>
                                 <step.icon className="h-8 w-8" />
@@ -939,7 +952,7 @@ function HowItWorksSection({ onScrollTo }) {
                                 )}
 
                                 <div className="flex-shrink-0 relative z-10">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-white font-black text-sm font-mono shadow-lg shadow-accent/40">
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-primary-bg font-black text-sm font-mono shadow-lg shadow-accent/40">
                                         {step.step}
                                     </div>
                                 </div>
@@ -1072,7 +1085,7 @@ function PricingSection({ onScrollTo }) {
                         >
                             {tier.highlight && tier.badge && (
                                 <div className="absolute top-0 left-1/2 -translate-x-1/2 z-20">
-                                    <span className="inline-flex items-center gap-1.5 text-xs font-black text-white bg-accent px-5 py-1.5 rounded-full shadow-lg shadow-accent/40 tracking-wide uppercase">
+                                    <span className="inline-flex items-center gap-1.5 text-xs font-black text-primary-bg bg-accent px-5 py-1.5 rounded-full shadow-lg shadow-accent/40 tracking-wide uppercase">
                                         <Star className="h-3 w-3 fill-white flex-shrink-0" />
                                         {tier.badge}
                                     </span>
@@ -1281,11 +1294,11 @@ function FinalCTASection({ onScrollTo }) {
             <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
                 <div
                     className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full"
-                    style={{ background: 'radial-gradient(ellipse, rgba(82,39,255,0.15) 0%, transparent 70%)' }}
+                    style={{ background: 'radial-gradient(ellipse, rgba(91,179,160,0.15) 0%, transparent 70%)' }}
                 />
                 <div
                     className="absolute -bottom-20 right-0 w-[500px] h-[500px] rounded-full"
-                    style={{ background: 'radial-gradient(ellipse, rgba(107,66,255,0.09) 0%, transparent 70%)' }}
+                    style={{ background: 'radial-gradient(ellipse, rgba(123,213,185,0.09) 0%, transparent 70%)' }}
                 />
             </div>
 
@@ -1298,7 +1311,7 @@ function FinalCTASection({ onScrollTo }) {
                     style={{ fontSize: 'clamp(36px, 6vw, 72px)', lineHeight: 1.05, letterSpacing: '-0.025em' }}
                 >
                     Dejá de escribir rutinas desde cero.{' '}
-                    <span className="bg-gradient-to-r from-accent via-violet-400 to-accent-light bg-clip-text text-transparent">
+                    <span className="bg-gradient-to-r from-accent via-accent-light to-accent-secondary bg-clip-text text-transparent">
                         Empezá hoy.
                     </span>
                 </h2>
@@ -1310,7 +1323,7 @@ function FinalCTASection({ onScrollTo }) {
                 <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 scroll-reveal reveal-delay-2">
                     <button
                         onClick={() => onScrollTo('contact')}
-                        className="btn-hero-primary group inline-flex items-center justify-center gap-2 h-14 px-10 rounded-xl bg-accent text-white font-bold text-base w-full sm:w-auto"
+                        className="btn-hero-primary group inline-flex items-center justify-center gap-2 h-14 px-10 rounded-xl bg-accent text-primary-bg font-bold text-base w-full sm:w-auto"
                     >
                         <Sparkles className="h-5 w-5 flex-shrink-0" />
                         Crear mi primera rutina
@@ -1352,7 +1365,7 @@ function Footer({ onScrollTo }) {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
                     <div className="md:col-span-2">
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-white">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-primary-bg">
                                 <Zap className="h-4 w-4" />
                             </div>
                             <span className="text-white font-bold text-lg font-display">BaseRutina</span>

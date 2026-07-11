@@ -594,7 +594,7 @@ const FitterOnboarding = ({ onCopyPrompt, onImportJSON }) => {
                                 <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-accent to-transparent" />
 
                                 <div className="flex items-start gap-3 mb-4">
-                                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-accent flex items-center justify-center text-lg font-bold text-white shadow-lg shadow-accent/30">
+                                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-accent flex items-center justify-center text-lg font-bold text-primary-bg shadow-lg shadow-accent/30">
                                         2
                                     </div>
                                     <div className="flex-1">

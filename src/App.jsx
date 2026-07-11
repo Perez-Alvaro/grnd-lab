@@ -5,9 +5,10 @@ import { setToastInstance } from "./utils/toast.js";
 import { SnackbarProvider } from "./components/Tutorial/Snackbar.jsx";
 import { AuthProvider } from "./store/authStore.jsx";
 import { getRouteConfig } from "./lib/routeObfuscator.js";
-import Home from "./pages/Home.jsx";
 import HomeSaaS from "./pages/HomeSaaS.jsx";
 import RoutineEditor from "./pages/RoutineEditor.jsx";
+import CoachDashboard from "./pages/CoachDashboard.jsx";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
 import ProtectedRoute from "./components/Auth/ProtectedRoute.jsx";
 import LoginModal from "./components/Auth/LoginModal.jsx";
 
@@ -35,8 +36,25 @@ function AppContent() {
           {/* SaaS Landing - B2B for Trainers (Main Page) */}
           <Route path="/" element={<HomeSaaS />} />
 
-          {/* Home/Landing - Technical */}
-          <Route path="/technical" element={<Home />} />
+          {/* Coach Dashboard — atletas y rutinas */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <CoachDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Admin Dashboard — solo role=admin */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Protected Routine Editor — path derived at runtime */}
           <Route

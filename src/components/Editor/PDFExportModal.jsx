@@ -52,7 +52,7 @@ export default function PDFExportModal({ open, onClose, onSelectType }) {
                         className="w-full p-4 rounded-xl border-2 border-border hover:border-accent bg-surface-alt hover:bg-surface-elevated transition-all group"
                     >
                         <div className="flex items-start gap-4">
-                            <div className="p-3 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-white transition-colors">
+                            <div className="p-3 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-primary-bg transition-colors">
                                 <Smartphone className="h-6 w-6" />
                             </div>
                             <div className="flex-1 text-left">
@@ -77,7 +77,7 @@ export default function PDFExportModal({ open, onClose, onSelectType }) {
                         className="w-full p-4 rounded-xl border-2 border-border hover:border-accent bg-surface-alt hover:bg-surface-elevated transition-all group"
                     >
                         <div className="flex items-start gap-4">
-                            <div className="p-3 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-white transition-colors">
+                            <div className="p-3 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-primary-bg transition-colors">
                                 <Monitor className="h-6 w-6" />
                             </div>
                             <div className="flex-1 text-left">
