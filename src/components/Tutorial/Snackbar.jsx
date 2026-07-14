@@ -97,7 +97,7 @@ function Snackbar({ id, message, type = 'info', duration = 5000, onClose }) {
 
             <button
                 onClick={handleClose}
-                className="flex-shrink-0 text-text-muted hover:text-white transition-colors"
+                className="flex-shrink-0 text-text-muted hover:text-text-primary transition-colors"
                 aria-label="Cerrar"
             >
                 <X className="h-4 w-4" />

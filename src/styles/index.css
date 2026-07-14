@@ -362,3 +362,19 @@ button, a {
   width: 2px;
   background: linear-gradient(to bottom, rgba(91, 179, 160, 0.5) 0%, rgba(91, 179, 160, 0) 100%);
 }
+
+/* ── Autofill temático ──
+   Chrome fuerza su propio fondo/color en campos autocompletados (email,
+   contraseña) ignorando el tema. Esto lo alinea con los tokens. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: rgb(var(--c-text-primary));
+  caret-color: rgb(var(--c-text-primary));
+  -webkit-box-shadow: 0 0 0px 1000px rgb(var(--c-bg)) inset;
+  box-shadow: 0 0 0px 1000px rgb(var(--c-bg)) inset;
+  transition: background-color 9999s ease-in-out 0s;
+}

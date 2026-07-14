@@ -1,25 +1,28 @@
 /**
- * Grind-Lab - Routine Editor
- * Client-side only - No backend, no database
- * 2-Panel Layout: Form Editor | Preview
+ * Grind-Lab - Editor de planes (parametrizado por planType: 'workout' | 'nutrition').
+ * Mobile-first: 1 columna en mobile con toggle Editor ↔ Vista previa;
+ * dos columnas lado a lado en desktop (lg+).
+ * El tipo se resuelve por ?planType= (default 'workout'); toda la config
+ * (hoja, preview, steps, prompt, persistencia) viene de src/config/planTypes.js.
  */
 
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft, FileDown, MoreVertical, Copy, Code, FileJson, Download, Save } from "lucide-react";
+import {
+  ArrowLeft, FileDown, MoreVertical, Copy, Code, FileJson, Download, Save,
+  Pencil, Eye, Bot,
+} from "lucide-react";
 import { PlanProvider } from "../context/PlanContext.jsx";
 import useRoutineEditor from "../hooks/useRoutineEditor.js";
-import { getRoutine, saveRoutine } from "../lib/routines.js";
+import { getPlanTypeConfig } from "../config/planTypes.js";
 import usePDFExport from "../hooks/usePDFExport.js";
 import PlanMetadataForm from "../components/Trainer/editor/PlanMetadataForm.jsx";
 import FitterOnboarding from "../components/Trainer/editor/FitterOnboarding.jsx";
-import RoutinePreview from "../components/Trainer/preview/RoutinePreview.jsx";
 import ImportModal from "../components/Editor/ImportModal.jsx";
 import ExportModal from "../components/Editor/ExportModal.jsx";
 import PDFExportModal from "../components/Editor/PDFExportModal.jsx";
 import WeekEditor from "../components/Trainer/editor/WeekEditor.jsx";
 import { Button } from "../components/ui";
-import { copyPromptToClipboard } from "../utils/promptGenerator.js";
 import JSONEditor from "../components/Editor/JSONEditor.jsx";
 import TutorialOverlay from "../components/Tutorial/TutorialOverlay.jsx";
 import { useSnackbar, TUTORIAL_SNACKBARS } from "../components/Tutorial/Snackbar.jsx";
@@ -36,6 +39,7 @@ const buildContextValue = (planEditor) => ({
   addDay: planEditor.addDay,
   duplicateDay: planEditor.duplicateDay,
   removeDay: planEditor.removeDay,
+  reorderDay: planEditor.reorderDay,
   updateWeekField: planEditor.updateWeekField,
   updateDayField: planEditor.updateDayField,
   setDayType: planEditor.setDayType,
@@ -45,49 +49,75 @@ const buildContextValue = (planEditor) => ({
   updateExerciseField: planEditor.updateExerciseField,
 });
 
+const copyText = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.left = "-9999px";
+      document.body.appendChild(ta); ta.select(); document.execCommand("copy");
+      document.body.removeChild(ta);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+};
+
 export default function RoutineEditorPage() {
   const navigate = useNavigate();
   const exportPDF = usePDFExport();
   const snackbar = useSnackbar();
 
-  const [showImportModal, setShowImportModal] = React.useState(false);
-  const [showExportModal, setShowExportModal] = React.useState(false);
-  const [showPDFExportModal, setShowPDFExportModal] = React.useState(false);
+  const [searchParams] = useSearchParams();
+  const planType = searchParams.get("planType") || "workout";
+  const config = useMemo(() => getPlanTypeConfig(planType), [planType]);
+  const Preview = config.Preview;
+  const isWorkout = config.id === "workout";
+
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [showPDFExportModal, setShowPDFExportModal] = useState(false);
   const [showJSONEditor, setShowJSONEditor] = useState(false);
   const [showToolsMenu, setShowToolsMenu] = useState(false);
-  const [useAIMode, setUseAIMode] = useState(true); // Default to AI mode
-  const [showTutorial, setShowTutorial] = useState(false); // Control tutorial activation
+  const [useAIMode, setUseAIMode] = useState(true);
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [mobileView, setMobileView] = useState("editor"); // 'editor' | 'preview' (solo mobile)
 
-  // Inicializar el editor sin templates previos (siempre nueva rutina)
   const planEditor = useRoutineEditor({
     template: null,
     templateId: null,
     existingTemplate: null,
+    leafKey: config.leaf.key,
+    createLeaf: config.leaf.create,
+    normalizeImport: config.normalizeImport,
   });
 
   const planContextValue = useMemo(
-    () => buildContextValue(planEditor),
-    [planEditor],
+    () => ({ ...buildContextValue(planEditor), leafUI: config.leaf }),
+    [planEditor, config],
   );
 
   // ── Persistencia en la nube ──────────────────────────────────
-  const [searchParams] = useSearchParams();
-  const [routineId, setRoutineId] = useState(searchParams.get("routineId") || null);
+  const [planId, setPlanId] = useState(
+    searchParams.get("planId") || searchParams.get("routineId") || null,
+  );
   const [athleteId] = useState(searchParams.get("athleteId") || null);
   const [saving, setSaving] = useState(false);
 
-  // Cargar rutina existente si viene ?routineId
   useEffect(() => {
-    const rid = searchParams.get("routineId");
-    if (!rid) return;
+    const pid = searchParams.get("planId") || searchParams.get("routineId");
+    if (!pid) return;
     (async () => {
       try {
-        const r = await getRoutine(rid);
+        const r = await config.lib.get(pid);
         planEditor.loadPlan(r.data);
-        setRoutineId(r.id);
+        setPlanId(r.id);
       } catch (error) {
-        console.error("Error cargando rutina:", error);
-        snackbar.error("No se pudo cargar la rutina");
+        console.error("Error cargando el plan:", error);
+        snackbar.error("No se pudo cargar el plan");
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -96,40 +126,43 @@ export default function RoutineEditorPage() {
   const handleSave = useCallback(async () => {
     setSaving(true);
     try {
-      const saved = await saveRoutine({
-        id: routineId,
-        title: planEditor.metadata.name || "Rutina sin título",
+      const saved = await config.lib.save({
+        id: planId,
+        title: planEditor.metadata.name || config.labels.untitled,
         data: planEditor.plan,
         athlete_id: athleteId,
       });
-      setRoutineId(saved.id);
-      snackbar.success("Rutina guardada");
+      setPlanId(saved.id);
+      snackbar.success("Cambios guardados");
     } catch (error) {
-      console.error("Error guardando rutina:", error);
-      snackbar.error("No se pudo guardar la rutina");
+      console.error("Error guardando el plan:", error);
+      snackbar.error("No se pudo guardar");
     } finally {
       setSaving(false);
     }
-  }, [routineId, athleteId, planEditor.metadata.name, planEditor.plan, snackbar]);
+  }, [config, planId, athleteId, planEditor.metadata.name, planEditor.plan, snackbar]);
 
   const handleBack = useCallback(() => {
-    if (
-      planEditor.dirty &&
-      !window.confirm("Hay cambios sin guardar. ¿Desea salir igualmente?")
-    ) {
-      return;
-    }
+    if (planEditor.dirty && !window.confirm("Hay cambios sin guardar. ¿Desea salir igualmente?")) return;
     navigate("/dashboard");
   }, [navigate, planEditor.dirty]);
 
-  const handleExportPdf = useCallback(() => {
-    // Abrir modal de selección de tipo de PDF
+  const handleExportPdf = useCallback(async () => {
+    if (config.pdfExport) {
+      try {
+        await config.pdfExport(planEditor.plan);
+        snackbar.success(TUTORIAL_SNACKBARS.pdfExported);
+      } catch (error) {
+        console.error("PDF Export Error:", error);
+        snackbar.error(`Error: ${error.message || "No se pudo exportar el PDF"}`);
+      }
+      return;
+    }
     setShowPDFExportModal(true);
-  }, []);
+  }, [config, planEditor.plan, snackbar]);
 
   const handlePDFTypeSelect = useCallback(async (type) => {
     try {
-      console.log(`Exporting PDF as ${type} with planForPdf:`, planEditor.planForPdf);
       await exportPDF(planEditor.planForPdf, type);
       snackbar.success(TUTORIAL_SNACKBARS.pdfExported);
     } catch (error) {
@@ -143,6 +176,7 @@ export default function RoutineEditorPage() {
       planEditor.loadPlan(importedData);
       snackbar.success(TUTORIAL_SNACKBARS.jsonLoaded);
       setShowImportModal(false);
+      setMobileView("preview"); // tras importar, mostramos el resultado en mobile
     } catch (error) {
       console.error("Import error:", error);
       snackbar.error(TUTORIAL_SNACKBARS.jsonError);
@@ -151,17 +185,14 @@ export default function RoutineEditorPage() {
 
   const handleCopyPrompt = useCallback(async () => {
     try {
-      const success = await copyPromptToClipboard(planEditor.metadata);
-      if (success) {
-        snackbar.success(TUTORIAL_SNACKBARS.promptCopied, 6000);
-      } else {
-        snackbar.error("No se pudo copiar el prompt");
-      }
+      const ok = await copyText(config.generatePrompt(planEditor.metadata));
+      if (ok) snackbar.success(TUTORIAL_SNACKBARS.promptCopied, 6000);
+      else snackbar.error("No se pudo copiar el prompt");
     } catch (error) {
-      console.error("Error copiando prompt:", error);
+      console.error("Error copiando el prompt:", error);
       snackbar.error("Error al copiar el prompt");
     }
-  }, [planEditor.metadata, snackbar]);
+  }, [config, planEditor.metadata, snackbar]);
 
   const handleJSONEditorChange = useCallback((parsedJSON) => {
     try {
@@ -173,194 +204,169 @@ export default function RoutineEditorPage() {
     }
   }, [planEditor, snackbar]);
 
-  // Handler para cuando se cambia a la pestaña avanzada
   const handleTabChange = useCallback((value) => {
-    if (value === 'advanced') {
-      setShowTutorial(true);
-    }
+    if (value === "advanced") setShowTutorial(true);
   }, []);
+
+  const onboardingProps = {
+    onCopyPrompt: handleCopyPrompt,
+    onImportJSON: handleImport,
+    steps: config.steps,
+    generatePrompt: config.generatePrompt,
+    importFn: config.importFromAI,
+  };
+
+  const menuItem =
+    "w-full flex items-center gap-3 px-4 py-3 hover:bg-primary-bg transition-colors text-sm text-text-primary";
+
+  const segBtn = (active) =>
+    `inline-flex items-center justify-center gap-2 h-10 rounded-lg text-sm font-semibold transition-colors ${
+      active ? "bg-accent text-primary-bg shadow-sm" : "text-text-secondary hover:text-text-primary"
+    }`;
 
   return (
     <PlanProvider value={planContextValue}>
-      <div className="flex h-screen flex-col bg-primary-bg overflow-hidden">
-        {/* Tutorial Overlay - Solo se muestra si showTutorial es true */}
+      <div className="flex h-dvh flex-col bg-primary-bg overflow-hidden">
         <TutorialOverlay shouldShow={showTutorial} />
 
-        {/* Top Bar */}
+        {/* ── Top bar ── */}
         <header className="flex-shrink-0 border-b border-border bg-primary-surface">
-          <div className="flex items-center justify-between px-6 py-4">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm" onClick={handleBack}>
+          <div className="flex items-center justify-between gap-2 px-4 sm:px-6 py-3">
+            <div className="flex items-center gap-2 min-w-0">
+              <Button variant="ghost" size="sm" onClick={handleBack} aria-label="Volver al panel">
                 <ArrowLeft className="h-4 w-4" />
-                Volver al panel
+                <span className="hidden sm:inline">Volver</span>
               </Button>
-              <div>
-                <h1 className="text-xl font-semibold text-text-primary font-display">
-                  BaseRutina - Editor de Rutinas
+              <div className="min-w-0">
+                <h1 className="text-sm sm:text-base font-semibold text-text-primary font-display truncate max-w-[45vw] sm:max-w-none">
+                  {planEditor.metadata.name || config.labels.untitled}
                 </h1>
-                <p className="text-sm text-text-muted">
-                  {planEditor.metadata.name || 'Rutina sin nombre'}
-                </p>
+                <p className="hidden sm:block text-xs text-text-muted">{config.labels.editorSubtitle}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 relative">
-              <Button
-                variant="accent"
-                size="sm"
-                onClick={handleSave}
-                loading={saving}
-              >
+            <div className="flex items-center gap-2 relative flex-shrink-0">
+              <Button variant="accent" size="sm" onClick={handleSave} loading={saving}>
                 <Save className="h-4 w-4" />
-                Guardar
-              </Button>
-
-              <Button
-                id="export-pdf-button"
-                variant="outline"
-                size="sm"
-                onClick={handleExportPdf}
-              >
-                <FileDown className="h-4 w-4" />
-                Exportar PDF
+                <span className="hidden sm:inline">Guardar</span>
               </Button>
 
               <div className="relative">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowToolsMenu(!showToolsMenu)}
-                >
+                <Button variant="ghost" size="sm" onClick={() => setShowToolsMenu(!showToolsMenu)} aria-label="Más opciones">
                   <MoreVertical className="h-4 w-4" />
                 </Button>
 
                 {showToolsMenu && (
-                  <div className="absolute right-0 mt-2 w-56 bg-secondary-bg border border-border rounded-lg shadow-lg z-50">
-                    <button
-                      onClick={() => {
-                        handleCopyPrompt();
-                        setShowToolsMenu(false);
-                      }}
-                      className="w-full flex items-center gap-3 px-4 py-3 bg-primary-bg hover:bg-primary-bg/80 transition-colors text-sm text-text-primary border-b border-border"
-                    >
-                      <Copy className="h-4 w-4" />
-                      Copiar Prompt para IA
-                    </button>
-                    <button
-                      onClick={() => {
-                        setShowJSONEditor(!showJSONEditor);
-                        setShowToolsMenu(false);
-                      }}
-                      className="w-full flex items-center gap-3 px-4 py-3 bg-primary-bg hover:bg-primary-bg/80 transition-colors text-sm text-text-primary border-b border-border"
-                    >
-                      <Code className="h-4 w-4" />
-                      Editor JSON
-                    </button>
-                    <button
-                      onClick={() => {
-                        setShowImportModal(true);
-                        setShowToolsMenu(false);
-                      }}
-                      className="w-full flex items-center gap-3 px-4 py-3 bg-primary-bg hover:bg-primary-bg/80 transition-colors text-sm text-text-primary border-b border-border"
-                    >
-                      <FileJson className="h-4 w-4" />
-                      Importar JSON
-                    </button>
-                    <button
-                      onClick={() => {
-                        setShowExportModal(true);
-                        setShowToolsMenu(false);
-                      }}
-                      className="w-full flex items-center gap-3 px-4 py-3 bg-primary-bg hover:bg-primary-bg/80 transition-colors text-sm text-text-primary"
-                    >
-                      <Download className="h-4 w-4" />
-                      Exportar JSON
-                    </button>
-                  </div>
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setShowToolsMenu(false)} aria-hidden="true" />
+                    <div className="absolute right-0 mt-2 w-56 bg-primary-surface border border-border rounded-xl shadow-xl shadow-black/30 z-50 overflow-hidden py-1">
+                      {(isWorkout || config.pdfExport) && (
+                        <button onClick={() => { handleExportPdf(); setShowToolsMenu(false); }} className={menuItem}>
+                          <FileDown className="h-4 w-4 text-text-tertiary" /> Exportar PDF
+                        </button>
+                      )}
+                      <button onClick={() => { handleCopyPrompt(); setShowToolsMenu(false); }} className={menuItem}>
+                        <Copy className="h-4 w-4 text-text-tertiary" /> Copiar prompt para IA
+                      </button>
+                      <div className="my-1 border-t border-border" />
+                      <button onClick={() => { setShowJSONEditor(!showJSONEditor); setShowToolsMenu(false); }} className={menuItem}>
+                        <Code className="h-4 w-4 text-text-tertiary" /> {showJSONEditor ? "Cerrar editor JSON" : "Editor JSON"}
+                      </button>
+                      <button onClick={() => { setShowImportModal(true); setShowToolsMenu(false); }} className={menuItem}>
+                        <FileJson className="h-4 w-4 text-text-tertiary" /> Importar JSON
+                      </button>
+                      <button onClick={() => { setShowExportModal(true); setShowToolsMenu(false); }} className={menuItem}>
+                        <Download className="h-4 w-4 text-text-tertiary" /> Exportar JSON
+                      </button>
+                    </div>
+                  </>
                 )}
               </div>
             </div>
           </div>
+
+          {/* Segmented toggle Editor ↔ Vista previa — solo mobile */}
+          <div className="lg:hidden px-4 sm:px-6 pb-3">
+            <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-primary-bg border border-border">
+              <button onClick={() => setMobileView("editor")} className={segBtn(mobileView === "editor")} aria-pressed={mobileView === "editor"}>
+                <Pencil className="h-4 w-4" /> Editor
+              </button>
+              <button onClick={() => setMobileView("preview")} className={segBtn(mobileView === "preview")} aria-pressed={mobileView === "preview"}>
+                <Eye className="h-4 w-4" /> Vista previa
+              </button>
+            </div>
+          </div>
         </header>
 
-        {/* 2-Panel Layout */}
+        {/* ── Layout: 1 col mobile (toggle) · 2 col desktop ── */}
         <div className="flex flex-1 overflow-hidden">
-          {/* Left Panel - JSON Editor o Form Editor */}
-          <div className="flex-1 overflow-y-auto border-r border-border">
+          {/* Editor */}
+          <div className={`${mobileView === "editor" ? "block" : "hidden"} lg:block flex-1 overflow-y-auto lg:border-r border-border`}>
             {showJSONEditor ? (
-              <JSONEditor
-                value={planEditor.plan}
-                onChange={handleJSONEditorChange}
-              />
+              <JSONEditor value={planEditor.plan} onChange={handleJSONEditorChange} />
             ) : (
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <Tabs defaultValue="basic" className="w-full" onValueChange={handleTabChange}>
                   <TabsList className="mb-6">
-                    <TabsTrigger value="basic">
-                      Configuración Básica
-                    </TabsTrigger>
-                    <TabsTrigger value="advanced">
-                      Configuración Avanzada
-                    </TabsTrigger>
+                    <TabsTrigger value="basic">Asistido</TabsTrigger>
+                    <TabsTrigger value="advanced">Avanzado</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="basic">
                     <div id="metadata-form" className="space-y-6">
-                      {/* Toggle Switch between AI Mode and Advanced Form */}
-                      <div className="flex items-center justify-between p-4 bg-[#0E0E0E] border border-[#2E2E2E] rounded-xl">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-accent/70 flex items-center justify-center">
-                            <span className="text-lg">🤖</span>
-                          </div>
-                          <div>
-                            <h3 className="text-sm font-semibold text-white">
-                              {useAIMode ? "Modo Asistido con IA" : "Modo Avanzado"}
-                            </h3>
-                            <p className="text-xs text-gray-400">
-                              {useAIMode
-                                ? "Fitter te guía paso a paso"
-                                : "Formulario completo tradicional"}
-                            </p>
-                          </div>
-                        </div>
-
-                        <button
-                          onClick={() => setUseAIMode(!useAIMode)}
-                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#0E0E0E] ${useAIMode ? 'bg-accent' : 'bg-gray-600'
-                            }`}
-                        >
-                          <span
-                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${useAIMode ? 'translate-x-6' : 'translate-x-1'
-                              }`}
-                          />
-                        </button>
-                      </div>
-
-                      {/* Conditional Rendering: AI Mode or Traditional Form */}
-                      {useAIMode ? (
-                        <FitterOnboarding
-                          onCopyPrompt={handleCopyPrompt}
-                          onImportJSON={handleImport}
-                        />
-                      ) : (
+                      {config.hasManualForm ? (
                         <>
-                          <PlanMetadataForm onCopyPrompt={handleCopyPrompt} />
-
-                          <div className="rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] p-5">
-                            <div className="flex items-center gap-2 mb-4">
-                              <div className="h-2 w-2 rounded-full bg-accent"></div>
-                              <h3 className="text-sm font-semibold text-white">
-                                Información Importante
-                              </h3>
+                          {/* Toggle IA / formulario manual */}
+                          <div className="flex items-center justify-between gap-3 p-4 bg-primary-bg border border-border rounded-xl">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-accent/15 text-accent flex items-center justify-center">
+                                <Bot className="h-5 w-5" />
+                              </div>
+                              <div className="min-w-0">
+                                <h3 className="text-sm font-semibold text-text-primary">
+                                  {useAIMode ? "Asistente con IA" : "Formulario manual"}
+                                </h3>
+                                <p className="text-xs text-text-tertiary">
+                                  {useAIMode ? "Te guía paso a paso" : "Formulario tradicional"}
+                                </p>
+                              </div>
                             </div>
-                            <p className="text-xs text-gray-400 leading-relaxed">
-                              Completá los datos básicos de la plantilla y luego generá el <strong>Prompt Maestro</strong> usando el botón "Copiar Prompt para IA". Pegalo en ChatGPT o Claude para obtener el JSON de la rutina completa.
-                            </p>
-                            <p className="text-xs text-gray-400 leading-relaxed mt-3">
-                              Si necesitás hacer ajustes manuales en la estructura de semanas, días y ejercicios, usá la pestaña <strong>"Configuración Avanzada"</strong>.
-                            </p>
+
+                            <button
+                              onClick={() => setUseAIMode(!useAIMode)}
+                              role="switch"
+                              aria-checked={useAIMode}
+                              aria-label="Alternar modo asistido con IA"
+                              className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary-bg ${
+                                useAIMode ? "bg-accent" : "bg-text-quaternary"
+                              }`}
+                            >
+                              <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${useAIMode ? "translate-x-6" : "translate-x-1"}`} />
+                            </button>
                           </div>
+
+                          {useAIMode ? (
+                            <FitterOnboarding {...onboardingProps} />
+                          ) : (
+                            <>
+                              <PlanMetadataForm onCopyPrompt={handleCopyPrompt} />
+                              <div className="rounded-xl border border-border bg-primary-bg p-5">
+                                <div className="flex items-center gap-2 mb-3">
+                                  <div className="h-2 w-2 rounded-full bg-accent" />
+                                  <h3 className="text-sm font-semibold text-text-primary">Cómo sigue</h3>
+                                </div>
+                                <p className="text-xs text-text-tertiary leading-relaxed">
+                                  Completá los datos y generá el <strong className="text-text-primary">Prompt Maestro</strong> con "Copiar prompt para IA". Pegalo en ChatGPT o Claude para obtener el JSON.
+                                </p>
+                                <p className="text-xs text-text-tertiary leading-relaxed mt-3">
+                                  Para ajustes manuales de semanas, días e ítems, usá la pestaña <strong className="text-text-primary">Avanzado</strong>.
+                                </p>
+                              </div>
+                            </>
+                          )}
                         </>
+                      ) : (
+                        <FitterOnboarding {...onboardingProps} />
                       )}
                     </div>
                   </TabsContent>
@@ -369,13 +375,11 @@ export default function RoutineEditorPage() {
                     <div className="space-y-4">
                       <div className="rounded-xl border border-accent/20 bg-accent/5 p-4">
                         <div className="flex items-center gap-2 mb-2">
-                          <div className="h-2 w-2 rounded-full bg-accent"></div>
-                          <h3 className="text-sm font-semibold text-white">
-                            Modo Avanzado Activado
-                          </h3>
+                          <div className="h-2 w-2 rounded-full bg-accent" />
+                          <h3 className="text-sm font-semibold text-text-primary">Modo avanzado</h3>
                         </div>
-                        <p className="text-xs text-gray-400 leading-relaxed">
-                          Ahora podés editar manualmente la estructura de semanas, días y ejercicios (ABMC completo). Estos cambios son avanzados y requieren conocimiento del sistema.
+                        <p className="text-xs text-text-tertiary leading-relaxed">
+                          Editá manualmente la estructura de semanas, días e ítems (ABMC completo).
                         </p>
                       </div>
                       <WeekEditor />
@@ -386,38 +390,21 @@ export default function RoutineEditorPage() {
             )}
           </div>
 
-          {/* Right Panel - Preview */}
-          <div className="flex-1 overflow-y-auto bg-primary-surface">
-            <div className="p-6">
-              <h3 className="text-lg font-semibold text-text-primary font-display mb-4">
-                Vista Previa
-              </h3>
-              <RoutinePreview />
+          {/* Preview */}
+          <div className={`${mobileView === "preview" ? "block" : "hidden"} lg:block flex-1 overflow-y-auto bg-primary-surface`}>
+            <div className="p-4 sm:p-6">
+              <h3 className="text-lg font-semibold text-text-primary font-display mb-4">Vista previa</h3>
+              <Preview />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Import Modal */}
-      <ImportModal
-        open={showImportModal}
-        onClose={() => setShowImportModal(false)}
-        onImport={handleImport}
-      />
-
-      {/* Export Modal */}
-      <ExportModal
-        open={showExportModal}
-        onClose={() => setShowExportModal(false)}
-        planData={planEditor.plan}
-      />
-
-      {/* PDF Export Type Selection Modal */}
-      <PDFExportModal
-        open={showPDFExportModal}
-        onClose={() => setShowPDFExportModal(false)}
-        onSelectType={handlePDFTypeSelect}
-      />
+      <ImportModal open={showImportModal} onClose={() => setShowImportModal(false)} onImport={handleImport} />
+      <ExportModal open={showExportModal} onClose={() => setShowExportModal(false)} planData={planEditor.plan} />
+      {isWorkout && (
+        <PDFExportModal open={showPDFExportModal} onClose={() => setShowPDFExportModal(false)} onSelectType={handlePDFTypeSelect} />
+      )}
     </PlanProvider>
   );
 }

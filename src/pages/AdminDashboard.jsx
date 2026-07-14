@@ -66,13 +66,13 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-primary-bg">
       <header className="border-b border-border bg-primary-surface">
-        <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-primary-bg">
               <Zap className="h-4 w-4" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-white font-display leading-tight">Admin · GRIND LAB</h1>
+              <h1 className="text-lg font-bold text-text-primary font-display leading-tight">Admin · GRIND LAB</h1>
               <p className="text-xs text-text-muted">{user?.name}</p>
             </div>
           </div>
@@ -82,7 +82,7 @@ export default function AdminDashboard() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-6 py-8">
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <StatCard icon={Users} label="Coaches" value={metrics.totalCoaches} />
           <StatCard icon={CheckCircle2} label="Activos" value={metrics.active} />
@@ -100,47 +100,81 @@ export default function AdminDashboard() {
           ) : coaches.length === 0 ? (
             <p className="text-sm text-text-muted p-6">No hay usuarios todavía.</p>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-text-muted border-b border-border">
-                    <th className="px-6 py-3 font-medium">Nombre</th>
-                    <th className="px-6 py-3 font-medium">Rol</th>
-                    <th className="px-6 py-3 font-medium">Plan</th>
-                    <th className="px-6 py-3 font-medium">Estado</th>
-                    <th className="px-6 py-3 font-medium">Alta</th>
-                    <th className="px-6 py-3 font-medium text-right">Acción</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {coaches.map((c) => (
-                    <tr key={c.id} className="border-b border-border/50 last:border-0">
-                      <td className="px-6 py-3 text-white">{c.name}</td>
-                      <td className="px-6 py-3">
-                        <Badge variant={c.role === 'admin' ? 'accent' : 'default'}>{c.role}</Badge>
-                      </td>
-                      <td className="px-6 py-3 text-text-secondary">
-                        {c.subscription ? (PLAN_LABEL[c.subscription.plan] || c.subscription.plan) : '—'}
-                      </td>
-                      <td className="px-6 py-3">
+            <>
+              {/* Mobile: tarjetas (una tabla de 6 columnas no entra en 375px) */}
+              <div className="md:hidden divide-y divide-border">
+                {coaches.map((c) => (
+                  <div key={c.id} className="space-y-3 p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="truncate font-medium text-text-primary">{c.name}</p>
+                        <p className="text-xs text-text-muted">Alta {new Date(c.created_at).toLocaleDateString('es-AR')}</p>
+                      </div>
+                      <Badge variant={c.role === 'admin' ? 'accent' : 'default'}>{c.role}</Badge>
+                    </div>
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-sm text-text-secondary">
+                          {c.subscription ? (PLAN_LABEL[c.subscription.plan] || c.subscription.plan) : 'Sin plan'}
+                        </span>
                         {c.subscription
                           ? <Badge variant={STATUS_VARIANT[c.subscription.status] || 'default'}>{c.subscription.status}</Badge>
-                          : <span className="text-text-muted">sin suscripción</span>}
-                      </td>
-                      <td className="px-6 py-3 text-text-muted">{new Date(c.created_at).toLocaleDateString('es-AR')}</td>
-                      <td className="px-6 py-3 text-right">
-                        {c.subscription?.status === 'pending' && (
-                          <Button size="sm" variant="accent" onClick={() => handleActivate(c.subscription)}>Activar</Button>
-                        )}
-                        {c.subscription?.status === 'active' && (
-                          <Button size="sm" variant="ghost" onClick={() => handleSuspend(c.subscription)}>Suspender</Button>
-                        )}
-                      </td>
+                          : <span className="text-xs text-text-muted">sin suscripción</span>}
+                      </div>
+                      {c.subscription?.status === 'pending' && (
+                        <Button size="sm" variant="accent" onClick={() => handleActivate(c.subscription)}>Activar</Button>
+                      )}
+                      {c.subscription?.status === 'active' && (
+                        <Button size="sm" variant="ghost" onClick={() => handleSuspend(c.subscription)}>Suspender</Button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop: tabla */}
+              <div className="hidden overflow-x-auto md:block">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-left text-text-muted border-b border-border">
+                      <th className="px-6 py-3 font-medium">Nombre</th>
+                      <th className="px-6 py-3 font-medium">Rol</th>
+                      <th className="px-6 py-3 font-medium">Plan</th>
+                      <th className="px-6 py-3 font-medium">Estado</th>
+                      <th className="px-6 py-3 font-medium">Alta</th>
+                      <th className="px-6 py-3 font-medium text-right">Acción</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {coaches.map((c) => (
+                      <tr key={c.id} className="border-b border-border/50 last:border-0">
+                        <td className="px-6 py-3 text-text-primary">{c.name}</td>
+                        <td className="px-6 py-3">
+                          <Badge variant={c.role === 'admin' ? 'accent' : 'default'}>{c.role}</Badge>
+                        </td>
+                        <td className="px-6 py-3 text-text-secondary">
+                          {c.subscription ? (PLAN_LABEL[c.subscription.plan] || c.subscription.plan) : '—'}
+                        </td>
+                        <td className="px-6 py-3">
+                          {c.subscription
+                            ? <Badge variant={STATUS_VARIANT[c.subscription.status] || 'default'}>{c.subscription.status}</Badge>
+                            : <span className="text-text-muted">sin suscripción</span>}
+                        </td>
+                        <td className="px-6 py-3 text-text-muted">{new Date(c.created_at).toLocaleDateString('es-AR')}</td>
+                        <td className="px-6 py-3 text-right">
+                          {c.subscription?.status === 'pending' && (
+                            <Button size="sm" variant="accent" onClick={() => handleActivate(c.subscription)}>Activar</Button>
+                          )}
+                          {c.subscription?.status === 'active' && (
+                            <Button size="sm" variant="ghost" onClick={() => handleSuspend(c.subscription)}>Suspender</Button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
           )}
           <p className="text-xs text-text-muted px-6 py-3 border-t border-border">
             Nota: hasta implementar MercadoPago, las suscripciones se crean/activan manualmente
@@ -159,7 +193,7 @@ function StatCard({ icon: Icon, label, value }) {
         <Icon className="h-4 w-4" />
         <span className="text-xs uppercase tracking-wide">{label}</span>
       </div>
-      <p className="text-2xl font-bold text-white font-display">{value}</p>
+      <p className="text-2xl font-bold text-text-primary font-display">{value}</p>
     </div>
   );
 }

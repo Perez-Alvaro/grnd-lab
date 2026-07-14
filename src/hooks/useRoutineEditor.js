@@ -16,39 +16,38 @@ export const createExercise = () => ({
   note: "",
 });
 
-export const createDay = (label = "Día 1") => ({
+// Config de hoja por defecto (rutinas). Se puede overridear por planType para
+// reutilizar TODO el motor semana→día→hoja con otra hoja (ej: nutrición → meals).
+const WORKOUT_LEAF = { key: "exercises", create: createExercise };
+
+export const createDay = (label = "Día 1", leaf = WORKOUT_LEAF) => ({
   id: createId(),
   name: label,
   type: "ENTRENAMIENTO",
   recoveryNote: "",
   warmupExercises: [],
-  exercises: [createExercise()],
+  [leaf.key]: [leaf.create()],
 });
 
-export const createEmptyWeek = (number = 1) => ({
+export const createEmptyWeek = (number = 1, leaf = WORKOUT_LEAF) => ({
   id: createId(),
   title: `Semana ${number}`,
   summary: "",
   notes: "",
-  days: defaultDayLabels.map((dayLabel) => createDay(dayLabel)),
+  days: defaultDayLabels.map((dayLabel) => createDay(dayLabel, leaf)),
 });
 
-const cloneExercise = (exercise) => ({
-  ...exercise,
-  id: createId(),
-});
-
-const cloneDay = (day) => ({
+const cloneDay = (day, leaf = WORKOUT_LEAF) => ({
   ...day,
   id: createId(),
-  warmupExercises: (day.warmupExercises || []).map(ex => ({ ...ex })),
-  exercises: day.exercises.map(cloneExercise),
+  warmupExercises: (day.warmupExercises || []).map((ex) => ({ ...ex })),
+  [leaf.key]: (day[leaf.key] || []).map((item) => ({ ...item, id: createId() })),
 });
 
-const cloneWeek = (week) => ({
+const cloneWeek = (week, leaf = WORKOUT_LEAF) => ({
   ...week,
   id: createId(),
-  days: week.days.map(cloneDay),
+  days: week.days.map((day) => cloneDay(day, leaf)),
 });
 
 const parseTags = (value) =>
@@ -163,7 +162,7 @@ const convertLegacyWeek = (week, index = 0) => {
   };
 };
 
-export const buildInitialPlan = (template) => {
+export const buildInitialPlan = (template, leaf = WORKOUT_LEAF) => {
   if (!template) {
     return {
       metadata: {
@@ -180,7 +179,7 @@ export const buildInitialPlan = (template) => {
         image: "",
         price: "",
       },
-      weeks: [createEmptyWeek(1)],
+      weeks: [createEmptyWeek(1, leaf)],
     };
   }
 
@@ -247,7 +246,7 @@ export const buildInitialPlan = (template) => {
               ? String(template.precio)
               : "",
     },
-    weeks: convertedWeeks.length ? convertedWeeks : [createEmptyWeek(1)],
+    weeks: convertedWeeks.length ? convertedWeeks : [createEmptyWeek(1, leaf)],
   };
 };
 
@@ -262,8 +261,14 @@ export const useRoutineEditor = ({
   template,
   templateId,
   existingTemplate,
-}) => {
-  const basePlan = useMemo(() => buildInitialPlan(template), [template]);
+  // Config de hoja (leaf). Por defecto = rutina (exercises). Para nutrición se
+  // pasa leafKey:'meals' + createLeaf:createMealLeaf + normalizeImport propio.
+  leafKey = "exercises",
+  createLeaf = createExercise,
+  normalizeImport = null,
+} = {}) => {
+  const leaf = useMemo(() => ({ key: leafKey, create: createLeaf }), [leafKey, createLeaf]);
+  const basePlan = useMemo(() => buildInitialPlan(template, leaf), [template, leaf]);
   const [plan, setPlan] = useState(basePlan);
   const [dirty, setDirty] = useState(false);
   const draftKey = useMemo(() => buildDraftKey(templateId), [templateId]);
@@ -385,7 +390,7 @@ export const useRoutineEditor = ({
   const addWeek = useCallback(() => {
     return applyPlanChange((prev) => {
       const nextWeekNumber = prev.weeks.length + 1;
-      const nextWeeks = [...prev.weeks, createEmptyWeek(nextWeekNumber)];
+      const nextWeeks = [...prev.weeks, createEmptyWeek(nextWeekNumber, leaf)];
       const metadata = adjustDuration(
         prev.metadata,
         prev.weeks.length,
@@ -393,14 +398,14 @@ export const useRoutineEditor = ({
       );
       return { ...prev, weeks: nextWeeks, metadata };
     });
-  }, [applyPlanChange]);
+  }, [applyPlanChange, leaf]);
 
   const duplicateWeek = useCallback(
     (weekId) => {
       return applyPlanChange((prev) => {
         const index = prev.weeks.findIndex((week) => week.id === weekId);
         if (index === -1) return prev;
-        const duplicated = cloneWeek(prev.weeks[index]);
+        const duplicated = cloneWeek(prev.weeks[index], leaf);
         duplicated.title = `${duplicated.title || `Semana ${index + 1}`} (copia)`;
         const weeks = [...prev.weeks];
         weeks.splice(index + 1, 0, duplicated);
@@ -412,7 +417,7 @@ export const useRoutineEditor = ({
         return { ...prev, weeks, metadata };
       });
     },
-    [applyPlanChange],
+    [applyPlanChange, leaf],
   );
 
   const removeWeek = useCallback(
@@ -436,10 +441,10 @@ export const useRoutineEditor = ({
     (weekId) => {
       return updateWeek(weekId, (week) => ({
         ...week,
-        days: [...week.days, createDay(`Día ${week.days.length + 1}`)],
+        days: [...week.days, createDay(`Día ${week.days.length + 1}`, leaf)],
       }));
     },
-    [updateWeek],
+    [updateWeek, leaf],
   );
 
   const duplicateDay = useCallback(
@@ -447,14 +452,14 @@ export const useRoutineEditor = ({
       return updateWeek(weekId, (week) => {
         const index = week.days.findIndex((day) => day.id === dayId);
         if (index === -1) return week;
-        const duplicated = cloneDay(week.days[index]);
+        const duplicated = cloneDay(week.days[index], leaf);
         duplicated.name = `${duplicated.name} (copia)`;
         const days = [...week.days];
         days.splice(index + 1, 0, duplicated);
         return { ...week, days };
       });
     },
-    [updateWeek],
+    [updateWeek, leaf],
   );
 
   const removeDay = useCallback(
@@ -527,63 +532,63 @@ export const useRoutineEditor = ({
     [updateDay],
   );
 
+  // ── CRUD de la hoja (leaf) ────────────────────────────────
+  // Nombres conservados (updateExercise*/addExercise…) para no romper el
+  // PlanContext existente; internamente operan sobre day[leaf.key], así que
+  // sirven igual para 'exercises' (rutina) y 'meals' (nutrición).
   const updateExerciseField = useCallback(
     (weekId, dayId, exerciseId, field, value) => {
       return updateDay(weekId, dayId, (day) => {
         let changed = false;
-        const exercises = day.exercises.map((exercise) => {
+        const items = (day[leaf.key] || []).map((exercise) => {
           if (exercise.id !== exerciseId) return exercise;
           if (exercise[field] === value) return exercise;
           changed = true;
           return { ...exercise, [field]: value };
         });
         if (!changed) return day;
-        return { ...day, exercises };
+        return { ...day, [leaf.key]: items };
       });
     },
-    [updateDay],
+    [updateDay, leaf],
   );
 
   const addExercise = useCallback(
     (weekId, dayId) => {
       return updateDay(weekId, dayId, (day) => ({
         ...day,
-        exercises: [...day.exercises, createExercise()],
+        [leaf.key]: [...(day[leaf.key] || []), leaf.create()],
       }));
     },
-    [updateDay],
+    [updateDay, leaf],
   );
 
   const duplicateExercise = useCallback(
     (weekId, dayId, exerciseId) => {
       return updateDay(weekId, dayId, (day) => {
-        const index = day.exercises.findIndex(
-          (exercise) => exercise.id === exerciseId,
-        );
+        const items = day[leaf.key] || [];
+        const index = items.findIndex((exercise) => exercise.id === exerciseId);
         if (index === -1) return day;
-        const duplicated = cloneExercise(day.exercises[index]);
-        duplicated.name = `${duplicated.name || "Ejercicio"} (copia)`;
-        const exercises = [...day.exercises];
-        exercises.splice(index + 1, 0, duplicated);
-        return { ...day, exercises };
+        const duplicated = { ...items[index], id: createId() };
+        duplicated.name = `${duplicated.name || "Ítem"} (copia)`;
+        const next = [...items];
+        next.splice(index + 1, 0, duplicated);
+        return { ...day, [leaf.key]: next };
       });
     },
-    [updateDay],
+    [updateDay, leaf],
   );
 
   const removeExercise = useCallback(
     (weekId, dayId, exerciseId) => {
       const changed = updateDay(weekId, dayId, (day) => {
-        const exercises = day.exercises.filter(
-          (exercise) => exercise.id !== exerciseId,
-        );
-        return exercises.length === day.exercises.length
-          ? day
-          : { ...day, exercises };
+        const items = day[leaf.key] || [];
+        const next = items.filter((exercise) => exercise.id !== exerciseId);
+        return next.length === items.length ? day : { ...day, [leaf.key]: next };
       });
       return { success: changed, error: null };
     },
-    [updateDay],
+    [updateDay, leaf],
   );
 
   const markAsSaved = useCallback(() => {
@@ -595,11 +600,14 @@ export const useRoutineEditor = ({
     if (!newPlan) {
       throw new Error("Invalid plan structure");
     }
-    // Convertir el plan importado usando buildInitialPlan para normalizar campos
-    const normalizedPlan = buildInitialPlan(newPlan);
+    // Normaliza el plan importado. Para rutina usa buildInitialPlan (formato IA
+    // legacy); para nutrición se inyecta normalizeImport (transformer propio).
+    const normalizedPlan = normalizeImport
+      ? normalizeImport(newPlan)
+      : buildInitialPlan(newPlan, leaf);
     setPlan(normalizedPlan);
     setDirty(true);
-  }, []);
+  }, [normalizeImport, leaf]);
 
   const validatePlan = useCallback(() => {
     const errors = [];
@@ -617,7 +625,7 @@ export const useRoutineEditor = ({
         return;
       }
       week.days.forEach((day) => {
-        if (day.type === "ENTRENAMIENTO" && !day.exercises.length) {
+        if (day.type === "ENTRENAMIENTO" && !(day[leaf.key] || []).length) {
           errors.push(PLAN_VALIDATION_MESSAGES.EXERCISES);
         }
       });
@@ -627,7 +635,7 @@ export const useRoutineEditor = ({
       isValid: errors.length === 0,
       errors: Array.from(new Set(errors)),
     };
-  }, [plan]);
+  }, [plan, leaf]);
 
   const planForPdf = useMemo(
     () => ({
@@ -657,7 +665,7 @@ export const useRoutineEditor = ({
           recoveryMessage: day.recoveryNote,
           recoveryNote: day.recoveryNote,  // Alias
           notes: day.recoveryNote,
-          exercises: day.exercises.map((exercise) => ({
+          exercises: (day.exercises || []).map((exercise) => ({
             name: exercise.name,
             // Campos legacy primero (lo que esperan los PDFs)
             series: exercise.sets,
@@ -694,7 +702,7 @@ export const useRoutineEditor = ({
               {
                 titulo: "Entrenamiento",
                 color: "",
-                items: day.exercises.map((exercise) => ({
+                items: (day.exercises || []).map((exercise) => ({
                   ejercicio: exercise.name,
                   variantes: [
                     {
@@ -747,7 +755,7 @@ export const useRoutineEditor = ({
           recoveryNote: day.recoveryNote || "", // ✅ Cambiado de "notes" a "recoveryNote"
           exercises: day.type === "DESCANSO"
             ? []
-            : day.exercises.map((exercise) => ({
+            : (day.exercises || []).map((exercise) => ({
               name: exercise.name,
               sets: Number(exercise.sets) || 0,
               reps: exercise.reps || "",

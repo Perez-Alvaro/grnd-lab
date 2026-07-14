@@ -50,7 +50,7 @@ export function TabsTrigger({ value, children, className = '', ...props }) {
             aria-selected={isActive}
             onClick={() => setValue(value)}
             className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary-bg ${isActive
-                    ? 'bg-accent text-black shadow-sm'
+                    ? 'bg-accent text-primary-bg shadow-sm'
                     : 'text-text-secondary hover:bg-primary-surface hover:text-text-primary'
                 } ${className}`}
             {...props}

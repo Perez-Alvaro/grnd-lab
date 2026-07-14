@@ -140,14 +140,14 @@ export default function LoginModal() {
       >
         <div
           ref={modalRef}
-          className="relative w-full max-w-md rounded-2xl border border-border bg-[#0E0E14] shadow-2xl shadow-black/60"
+          className="relative w-full max-w-md rounded-2xl border border-border bg-primary-surface shadow-2xl shadow-black/60"
           style={{ animation: 'modalEntrance 0.2s ease-out' }}
           onClick={(e) => e.stopPropagation()}
         >
           {!isLoading && (
             <button
               onClick={closeLoginModal}
-              className="absolute top-4 right-4 p-2 rounded-lg text-text-quaternary hover:text-white hover:bg-white/5 transition-colors"
+              className="absolute top-4 right-4 p-2 rounded-lg text-text-quaternary hover:text-text-primary hover:bg-white/5 transition-colors"
               aria-label="Cerrar"
             >
               <X className="h-4 w-4" />
@@ -159,7 +159,7 @@ export default function LoginModal() {
               <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 border border-accent/20 mb-4">
                 <Zap className="h-7 w-7 text-accent" />
               </div>
-              <h2 id="login-modal-title" className="text-2xl font-bold text-white font-display mb-1">
+              <h2 id="login-modal-title" className="text-2xl font-bold text-text-primary font-display mb-1">
                 {copy.title}
               </h2>
               <p className="text-sm text-text-secondary">{copy.subtitle}</p>
@@ -232,7 +232,7 @@ export default function LoginModal() {
                         placeholder="••••••••"
                         autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
                         disabled={isLoading}
-                        className={`w-full rounded-xl border bg-[#0A0A10] pl-10 pr-12 py-3 text-sm text-white placeholder:text-text-quaternary transition-colors focus:outline-none disabled:opacity-50 ${
+                        className={`w-full rounded-xl border bg-primary-bg pl-10 pr-12 py-3 text-sm text-text-primary placeholder:text-text-quaternary transition-colors focus:outline-none disabled:opacity-50 ${
                           fieldErrors.password ? 'border-red-500/50 focus:border-red-500' : 'border-border focus:border-accent'
                         }`}
                       />
@@ -321,7 +321,7 @@ function Field({ id, label, icon: Icon, type, value, onChange, placeholder, auto
           placeholder={placeholder}
           autoComplete={autoComplete}
           disabled={disabled}
-          className={`w-full rounded-xl border bg-[#0A0A10] pl-10 pr-4 py-3 text-sm text-white placeholder:text-text-quaternary transition-colors focus:outline-none disabled:opacity-50 ${
+          className={`w-full rounded-xl border bg-primary-bg pl-10 pr-4 py-3 text-sm text-text-primary placeholder:text-text-quaternary transition-colors focus:outline-none disabled:opacity-50 ${
             error ? 'border-red-500/50 focus:border-red-500' : 'border-border focus:border-accent'
           }`}
         />

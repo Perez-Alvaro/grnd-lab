@@ -20,7 +20,7 @@ export default function FAQ({ items, defaultOpen = 0 }) {
                         className="w-full flex items-center justify-between p-5 text-left transition-colors hover:bg-primary-surface/80"
                         aria-expanded={openIndex === index}
                     >
-                        <span className="text-base font-semibold text-white pr-4">
+                        <span className="text-base font-semibold text-text-primary pr-4">
                             {item.question}
                         </span>
                         <ChevronDown

@@ -8,8 +8,8 @@ import { forwardRef } from 'react';
 const variants = {
     primary: 'bg-accent text-primary-bg hover:bg-accent-light active:bg-accent-dark disabled:bg-neutral-700 disabled:text-neutral-500',
     secondary: 'bg-accent-secondary text-primary-bg hover:bg-accent-secondary/90 active:bg-accent-secondary/80 disabled:bg-neutral-700 disabled:text-neutral-500',
-    outline: 'border-2 border-accent text-white hover:bg-accent/10 active:bg-accent/20 disabled:border-neutral-700 disabled:text-neutral-500',
-    ghost: 'text-white hover:bg-accent/10 active:bg-accent/20 disabled:text-neutral-500',
+    outline: 'border-2 border-accent text-text-primary hover:bg-accent/10 active:bg-accent/20 disabled:border-neutral-700 disabled:text-neutral-500',
+    ghost: 'text-text-primary hover:bg-accent/10 active:bg-accent/20 disabled:text-neutral-500',
     danger: 'bg-error text-white hover:bg-error/90 active:bg-error/80 disabled:bg-neutral-700 disabled:text-neutral-500',
     accent: 'bg-accent text-primary-bg hover:bg-accent-light active:bg-accent-dark shadow-lg shadow-accent/20 disabled:bg-neutral-700 disabled:text-neutral-500',
 };

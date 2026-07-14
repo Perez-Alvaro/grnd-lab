@@ -6,16 +6,15 @@
  * Copy: claro, directo, sin jerga técnica — orientado a resultados
  */
 
-import { useNavigate } from 'react-router-dom';
 import {
     TrendingUp, Clock, Users, DollarSign, CheckCircle2, ArrowRight, Zap,
     FileText, Target, Award, Shield, Sparkles, Brain, ChevronDown,
-    Star, Building2, Laptop, Dumbbell, Menu, X, Lock, Headphones, Mail,
-    MessageCircle, Calendar
+    Star, Dumbbell, Menu, X, MessageCircle, Calendar, Salad
 } from 'lucide-react';
 import { Button } from '../components/ui';
 import DotGrid from '../components/ui/DotGrid';
 import FAQ from '../components/ui/FAQ';
+import DecryptedText from '../components/ui/DecryptedText';
 import UserMenu from '../components/navbar/UserMenu.jsx';
 import { useAuth } from '../store/authStore.jsx';
 import { useState, useEffect } from 'react';
@@ -26,6 +25,7 @@ import { useState, useEffect } from 'react';
 ───────────────────────────────────────────── */
 
 const NAV_LINKS = [
+    { label: 'Servicios', id: 'servicios' },
     { label: 'Beneficios', id: 'benefits' },
     { label: 'Cómo funciona', id: 'how-it-works' },
     { label: 'Planes', id: 'pricing' },
@@ -37,25 +37,33 @@ const PAIN_POINTS = [
         icon: Clock,
         title: 'Horas escribiendo rutinas',
         description: 'Cada cliente nuevo suma más tiempo frente a la pantalla. Y ese tiempo lo perdés de entrenar, de crecer o de descansar.',
-        tag: 'Tiempo perdido'
+        tag: 'Tiempo perdido',
+        image: 'https://images.pexels.com/photos/5717789/pexels-photo-5717789.jpeg?auto=compress&cs=tinysrgb&w=800',
+        imageAlt: 'Entrenador agotado frente a la computadora',
     },
     {
         icon: FileText,
         title: 'Excel, Word y copiar y pegar',
         description: 'Tus clientes merecen algo mejor que una planilla. Y vos merecés mejores herramientas para trabajar.',
-        tag: 'Poco profesional'
+        tag: 'Poco profesional',
+        image: 'https://images.pexels.com/photos/8297058/pexels-photo-8297058.jpeg?auto=compress&cs=tinysrgb&w=800',
+        imageAlt: 'Planillas y datos en pantalla',
     },
     {
         icon: Brain,
         title: 'Energía mental agotada',
         description: 'Programar para 10 clientes distintos consume antes de que empiece el día. Esa energía debería ir al coaching.',
-        tag: 'Desgaste'
+        tag: 'Desgaste',
+        image: 'https://images.pexels.com/photos/8069139/pexels-photo-8069139.jpeg?auto=compress&cs=tinysrgb&w=800',
+        imageAlt: 'Persona con desgaste mental en el escritorio',
     },
     {
         icon: Users,
         title: 'No podés crecer',
         description: 'Cada cliente nuevo es más tiempo de programación. Llegás a un techo y no podés aceptar más.',
-        tag: 'Freno al crecimiento'
+        tag: 'Freno al crecimiento',
+        image: 'https://images.pexels.com/photos/7984780/pexels-photo-7984780.jpeg?auto=compress&cs=tinysrgb&w=800',
+        imageAlt: 'Profesional abrumado sin poder crecer',
     },
 ];
 
@@ -82,62 +90,6 @@ const BENEFITS = [
     },
 ];
 
-const STATS = [
-    {
-        icon: Clock,
-        number: '40 hs',
-        label: 'ahorradas por mes',
-        description: 'Tiempo promedio que los entrenadores dedican a escribir rutinas cada mes.',
-    },
-    {
-        icon: Users,
-        number: '3×',
-        label: 'más clientes',
-        description: 'Más clientes que podés manejar cuando no empezás las rutinas desde cero.',
-    },
-    {
-        icon: Zap,
-        number: '<5 min',
-        label: 'para tu primera rutina',
-        description: 'Tiempo para generar la base de un plan con BaseRutina.',
-    },
-    {
-        icon: CheckCircle2,
-        number: '100%',
-        label: 'rutinas estructuradas',
-        description: 'Cada plan sigue la misma lógica — sin errores de copiar y pegar.',
-    },
-    {
-        icon: TrendingUp,
-        number: '90%',
-        label: 'más rápido',
-        description: 'Comparado con programación manual desde cero.',
-    },
-];
-
-const HOW_IT_WORKS = [
-    {
-        step: '01',
-        icon: Target,
-        title: 'Configurás el objetivo',
-        description: 'Completás un formulario simple: objetivo del cliente, nivel, días por semana. Sin tecnicismos, sin prompts complicados.',
-        detail: 'Objetivo · Nivel · Frecuencia',
-    },
-    {
-        step: '02',
-        icon: Sparkles,
-        title: 'Generás la rutina',
-        description: 'BaseRutina crea el prompt listo para usar. Lo pegás en ChatGPT, Claude o Gemini y obtenés el plan completo en segundos.',
-        detail: 'ChatGPT · Claude · Gemini (cuentas gratuitas)',
-    },
-    {
-        step: '03',
-        icon: FileText,
-        title: 'Ajustás y exportás',
-        description: 'Editás lo que quieras con tu criterio profesional y mandás el PDF con tu marca. Listo para el cliente.',
-        detail: 'Editor en vivo · PDF con tu marca',
-    },
-];
 
 // 4 pasos del editor con imágenes — reemplaza StatsDeckSection
 const EDITOR_STEPS = [
@@ -188,32 +140,6 @@ const EDITOR_STEPS = [
     },
 ];
 
-const USE_CASES = [
-    {
-        icon: Laptop,
-        archetype: 'Entrenador independiente',
-        description: 'Manejás muchos clientes y poco tiempo. Hacés los planes más rápido y le dedicás más tiempo a lo que importa.',
-        metric: 'Más tiempo para entrenar',
-    },
-    {
-        icon: Users,
-        archetype: 'Coach online',
-        description: 'Querés escalar sin trabajar el doble. Sumás clientes sin sumar horas de programación.',
-        metric: '3× más clientes',
-    },
-    {
-        icon: Building2,
-        archetype: 'Entrenador de gimnasio',
-        description: 'Necesitás estandarizar la programación. Todos los clientes reciben planes con la misma calidad.',
-        metric: 'Calidad consistente',
-    },
-    {
-        icon: Dumbbell,
-        archetype: 'Preparador físico',
-        description: 'Combinás la velocidad de la IA con tu experiencia. El resultado es tuyo, generado en minutos.',
-        metric: 'Tu criterio, más rápido',
-    },
-];
 
 const PRICING_TIERS = [
     {
@@ -302,36 +228,6 @@ const FAQ_ITEMS = [
     },
 ];
 
-const TRUST_SIGNALS = [
-    {
-        icon: Shield,
-        title: 'Tus datos son tuyos',
-        description: 'Las rutinas no se guardan en ningún servidor. Todo queda en tu navegador.',
-    },
-    {
-        icon: Lock,
-        title: 'Sin complicaciones técnicas',
-        description: 'No necesitás API keys ni configurar nada. Funciona desde el primer día.',
-    },
-    {
-        icon: Headphones,
-        title: 'Soporte real',
-        description: 'Hablás con personas que entienden el negocio del coaching.',
-    },
-];
-
-const TICKER_ITEMS = [
-    { icon: Sparkles, label: 'ChatGPT' },
-    { icon: Brain,    label: 'Claude' },
-    { icon: Zap,      label: 'Gemini' },
-    { icon: FileText, label: 'Exportación PDF' },
-    { icon: CheckCircle2, label: 'Rutinas ilimitadas' },
-    { icon: Shield,   label: '100% privado' },
-    { icon: Lock,     label: 'Sin API keys' },
-    { icon: Headphones, label: 'Soporte incluido' },
-    { icon: TrendingUp, label: 'Escalá tu coaching' },
-    { icon: Award,    label: 'Planes profesionales' },
-];
 
 /* ─────────────────────────────────────────────
    SHARED UI COMPONENTS
@@ -351,7 +247,7 @@ function SectionHeader({ tag, icon, headline, subline }) {
         <div className="mx-auto max-w-2xl text-center mb-16 scroll-reveal">
             {tag && <SectionTag icon={icon} label={tag} />}
             <h2
-                className="font-bold tracking-tight text-white font-display"
+                className="font-bold tracking-tight text-text-primary font-display"
                 style={{ fontSize: 'var(--text-h2)', lineHeight: '1.1' }}
             >
                 {headline}
@@ -371,6 +267,87 @@ function GlowCard({ children, className = '' }) {
                 {children}
             </div>
         </div>
+    );
+}
+
+/* ─────────────────────────────────────────────
+   SERVICIOS — Rutinas + Nutrición (dual offering)
+───────────────────────────────────────────── */
+
+const SERVICES = [
+    {
+        icon: Dumbbell,
+        badge: 'Disponible',
+        badgeClass: 'bg-accent/15 text-accent border-accent/25',
+        image: 'https://images.pexels.com/photos/4162449/pexels-photo-4162449.jpeg?auto=compress&cs=tinysrgb&w=1200',
+        imageAlt: 'Gimnasio con bolsa de boxeo iluminada',
+        title: 'Rutinas de entrenamiento',
+        desc: 'Generá la base de cualquier plan en minutos: fuerza, hipertrofia o pérdida de grasa. Vos ajustás cada detalle y lo exportás con tu marca.',
+        points: ['Editor en vivo', 'Export a PDF profesional', 'Organizado por atleta'],
+    },
+    {
+        icon: Salad,
+        badge: 'Próximamente',
+        badgeClass: 'bg-text-tertiary/15 text-text-tertiary border-text-tertiary/25',
+        image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1200',
+        imageAlt: 'Ensalada de quinoa con vegetales frescos',
+        title: 'Planes nutricionales argentinos',
+        desc: 'Recetas pensadas para Argentina, con alimentos que conseguís en el supermercado de tu zona. Nada de traducciones genéricas ni ingredientes imposibles.',
+        points: ['Alimentos locales y de estación', 'Recetas simples y económicas', 'Adaptado a tu región'],
+    },
+];
+
+function ServicesSection() {
+    return (
+        <section
+            id="servicios"
+            className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 border-b border-border"
+            style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}
+        >
+            <SectionHeader
+                tag="Una plataforma, dos servicios"
+                icon={Sparkles}
+                headline="Entrenamiento y nutrición, en un solo lugar"
+                subline="Arrancá hoy con las rutinas. Muy pronto vas a poder armar también los planes de alimentación de tus clientes."
+            />
+
+            <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
+                {SERVICES.map((s) => (
+                    <GlowCard key={s.title} className="overflow-hidden">
+                        <div className="flex h-full flex-col">
+                            {/* Foto real (Pexels) en vez de un ícono genérico */}
+                            <div className="relative aspect-[16/9] w-full overflow-hidden">
+                                <img
+                                    src={s.image}
+                                    alt={s.imageAlt}
+                                    loading="lazy"
+                                    className="h-full w-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-primary-surface via-primary-surface/25 to-transparent" />
+                                <span className={`absolute right-3 top-3 rounded-full border px-3 py-1 text-xs font-semibold backdrop-blur-sm ${s.badgeClass}`}>
+                                    {s.badge}
+                                </span>
+                                <div className="absolute bottom-3 left-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary-bg/70 text-accent backdrop-blur-sm">
+                                    <s.icon className="h-5 w-5" />
+                                </div>
+                            </div>
+                            <div className="flex flex-1 flex-col p-6 sm:p-8">
+                                <h3 className="mb-3 text-xl font-bold text-text-primary font-display">{s.title}</h3>
+                                <p className="mb-6 leading-relaxed text-text-secondary">{s.desc}</p>
+                                <ul className="mt-auto space-y-2.5">
+                                    {s.points.map((p) => (
+                                        <li key={p} className="flex items-center gap-2.5 text-sm text-text-secondary">
+                                            <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-accent" />
+                                            {p}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    </GlowCard>
+                ))}
+            </div>
+        </section>
     );
 }
 
@@ -400,7 +377,7 @@ function Navbar({ onScrollTo }) {
                         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-primary-bg shadow-md shadow-accent/30">
                             <Zap className="h-4 w-4" />
                         </div>
-                        <span className="text-white font-bold text-lg tracking-tight font-display">BaseRutina</span>
+                        <span className="text-text-primary font-bold text-lg tracking-tight font-display">BaseRutina</span>
                     </div>
 
                     <div className="hidden md:flex items-center gap-8">
@@ -408,7 +385,7 @@ function Navbar({ onScrollTo }) {
                             <button
                                 key={link.id}
                                 onClick={() => onScrollTo(link.id)}
-                                className="text-sm text-text-secondary hover:text-white transition-colors font-medium"
+                                className="text-sm text-text-secondary hover:text-text-primary transition-colors font-medium"
                             >
                                 {link.label}
                             </button>
@@ -422,7 +399,7 @@ function Navbar({ onScrollTo }) {
                             <>
                                 <button
                                     onClick={() => openLoginModal('login')}
-                                    className="text-sm text-text-secondary hover:text-white transition-colors font-medium px-3 py-1.5"
+                                    className="text-sm text-text-secondary hover:text-text-primary transition-colors font-medium px-3 py-1.5"
                                 >
                                     Iniciar sesión
                                 </button>
@@ -438,7 +415,7 @@ function Navbar({ onScrollTo }) {
                     </div>
 
                     <button
-                        className="md:hidden p-2 text-text-secondary hover:text-white transition-colors"
+                        className="md:hidden p-2 text-text-secondary hover:text-text-primary transition-colors"
                         onClick={() => setMobileOpen(!mobileOpen)}
                         aria-label="Abrir menú"
                     >
@@ -454,7 +431,7 @@ function Navbar({ onScrollTo }) {
                             <button
                                 key={link.id}
                                 onClick={() => { onScrollTo(link.id); setMobileOpen(false); }}
-                                className="block w-full text-left text-sm text-text-secondary hover:text-white transition-colors py-2"
+                                className="block w-full text-left text-sm text-text-secondary hover:text-text-primary transition-colors py-2"
                             >
                                 {link.label}
                             </button>
@@ -462,14 +439,14 @@ function Navbar({ onScrollTo }) {
                         <div className="pt-2 space-y-3">
                             {user ? (
                                 <div className="text-sm text-text-secondary font-medium py-1">
-                                    Sesión activa como <span className="text-white">{user.name}</span>
+                                    Sesión activa como <span className="text-text-primary">{user.name}</span>
                                 </div>
                             ) : (
                                 <>
                                     <Button size="sm" onClick={() => { openLoginModal('signup'); setMobileOpen(false); }} className="w-full text-sm shadow-md shadow-accent/20">
                                         Crear cuenta
                                     </Button>
-                                    <button onClick={() => { openLoginModal('login'); setMobileOpen(false); }} className="block w-full text-center text-sm text-text-secondary hover:text-white transition-colors py-2">
+                                    <button onClick={() => { openLoginModal('login'); setMobileOpen(false); }} className="block w-full text-center text-sm text-text-secondary hover:text-text-primary transition-colors py-2">
                                         Iniciar sesión
                                     </button>
                                 </>
@@ -524,7 +501,7 @@ function HeroSection({ onScrollTo }) {
                         </div>
 
                         <h1
-                            className="text-white font-display scroll-reveal reveal-delay-1"
+                            className="text-text-primary font-display scroll-reveal reveal-delay-1"
                             style={{
                                 fontSize: 'var(--text-display)',
                                 lineHeight: 'var(--leading-display)',
@@ -532,18 +509,25 @@ function HeroSection({ onScrollTo }) {
                                 letterSpacing: '-0.03em',
                             }}
                         >
-                            Creá rutinas profesionales{' '}
-                            <span className="bg-gradient-to-r from-accent via-accent-light to-accent-secondary bg-clip-text text-transparent">
-                                en segundos.
-                            </span>
+                            <DecryptedText
+                                text="Creá rutinas profesionales "
+                                animateOn="view"
+                                sequential
+                                speed={38}
+                                revealDirection="start"
+                            />
+                            <DecryptedText
+                                text="en segundos."
+                                animateOn="view"
+                                sequential
+                                speed={38}
+                                revealDirection="start"
+                                parentClassName="bg-gradient-to-r from-accent via-accent-light to-accent-secondary bg-clip-text text-transparent"
+                            />
                         </h1>
 
                         <p className="mt-6 text-xl sm:text-2xl text-text-secondary max-w-2xl lg:max-w-none mx-auto lg:mx-0 leading-relaxed scroll-reveal reveal-delay-2">
-                            BaseRutina te ayuda a generar la base de cualquier plan de entrenamiento para tus clientes en menos de 5 minutos.
-                        </p>
-
-                        <p className="mt-4 text-lg text-text-secondary max-w-xl mx-auto lg:mx-0 scroll-reveal reveal-delay-2">
-                            Menos tiempo escribiendo rutinas. Más tiempo entrenando clientes.
+                            Vos ponés el criterio, la IA arma la base. Tenés la rutina de tu cliente lista en minutos —y muy pronto, también sus planes de nutrición.
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-4 pt-10 scroll-reveal reveal-delay-3">
@@ -557,7 +541,7 @@ function HeroSection({ onScrollTo }) {
                             </button>
                             <button
                                 onClick={() => onScrollTo('how-it-works')}
-                                className="group inline-flex items-center justify-center h-14 px-8 rounded-xl border border-text-tertiary/30 text-text-secondary hover:border-accent/50 hover:text-white font-semibold text-base transition-all w-full sm:w-auto"
+                                className="group inline-flex items-center justify-center h-14 px-8 rounded-xl border border-text-tertiary/30 text-text-secondary hover:border-accent/50 hover:text-text-primary font-semibold text-base transition-all w-full sm:w-auto"
                             >
                                 Ver cómo funciona
                             </button>
@@ -598,53 +582,7 @@ function HeroSection({ onScrollTo }) {
         </div>
     );
 }
-function LogoTicker() {
-    const items = [...TICKER_ITEMS, ...TICKER_ITEMS];
-    return (
-        <div className="ticker-mask py-1" aria-hidden="true">
-            <div className="ticker-track">
-                {items.map((item, i) => (
-                    <div
-                        key={i}
-                        className="inline-flex items-center gap-2.5 px-8 py-2 text-text-quaternary text-sm font-medium select-none whitespace-nowrap"
-                    >
-                        <item.icon className="h-4 w-4 flex-shrink-0 opacity-50" />
-                        <span>{item.label}</span>
-                        <span className="ml-7 opacity-20 text-base">·</span>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-}
 
-function SocialProofStrip() {
-    return (
-        <section className="section-elevated-bg border-b border-border" style={{ padding: 'clamp(56px, 8vw, 96px) 0' }}>
-            <div className="mx-auto max-w-6xl px-6 lg:px-8">
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 lg:gap-4 text-center">
-                    {STATS.map((stat, i) => (
-                        <div key={i} className={`scroll-reveal reveal-delay-${i + 1}`}>
-                            <div
-                                className="font-black text-accent leading-none mb-1.5 font-display"
-                                style={{ fontSize: 'clamp(32px, 4vw, 52px)' }}
-                            >
-                                {stat.number}
-                            </div>
-                            <div className="text-sm font-medium text-text-secondary leading-snug">
-                                {stat.label}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-                <div className="mt-12 border-t border-border" />
-            </div>
-            <div className="mt-8">
-                <LogoTicker />
-            </div>
-        </section>
-    );
-}
 
 /* ─────────────────────────────────────────────
    PAIN POINTS
@@ -661,17 +599,27 @@ function PainPointsSection() {
                 {PAIN_POINTS.map((pain, i) => (
                     <div key={i} className={`relative group scroll-reveal reveal-delay-${i + 1}`}>
                         <div className="absolute -inset-0.5 bg-gradient-to-br from-red-500/20 to-red-500/0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur" />
-                        <div className="relative rounded-2xl border border-border bg-primary-surface p-7 h-full flex flex-col">
-                            <div className="mb-5">
-                                <span className="inline-block text-xs font-bold text-red-400 bg-red-500/10 border border-red-500/20 px-3 py-1 rounded-full font-mono tracking-wide uppercase">
+                        <div className="relative overflow-hidden rounded-2xl border border-border bg-primary-surface h-full flex flex-col">
+                            {/* Foto real (Pexels) con mood "problema" */}
+                            <div className="relative aspect-[16/10] w-full overflow-hidden">
+                                <img
+                                    src={pain.image}
+                                    alt={pain.imageAlt}
+                                    loading="lazy"
+                                    className="h-full w-full object-cover grayscale-[35%]"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-primary-surface via-primary-surface/40 to-transparent" />
+                                <span className="absolute left-3 top-3 inline-block text-xs font-bold text-red-200 bg-red-950/60 border border-red-500/30 px-3 py-1 rounded-full font-mono tracking-wide uppercase backdrop-blur-sm">
                                     {pain.tag}
                                 </span>
                             </div>
-                            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-500/10 text-red-400 mb-4">
-                                <pain.icon className="h-5 w-5" />
+                            <div className="flex flex-1 flex-col p-6">
+                                <div className="relative z-10 -mt-9 mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/10 text-red-400 ring-4 ring-primary-surface">
+                                    <pain.icon className="h-5 w-5" />
+                                </div>
+                                <h3 className="text-lg font-bold text-text-primary mb-3 font-display leading-tight">{pain.title}</h3>
+                                <p className="text-sm text-text-secondary leading-relaxed flex-1">{pain.description}</p>
                             </div>
-                            <h3 className="text-lg font-bold text-white mb-3 font-display leading-tight">{pain.title}</h3>
-                            <p className="text-sm text-text-secondary leading-relaxed flex-1">{pain.description}</p>
                         </div>
                     </div>
                 ))}
@@ -691,7 +639,7 @@ function BenefitsSection() {
                 <div className="mx-auto max-w-2xl text-center mb-16 scroll-reveal">
                     <SectionTag icon={TrendingUp} label="Lo que ganás" />
                     <h2
-                        className="font-bold tracking-tight text-white font-display"
+                        className="font-bold tracking-tight text-text-primary font-display"
                         style={{ fontSize: 'var(--text-h2)', lineHeight: '1.1' }}
                     >
                         Menos tiempo escribiendo.{' '}
@@ -722,7 +670,7 @@ function BenefitsSection() {
                                             <benefit.icon className="h-6 w-6" />
                                         </div>
                                         <div>
-                                            <h3 className="text-lg font-bold text-white mb-2 font-display leading-snug">{benefit.title}</h3>
+                                            <h3 className="text-lg font-bold text-text-primary mb-2 font-display leading-snug">{benefit.title}</h3>
                                             <p className="text-sm text-text-secondary leading-relaxed">{benefit.description}</p>
                                         </div>
                                     </div>
@@ -840,7 +788,7 @@ function EditorStepCard({ step, index }) {
 
                     {/* Título */}
                     <h3
-                        className="font-bold text-white font-display leading-tight"
+                        className="font-bold text-text-primary font-display leading-tight"
                         style={{ fontSize: 'clamp(22px, 3vw, 32px)' }}
                     >
                         {step.title}
@@ -885,7 +833,7 @@ function EditorStepsSection() {
             <div className="mx-auto max-w-2xl text-center mb-16 scroll-reveal">
                 <SectionTag icon={Sparkles} label="4 pasos simples" />
                 <h2
-                    className="font-bold tracking-tight text-white font-display"
+                    className="font-bold tracking-tight text-text-primary font-display"
                     style={{ fontSize: 'var(--text-h2)', lineHeight: '1.1' }}
                 >
                     De cero al plan{' '}
@@ -928,112 +876,6 @@ function EditorStepsSection() {
     );
 }
 
-/* ─────────────────────────────────────────────
-   HOW IT WORKS
-───────────────────────────────────────────── */
-
-function HowItWorksSection({ onScrollTo }) {
-    return (
-        <section className="section-elevated-bg border-b border-border" style={{ padding: 'var(--space-section) 0' }}>
-            <div className="mx-auto max-w-7xl px-6 lg:px-8">
-                <SectionHeader
-                    tag="3 pasos simples"
-                    icon={Brain}
-                    headline="¿Cómo funciona?"
-                    subline="Sin tecnicismos. Sin configuración. Empezás en minutos."
-                />
-
-                <div className="mx-auto max-w-3xl">
-                    <div className="relative space-y-4">
-                        {HOW_IT_WORKS.map((step, i) => (
-                            <div key={i} className={`relative flex gap-6 scroll-reveal reveal-delay-${i + 1}`}>
-                                {i < HOW_IT_WORKS.length - 1 && (
-                                    <div className="step-connector" />
-                                )}
-
-                                <div className="flex-shrink-0 relative z-10">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-primary-bg font-black text-sm font-mono shadow-lg shadow-accent/40">
-                                        {step.step}
-                                    </div>
-                                </div>
-
-                                <div className="flex-1 pb-4">
-                                    <GlowCard className="p-6 sm:p-8">
-                                        <div className="flex items-start gap-4">
-                                            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent">
-                                                <step.icon className="h-5 w-5" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <h3
-                                                    className="font-bold text-white mb-2 font-display leading-snug"
-                                                    style={{ fontSize: 'var(--text-h3)' }}
-                                                >
-                                                    {step.title}
-                                                </h3>
-                                                <p className="text-sm text-text-secondary leading-relaxed mb-4">{step.description}</p>
-                                                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary-bg border border-border text-xs text-text-tertiary font-mono">
-                                                    {step.detail}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </GlowCard>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="mt-12 text-center scroll-reveal">
-                        <Button
-                            size="lg"
-                            onClick={() => onScrollTo('contact')}
-                            className="group text-base px-8 h-12 shadow-lg shadow-accent/20"
-                        >
-                            <Sparkles className="mr-2 h-5 w-5" />
-                            Crear mi primera rutina
-                            <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                        </Button>
-                        <p className="mt-3 text-xs text-text-muted">Sin registro requerido. Tu primera rutina en menos de 5 minutos.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    );
-}
-
-/* ─────────────────────────────────────────────
-   USE CASES
-───────────────────────────────────────────── */
-
-function UseCasesSection() {
-    return (
-        <section className="mx-auto max-w-7xl px-6 lg:px-8 border-b border-border" style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}>
-            <SectionHeader
-                tag="Para todo tipo de coach"
-                icon={Users}
-                headline="Funciona para tu forma de trabajar"
-                subline="Tengas 5 clientes o 50, BaseRutina se adapta a tu ritmo."
-            />
-
-            <div className="mx-auto max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {USE_CASES.map((uc, i) => (
-                    <div key={i} className={`scroll-reveal reveal-delay-${i + 1}`}>
-                        <GlowCard className="p-7 text-center flex flex-col items-center">
-                            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 text-accent mb-5">
-                                <uc.icon className="h-7 w-7" />
-                            </div>
-                            <h3 className="text-base font-bold text-white font-display mb-3 leading-snug">{uc.archetype}</h3>
-                            <p className="text-sm text-text-secondary leading-relaxed flex-1">{uc.description}</p>
-                            <div className="mt-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-semibold">
-                                <Zap className="h-3 w-3 flex-shrink-0" />
-                                {uc.metric}
-                            </div>
-                        </GlowCard>
-                    </div>
-                ))}
-            </div>
-        </section>
-    );
-}
 
 /* ─────────────────────────────────────────────
    PRICING
@@ -1046,7 +888,7 @@ function PricingSection({ onScrollTo }) {
                 <div className="mx-auto max-w-2xl text-center mb-6 scroll-reveal">
                     <SectionTag icon={DollarSign} label="Planes" />
                     <h2
-                        className="font-bold tracking-tight text-white font-display"
+                        className="font-bold tracking-tight text-text-primary font-display"
                         style={{ fontSize: 'var(--text-h2)', lineHeight: '1.1' }}
                     >
                         Empezar es{' '}
@@ -1061,7 +903,7 @@ function PricingSection({ onScrollTo }) {
 
                 <div className="mx-auto max-w-3xl mb-8 text-center scroll-reveal">
                     <p className="text-sm text-text-tertiary">
-                        💡 <span className="text-text-secondary">Pago único, sin suscripción. <strong className="text-white">Mensual: $10</strong> · <strong className="text-accent">Trimestral: $27</strong> · <strong className="text-green-400">Anual: $48</strong></span>
+                        💡 <span className="text-text-secondary">Pago único, sin suscripción. <strong className="text-text-primary">Mensual: $10</strong> · <strong className="text-accent">Trimestral: $27</strong> · <strong className="text-green-400">Anual: $48</strong></span>
                     </p>
                 </div>
 
@@ -1069,7 +911,7 @@ function PricingSection({ onScrollTo }) {
                     <div className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-accent/5 border border-accent/20">
                         <Shield className="h-5 w-5 text-accent flex-shrink-0" />
                         <div className="text-left">
-                            <div className="text-sm font-semibold text-white">Probalo 24 hs luego de la compra</div>
+                            <div className="text-sm font-semibold text-text-primary">Probalo 24 hs luego de la compra</div>
                             <div className="text-xs text-text-secondary mt-0.5">
                                 Probalo con rutinas reales. Si no funciona para vos, cancelás sin preguntas.
                             </div>
@@ -1101,7 +943,7 @@ function PricingSection({ onScrollTo }) {
                                     ? 'border-accent/50 bg-primary-surface pricing-card-glow'
                                     : 'border-border bg-primary-surface'
                             }`}>
-                                <h3 className="text-xl font-bold text-white font-display mb-3">{tier.name}</h3>
+                                <h3 className="text-xl font-bold text-text-primary font-display mb-3">{tier.name}</h3>
 
                                 <div className="mb-2">
                                     {tier.id === 'trimestral' && (
@@ -1120,7 +962,7 @@ function PricingSection({ onScrollTo }) {
 
                                     <div className="flex items-baseline gap-1">
                                         <span
-                                            className={`font-black ${tier.highlight ? 'text-accent' : 'text-white'}`}
+                                            className={`font-black ${tier.highlight ? 'text-accent' : 'text-text-primary'}`}
                                             style={{ fontSize: 'clamp(40px, 5vw, 52px)', lineHeight: 1 }}
                                         >
                                             ${tier.perMonthUSD}
@@ -1202,27 +1044,6 @@ function PricingSection({ onScrollTo }) {
     );
 }
 
-/* ─────────────────────────────────────────────
-   TRUST SIGNALS
-───────────────────────────────────────────── */
-
-function TrustSignalsSection() {
-    return (
-        <section className="mx-auto max-w-7xl px-6 lg:px-8 border-b border-border" style={{ padding: 'clamp(48px, 6vw, 80px) 1.5rem' }}>
-            <div className="mx-auto max-w-4xl grid grid-cols-1 sm:grid-cols-3 gap-10">
-                {TRUST_SIGNALS.map((signal, i) => (
-                    <div key={i} className={`flex flex-col items-center text-center gap-4 scroll-reveal reveal-delay-${i + 1}`}>
-                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 border border-accent/20 text-accent">
-                            <signal.icon className="h-6 w-6" />
-                        </div>
-                        <h4 className="text-base font-bold text-white">{signal.title}</h4>
-                        <p className="text-sm text-text-secondary leading-relaxed">{signal.description}</p>
-                    </div>
-                ))}
-            </div>
-        </section>
-    );
-}
 
 /* ─────────────────────────────────────────────
    FAQ
@@ -1256,7 +1077,7 @@ function ContactSection() {
             <div className="mx-auto max-w-2xl text-center scroll-reveal">
                 <SectionTag icon={MessageCircle} label="Contacto" />
                 <h2
-                    className="font-bold tracking-tight text-white font-display mb-6"
+                    className="font-bold tracking-tight text-text-primary font-display mb-6"
                     style={{ fontSize: 'var(--text-h2)', lineHeight: '1.1' }}
                 >
                     ¿Querés ahorrar horas de trabajo entregando rutinas? Escribime.
@@ -1316,7 +1137,7 @@ function FinalCTASection({ onScrollTo }) {
                     </span>
                 </h2>
 
-                <p className="mx-auto mt-6 max-w-xl text-lg text-text-secondary leading-relaxed scroll-reveal reveal-delay-1">
+                <p className="mx-auto mt-6 max-w-xl text-lg text-white/70 leading-relaxed scroll-reveal reveal-delay-1">
                     Dejá de empezar las rutinas desde cero. Con BaseRutina podés generar la base de cualquier plan en minutos.
                 </p>
 
@@ -1331,7 +1152,7 @@ function FinalCTASection({ onScrollTo }) {
                     </button>
                     <button
                         onClick={() => onScrollTo('pricing')}
-                        className="group inline-flex items-center justify-center h-14 px-8 rounded-xl border border-text-tertiary/30 text-text-secondary hover:border-accent/50 hover:text-white font-semibold text-base transition-all w-full sm:w-auto"
+                        className="group inline-flex items-center justify-center h-14 px-8 rounded-xl border border-white/25 text-white/80 hover:border-accent/50 hover:text-white font-semibold text-base transition-all w-full sm:w-auto"
                     >
                         Ver planes
                     </button>
@@ -1343,7 +1164,7 @@ function FinalCTASection({ onScrollTo }) {
                         { icon: Clock,        text: 'Primera rutina en menos de 5 minutos' },
                         { icon: CheckCircle2, text: 'Cancelás cuando querás' },
                     ].map((item, i) => (
-                        <div key={i} className="flex items-center gap-2 text-sm text-text-tertiary">
+                        <div key={i} className="flex items-center gap-2 text-sm text-white/60">
                             <item.icon className="h-4 w-4 text-accent flex-shrink-0" />
                             {item.text}
                         </div>
@@ -1368,7 +1189,7 @@ function Footer({ onScrollTo }) {
                             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-primary-bg">
                                 <Zap className="h-4 w-4" />
                             </div>
-                            <span className="text-white font-bold text-lg font-display">BaseRutina</span>
+                            <span className="text-text-primary font-bold text-lg font-display">BaseRutina</span>
                         </div>
                         <p className="text-sm text-text-secondary leading-relaxed max-w-xs">
                             Generá la base de tus rutinas con IA. Ajustá con tu criterio. Entregá PDFs que tus clientes van a confiar.
@@ -1377,7 +1198,7 @@ function Footer({ onScrollTo }) {
                     </div>
 
                     <div>
-                        <h4 className="text-sm font-semibold text-white mb-4">Producto</h4>
+                        <h4 className="text-sm font-semibold text-text-primary mb-4">Producto</h4>
                         <ul className="space-y-3">
                             {[
                                 { label: 'Beneficios', action: () => onScrollTo('benefits') },
@@ -1386,7 +1207,7 @@ function Footer({ onScrollTo }) {
                                 { label: 'Preguntas frecuentes', action: () => onScrollTo('faq') },
                             ].map(link => (
                                 <li key={link.label}>
-                                    <button onClick={link.action} className="text-sm text-text-secondary hover:text-white transition-colors">
+                                    <button onClick={link.action} className="text-sm text-text-secondary hover:text-text-primary transition-colors">
                                         {link.label}
                                     </button>
                                 </li>
@@ -1395,7 +1216,7 @@ function Footer({ onScrollTo }) {
                     </div>
 
                     <div>
-                        <h4 className="text-sm font-semibold text-white mb-4">Contacto</h4>
+                        <h4 className="text-sm font-semibold text-text-primary mb-4">Contacto</h4>
                         <ul className="space-y-3">
                             {[
                                 { label: 'Escribir por WhatsApp', action: () => onScrollTo('contact') },
@@ -1403,7 +1224,7 @@ function Footer({ onScrollTo }) {
                                 { label: 'Privacidad', action: () => {} },
                             ].map(link => (
                                 <li key={link.label}>
-                                    <button onClick={link.action} className="text-sm text-text-secondary hover:text-white transition-colors">
+                                    <button onClick={link.action} className="text-sm text-text-secondary hover:text-text-primary transition-colors">
                                         {link.label}
                                     </button>
                                 </li>
@@ -1462,13 +1283,11 @@ export default function HomeSaaS() {
         <div className="min-h-screen bg-primary-bg">
             <Navbar onScrollTo={scrollToSection} />
             <HeroSection onScrollTo={scrollToSection} />
-            <SocialProofStrip />
             <PainPointsSection />
             <BenefitsSection />
+            <ServicesSection />
             <EditorStepsSection onScrollTo={scrollToSection} />
-            <UseCasesSection />
             <PricingSection onScrollTo={scrollToSection} />
-            <TrustSignalsSection />
             <FAQSection />
             <ContactSection />
             <FinalCTASection onScrollTo={scrollToSection} />

@@ -3,10 +3,23 @@ import { Copy, Trash2, Plus, ChevronDown } from "lucide-react";
 import { usePlanContext } from "../../../context/PlanContext.jsx";
 import ExerciseEditor from "./ExerciseEditor.jsx";
 
+// Config de hoja por defecto (rutina) si el contexto no la provee.
+const DEFAULT_LEAF_UI = {
+  key: "exercises",
+  ItemEditor: ExerciseEditor,
+  labelPlural: "ejercicios",
+  addLabel: "Agregar ejercicio",
+  showDayType: true,
+  showWarmup: true,
+};
+
 const DayEditor = memo(
   ({ weekId, day, index, onActionError, registerDayRef }) => {
-    const { updateDayField, setDayType, duplicateDay, removeDay, addExercise } =
-      usePlanContext();
+    const ctx = usePlanContext();
+    const { updateDayField, setDayType, duplicateDay, removeDay, addExercise } = ctx;
+    const ui = ctx.leafUI || DEFAULT_LEAF_UI;
+    const ItemEditor = ui.ItemEditor;
+    const items = day[ui.key] || [];
 
     const handleFieldChange = useCallback(
       (field) => (event) => {
@@ -33,27 +46,27 @@ const DayEditor = memo(
       }
     }, [day.id, onActionError, removeDay, weekId]);
 
-    const handleAddExercise = useCallback(() => {
+    const handleAddItem = useCallback(() => {
       addExercise(weekId, day.id);
     }, [addExercise, day.id, weekId]);
 
-    const isRestDay = day.type === "DESCANSO";
-    const exercisesEndRef = useRef(null);
-    const previousExerciseCountRef = useRef(day.exercises.length);
+    const isRestDay = ui.showDayType && day.type === "DESCANSO";
+    const itemsEndRef = useRef(null);
+    const previousItemCountRef = useRef(items.length);
     const [isOpen, setIsOpen] = useState(true);
 
     useEffect(() => {
-      const previousCount = previousExerciseCountRef.current;
-      if (day.exercises.length > previousCount) {
+      const previousCount = previousItemCountRef.current;
+      if (items.length > previousCount) {
         requestAnimationFrame(() => {
-          exercisesEndRef.current?.scrollIntoView({
+          itemsEndRef.current?.scrollIntoView({
             behavior: "smooth",
             block: "center",
           });
         });
       }
-      previousExerciseCountRef.current = day.exercises.length;
-    }, [day.exercises.length]);
+      previousItemCountRef.current = items.length;
+    }, [items.length]);
 
     const labelClasses = "text-sm font-medium text-gray-400";
     const inputClasses =
@@ -84,12 +97,14 @@ const DayEditor = memo(
                     <span>
                       {isRestDay
                         ? "Día de descanso"
-                        : "Sesión de entrenamiento"}
+                        : ui.showDayType
+                          ? "Sesión de entrenamiento"
+                          : "Comidas del día"}
                     </span>
-                    {!isRestDay && day.exercises.length > 0 && (
+                    {!isRestDay && items.length > 0 && (
                       <>
                         <span className="h-1 w-1 rounded-full bg-[#2E2E2E]" />
-                        <span>{day.exercises.length} ejercicios</span>
+                        <span>{items.length} {ui.labelPlural}</span>
                       </>
                     )}
                   </div>
@@ -137,17 +152,19 @@ const DayEditor = memo(
                       className={inputClasses}
                     />
                   </div>
-                  <div className="flex flex-col gap-2">
-                    <label className={labelClasses}>Tipo de día</label>
-                    <select
-                      value={day.type}
-                      onChange={handleTypeChange}
-                      className={inputClasses}
-                    >
-                      <option value="ENTRENAMIENTO">Entrenamiento</option>
-                      <option value="DESCANSO">Descanso</option>
-                    </select>
-                  </div>
+                  {ui.showDayType && (
+                    <div className="flex flex-col gap-2">
+                      <label className={labelClasses}>Tipo de día</label>
+                      <select
+                        value={day.type}
+                        onChange={handleTypeChange}
+                        className={inputClasses}
+                      >
+                        <option value="ENTRENAMIENTO">Entrenamiento</option>
+                        <option value="DESCANSO">Descanso</option>
+                      </select>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -156,7 +173,7 @@ const DayEditor = memo(
                     rows={3}
                     value={day.recoveryNote}
                     onChange={handleFieldChange("recoveryNote")}
-                    placeholder="Recomendaciones, movilidad, recordatorios de respiración..."
+                    placeholder="Recomendaciones, movilidad, recordatorios..."
                     className={`${inputClasses} min-h-[100px] resize-none`}
                   />
                 </div>
@@ -168,8 +185,8 @@ const DayEditor = memo(
                   </p>
                 ) : (
                   <div className="flex flex-col gap-5">
-                    {/* Entrada en calor section */}
-                    {day.warmupExercises && day.warmupExercises.length > 0 && (
+                    {/* Entrada en calor (solo rutina) */}
+                    {ui.showWarmup && day.warmupExercises && day.warmupExercises.length > 0 && (
                       <div className="flex flex-col gap-3">
                         <div className="flex items-center justify-between">
                           <h5 className="text-sm font-semibold uppercase tracking-wide text-gray-400">
@@ -200,29 +217,29 @@ const DayEditor = memo(
                     )}
 
                     <div className="flex items-center justify-between">
-                      <h5 className="text-sm font-semibold uppercase tracking-wide text-gray-400">
-                        Ejercicios ({day.exercises.length})
+                      <h5 className="text-sm font-semibold uppercase tracking-wide text-gray-400 capitalize">
+                        {ui.labelPlural} ({items.length})
                       </h5>
                       <button
                         type="button"
-                        onClick={handleAddExercise}
+                        onClick={handleAddItem}
                         className="inline-flex items-center gap-2 rounded-lg border border-dashed border-[#2E2E2E] px-3 py-2 text-xs font-semibold text-accent transition-colors hover:border-accent hover:bg-[#101010]"
                       >
-                        <Plus className="h-4 w-4" /> Agregar ejercicio
+                        <Plus className="h-4 w-4" /> {ui.addLabel}
                       </button>
                     </div>
 
                     <div className="flex flex-col gap-5">
-                      {day.exercises.map((exercise) => (
-                        <ExerciseEditor
-                          key={exercise.id}
+                      {items.map((item) => (
+                        <ItemEditor
+                          key={item.id}
                           weekId={weekId}
                           dayId={day.id}
-                          exercise={exercise}
+                          item={item}
                           onActionError={onActionError}
                         />
                       ))}
-                      <div ref={exercisesEndRef} />
+                      <div ref={itemsEndRef} />
                     </div>
                   </div>
                 )}

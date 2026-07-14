@@ -80,7 +80,7 @@ export default function UserMenu() {
       {/* Trigger */}
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 rounded-xl border border-border px-3 py-1.5 text-sm font-medium text-text-secondary hover:border-accent/40 hover:text-white transition-colors"
+        className="flex items-center gap-2 rounded-xl border border-border px-3 py-1.5 text-sm font-medium text-text-secondary hover:border-accent/40 hover:text-text-primary transition-colors"
         aria-haspopup="true"
         aria-expanded={open}
       >
@@ -96,19 +96,19 @@ export default function UserMenu() {
       {/* Dropdown */}
       {open && (
         <div
-          className="absolute right-0 top-full mt-2 w-52 rounded-xl border border-border bg-[#0E0E14] py-1.5 shadow-xl shadow-black/50 z-50"
+          className="absolute right-0 top-full mt-2 w-52 rounded-xl border border-border bg-primary-surface py-1.5 shadow-xl shadow-black/50 z-50"
           style={{ animation: 'dropdownIn 0.15s ease-out' }}
           role="menu"
         >
           {/* User info header */}
           <div className="px-4 py-2.5 border-b border-border">
-            <p className="text-sm font-semibold text-white truncate">{user.name}</p>
+            <p className="text-sm font-semibold text-text-primary truncate">{user.name}</p>
             <p className="text-xs text-text-quaternary truncate">{user.email}</p>
           </div>
 
           {/* Mi cuenta (placeholder) */}
           <button
-            className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:bg-white/5 hover:text-white transition-colors"
+            className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:bg-white/5 hover:text-text-primary transition-colors"
             role="menuitem"
             onClick={() => setOpen(false)}
           >
@@ -118,7 +118,7 @@ export default function UserMenu() {
 
           {/* Panel */}
           <button
-            className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:bg-white/5 hover:text-white transition-colors"
+            className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:bg-white/5 hover:text-text-primary transition-colors"
             role="menuitem"
             onClick={handleNavigateToDashboard}
           >

@@ -34,7 +34,8 @@ export default {
           accent: "rgb(var(--c-text-accent) / <alpha-value>)",
         },
         // Legacy compatibility → mismos tokens temáticos
-        base: "rgb(var(--c-bg) / <alpha-value>)",
+        // OJO: no definir un color `base` — colisiona con la utilidad de tamaño
+        // `text-base` de Tailwind y termina pintando el texto con el color de fondo.
         surface: "rgb(var(--c-surface) / <alpha-value>)",
         "surface-alt": "rgb(var(--c-surface-alt) / <alpha-value>)",
         "brand-border": "rgb(var(--c-border) / <alpha-value>)",
