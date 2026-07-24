@@ -1,6 +1,10 @@
 import { StyleSheet } from "@react-pdf/renderer";
 import { createBaseStyles, palette, typography, spacing } from "./pdfStyles.js";
 
+// Padding extra arriba para la banda del encabezado corrido (fixed) de las
+// páginas de día; el header vive en esa banda y no pisa el contenido.
+const RUNNING_HEADER_BAND = 26;
+
 /**
  * Estilos del PDF nutricional. Reutiliza createBaseStyles() (paleta, tipografía,
  * índice, "volver al índice", tarjetas de metadata) y agrega lo específico de
@@ -9,6 +13,44 @@ import { createBaseStyles, palette, typography, spacing } from "./pdfStyles.js";
 export const createNutritionStyles = () => {
   const base = createBaseStyles();
   const extra = StyleSheet.create({
+    // Portada nutricional: SIN space-between (el del base empuja el índice al
+    // fondo de la página y lo parte en dos cuando el contenido es alto).
+    coverWrapper: {
+      flexDirection: "column",
+    },
+    // Página de día con encabezado corrido "Día · Semana"
+    pageWithRunningHeader: {
+      padding: spacing.pagePadding,
+      paddingTop: spacing.pagePadding + RUNNING_HEADER_BAND,
+      backgroundColor: palette.background,
+      fontFamily: "Helvetica",
+      fontSize: typography.base,
+      color: palette.text,
+    },
+    runningHeader: {
+      position: "absolute",
+      top: 18,
+      left: spacing.pagePadding,
+      right: spacing.pagePadding,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      borderBottomWidth: 1,
+      borderBottomColor: palette.divider,
+      paddingBottom: 6,
+    },
+    runningHeaderDay: {
+      fontSize: typography.small - 1,
+      fontWeight: 700,
+      color: palette.accent,
+      textTransform: "uppercase",
+      letterSpacing: 0.6,
+    },
+    runningHeaderLink: {
+      fontSize: typography.small - 1,
+      color: palette.neutral,
+      textDecoration: "none",
+    },
     // Aviso de derivación (patología)
     warningBox: {
       marginTop: 14,
@@ -178,6 +220,16 @@ export const createNutritionStyles = () => {
       fontSize: typography.base,
       color: palette.neutral,
       marginRight: 6,
+    },
+    // Casilla de check dibujada (reemplaza el glifo ☐ que Helvetica no tiene)
+    shopBoxDrawn: {
+      width: 8,
+      height: 8,
+      borderWidth: 1,
+      borderColor: palette.neutral,
+      borderRadius: 2,
+      marginRight: 6,
+      marginTop: 2,
     },
     shopItemText: {
       fontSize: typography.base,

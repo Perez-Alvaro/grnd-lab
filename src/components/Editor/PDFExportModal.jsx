@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Smartphone, Monitor } from 'lucide-react';
+import { IconX, IconDeviceMobile, IconDeviceDesktop } from '@tabler/icons-react';
 import { Button } from '../ui';
 
 /**
@@ -35,7 +35,7 @@ export default function PDFExportModal({ open, onClose, onSelectType }) {
                         onClick={onClose}
                         className="p-1.5 rounded-lg hover:bg-surface-alt transition-colors text-text-tertiary hover:text-text-primary"
                     >
-                        <X className="h-5 w-5" />
+                        <IconX stroke={1.75} className="h-5 w-5" />
                     </button>
                 </div>
 
@@ -53,7 +53,7 @@ export default function PDFExportModal({ open, onClose, onSelectType }) {
                     >
                         <div className="flex items-start gap-4">
                             <div className="p-3 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-primary-bg transition-colors">
-                                <Smartphone className="h-6 w-6" />
+                                <IconDeviceMobile stroke={1.75} className="h-6 w-6" />
                             </div>
                             <div className="flex-1 text-left">
                                 <div className="flex items-center gap-2 mb-1">
@@ -78,7 +78,7 @@ export default function PDFExportModal({ open, onClose, onSelectType }) {
                     >
                         <div className="flex items-start gap-4">
                             <div className="p-3 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-primary-bg transition-colors">
-                                <Monitor className="h-6 w-6" />
+                                <IconDeviceDesktop stroke={1.75} className="h-6 w-6" />
                             </div>
                             <div className="flex-1 text-left">
                                 <h3 className="font-semibold text-text-primary mb-1">

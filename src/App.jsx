@@ -10,6 +10,7 @@ import RoutineEditor from "./pages/RoutineEditor.jsx";
 import CoachDashboard from "./pages/CoachDashboard.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import ProtectedRoute from "./components/Auth/ProtectedRoute.jsx";
+import SubscriptionGate from "./components/Auth/SubscriptionGate.jsx";
 import LoginModal from "./components/Auth/LoginModal.jsx";
 
 // Derive the protected path at runtime — never a plain string in source
@@ -56,12 +57,15 @@ function AppContent() {
             }
           />
 
-          {/* Protected Routine Editor — path derived at runtime */}
+          {/* Protected Routine Editor — path derived at runtime.
+              SubscriptionGate deshabilita el editor sin pago vigente. */}
           <Route
             path={EDITOR_PATH}
             element={
               <ProtectedRoute>
-                <RoutineEditor />
+                <SubscriptionGate>
+                  <RoutineEditor />
+                </SubscriptionGate>
               </ProtectedRoute>
             }
           />

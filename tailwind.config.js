@@ -58,9 +58,9 @@ export default {
         info: "#3b82f6",
       },
       fontFamily: {
-        sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "system-ui", "sans-serif"],
+        sans: ["Hanken Grotesk", "-apple-system", "sans-serif"],
         mono: ["JetBrains Mono", "SF Mono", "Monaco", "Cascadia Code", "Courier New", "monospace"],
-        display: ["Inter", "-apple-system", "sans-serif"],
+        display: ["Hanken Grotesk", "-apple-system", "sans-serif"],
       },
       fontSize: {
         "2xs": ["0.625rem", { lineHeight: "0.875rem" }],
@@ -100,8 +100,20 @@ export default {
         subtle: "0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2)",
         medium: "0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)",
       },
+      // Escala de radios del design system: 2/4/6/10. `full` solo para
+      // status pills/badges. Las clases legacy xl+ degradan al máximo (10px)
+      // para que el código existente no pierda el radio.
       borderRadius: {
-        "4xl": "2rem",
+        xs: "2px",
+        sm: "4px",
+        DEFAULT: "6px",
+        md: "6px",
+        lg: "10px",
+        xl: "10px",
+        "2xl": "10px",
+        "3xl": "10px",
+        "4xl": "10px",
+        full: "9999px",
       },
       transitionDuration: {
         200: "200ms",

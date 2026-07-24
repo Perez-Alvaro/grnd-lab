@@ -1,4 +1,4 @@
-import { View, Text, Link } from "@react-pdf/renderer";
+import { Page, View, Text, Link } from "@react-pdf/renderer";
 import { indexLinkTarget, weekAnchorId } from "../utils/pdfAnchors.js";
 
 // Devuelve SIEMPRE una URL válida; si el valor no es una URL con host, lo
@@ -19,7 +19,7 @@ const buildVideoUrl = (raw) => {
 
 const num = (v) => (v === 0 || v ? v : null);
 
-const MealCard = ({ meal, styles }) => {
+const MealCard = ({ meal, styles, breakBefore = false }) => {
   const recipe = buildVideoUrl(meal.videoUrl);
   const variantes = meal.variantes || [];
   const macros = [
@@ -29,8 +29,11 @@ const MealCard = ({ meal, styles }) => {
   ].filter(Boolean);
 
   return (
-    <View style={styles.mealCard} wrap={false}>
-      <View style={styles.mealHeader}>
+    // Máximo 2 comidas por página: la 3.ª, 5.ª, etc. fuerzan salto de página
+    // (breakBefore) y cada card se mantiene ENTERA (wrap={false}) para que la
+    // tabla principal nunca quede cortada entre páginas.
+    <View style={styles.mealCard} wrap={false} break={breakBefore} minPresenceAhead={70}>
+      <View style={styles.mealHeader} wrap={false}>
         <Text style={styles.mealName}>
           {meal.name || "Comida"}
           {meal.hora ? <Text style={styles.mealHora}>{`  ${meal.hora}`}</Text> : null}
@@ -58,12 +61,13 @@ const MealCard = ({ meal, styles }) => {
         </>
       ) : null}
 
+      {/* Sin ↔ ni ⏱: Helvetica (WinAnsi) no tiene esos glifos y se ven como letras raras */}
       {meal.sustituciones ? (
-        <Text style={styles.subsText}>{`↔ ${meal.sustituciones}`}</Text>
+        <Text style={styles.subsText}>{`Sustituciones: ${meal.sustituciones}`}</Text>
       ) : null}
 
       {meal.nota_timing ? (
-        <Text style={styles.timingText}>{`⏱ ${meal.nota_timing}`}</Text>
+        <Text style={styles.timingText}>{`Timing: ${meal.nota_timing}`}</Text>
       ) : null}
 
       {recipe ? (
@@ -95,7 +99,7 @@ const DayBlock = ({ day, styles }) => {
   const total = day.totalDia || {};
   return (
     <View style={styles.dayContainer}>
-      <View style={styles.dayHeader}>
+      <View style={styles.dayHeader} wrap={false}>
         <Text style={styles.dayName}>{day.name}</Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           {day.esDiaEntreno && <Text style={styles.dayBadgeTraining}>Entreno</Text>}
@@ -106,24 +110,52 @@ const DayBlock = ({ day, styles }) => {
         <Text style={styles.restMessage}>Sin comidas cargadas.</Text>
       ) : (
         (day.meals || []).map((meal, idx) => (
-          <MealCard key={meal.id || idx} meal={meal} styles={styles} />
+          <MealCard
+            key={meal.id || idx}
+            meal={meal}
+            styles={styles}
+            breakBefore={idx > 0 && idx % 2 === 0}
+          />
         ))
       )}
     </View>
   );
 };
 
-const NutritionWeekSection = ({ week, styles, breakBefore = false }) => (
-  <View style={styles.weekSection} break={breakBefore} id={weekAnchorId(week.number)}>
-    <View style={styles.weekHeader}>
+/**
+ * Una página (o más, si el día desborda) por DÍA. El encabezado corrido
+ * (fixed) repite "Día · Semana X" en TODAS las páginas del día para que el
+ * lector nunca se pierda, con link permanente al índice.
+ */
+export const NutritionDayPage = ({ week, day, isFirstDayOfWeek, styles }) => {
+  const weekLabel = week.title || `Semana ${week.number}`;
+  return (
+    <Page size="A4" orientation="portrait" style={styles.pageWithRunningHeader} wrap>
+      <View fixed style={styles.runningHeader}>
+        <Text style={styles.runningHeaderDay}>{`${day.name}  ·  ${weekLabel}`}</Text>
+        <Link src={indexLinkTarget()} style={styles.runningHeaderLink}>Volver al índice</Link>
+      </View>
+
+      {isFirstDayOfWeek ? (
+        <View style={styles.weekHeader} id={weekAnchorId(week.number)} wrap={false}>
+          <Text style={styles.weekTitle}>{weekLabel}</Text>
+          {week.notes ? <Text style={styles.weekSubtitle}>{week.notes}</Text> : null}
+        </View>
+      ) : null}
+
+      <DayBlock day={day} styles={styles} />
+    </Page>
+  );
+};
+
+/** Página mínima para una semana sin días: mantiene vivo el anchor del índice. */
+export const NutritionEmptyWeekPage = ({ week, styles }) => (
+  <Page size="A4" orientation="portrait" style={styles.page} wrap>
+    <View id={weekAnchorId(week.number)}>
       <Text style={styles.weekTitle}>{week.title || `Semana ${week.number}`}</Text>
-      {week.notes ? <Text style={styles.weekSubtitle}>{week.notes}</Text> : null}
-      <Link src={indexLinkTarget()} style={styles.backToIndex}>Volver al índice</Link>
+      <Text style={styles.restMessage}>Sin días cargados.</Text>
     </View>
-    {week.days.map((day, idx) => (
-      <DayBlock key={`${week.number}-${idx}`} day={day} styles={styles} />
-    ))}
-  </View>
+  </Page>
 );
 
-export default NutritionWeekSection;
+export default NutritionDayPage;

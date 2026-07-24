@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useRef } from 'react';
-import { X } from 'lucide-react';
+import { IconX } from '@tabler/icons-react';
 
 export default function Modal({
     open,
@@ -62,7 +62,7 @@ export default function Modal({
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="modal-title"
-                className={`relative w-full ${sizes[size]} rounded-2xl border border-border-strong bg-primary-surface shadow-2xl animate-slide-up max-h-[90vh] flex flex-col`}
+                className={`relative w-full ${sizes[size]} rounded-md border border-border-strong bg-primary-surface shadow-medium animate-slide-up max-h-[90vh] flex flex-col`}
             >
                 {/* Header */}
                 {(title || showCloseButton) && (
@@ -75,10 +75,10 @@ export default function Modal({
                         {showCloseButton && (
                             <button
                                 onClick={onClose}
-                                className="ml-auto rounded-lg p-2 text-text-muted transition-colors hover:bg-primary-bg hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+                                className="ml-auto rounded-sm p-2 text-text-muted transition-colors hover:bg-primary-bg hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent"
                                 aria-label="Cerrar modal"
                             >
-                                <X className="h-5 w-5" />
+                                <IconX stroke={1.75} className="h-5 w-5" />
                             </button>
                         )}
                     </div>

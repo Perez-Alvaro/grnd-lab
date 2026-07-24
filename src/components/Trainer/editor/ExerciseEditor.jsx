@@ -1,5 +1,5 @@
 import { memo, useCallback, useState } from "react";
-import { Copy, Trash2, AlertCircle, Minus, Plus } from "lucide-react";
+import { IconCopy, IconTrash, IconAlertCircle, IconMinus, IconPlus } from '@tabler/icons-react';
 import { usePlanContext } from "../../../context/PlanContext.jsx";
 
 /* Stepper estilo Mynter: − [valor] +. El valor sigue siendo editable a mano
@@ -12,7 +12,7 @@ function Stepper({ value, onChange, ariaLabel }) {
   return (
     <div className="flex items-center gap-2">
       <button type="button" onClick={() => step(-1)} aria-label={`${ariaLabel}: restar`} className={btn}>
-        <Minus className="h-4 w-4" />
+        <IconMinus stroke={1.75} className="h-4 w-4" />
       </button>
       <input
         type="text"
@@ -23,7 +23,7 @@ function Stepper({ value, onChange, ariaLabel }) {
         className="h-11 min-w-0 flex-1 rounded-lg border border-border bg-primary-bg text-center text-lg font-bold text-text-primary transition-colors focus:border-accent focus:outline-none"
       />
       <button type="button" onClick={() => step(1)} aria-label={`${ariaLabel}: sumar`} className={btn}>
-        <Plus className="h-4 w-4" />
+        <IconPlus stroke={1.75} className="h-4 w-4" />
       </button>
     </div>
   );
@@ -98,7 +98,7 @@ const ExerciseEditor = memo(({ weekId, dayId, item, exercise: exerciseProp, onAc
   const inputCls = "h-11 w-full rounded-lg border border-border bg-primary-bg px-3 text-base text-text-primary transition-colors focus:border-accent focus:outline-none focus:ring-0";
   const err = (f) => errors[f] && (
     <span className="flex items-center gap-1 text-xs text-red-400">
-      <AlertCircle className="h-3 w-3" /> {errors[f]}
+      <IconAlertCircle stroke={1.75} className="h-3 w-3" /> {errors[f]}
     </span>
   );
 
@@ -160,10 +160,10 @@ const ExerciseEditor = memo(({ weekId, dayId, item, exercise: exerciseProp, onAc
       {/* Acciones */}
       <div className="flex flex-wrap items-center justify-end gap-2 border-t border-border pt-3">
         <button type="button" onClick={handleDuplicate} className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-xs font-semibold text-accent transition-colors hover:border-accent hover:bg-primary-bg">
-          <Copy className="h-4 w-4" /> Duplicar
+          <IconCopy stroke={1.75} className="h-4 w-4" /> Duplicar
         </button>
         <button type="button" onClick={handleRemove} className="inline-flex items-center gap-2 rounded-lg border border-red-500/40 px-3 py-2 text-xs font-semibold text-red-400 transition-colors hover:border-red-400 hover:bg-red-500/10">
-          <Trash2 className="h-4 w-4" /> Eliminar
+          <IconTrash stroke={1.75} className="h-4 w-4" /> Eliminar
         </button>
       </div>
     </div>

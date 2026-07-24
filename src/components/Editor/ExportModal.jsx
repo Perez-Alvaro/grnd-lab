@@ -4,7 +4,7 @@
  */
 
 import { useState, useMemo } from 'react';
-import { Download, Copy, CheckCircle2 } from 'lucide-react';
+import { IconDownload, IconCopy, IconCircleCheck } from '@tabler/icons-react';
 import Modal, { ModalFooter } from '../ui/Modal.jsx';
 import Button from '../ui/Button.jsx';
 import Input from '../ui/Input.jsx';
@@ -82,9 +82,9 @@ export default function ExportModal({ open, onClose, planData }) {
                             title="Copiar al portapapeles"
                         >
                             {copied ? (
-                                <CheckCircle2 className="h-4 w-4 text-success" />
+                                <IconCircleCheck stroke={1.75} className="h-4 w-4 text-success" />
                             ) : (
-                                <Copy className="h-4 w-4" />
+                                <IconCopy stroke={1.75} className="h-4 w-4" />
                             )}
                         </button>
                     </div>
@@ -130,11 +130,11 @@ export default function ExportModal({ open, onClose, planData }) {
                     Cerrar
                 </Button>
                 <Button onClick={handleCopy} variant="outline">
-                    <Copy className="h-4 w-4" />
+                    <IconCopy stroke={1.75} className="h-4 w-4" />
                     {copied ? 'Copiado!' : 'Copiar JSON'}
                 </Button>
                 <Button onClick={handleDownload}>
-                    <Download className="h-4 w-4" />
+                    <IconDownload stroke={1.75} className="h-4 w-4" />
                     Descargar Archivo
                 </Button>
             </ModalFooter>

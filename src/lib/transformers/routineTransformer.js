@@ -214,7 +214,7 @@ export function universalImport(jsonData) {
   return {
     success: false,
     errors: [
-      'Formato de JSON no reconocido. El archivo debe ser un JSON exportado desde Grind-Lab o generado por la IA con el Prompt Maestro.',
+      'Formato de JSON no reconocido. El archivo debe ser un JSON exportado desde Mock o generado por la IA con el Prompt Maestro.',
       'Formatos válidos: { semanas: [...] } (exportación) o { weeks: [...] } (formato IA)'
     ]
   };

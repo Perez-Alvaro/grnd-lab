@@ -32,7 +32,7 @@ export function TabsList({ children, className = '', ...props }) {
     return (
         <div
             role="tablist"
-            className={`flex items-center gap-1 rounded-lg bg-primary-bg border border-border p-1 ${className}`}
+            className={`flex items-center gap-1 rounded-md bg-primary-bg border border-border p-1 ${className}`}
             {...props}
         >
             {children}
@@ -49,8 +49,8 @@ export function TabsTrigger({ value, children, className = '', ...props }) {
             role="tab"
             aria-selected={isActive}
             onClick={() => setValue(value)}
-            className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary-bg ${isActive
-                    ? 'bg-accent text-primary-bg shadow-sm'
+            className={`flex-1 rounded-sm px-4 py-2 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary-bg ${isActive
+                    ? 'bg-accent text-primary-bg'
                     : 'text-text-secondary hover:bg-primary-surface hover:text-text-primary'
                 } ${className}`}
             {...props}

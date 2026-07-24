@@ -1,5 +1,5 @@
 import { Fragment, memo } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { IconChevronDown, IconChevronRight } from '@tabler/icons-react';
 
 /** Asegura que la URL tenga protocolo absoluto para que el navegador no la trate como ruta relativa */
 const normalizeUrl = (url) => {
@@ -14,18 +14,18 @@ const DayPreview = ({ day }) => {
   const isRest = day.type === "DESCANSO";
 
   return (
-    <div className="rounded-xl border border-[#787878]/20 bg-[#1A1A1A] p-4 space-y-3 text-natural-wrap">
+    <div className="rounded-xl border border-border bg-primary-surface-alt p-4 space-y-3 text-natural-wrap">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h4 className="text-lg font-semibold text-white text-natural-wrap">{day.name}</h4>
+          <h4 className="text-lg font-semibold text-text-primary text-natural-wrap">{day.name}</h4>
           {isRest && day.recoveryNote && (
-            <p className="text-sm text-[#787878] text-natural-wrap">{day.recoveryNote}</p>
+            <p className="text-sm text-text-tertiary text-natural-wrap">{day.recoveryNote}</p>
           )}
         </div>
         <span
           className={`text-xs font-semibold px-3 py-1 rounded-full ${
             isRest
-              ? "bg-[#787878]/20 text-[#A1A1A1]"
+              ? "bg-primary-surface-alt text-text-tertiary"
               : "bg-accent/20 text-accent"
           }`}
         >
@@ -38,7 +38,7 @@ const DayPreview = ({ day }) => {
           <div className="overflow-x-auto">
             <table className="min-w-[720px] w-full border-collapse text-sm">
               <thead>
-                <tr className="text-[11px] uppercase tracking-wide text-[#787878] border-b border-[#787878]/20">
+                <tr className="text-[11px] uppercase tracking-wide text-text-tertiary border-b border-border">
                   <th className="py-2 pr-3 text-left font-semibold">
                     Ejercicio
                   </th>
@@ -74,8 +74,8 @@ const DayPreview = ({ day }) => {
 
                   return (
                     <Fragment key={exercise.id || exerciseIndex}>
-                      <tr className="border-b border-[#787878]/20 text-[#C9C9C9]">
-                        <td className="py-3 pr-3 text-left text-sm font-medium text-white align-top">
+                      <tr className="border-b border-border text-text-secondary">
+                        <td className="py-3 pr-3 text-left text-sm font-medium text-text-primary align-top">
                           {exercise.name || "—"}
                         </td>
                         <td className="px-3 py-3 text-center align-top">
@@ -100,22 +100,22 @@ const DayPreview = ({ day }) => {
                               target="_blank"
                               rel="noopener noreferrer"
                               aria-label="Ver video del ejercicio en YouTube"
-                              className="text-xs font-semibold text-[#2E4A5F] underline hover:text-white transition-colors"
+                              className="text-xs font-semibold text-accent underline hover:text-text-primary transition-colors"
                             >
                               Link YouTube
                             </a>
                           ) : (
-                            <span className="text-[#787878]">–</span>
+                            <span className="text-text-tertiary">–</span>
                           )}
                         </td>
                       </tr>
                       {note && (
-                        <tr className="border-b border-[#787878]/20 last:border-0">
+                        <tr className="border-b border-border last:border-0">
                           <td
                             colSpan={7}
-                            className="px-3 pb-3 pt-2 align-top text-sm text-[#C9C9C9]"
+                            className="px-3 pb-3 pt-2 align-top text-sm text-text-secondary"
                           >
-                            <p className="text-xs uppercase text-[#787878]">
+                            <p className="text-xs uppercase text-text-tertiary">
                               Notas
                             </p>
                             <p className="mt-1 whitespace-pre-line">{note}</p>
@@ -138,30 +138,30 @@ const WeekPreview = memo(({ week, index, collapsed, onToggle }) => {
   return (
     <div
       id={`semana${index + 1}`}
-      className="rounded-2xl border border-[#787878]/20 bg-[#202020]"
+      className="rounded-2xl border border-border bg-primary-surface-elevated"
       data-testid="week-preview"
     >
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center justify-between gap-2 border-b border-[#787878]/20 px-5 py-4 text-left"
+        className="flex w-full items-center justify-between gap-2 border-b border-border px-5 py-4 text-left"
       >
         <div>
-          <p className="text-xs uppercase tracking-wide text-[#787878] text-natural-wrap">
+          <p className="text-xs uppercase tracking-wide text-text-tertiary text-natural-wrap">
             Semana {index + 1}
           </p>
-          <h3 className="text-xl font-semibold text-white text-natural-wrap">
+          <h3 className="text-xl font-semibold text-text-primary text-natural-wrap">
             {week.title || `Semana ${index + 1}`}
           </h3>
           {week.summary && (
-            <p className="text-sm text-[#C9C9C9] mt-1 text-natural-wrap">{week.summary}</p>
+            <p className="text-sm text-text-secondary mt-1 text-natural-wrap">{week.summary}</p>
           )}
         </div>
-        <span className="rounded-full bg-[#1A1A1A] p-2 text-accent">
+        <span className="rounded-full bg-primary-surface-alt p-2 text-accent">
           {collapsed ? (
-            <ChevronRight className="h-5 w-5" />
+            <IconChevronRight stroke={1.75} className="h-5 w-5" />
           ) : (
-            <ChevronDown className="h-5 w-5" />
+            <IconChevronDown stroke={1.75} className="h-5 w-5" />
           )}
         </span>
       </button>
@@ -169,11 +169,11 @@ const WeekPreview = memo(({ week, index, collapsed, onToggle }) => {
       {!collapsed && (
         <div className="space-y-5 px-5 pb-5 pt-4">
           {week.notes && (
-            <div className="rounded-xl border border-[#787878]/20 bg-[#1A1A1A] p-4 text-natural-wrap">
-              <h4 className="text-xs uppercase tracking-wide text-[#787878] mb-1 text-natural-wrap">
+            <div className="rounded-xl border border-border bg-primary-surface-alt p-4 text-natural-wrap">
+              <h4 className="text-xs uppercase tracking-wide text-text-tertiary mb-1 text-natural-wrap">
                 Notas de la semana
               </h4>
-              <p className="text-sm text-[#C9C9C9] whitespace-pre-line text-natural-wrap">
+              <p className="text-sm text-text-secondary whitespace-pre-line text-natural-wrap">
                 {week.notes}
               </p>
             </div>

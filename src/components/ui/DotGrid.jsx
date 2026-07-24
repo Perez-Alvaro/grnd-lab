@@ -1,5 +1,5 @@
 'use client';
-import { useRef, useEffect, useCallback, useMemo } from 'react';
+import { useRef, useEffect, useCallback, useMemo, useState } from 'react';
 import { gsap } from 'gsap';
 import { InertiaPlugin } from 'gsap/InertiaPlugin';
 
@@ -28,11 +28,27 @@ function hexToRgb(hex) {
     };
 }
 
+// Acepta '#rrggbb' o 'var(--c-x)' donde --c-x es un canal RGB del tema
+// ("R G B", ver theme.css). Así los puntos siguen al tema activo.
+function resolveRgb(color) {
+    if (!color) return { r: 0, g: 0, b: 0 };
+    if (color.startsWith('#')) return hexToRgb(color);
+    const m = color.match(/^var\((--[\w-]+)\)$/);
+    if (m && typeof window !== 'undefined') {
+        const raw = getComputedStyle(document.documentElement).getPropertyValue(m[1]).trim();
+        const parts = raw.split(/\s+/).map(Number);
+        if (parts.length === 3 && parts.every((n) => !Number.isNaN(n))) {
+            return { r: parts[0], g: parts[1], b: parts[2] };
+        }
+    }
+    return { r: 0, g: 0, b: 0 };
+}
+
 const DotGrid = ({
     dotSize = 16,
     gap = 32,
-    baseColor = '#5bb3a0',
-    activeColor = '#5bb3a0',
+    baseColor = 'var(--c-accent)',
+    activeColor = 'var(--c-accent)',
     proximity = 150,
     speedTrigger = 100,
     shockRadius = 250,
@@ -57,8 +73,19 @@ const DotGrid = ({
         lastY: 0
     });
 
-    const baseRgb = useMemo(() => hexToRgb(baseColor), [baseColor]);
-    const activeRgb = useMemo(() => hexToRgb(activeColor), [activeColor]);
+    // Se re-resuelven los tokens cuando cambia data-theme en <html>
+    const [themeVersion, setThemeVersion] = useState(0);
+    useEffect(() => {
+        if (typeof MutationObserver === 'undefined') return undefined;
+        const mo = new MutationObserver(() => setThemeVersion((v) => v + 1));
+        mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+        return () => mo.disconnect();
+    }, []);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const baseRgb = useMemo(() => resolveRgb(baseColor), [baseColor, themeVersion]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const activeRgb = useMemo(() => resolveRgb(activeColor), [activeColor, themeVersion]);
 
     const circlePath = useMemo(() => {
         if (typeof window === 'undefined' || !window.Path2D) return null;
@@ -129,7 +156,7 @@ const DotGrid = ({
                 const dy = dot.cy - py;
                 const dsq = dx * dx + dy * dy;
 
-                let style = baseColor;
+                let style = `rgb(${baseRgb.r},${baseRgb.g},${baseRgb.b})`;
                 if (dsq <= proxSq) {
                     const dist = Math.sqrt(dsq);
                     const t = 1 - dist / proximity;
@@ -158,7 +185,7 @@ const DotGrid = ({
         let ro = null;
         if ('ResizeObserver' in window) {
             ro = new ResizeObserver(buildGrid);
-            wrapperRef.current && ro.observe(wrapperRef.current);
+            if (wrapperRef.current) ro.observe(wrapperRef.current);
         } else {
             window.addEventListener('resize', buildGrid);
         }

@@ -2,8 +2,8 @@
    Google Fonts - Must be first
    ================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+/* Las fuentes (Hanken Grotesk + JetBrains Mono) se cargan desde index.html;
+   evitar @import acá duplica la descarga y bloquea el primer paint. */
 
 @import "./theme.css";
 
@@ -28,7 +28,7 @@ html {
 body {
   background-color: var(--color-bg);
   color: var(--color-text);
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-family: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   font-size: 16px;
   line-height: 1.6;
   font-weight: 400;
@@ -94,21 +94,21 @@ code, pre, .font-mono {
    Visual Hierarchy Utilities
    ================================ */
 
-/* Text color scale - not everything is white */
+/* Text color scale - tokens del tema (ver theme.css) */
 .text-primary {
-  color: rgb(255, 255, 255);
+  color: rgb(var(--c-text-primary));
 }
 
 .text-secondary {
-  color: rgb(200, 200, 210);
+  color: rgb(var(--c-text-secondary));
 }
 
 .text-tertiary {
-  color: rgb(140, 140, 160);
+  color: rgb(var(--c-text-tertiary));
 }
 
 .text-quaternary {
-  color: rgb(100, 100, 120);
+  color: rgb(var(--c-text-quaternary));
 }
 
 /* Accent usage - semantic only */
@@ -122,7 +122,7 @@ code, pre, .font-mono {
    ================================ */
 
 .mock-text {
-  color: #ffffff !important;
+  color: rgb(var(--c-text-primary)) !important;
   white-space: normal !important;
   overflow-wrap: break-word;
   word-break: break-word;
@@ -153,10 +153,10 @@ code, pre, .font-mono {
 
 @keyframes subtleGlow {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(91, 179, 160, 0);
+    box-shadow: 0 0 0 0 rgb(var(--c-accent) / 0);
   }
   50% {
-    box-shadow: 0 0 20px 0 rgba(91, 179, 160, 0.15);
+    box-shadow: 0 0 20px 0 rgb(var(--c-accent) / 0.15);
   }
 }
 
@@ -171,13 +171,13 @@ code, pre, .font-mono {
 /* Remove aggressive glow */
 @keyframes glow {
   0% {
-    box-shadow: 0 0 0px rgba(91, 179, 160, 0);
+    box-shadow: 0 0 0px rgb(var(--c-accent) / 0);
   }
   50% {
-    box-shadow: 0 0 12px rgba(91, 179, 160, 0.3);
+    box-shadow: 0 0 12px rgb(var(--c-accent) / 0.3);
   }
   100% {
-    box-shadow: 0 0 0px rgba(91, 179, 160, 0);
+    box-shadow: 0 0 0px rgb(var(--c-accent) / 0);
   }
 }
 
@@ -190,7 +190,7 @@ code, pre, .font-mono {
    ================================ */
 
 *:focus-visible {
-  outline: 2px solid rgba(91, 179, 160, 0.5);
+  outline: 2px solid rgb(var(--c-accent) / 0.5);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -221,7 +221,6 @@ button, a {
    ================================================================ */
 
 :root {
-  --accent-rgb: 91, 179, 160;
   --space-section: clamp(80px, 10vw, 140px);
   --space-card-inner: clamp(24px, 3vw, 40px);
   --text-display: clamp(48px, 7vw, 80px);
@@ -293,8 +292,8 @@ button, a {
   border-radius: 17px;
   background: linear-gradient(
     135deg,
-    rgba(91, 179, 160, 0.55) 0%,
-    rgba(91, 179, 160, 0.15) 40%,
+    rgb(var(--c-accent) / 0.55) 0%,
+    rgb(var(--c-accent) / 0.15) 40%,
     transparent 100%
   );
   z-index: 0;
@@ -307,11 +306,11 @@ button, a {
 
 /* --- Hero Primary CTA glow --- */
 .btn-hero-primary {
-  box-shadow: 0 0 30px rgba(91, 179, 160, 0.35), 0 4px 16px rgba(91, 179, 160, 0.25);
+  box-shadow: 0 0 30px rgb(var(--c-accent) / 0.35), 0 4px 16px rgb(var(--c-accent) / 0.25);
   transition: box-shadow 300ms ease, transform 200ms ease;
 }
 .btn-hero-primary:hover {
-  box-shadow: 0 0 55px rgba(91, 179, 160, 0.55), 0 8px 28px rgba(91, 179, 160, 0.35);
+  box-shadow: 0 0 55px rgb(var(--c-accent) / 0.55), 0 8px 28px rgb(var(--c-accent) / 0.35);
   transform: translateY(-1px);
 }
 .btn-hero-primary:active {
@@ -320,7 +319,7 @@ button, a {
 
 /* --- Section alt/elevated background --- */
 .section-elevated-bg {
-  background-color: #141419;
+  background-color: rgb(var(--c-surface));
 }
 
 /* --- Full-width CTA gradient banner --- */
@@ -348,8 +347,8 @@ button, a {
 /* --- Pricing highlighted card shadow --- */
 .pricing-card-glow {
   box-shadow:
-    0 0 0 1px rgba(91, 179, 160, 0.45),
-    0 0 50px rgba(91, 179, 160, 0.14),
+    0 0 0 1px rgb(var(--c-accent) / 0.45),
+    0 0 50px rgb(var(--c-accent) / 0.14),
     0 24px 60px rgba(0, 0, 0, 0.45);
 }
 
@@ -360,7 +359,7 @@ button, a {
   top: 52px;
   bottom: 0;
   width: 2px;
-  background: linear-gradient(to bottom, rgba(91, 179, 160, 0.5) 0%, rgba(91, 179, 160, 0) 100%);
+  background: linear-gradient(to bottom, rgb(var(--c-accent) / 0.5) 0%, rgb(var(--c-accent) / 0) 100%);
 }
 
 /* ── Autofill temático ──

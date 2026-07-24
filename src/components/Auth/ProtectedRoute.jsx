@@ -9,7 +9,7 @@
  */
 
 import { useNavigate } from 'react-router-dom';
-import { Lock, ShieldOff, Loader2 } from 'lucide-react';
+import { IconLock, IconShieldOff, IconLoader2 } from '@tabler/icons-react';
 import { useAuth } from '../../store/authStore.jsx';
 
 export default function ProtectedRoute({ children, requiredRole }) {
@@ -20,7 +20,7 @@ export default function ProtectedRoute({ children, requiredRole }) {
   if (!sessionReady) {
     return (
       <div className="flex h-screen items-center justify-center bg-primary-bg">
-        <Loader2 className="h-8 w-8 text-accent animate-spin" />
+        <IconLoader2 stroke={1.75} className="h-8 w-8 text-accent animate-spin" />
       </div>
     );
   }
@@ -30,10 +30,10 @@ export default function ProtectedRoute({ children, requiredRole }) {
     return (
       <div className="flex h-screen flex-col items-center justify-center bg-primary-bg gap-6 px-6 text-center">
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
-          <Lock className="h-8 w-8 text-accent" />
+          <IconLock stroke={1.75} className="h-8 w-8 text-accent" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-white font-display mb-2">Acceso restringido</h2>
+          <h2 className="text-xl font-bold text-text-primary font-display mb-2">Acceso restringido</h2>
           <p className="text-sm text-text-secondary max-w-sm">
             Necesitás iniciar sesión para acceder al editor de rutinas.
           </p>
@@ -64,10 +64,10 @@ export default function ProtectedRoute({ children, requiredRole }) {
     return (
       <div className="flex h-screen flex-col items-center justify-center bg-primary-bg gap-6 px-6 text-center">
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10">
-          <ShieldOff className="h-8 w-8 text-red-400" />
+          <IconShieldOff stroke={1.75} className="h-8 w-8 text-red-400" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-white font-display mb-2">Acceso denegado</h2>
+          <h2 className="text-xl font-bold text-text-primary font-display mb-2">Acceso denegado</h2>
           <p className="text-sm text-text-secondary max-w-sm">
             Tu cuenta no tiene permisos suficientes para acceder a esta sección.
           </p>

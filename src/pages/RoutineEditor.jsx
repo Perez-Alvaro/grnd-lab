@@ -1,5 +1,5 @@
 /**
- * Grind-Lab - Editor de planes (parametrizado por planType: 'workout' | 'nutrition').
+ * Mock - Editor de planes (parametrizado por planType: 'workout' | 'nutrition').
  * Mobile-first: 1 columna en mobile con toggle Editor ↔ Vista previa;
  * dos columnas lado a lado en desktop (lg+).
  * El tipo se resuelve por ?planType= (default 'workout'); toda la config
@@ -8,10 +8,7 @@
 
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import {
-  ArrowLeft, FileDown, MoreVertical, Copy, Code, FileJson, Download, Save,
-  Pencil, Eye, Bot,
-} from "lucide-react";
+import { IconArrowLeft, IconFileDownload, IconDotsVertical, IconCopy, IconCode, IconJson, IconDownload, IconDeviceFloppy, IconPencil, IconEye, IconRobot } from '@tabler/icons-react';
 import { PlanProvider } from "../context/PlanContext.jsx";
 import useRoutineEditor from "../hooks/useRoutineEditor.js";
 import { getPlanTypeConfig } from "../config/planTypes.js";
@@ -27,6 +24,7 @@ import JSONEditor from "../components/Editor/JSONEditor.jsx";
 import TutorialOverlay from "../components/Tutorial/TutorialOverlay.jsx";
 import { useSnackbar, TUTORIAL_SNACKBARS } from "../components/Tutorial/Snackbar.jsx";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/ui/Tabs.jsx";
+import { trackEvent } from "../lib/usage.js";
 
 const buildContextValue = (planEditor) => ({
   plan: planEditor.plan,
@@ -86,6 +84,11 @@ export default function RoutineEditorPage() {
   const [showTutorial, setShowTutorial] = useState(false);
   const [mobileView, setMobileView] = useState("editor"); // 'editor' | 'preview' (solo mobile)
 
+  // Uso por editor (workout vs nutrition) para el dashboard del admin
+  useEffect(() => {
+    trackEvent("editor_open", config.id);
+  }, [config.id]);
+
   const planEditor = useRoutineEditor({
     template: null,
     templateId: null,
@@ -133,6 +136,7 @@ export default function RoutineEditorPage() {
         athlete_id: athleteId,
       });
       setPlanId(saved.id);
+      trackEvent("plan_saved", config.id);
       snackbar.success("Cambios guardados");
     } catch (error) {
       console.error("Error guardando el plan:", error);
@@ -151,6 +155,7 @@ export default function RoutineEditorPage() {
     if (config.pdfExport) {
       try {
         await config.pdfExport(planEditor.plan);
+        trackEvent("pdf_export", config.id);
         snackbar.success(TUTORIAL_SNACKBARS.pdfExported);
       } catch (error) {
         console.error("PDF Export Error:", error);
@@ -164,6 +169,7 @@ export default function RoutineEditorPage() {
   const handlePDFTypeSelect = useCallback(async (type) => {
     try {
       await exportPDF(planEditor.planForPdf, type);
+      trackEvent("pdf_export", config.id);
       snackbar.success(TUTORIAL_SNACKBARS.pdfExported);
     } catch (error) {
       console.error("PDF Export Error:", error);
@@ -234,7 +240,7 @@ export default function RoutineEditorPage() {
           <div className="flex items-center justify-between gap-2 px-4 sm:px-6 py-3">
             <div className="flex items-center gap-2 min-w-0">
               <Button variant="ghost" size="sm" onClick={handleBack} aria-label="Volver al panel">
-                <ArrowLeft className="h-4 w-4" />
+                <IconArrowLeft stroke={1.75} className="h-4 w-4" />
                 <span className="hidden sm:inline">Volver</span>
               </Button>
               <div className="min-w-0">
@@ -246,37 +252,38 @@ export default function RoutineEditorPage() {
             </div>
 
             <div className="flex items-center gap-2 relative flex-shrink-0">
+              {(isWorkout || config.pdfExport) && (
+                <Button variant="ghost" size="sm" onClick={handleExportPdf} aria-label="Exportar PDF">
+                  <IconFileDownload stroke={1.75} className="h-4 w-4" />
+                  <span className="hidden sm:inline">Exportar PDF</span>
+                </Button>
+              )}
               <Button variant="accent" size="sm" onClick={handleSave} loading={saving}>
-                <Save className="h-4 w-4" />
+                <IconDeviceFloppy stroke={1.75} className="h-4 w-4" />
                 <span className="hidden sm:inline">Guardar</span>
               </Button>
 
               <div className="relative">
                 <Button variant="ghost" size="sm" onClick={() => setShowToolsMenu(!showToolsMenu)} aria-label="Más opciones">
-                  <MoreVertical className="h-4 w-4" />
+                  <IconDotsVertical stroke={1.75} className="h-4 w-4" />
                 </Button>
 
                 {showToolsMenu && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setShowToolsMenu(false)} aria-hidden="true" />
                     <div className="absolute right-0 mt-2 w-56 bg-primary-surface border border-border rounded-xl shadow-xl shadow-black/30 z-50 overflow-hidden py-1">
-                      {(isWorkout || config.pdfExport) && (
-                        <button onClick={() => { handleExportPdf(); setShowToolsMenu(false); }} className={menuItem}>
-                          <FileDown className="h-4 w-4 text-text-tertiary" /> Exportar PDF
-                        </button>
-                      )}
                       <button onClick={() => { handleCopyPrompt(); setShowToolsMenu(false); }} className={menuItem}>
-                        <Copy className="h-4 w-4 text-text-tertiary" /> Copiar prompt para IA
+                        <IconCopy stroke={1.75} className="h-4 w-4 text-text-tertiary" /> Copiar prompt para IA
                       </button>
                       <div className="my-1 border-t border-border" />
                       <button onClick={() => { setShowJSONEditor(!showJSONEditor); setShowToolsMenu(false); }} className={menuItem}>
-                        <Code className="h-4 w-4 text-text-tertiary" /> {showJSONEditor ? "Cerrar editor JSON" : "Editor JSON"}
+                        <IconCode stroke={1.75} className="h-4 w-4 text-text-tertiary" /> {showJSONEditor ? "Cerrar editor JSON" : "Editor JSON"}
                       </button>
                       <button onClick={() => { setShowImportModal(true); setShowToolsMenu(false); }} className={menuItem}>
-                        <FileJson className="h-4 w-4 text-text-tertiary" /> Importar JSON
+                        <IconJson stroke={1.75} className="h-4 w-4 text-text-tertiary" /> Importar JSON
                       </button>
                       <button onClick={() => { setShowExportModal(true); setShowToolsMenu(false); }} className={menuItem}>
-                        <Download className="h-4 w-4 text-text-tertiary" /> Exportar JSON
+                        <IconDownload stroke={1.75} className="h-4 w-4 text-text-tertiary" /> Exportar JSON
                       </button>
                     </div>
                   </>
@@ -289,10 +296,10 @@ export default function RoutineEditorPage() {
           <div className="lg:hidden px-4 sm:px-6 pb-3">
             <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-primary-bg border border-border">
               <button onClick={() => setMobileView("editor")} className={segBtn(mobileView === "editor")} aria-pressed={mobileView === "editor"}>
-                <Pencil className="h-4 w-4" /> Editor
+                <IconPencil stroke={1.75} className="h-4 w-4" /> Editor
               </button>
               <button onClick={() => setMobileView("preview")} className={segBtn(mobileView === "preview")} aria-pressed={mobileView === "preview"}>
-                <Eye className="h-4 w-4" /> Vista previa
+                <IconEye stroke={1.75} className="h-4 w-4" /> Vista previa
               </button>
             </div>
           </div>
@@ -320,7 +327,7 @@ export default function RoutineEditorPage() {
                           <div className="flex items-center justify-between gap-3 p-4 bg-primary-bg border border-border rounded-xl">
                             <div className="flex items-center gap-3 min-w-0">
                               <div className="flex-shrink-0 w-10 h-10 rounded-full bg-accent/15 text-accent flex items-center justify-center">
-                                <Bot className="h-5 w-5" />
+                                <IconRobot stroke={1.75} className="h-5 w-5" />
                               </div>
                               <div className="min-w-0">
                                 <h3 className="text-sm font-semibold text-text-primary">

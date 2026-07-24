@@ -1,5 +1,5 @@
 import { memo, useCallback, useMemo, useState } from "react";
-import { Copy, Trash2, ExternalLink, Plus, ChevronDown } from "lucide-react";
+import { IconCopy, IconTrash, IconExternalLink, IconPlus, IconChevronDown } from '@tabler/icons-react';
 import { usePlanContext } from "../../../context/PlanContext.jsx";
 
 /* Hoja del árbol para NUTRICIÓN: una comida. Reutiliza los métodos de leaf del
@@ -141,7 +141,7 @@ const MealEditor = memo(({ weekId, dayId, item, onActionError }) => {
             aria-label="Abrir video de receta"
             className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg border border-border text-accent transition-colors hover:border-accent hover:bg-primary-bg disabled:opacity-30"
           >
-            <ExternalLink className="h-4 w-4" />
+            <IconExternalLink stroke={1.75} className="h-4 w-4" />
           </button>
         </div>
       </div>
@@ -155,7 +155,7 @@ const MealEditor = memo(({ weekId, dayId, item, onActionError }) => {
           <span className="text-xs font-semibold uppercase tracking-wide text-text-tertiary">
             Variantes ({variantes.length})
           </span>
-          <ChevronDown className={`h-4 w-4 text-text-muted transition-transform ${showVariantes ? "rotate-180" : ""}`} />
+          <IconChevronDown stroke={1.75} className={`h-4 w-4 text-text-muted transition-transform ${showVariantes ? "rotate-180" : ""}`} />
         </button>
         {showVariantes && (
           <div className="flex flex-col gap-3 px-3 pb-3">
@@ -164,7 +164,7 @@ const MealEditor = memo(({ weekId, dayId, item, onActionError }) => {
                 <div className="flex items-center gap-2">
                   <input type="text" value={v.label || ""} onChange={(e) => updateVariante(v.id, "label", e.target.value)} placeholder="Ej: Versión rápida" className={`${inputCls} h-10`} />
                   <button type="button" onClick={() => removeVariante(v.id)} aria-label="Eliminar variante" className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border border-red-500/40 text-red-400 transition-colors hover:border-red-400 hover:bg-red-500/10">
-                    <Trash2 className="h-4 w-4" />
+                    <IconTrash stroke={1.75} className="h-4 w-4" />
                   </button>
                 </div>
                 <textarea rows={2} value={v.ingredientes || ""} onChange={(e) => updateVariante(v.id, "ingredientes", e.target.value)} placeholder="Ingredientes de la variante" className={`${areaCls} min-h-[60px]`} />
@@ -178,7 +178,7 @@ const MealEditor = memo(({ weekId, dayId, item, onActionError }) => {
               </div>
             ))}
             <button type="button" onClick={addVariante} className="inline-flex items-center justify-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-xs font-semibold text-accent transition-colors hover:border-accent hover:bg-primary-surface">
-              <Plus className="h-4 w-4" /> Agregar variante
+              <IconPlus stroke={1.75} className="h-4 w-4" /> Agregar variante
             </button>
           </div>
         )}
@@ -187,10 +187,10 @@ const MealEditor = memo(({ weekId, dayId, item, onActionError }) => {
       {/* Acciones */}
       <div className="flex flex-wrap items-center justify-end gap-2 border-t border-border pt-3">
         <button type="button" onClick={() => duplicateExercise(weekId, dayId, item.id)} className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-xs font-semibold text-accent transition-colors hover:border-accent hover:bg-primary-bg">
-          <Copy className="h-4 w-4" /> Duplicar
+          <IconCopy stroke={1.75} className="h-4 w-4" /> Duplicar
         </button>
         <button type="button" onClick={handleRemove} className="inline-flex items-center gap-2 rounded-lg border border-red-500/40 px-3 py-2 text-xs font-semibold text-red-400 transition-colors hover:border-red-400 hover:bg-red-500/10">
-          <Trash2 className="h-4 w-4" /> Eliminar
+          <IconTrash stroke={1.75} className="h-4 w-4" /> Eliminar
         </button>
       </div>
     </div>

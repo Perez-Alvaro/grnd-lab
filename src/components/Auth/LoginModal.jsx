@@ -6,14 +6,14 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Lock, Mail, User, Eye, EyeOff, Loader2, Zap, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { IconX, IconLock, IconMail, IconUser, IconEye, IconEyeOff, IconLoader2, IconBolt, IconAlertCircle, IconCircleCheck } from '@tabler/icons-react';
 import { useAuth } from '../../store/authStore.jsx';
 
 const FOCUSABLE =
   'button:not([disabled]), input:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])';
 
 const COPY = {
-  login: { title: 'Iniciar sesión', subtitle: 'Accedé a tu cuenta de GRIND LAB', cta: 'Ingresar' },
+  login: { title: 'Iniciar sesión', subtitle: 'Accedé a tu cuenta de Mock', cta: 'Ingresar' },
   signup: { title: 'Crear cuenta', subtitle: 'Empezá a crear rutinas en minutos', cta: 'Crear cuenta' },
   reset: { title: 'Recuperar contraseña', subtitle: 'Te enviamos un enlace por email', cta: 'Enviar enlace' },
 };
@@ -147,17 +147,17 @@ export default function LoginModal() {
           {!isLoading && (
             <button
               onClick={closeLoginModal}
-              className="absolute top-4 right-4 p-2 rounded-lg text-text-quaternary hover:text-text-primary hover:bg-white/5 transition-colors"
+              className="absolute top-4 right-4 p-2 rounded-lg text-text-quaternary hover:text-text-primary hover:bg-text-primary/5 transition-colors"
               aria-label="Cerrar"
             >
-              <X className="h-4 w-4" />
+              <IconX stroke={1.75} className="h-4 w-4" />
             </button>
           )}
 
           <div className="p-8">
             <div className="text-center mb-8">
               <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 border border-accent/20 mb-4">
-                <Zap className="h-7 w-7 text-accent" />
+                <IconBolt stroke={1.75} className="h-7 w-7 text-accent" />
               </div>
               <h2 id="login-modal-title" className="text-2xl font-bold text-text-primary font-display mb-1">
                 {copy.title}
@@ -168,7 +168,7 @@ export default function LoginModal() {
             {/* Éxito (confirmación / reset) */}
             {notice && (
               <div className="mb-5 flex items-start gap-3 rounded-xl border border-accent/30 bg-accent/10 px-4 py-3">
-                <CheckCircle2 className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
+                <IconCircleCheck stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
                 <p className="text-sm text-text-secondary">{notice}</p>
               </div>
             )}
@@ -176,7 +176,7 @@ export default function LoginModal() {
             {/* Error global */}
             {error && !notice && (
               <div className="mb-5 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3">
-                <AlertCircle className="h-4 w-4 text-red-400 flex-shrink-0 mt-0.5" />
+                <IconAlertCircle stroke={1.75} className="h-4 w-4 text-red-400 flex-shrink-0 mt-0.5" />
                 <p className="text-sm text-red-300">{error}</p>
               </div>
             )}
@@ -186,7 +186,7 @@ export default function LoginModal() {
                 {/* Nombre (solo signup) */}
                 {mode === 'signup' && (
                   <Field
-                    id="signup-name" label="Nombre" icon={User} type="text"
+                    id="signup-name" label="Nombre" icon={IconUser} type="text"
                     value={name} onChange={setName} placeholder="Tu nombre"
                     autoComplete="name" disabled={isLoading} error={fieldErrors.name}
                     inputRef={firstFocusRef}
@@ -195,7 +195,7 @@ export default function LoginModal() {
 
                 {/* Email */}
                 <Field
-                  id="auth-email" label="Email" icon={Mail} type="email"
+                  id="auth-email" label="Email" icon={IconMail} type="email"
                   value={email} onChange={setEmail} placeholder="tu@email.com"
                   autoComplete="email" disabled={isLoading} error={fieldErrors.email}
                   inputRef={mode === 'signup' ? undefined : firstFocusRef}
@@ -219,7 +219,7 @@ export default function LoginModal() {
                       )}
                     </div>
                     <div className="relative">
-                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-text-quaternary" />
+                      <IconLock stroke={1.75} className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-text-quaternary" />
                       <input
                         id="auth-password"
                         type={showPassword ? 'text' : 'password'}
@@ -243,7 +243,7 @@ export default function LoginModal() {
                         className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-text-quaternary hover:text-text-secondary transition-colors"
                         aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                       >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {showPassword ? <IconEyeOff stroke={1.75} className="h-4 w-4" /> : <IconEye stroke={1.75} className="h-4 w-4" />}
                       </button>
                     </div>
                     {fieldErrors.password && <p className="text-xs text-red-400">{fieldErrors.password}</p>}
@@ -257,7 +257,7 @@ export default function LoginModal() {
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <IconLoader2 stroke={1.75} className="h-4 w-4 animate-spin" />
                       Procesando...
                     </>
                   ) : (
@@ -311,7 +311,7 @@ function Field({ id, label, icon: Icon, type, value, onChange, placeholder, auto
     <div className="space-y-1.5">
       <label htmlFor={id} className="block text-sm font-medium text-text-secondary">{label}</label>
       <div className="relative">
-        <Icon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-text-quaternary" />
+        <Icon stroke={1.75} className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-text-quaternary" />
         <input
           ref={inputRef}
           id={id}

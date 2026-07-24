@@ -4,15 +4,15 @@
  */
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Users, Plus, Dumbbell, Pencil, Trash2, FileText, ChevronRight, LogOut, Zap, Target, Salad,
-} from 'lucide-react';
+import { IconUsers, IconPlus, IconBarbell, IconPencil, IconTrash, IconFileText, IconChevronRight, IconLogout, IconBolt, IconTarget, IconSalad } from '@tabler/icons-react';
 import { useAuth } from '../store/authStore.jsx';
 import { useProtectedLink } from '../lib/routeObfuscator.js';
 import { listAthletes, createAthlete, updateAthlete, deleteAthlete } from '../lib/athletes.js';
 import { listRoutines, deleteRoutine } from '../lib/routines.js';
 import { listNutritionPlans, deleteNutritionPlan } from '../lib/nutritionPlans.js';
 import { Button, Input, Select, Textarea, Modal, ModalFooter, Badge } from '../components/ui';
+import SubscriptionSection from '../components/Dashboard/SubscriptionSection.jsx';
+import FeedbackSection from '../components/Dashboard/FeedbackSection.jsx';
 import { toast } from '../utils/toast.js';
 
 const LEVELS = [
@@ -95,7 +95,7 @@ export default function CoachDashboard() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-primary-bg">
-              <Zap className="h-4 w-4" />
+              <IconBolt stroke={1.75} className="h-4 w-4" />
             </div>
             <div>
               <h1 className="text-lg font-bold text-text-primary font-display leading-tight">Panel del entrenador</h1>
@@ -103,17 +103,20 @@ export default function CoachDashboard() {
             </div>
           </div>
           <Button variant="ghost" size="sm" onClick={() => { logout(); navigate('/'); }}>
-            <LogOut className="h-4 w-4" /> Salir
+            <IconLogout stroke={1.75} className="h-4 w-4" /> Salir
           </Button>
         </div>
       </header>
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8">
+        {/* Suscripción: estado del pago + informar transferencia */}
+        <SubscriptionSection />
+
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-          <StatCard icon={Users} label="Atletas" value={athletes.length} />
-          <StatCard icon={FileText} label="Rutinas" value={routines.length} />
-          <StatCard icon={Salad} label="Planes nutrición" value={nutritionPlans.length} />
+          <StatCard icon={IconUsers} label="Atletas" value={athletes.length} />
+          <StatCard icon={IconFileText} label="Rutinas" value={routines.length} />
+          <StatCard icon={IconSalad} label="Planes nutrición" value={nutritionPlans.length} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.3fr] gap-6 lg:gap-8">
@@ -121,17 +124,17 @@ export default function CoachDashboard() {
           <section>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide">Tus atletas</h2>
-              <Button size="sm" onClick={openNew}><Plus className="h-4 w-4" /> Nuevo atleta</Button>
+              <Button size="sm" onClick={openNew}><IconPlus stroke={1.75} className="h-4 w-4" /> Nuevo atleta</Button>
             </div>
 
             {loading ? (
               <p className="text-sm text-text-muted">Cargando…</p>
             ) : athletes.length === 0 ? (
               <EmptyState
-                icon={Users}
+                icon={IconUsers}
                 title="Todavía no tenés atletas"
                 subtitle="Creá tu primer atleta para empezar a guardarle rutinas."
-                action={<Button size="sm" onClick={openNew}><Plus className="h-4 w-4" /> Nuevo atleta</Button>}
+                action={<Button size="sm" onClick={openNew}><IconPlus stroke={1.75} className="h-4 w-4" /> Nuevo atleta</Button>}
               />
             ) : (
               <div className="space-y-2">
@@ -152,7 +155,7 @@ export default function CoachDashboard() {
                           <span className="text-xs text-text-muted">{routinesOf(a.id).length} rut · {nutritionOf(a.id).length} nutri</span>
                         </div>
                       </div>
-                      <ChevronRight className="h-4 w-4 text-text-muted flex-shrink-0" />
+                      <IconChevronRight stroke={1.75} className="h-4 w-4 text-text-muted flex-shrink-0" />
                     </div>
                   </button>
                 ))}
@@ -169,22 +172,22 @@ export default function CoachDashboard() {
                     <h2 className="text-xl font-bold text-text-primary font-display">{selected.name}</h2>
                     {selected.email && <p className="text-sm text-text-muted">{selected.email}</p>}
                     <div className="flex items-center gap-2 mt-2 flex-wrap">
-                      {selected.goal && <Badge><Target className="h-3 w-3" /> {selected.goal}</Badge>}
+                      {selected.goal && <Badge><IconTarget stroke={1.75} className="h-3 w-3" /> {selected.goal}</Badge>}
                       {selected.level && <Badge variant="secondary">{selected.level}</Badge>}
                     </div>
                     {selected.notes && <p className="text-sm text-text-secondary mt-3">{selected.notes}</p>}
                   </div>
                   <div className="flex gap-1">
-                    <Button variant="ghost" size="sm" onClick={() => openEdit(selected)} aria-label="Editar"><Pencil className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="sm" onClick={() => handleDeleteAthlete(selected)} aria-label="Eliminar"><Trash2 className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="sm" onClick={() => openEdit(selected)} aria-label="Editar"><IconPencil stroke={1.75} className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="sm" onClick={() => handleDeleteAthlete(selected)} aria-label="Eliminar"><IconTrash stroke={1.75} className="h-4 w-4" /></Button>
                   </div>
                 </div>
 
                 {/* Toggle Rutinas | Nutrición */}
                 <div className="mb-4 grid grid-cols-2 gap-1 rounded-xl border border-border bg-primary-bg p-1">
                   {[
-                    { id: 'routines', label: 'Rutinas', icon: Dumbbell, count: routinesOf(selected.id).length },
-                    { id: 'nutrition', label: 'Nutrición', icon: Salad, count: nutritionOf(selected.id).length },
+                    { id: 'routines', label: 'Rutinas', icon: IconBarbell, count: routinesOf(selected.id).length },
+                    { id: 'nutrition', label: 'Nutrición', icon: IconSalad, count: nutritionOf(selected.id).length },
                   ].map(({ id, label, icon: Icon, count }) => (
                     <button
                       key={id}
@@ -194,7 +197,7 @@ export default function CoachDashboard() {
                         athleteTab === id ? 'bg-accent text-primary-bg shadow-sm' : 'text-text-secondary hover:text-text-primary'
                       }`}
                     >
-                      <Icon className="h-4 w-4" /> {label}
+                      <Icon stroke={1.75} className="h-4 w-4" /> {label}
                       <span className={athleteTab === id ? 'opacity-80' : 'text-text-muted'}>({count})</span>
                     </button>
                   ))}
@@ -205,7 +208,7 @@ export default function CoachDashboard() {
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wide">Rutinas</h3>
                       <Button size="sm" variant="accent" onClick={() => navigate(`${editorPath}?athleteId=${selected.id}`)}>
-                        <Plus className="h-4 w-4" /> Nueva rutina
+                        <IconPlus stroke={1.75} className="h-4 w-4" /> Nueva rutina
                       </Button>
                     </div>
 
@@ -219,14 +222,14 @@ export default function CoachDashboard() {
                               onClick={() => navigate(`${editorPath}?routineId=${r.id}`)}
                               className="flex items-center gap-3 min-w-0 text-left flex-1"
                             >
-                              <Dumbbell className="h-4 w-4 text-accent flex-shrink-0" />
+                              <IconBarbell stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0" />
                               <div className="min-w-0">
                                 <p className="text-text-primary text-sm truncate">{r.title}</p>
                                 <p className="text-xs text-text-muted">Editada {new Date(r.updated_at).toLocaleDateString('es-AR')}</p>
                               </div>
                             </button>
                             <Button variant="ghost" size="sm" onClick={() => handleDeleteRoutine(r)} aria-label="Eliminar rutina">
-                              <Trash2 className="h-4 w-4" />
+                              <IconTrash stroke={1.75} className="h-4 w-4" />
                             </Button>
                           </div>
                         ))}
@@ -238,7 +241,7 @@ export default function CoachDashboard() {
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wide">Planes nutricionales</h3>
                       <Button size="sm" variant="accent" onClick={() => navigate(`${editorPath}?planType=nutrition&athleteId=${selected.id}`)}>
-                        <Plus className="h-4 w-4" /> Nuevo plan
+                        <IconPlus stroke={1.75} className="h-4 w-4" /> Nuevo plan
                       </Button>
                     </div>
 
@@ -252,14 +255,14 @@ export default function CoachDashboard() {
                               onClick={() => navigate(`${editorPath}?planType=nutrition&planId=${p.id}`)}
                               className="flex items-center gap-3 min-w-0 text-left flex-1"
                             >
-                              <Salad className="h-4 w-4 text-accent flex-shrink-0" />
+                              <IconSalad stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0" />
                               <div className="min-w-0">
                                 <p className="text-text-primary text-sm truncate">{p.title}</p>
                                 <p className="text-xs text-text-muted">Editado {new Date(p.updated_at).toLocaleDateString('es-AR')}</p>
                               </div>
                             </button>
                             <Button variant="ghost" size="sm" onClick={() => handleDeleteNutritionPlan(p)} aria-label="Eliminar plan nutricional">
-                              <Trash2 className="h-4 w-4" />
+                              <IconTrash stroke={1.75} className="h-4 w-4" />
                             </Button>
                           </div>
                         ))}
@@ -270,13 +273,16 @@ export default function CoachDashboard() {
               </div>
             ) : (
               <EmptyState
-                icon={Dumbbell}
+                icon={IconBarbell}
                 title="Elegí un atleta"
                 subtitle="Seleccioná un atleta de la lista para ver y crear sus rutinas."
               />
             )}
           </section>
         </div>
+
+        {/* Buzón de reclamos y bugs */}
+        <FeedbackSection />
       </main>
 
       <AthleteModal
@@ -293,12 +299,12 @@ export default function CoachDashboard() {
 
 function StatCard({ icon: Icon, label, value }) {
   return (
-    <div className="rounded-xl border border-border bg-primary-surface p-4">
+    <div className="rounded-md border border-border bg-primary-surface p-4">
       <div className="flex items-center gap-2 text-text-muted mb-1">
-        <Icon className="h-4 w-4" />
+        <Icon stroke={1.75} className="h-4 w-4" />
         <span className="text-xs uppercase tracking-wide">{label}</span>
       </div>
-      <p className="text-2xl font-bold text-text-primary font-display">{value}</p>
+      <p className="text-2xl font-bold text-text-primary font-mono">{value}</p>
     </div>
   );
 }
@@ -307,7 +313,7 @@ function EmptyState({ icon: Icon, title, subtitle, action }) {
   return (
     <div className="rounded-xl border border-dashed border-border bg-primary-surface/50 p-10 text-center">
       <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 mb-3">
-        <Icon className="h-6 w-6 text-accent" />
+        <Icon stroke={1.75} className="h-6 w-6 text-accent" />
       </div>
       <p className="text-text-primary font-medium">{title}</p>
       <p className="text-sm text-text-muted mt-1 max-w-xs mx-auto">{subtitle}</p>

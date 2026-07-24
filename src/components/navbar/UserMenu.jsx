@@ -5,7 +5,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronDown, User, LayoutDashboard, LogOut } from 'lucide-react';
+import { IconChevronDown, IconUser, IconLayoutDashboard, IconLogout } from '@tabler/icons-react';
 import { useAuth } from '../../store/authStore.jsx';
 
 /* ─────────────────────────────────────────────
@@ -86,7 +86,7 @@ export default function UserMenu() {
       >
         <Avatar name={user.name} />
         <span className="hidden sm:block max-w-[120px] truncate">{user.name}</span>
-        <ChevronDown
+        <IconChevronDown stroke={1.75}
           className={`h-4 w-4 flex-shrink-0 transition-transform duration-200 ${
             open ? 'rotate-180' : ''
           }`}
@@ -108,21 +108,21 @@ export default function UserMenu() {
 
           {/* Mi cuenta (placeholder) */}
           <button
-            className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:bg-white/5 hover:text-text-primary transition-colors"
+            className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:bg-text-primary/5 hover:text-text-primary transition-colors"
             role="menuitem"
             onClick={() => setOpen(false)}
           >
-            <User className="h-4 w-4 flex-shrink-0" />
+            <IconUser stroke={1.75} className="h-4 w-4 flex-shrink-0" />
             Mi cuenta
           </button>
 
           {/* Panel */}
           <button
-            className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:bg-white/5 hover:text-text-primary transition-colors"
+            className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:bg-text-primary/5 hover:text-text-primary transition-colors"
             role="menuitem"
             onClick={handleNavigateToDashboard}
           >
-            <LayoutDashboard className="h-4 w-4 flex-shrink-0" />
+            <IconLayoutDashboard stroke={1.75} className="h-4 w-4 flex-shrink-0" />
             Mi panel
           </button>
 
@@ -135,7 +135,7 @@ export default function UserMenu() {
             role="menuitem"
             onClick={handleLogout}
           >
-            <LogOut className="h-4 w-4 flex-shrink-0" />
+            <IconLogout stroke={1.75} className="h-4 w-4 flex-shrink-0" />
             Cerrar sesión
           </button>
         </div>

@@ -33,53 +33,53 @@ const RoutinePreview = memo(() => {
 
   return (
     <aside
-      className="flex h-full flex-col rounded-2xl border border-[#787878]/20 bg-[#202020] text-natural-wrap"
+      className="flex h-full flex-col rounded-2xl border border-border bg-primary-surface-elevated text-natural-wrap"
       data-testid="routine-preview"
     >
-      <div className="border-b border-[#787878]/20 px-6 py-5">
+      <div className="border-b border-border px-6 py-5">
         <div className="space-y-4 text-center">
           <h2 className="text-3xl font-bold text-accent text-natural-wrap">
             {plan.metadata.name || "Plan sin título"}
           </h2>
-          <div className="flex flex-wrap justify-center gap-2 text-xs uppercase tracking-wider text-[#787878]">
+          <div className="flex flex-wrap justify-center gap-2 text-xs uppercase tracking-wider text-text-tertiary">
             {plan.metadata.objective && (
-              <span className="rounded-full border border-[#787878]/20 bg-[#787878]/20 px-3 py-1 capitalize">
+              <span className="rounded-full border border-border bg-primary-surface-alt px-3 py-1 capitalize">
                 {TRAINING_GOAL_LABELS[plan.metadata.objective] ||
                   plan.metadata.objective}
               </span>
             )}
             {plan.metadata.frequency && (
-              <span className="rounded-full border border-[#787878]/20 bg-[#787878]/20 px-3 py-1">
+              <span className="rounded-full border border-border bg-primary-surface-alt px-3 py-1">
                 {plan.metadata.frequency}x semana
               </span>
             )}
             {plan.metadata.durationWeeks && (
-              <span className="rounded-full border border-[#787878]/20 bg-[#787878]/20 px-3 py-1">
+              <span className="rounded-full border border-border bg-primary-surface-alt px-3 py-1">
                 {plan.metadata.durationWeeks} semanas
               </span>
             )}
             {plan.metadata.level && (
-              <span className="rounded-full border border-[#787878]/20 bg-[#787878]/20 px-3 py-1">
+              <span className="rounded-full border border-border bg-primary-surface-alt px-3 py-1">
                 Nivel {plan.metadata.level}
               </span>
             )}
             {plan.metadata.author && (
-              <span className="rounded-full border border-[#787878]/20 bg-[#787878]/20 px-3 py-1 capitalize">
+              <span className="rounded-full border border-border bg-primary-surface-alt px-3 py-1 capitalize">
                 {plan.metadata.author}
               </span>
             )}
           </div>
           {plan.metadata.description && (
-            <p className="text-sm text-[#C9C9C9] text-natural-wrap">
+            <p className="text-sm text-text-secondary text-natural-wrap">
               {plan.metadata.description}
             </p>
           )}
           {tags.length > 0 && (
-            <div className="flex flex-wrap justify-center gap-2 text-[11px] text-[#787878]">
+            <div className="flex flex-wrap justify-center gap-2 text-[11px] text-text-tertiary">
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-[#787878]/20 bg-[#787878]/10 px-2 py-1 text-natural-wrap"
+                  className="rounded-full border border-border bg-primary-surface-alt/60 px-2 py-1 text-natural-wrap"
                 >
                   #{tag}
                 </span>
@@ -92,10 +92,10 @@ const RoutinePreview = memo(() => {
       <div className="flex-1 space-y-6 overflow-y-auto px-6 py-6">
         <nav className="space-y-3" aria-label="Índice de semanas">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-white">
+            <h3 className="text-sm font-semibold text-text-primary">
               Índice del plan
             </h3>
-            <span className="text-xs text-[#787878]">
+            <span className="text-xs text-text-tertiary">
               {plan.weeks.length} semanas
             </span>
           </div>
@@ -104,7 +104,7 @@ const RoutinePreview = memo(() => {
               <a
                 key={anchor.id}
                 href={`#${anchor.id}`}
-                className="rounded-xl border border-[#787878]/30 bg-[#1A1A1A] p-4 text-sm text-white transition-colors hover:border-accent/60 hover:bg-[#242424]"
+                className="rounded-xl border border-border-strong bg-primary-surface-alt p-4 text-sm text-text-primary transition-colors hover:border-accent/60 hover:bg-primary-surface-elevated"
               >
                 Semana {anchor.number}
               </a>
@@ -117,7 +117,7 @@ const RoutinePreview = memo(() => {
             <h3 className="text-sm font-semibold text-accent mb-2">
               Notas generales
             </h3>
-            <p className="text-sm text-[#C9C9C9] whitespace-pre-line">
+            <p className="text-sm text-text-secondary whitespace-pre-line">
               {plan.metadata.notes}
             </p>
           </section>

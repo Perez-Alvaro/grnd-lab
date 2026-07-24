@@ -6,12 +6,12 @@
 import { forwardRef } from 'react';
 
 const variants = {
-    primary: 'bg-accent text-primary-bg hover:bg-accent-light active:bg-accent-dark disabled:bg-neutral-700 disabled:text-neutral-500',
-    secondary: 'bg-accent-secondary text-primary-bg hover:bg-accent-secondary/90 active:bg-accent-secondary/80 disabled:bg-neutral-700 disabled:text-neutral-500',
+    primary: 'bg-accent text-primary-bg hover:bg-accent-light active:bg-accent-dark disabled:bg-border disabled:text-text-quaternary',
+    secondary: 'bg-accent-secondary text-primary-bg hover:bg-accent-secondary/90 active:bg-accent-secondary/80 disabled:bg-border disabled:text-text-quaternary',
     outline: 'border-2 border-accent text-text-primary hover:bg-accent/10 active:bg-accent/20 disabled:border-neutral-700 disabled:text-neutral-500',
     ghost: 'text-text-primary hover:bg-accent/10 active:bg-accent/20 disabled:text-neutral-500',
-    danger: 'bg-error text-white hover:bg-error/90 active:bg-error/80 disabled:bg-neutral-700 disabled:text-neutral-500',
-    accent: 'bg-accent text-primary-bg hover:bg-accent-light active:bg-accent-dark shadow-lg shadow-accent/20 disabled:bg-neutral-700 disabled:text-neutral-500',
+    danger: 'bg-error text-white hover:bg-error/90 active:bg-error/80 disabled:bg-border disabled:text-text-quaternary',
+    accent: 'bg-accent text-primary-bg hover:bg-accent-light active:bg-accent-dark shadow-lg shadow-accent/20 disabled:bg-border disabled:text-text-quaternary',
 };
 
 const sizes = {
@@ -30,7 +30,7 @@ const Button = forwardRef(({
     className = '',
     ...props
 }, ref) => {
-    const baseClasses = 'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary-bg disabled:cursor-not-allowed disabled:opacity-50';
+    const baseClasses = 'inline-flex items-center justify-center gap-2 rounded-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary-bg disabled:cursor-not-allowed disabled:opacity-50';
 
     const variantClass = variants[variant] || variants.primary;
     const sizeClass = sizes[size] || sizes.md;

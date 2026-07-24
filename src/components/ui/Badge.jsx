@@ -6,7 +6,7 @@
 import { forwardRef } from 'react';
 
 const variants = {
-    default: 'bg-neutral-800 text-text-secondary border-border',
+    default: 'bg-primary-surface-alt text-text-secondary border-border',
     accent: 'bg-accent/10 text-accent border-accent/20',
     secondary: 'bg-accent-secondary/10 text-accent-secondary border-accent-secondary/20',
     success: 'bg-success/10 text-success border-success/20',

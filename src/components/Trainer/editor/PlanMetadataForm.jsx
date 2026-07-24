@@ -1,13 +1,13 @@
 import { memo, useCallback } from "react";
-import { ChevronRight, Info, Copy } from "lucide-react";
+import { IconChevronRight, IconInfoCircle, IconCopy } from '@tabler/icons-react';
 import { Button } from "../../ui";
 import { usePlanContext } from "../../../context/PlanContext.jsx";
 import { TRAINING_GOALS } from "../../../constants/objectives.js";
 
 // Componente Helper Text reutilizable
 const HelperText = ({ children }) => (
-  <div className="mt-1.5 flex items-start gap-2 text-xs text-gray-400">
-    <Info className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-accent/70" />
+  <div className="mt-1.5 flex items-start gap-2 text-xs text-text-tertiary">
+    <IconInfoCircle stroke={1.75} className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-accent/70" />
     <p className="leading-relaxed">{children}</p>
   </div>
 );
@@ -22,9 +22,9 @@ const PlanMetadataForm = memo(({ onCopyPrompt }) => {
     [updateMetadata],
   );
 
-  const labelClasses = "text-sm font-medium text-gray-300";
+  const labelClasses = "text-sm font-medium text-text-secondary";
   const inputClasses =
-    "w-full rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white shadow-sm transition-colors focus:border-accent focus:outline-none focus:ring-0";
+    "w-full rounded-lg border border-border bg-primary-bg px-4 py-3 text-sm text-text-primary shadow-sm transition-colors focus:border-accent focus:outline-none focus:ring-0";
 
   const frequencyOptions = ["2", "3", "4", "5"];
   const durationOptions = ["1", "2", "3", "4", "6", "8", "12"];
@@ -39,16 +39,16 @@ const PlanMetadataForm = memo(({ onCopyPrompt }) => {
   return (
     <section
       data-testid="plan-metadata-form"
-      className="flex flex-col gap-4 rounded-xl border border-[#2E2E2E] bg-[#0E0E0E] p-5 shadow-[0_20px_70px_-45px_rgba(0,0,0,0.7)]"
+      className="flex flex-col gap-4 rounded-xl border border-border bg-primary-surface p-5 shadow-[0_20px_70px_-45px_rgba(0,0,0,0.7)]"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <ChevronRight className="h-5 w-5 text-accent" />
-          <h2 className="text-lg font-semibold text-white">
+          <IconChevronRight stroke={1.75} className="h-5 w-5 text-accent" />
+          <h2 className="text-lg font-semibold text-text-primary">
             Datos de la plantilla
           </h2>
         </div>
-        <span className="text-xs uppercase tracking-wide text-gray-500">
+        <span className="text-xs uppercase tracking-wide text-text-quaternary">
           Completa la información base
         </span>
       </div>
@@ -227,16 +227,16 @@ const PlanMetadataForm = memo(({ onCopyPrompt }) => {
 
         {/* Botón para copiar prompt - Solo en modo no asistido */}
         {onCopyPrompt && (
-          <div className="pt-4 border-t border-[#2E2E2E]">
+          <div className="pt-4 border-t border-border">
             <Button
               onClick={onCopyPrompt}
               variant="accent"
               className="w-full sm:w-auto"
             >
-              <Copy className="h-4 w-4" />
+              <IconCopy stroke={1.75} className="h-4 w-4" />
               Copiar Prompt para IA
             </Button>
-            <p className="text-xs text-gray-400 mt-3 leading-relaxed">
+            <p className="text-xs text-text-tertiary mt-3 leading-relaxed">
               Una vez completada la plantilla, copia el prompt y pégalo en <strong>ChatGPT, Claude o Gemini</strong> para generar automáticamente tu rutina completa con ejercicios, series, repeticiones y notas técnicas.
             </p>
           </div>

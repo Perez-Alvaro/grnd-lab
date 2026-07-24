@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { IconChevronDown } from '@tabler/icons-react';
 
 export default function FAQ({ items, defaultOpen = 0 }) {
     const [openIndex, setOpenIndex] = useState(defaultOpen);
@@ -13,7 +13,7 @@ export default function FAQ({ items, defaultOpen = 0 }) {
             {items.map((item, index) => (
                 <div
                     key={index}
-                    className="rounded-xl border border-border bg-primary-surface overflow-hidden transition-all hover:border-accent/20"
+                    className="rounded-md border border-border bg-primary-surface overflow-hidden transition-all hover:border-accent/20"
                 >
                     <button
                         onClick={() => toggleFAQ(index)}
@@ -23,7 +23,7 @@ export default function FAQ({ items, defaultOpen = 0 }) {
                         <span className="text-base font-semibold text-text-primary pr-4">
                             {item.question}
                         </span>
-                        <ChevronDown
+                        <IconChevronDown stroke={1.75}
                             className={`h-5 w-5 text-accent flex-shrink-0 transition-transform duration-300 ${openIndex === index ? 'rotate-180' : ''
                                 }`}
                         />

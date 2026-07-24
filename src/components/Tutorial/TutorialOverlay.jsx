@@ -1,10 +1,10 @@
 /**
- * Tutorial Overlay - Sistema de Onboarding para BaseRutina
+ * Tutorial Overlay - Sistema de Onboarding para Mock
  * Guía paso a paso para nuevos usuarios
  */
 
 import React, { useState, useEffect } from 'react';
-import { X, ArrowRight, ArrowLeft, Check, Lightbulb } from 'lucide-react';
+import { IconX, IconArrowRight, IconArrowLeft, IconCheck, IconBulb } from '@tabler/icons-react';
 import { Button } from '../ui';
 
 const TUTORIAL_STORAGE_KEY = 'grindlab_tutorial_completed';
@@ -160,11 +160,11 @@ export default function TutorialOverlay({ onComplete, shouldShow = false }) {
                         <div className="p-6 border-b border-border">
                             <div className="flex items-center gap-3 mb-3">
                                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10">
-                                    <Lightbulb className="h-6 w-6 text-accent" />
+                                    <IconBulb stroke={1.75} className="h-6 w-6 text-accent" />
                                 </div>
                                 <div>
-                                    <h2 className="text-2xl font-bold text-white font-display">
-                                        ¡Bienvenido a BaseRutina!
+                                    <h2 className="text-2xl font-bold text-text-primary font-display">
+                                        ¡Bienvenido a Mock!
                                     </h2>
                                     <p className="text-sm text-text-muted">Tu herramienta de generación de rutinas</p>
                                 </div>
@@ -174,7 +174,7 @@ export default function TutorialOverlay({ onComplete, shouldShow = false }) {
                         {/* Content */}
                         <div className="p-6">
                             <p className="text-text-secondary leading-relaxed mb-4">
-                                ¿Es tu primera vez aquí? Te recomendamos un <span className="text-white font-medium">tutorial rápido de 5 pasos</span> para
+                                ¿Es tu primera vez aquí? Te recomendamos un <span className="text-text-primary font-medium">tutorial rápido de 5 pasos</span> para
                                 aprender cómo generar rutinas profesionales con IA.
                             </p>
                             <div className="rounded-lg bg-accent/5 border border-accent/20 p-4 mb-6">
@@ -198,9 +198,9 @@ export default function TutorialOverlay({ onComplete, shouldShow = false }) {
                                 onClick={handleStartTutorial}
                                 className="flex-1 group"
                             >
-                                <Lightbulb className="mr-2 h-4 w-4" />
+                                <IconBulb stroke={1.75} className="mr-2 h-4 w-4" />
                                 Ver tutorial
-                                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                <IconArrowRight stroke={1.75} className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                             </Button>
                         </div>
                     </div>
@@ -262,13 +262,13 @@ export default function TutorialOverlay({ onComplete, shouldShow = false }) {
                                     </div>
                                     <button
                                         onClick={handleCloseTutorial}
-                                        className="text-text-muted hover:text-white transition-colors"
+                                        className="text-text-muted hover:text-text-primary transition-colors"
                                     >
-                                        <X className="h-4 w-4" />
+                                        <IconX stroke={1.75} className="h-4 w-4" />
                                     </button>
                                 </div>
 
-                                <h3 className="text-lg font-semibold text-white mb-2 font-display">
+                                <h3 className="text-lg font-semibold text-text-primary mb-2 font-display">
                                     {TUTORIAL_STEPS[currentStep].title}
                                 </h3>
                                 <p className="text-sm text-text-secondary leading-relaxed">
@@ -285,7 +285,7 @@ export default function TutorialOverlay({ onComplete, shouldShow = false }) {
                                     disabled={currentStep === 0}
                                     className="flex-shrink-0"
                                 >
-                                    <ArrowLeft className="mr-2 h-4 w-4" />
+                                    <IconArrowLeft stroke={1.75} className="mr-2 h-4 w-4" />
                                     Anterior
                                 </Button>
 
@@ -297,7 +297,7 @@ export default function TutorialOverlay({ onComplete, shouldShow = false }) {
                                         className="flex-shrink-0"
                                     >
                                         Siguiente
-                                        <ArrowRight className="ml-2 h-4 w-4" />
+                                        <IconArrowRight stroke={1.75} className="ml-2 h-4 w-4" />
                                     </Button>
                                 ) : (
                                     <Button
@@ -306,7 +306,7 @@ export default function TutorialOverlay({ onComplete, shouldShow = false }) {
                                         onClick={handleCompleteTutorial}
                                         className="flex-shrink-0"
                                     >
-                                        <Check className="mr-2 h-4 w-4" />
+                                        <IconCheck stroke={1.75} className="mr-2 h-4 w-4" />
                                         ¡Entendido!
                                     </Button>
                                 )}

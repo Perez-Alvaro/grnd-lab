@@ -45,15 +45,15 @@ const CoverPage = ({ plan, styles }) => {
         {/* Header Section */}
         <View style={styles.headerSection}>
           <Text style={styles.planTitle}>{plan.title}</Text>
-          {plan.description && (
+          {plan.description ? (
             <Text style={styles.planDescription}>{plan.description}</Text>
-          )}
+          ) : null}
         </View>
 
         {/* Metadata Section */}
         <View style={styles.metadataSection}>
           {/* First row: Objetivo, Nivel, Género */}
-          {(objectiveLabel || plan.level || plan.gender || plan.genre) && (
+          {(objectiveLabel || plan.level || plan.gender || plan.genre) ? (
             <MetadataRow
               items={[
                 { label: "OBJETIVO", value: objectiveLabel },
@@ -62,10 +62,10 @@ const CoverPage = ({ plan, styles }) => {
               ]}
               styles={styles}
             />
-          )}
+          ) : null}
 
           {/* Second row: Duration, Frequency, Coach */}
-          {(durationText !== "—" || frequencyText !== "—" || plan.author || plan.user) && (
+          {(durationText !== "—" || frequencyText !== "—" || plan.author || plan.user) ? (
             <MetadataRow
               items={[
                 { label: "DURACIÓN", value: durationText },
@@ -74,24 +74,24 @@ const CoverPage = ({ plan, styles }) => {
               ]}
               styles={styles}
             />
-          )}
+          ) : null}
         </View>
 
         {/* Tags */}
-        {plan.tags && plan.tags.length > 0 && (
+        {plan.tags && plan.tags.length > 0 ? (
           <View style={styles.tagsSection}>
             <Tags tags={plan.tags} styles={styles} />
           </View>
-        )}
+        ) : null}
 
         {/* General Notes */}
-        {plan.notes && (
+        {plan.notes ? (
           <View style={styles.notesSection}>
             <Text style={styles.notesTitle}>NOTAS GENERALES</Text>
             <View style={styles.notesDivider} />
             <Text style={styles.notesText}>{plan.notes}</Text>
           </View>
-        )}
+        ) : null}
       </View>
 
       {/* Week Index */}
@@ -108,6 +108,7 @@ const CoverPage = ({ plan, styles }) => {
               key={week.number}
               src={weekLinkTarget(week.number)}
               style={styles.indexCard}
+              wrap={false}
             >
               <Text style={styles.indexCardTitle}>{`SEMANA ${week.number}`}</Text>
               <Text style={styles.indexCardDescription}>

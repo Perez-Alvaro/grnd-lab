@@ -1,5 +1,5 @@
-import { useState, useCallback, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Sparkles, Copy, ClipboardPaste, ExternalLink, Check, AlertCircle } from "lucide-react";
+import { useState, useCallback, useEffect, useMemo } from "react";
+import { IconChevronLeft, IconChevronRight, IconSparkles, IconCopy, IconClipboardText, IconExternalLink, IconCheck, IconAlertCircle } from '@tabler/icons-react';
 import { generateAIPrompt } from "../../../utils/promptGenerator.js";
 import { universalImport } from "../../../lib/transformers/routineTransformer.js";
 import { usePlanContext } from "../../../context/PlanContext.jsx";
@@ -25,7 +25,6 @@ const FitterOnboarding = ({
     generatePrompt = generateAIPrompt,
     importFn = universalImport,
 }) => {
-    const STEPS = steps;
     const { metadata, updateMetadata } = usePlanContext();
     const [i, setI] = useState(0);
     const [copied, setCopied] = useState(null);
@@ -34,18 +33,28 @@ const FitterOnboarding = ({
     const [showTextarea, setShowTextarea] = useState(false);
     const [jsonInput, setJsonInput] = useState("");
 
-    const step = STEPS[i];
-    const progress = ((i + 1) / STEPS.length) * 100;
+    // Pasos condicionales: un step con showIf(metadata) === false se oculta
+    // (ej: preguntas de logística solo si el plan es "detallado").
+    const STEPS = useMemo(
+        () => steps.filter((s) => !s.showIf || s.showIf(metadata)),
+        [steps, metadata]
+    );
+
+    // Clamp: si la lista se achica (eligió "simple"), el índice no puede quedar afuera
+    const idx = Math.min(i, STEPS.length - 1);
+    const step = STEPS[idx];
+    const progress = ((idx + 1) / STEPS.length) * 100;
     const val = step.field ? (metadata[step.field] || "") : "";
     const filled = !step.required || (val && val.toString().trim() !== "");
 
-    const next = useCallback(() => setI((p) => Math.min(p + 1, STEPS.length - 1)), [STEPS.length]);
-    const prev = useCallback(() => setI((p) => Math.max(p - 1, 0)), []);
+    // Navegación desde idx (no desde i) para que el clamp no saltee pasos
+    const next = useCallback(() => setI(Math.min(idx + 1, STEPS.length - 1)), [idx, STEPS.length]);
+    const prev = useCallback(() => setI(Math.max(idx - 1, 0)), [idx]);
 
     const pick = useCallback((field, value) => {
         updateMetadata(field, value);
-        setTimeout(() => setI((p) => Math.min(p + 1, STEPS.length - 1)), 220);
-    }, [updateMetadata, STEPS.length]);
+        setTimeout(() => setI(Math.min(idx + 1, STEPS.length - 1)), 220);
+    }, [updateMetadata, idx, STEPS.length]);
 
     const importFromText = useCallback((text) => {
         setJsonError(""); setOk(false);
@@ -85,14 +94,14 @@ const FitterOnboarding = ({
     useEffect(() => {
         const el = document.querySelector("input[data-onb], textarea[data-onb]");
         if (el) setTimeout(() => el.focus(), 60);
-    }, [i]);
+    }, [idx]);
 
     return (
         <div className="mx-auto max-w-2xl">
             {/* Progreso */}
             <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-text-tertiary">Paso {i + 1} de {STEPS.length}</span>
+                    <span className="text-xs font-medium text-text-tertiary">Paso {idx + 1} de {STEPS.length}</span>
                     <span className="text-xs font-medium text-accent">{Math.round(progress)}%</span>
                 </div>
                 <div className="h-1.5 bg-primary-bg rounded-full overflow-hidden">
@@ -105,7 +114,7 @@ const FitterOnboarding = ({
                     {/* Pregunta (chat de Fitter) */}
                     <div className="flex gap-3 mb-5">
                         <div className="flex-shrink-0 w-9 h-9 rounded-full bg-accent flex items-center justify-center shadow-md shadow-accent/20">
-                            <Sparkles className="w-4 h-4 text-primary-bg" />
+                            <IconSparkles stroke={1.75} className="w-4 h-4 text-primary-bg" />
                         </div>
                         <div className="flex-1 bg-primary-bg border border-border rounded-2xl rounded-tl-none px-4 py-3">
                             <p className="text-sm font-semibold text-text-primary leading-snug">{step.q}</p>
@@ -177,22 +186,22 @@ const FitterOnboarding = ({
                                                 }`}
                                             >
                                                 <span className={`w-9 h-9 rounded-lg flex items-center justify-center ${c ? "bg-accent/20 text-accent" : "bg-primary-bg text-text-secondary"}`}>
-                                                    {c ? <Check className="w-5 h-5" /> : pl.icon}
+                                                    {c ? <IconCheck stroke={1.75} className="w-5 h-5" /> : pl.icon}
                                                 </span>
                                                 <span className="text-xs font-semibold text-text-primary">{pl.name}</span>
-                                                {!c && <ExternalLink className="absolute top-2 right-2 w-3 h-3 text-text-quaternary" />}
+                                                {!c && <IconExternalLink stroke={1.75} className="absolute top-2 right-2 w-3 h-3 text-text-quaternary" />}
                                             </button>
                                         );
                                     })}
                                 </div>
                                 {copied && (
                                     <div className="mt-3 flex items-center gap-2 p-2.5 rounded-lg bg-accent/10 border border-accent/25">
-                                        <Check className="w-4 h-4 text-accent flex-shrink-0" />
+                                        <IconCheck stroke={1.75} className="w-4 h-4 text-accent flex-shrink-0" />
                                         <p className="text-xs text-text-secondary">Prompt copiado y IA abierta. Pegá con <strong className="text-text-primary">Ctrl/Cmd+V</strong> y enviá.</p>
                                     </div>
                                 )}
                                 <button onClick={onCopyPrompt} className="mt-3 w-full text-xs text-text-tertiary hover:text-text-primary transition-colors inline-flex items-center justify-center gap-1.5">
-                                    <Copy className="w-3.5 h-3.5" /> o copiar el prompt manualmente
+                                    <IconCopy stroke={1.75} className="w-3.5 h-3.5" /> o copiar el prompt manualmente
                                 </button>
                             </div>
 
@@ -208,7 +217,7 @@ const FitterOnboarding = ({
 
                                 {!showTextarea ? (
                                     <Button variant="accent" size="lg" onClick={smartPaste} className="w-full h-14 text-base">
-                                        <ClipboardPaste className="h-5 w-5" /> Pegá lo que te dio la IA
+                                        <IconClipboardText stroke={1.75} className="h-5 w-5" /> Pegá lo que te dio la IA
                                     </Button>
                                 ) : (
                                     <div className="space-y-3">
@@ -218,20 +227,20 @@ const FitterOnboarding = ({
                                             className={`${inputCls} min-h-[160px] resize-none font-mono text-xs`} rows={8} autoFocus
                                         />
                                         <Button variant="accent" size="lg" onClick={() => importFromText(jsonInput)} disabled={!jsonInput.trim()} className="w-full">
-                                            <ClipboardPaste className="h-4 w-4" /> Cargar rutina
+                                            <IconClipboardText stroke={1.75} className="h-4 w-4" /> Cargar rutina
                                         </Button>
                                     </div>
                                 )}
 
                                 {jsonError && (
                                     <div className="mt-3 flex items-start gap-2 p-3 bg-red-500/10 border border-red-500/25 rounded-lg">
-                                        <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
+                                        <IconAlertCircle stroke={1.75} className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
                                         <p className="text-xs text-red-300">{jsonError}</p>
                                     </div>
                                 )}
                                 {ok && (
                                     <div className="mt-3 flex items-center gap-2 p-3 bg-accent/10 border border-accent/25 rounded-lg">
-                                        <Check className="w-4 h-4 text-accent flex-shrink-0" />
+                                        <IconCheck stroke={1.75} className="w-4 h-4 text-accent flex-shrink-0" />
                                         <p className="text-xs text-text-secondary">¡Rutina cargada! Mirala en la vista previa.</p>
                                     </div>
                                 )}
@@ -244,23 +253,23 @@ const FitterOnboarding = ({
             {/* Navegación (los chips autoavanzan; igual dejamos Atrás y Siguiente/Omitir) */}
             {step.kind !== "completion" ? (
                 <div className="flex items-center justify-between mt-6">
-                    <Button variant="ghost" onClick={prev} disabled={i === 0} className="disabled:opacity-30">
-                        <ChevronLeft className="h-4 w-4" /> Atrás
+                    <Button variant="ghost" onClick={prev} disabled={idx === 0} className="disabled:opacity-30">
+                        <IconChevronLeft stroke={1.75} className="h-4 w-4" /> Atrás
                     </Button>
                     {step.kind !== "chips" ? (
                         <Button variant="accent" onClick={next} disabled={!filled} className="min-w-[130px]">
                             {step.required || filled ? "Siguiente" : "Omitir"}
-                            <ChevronRight className="h-4 w-4" />
+                            <IconChevronRight stroke={1.75} className="h-4 w-4" />
                         </Button>
                     ) : (
                         !step.required && (
-                            <Button variant="ghost" onClick={next}>Omitir <ChevronRight className="h-4 w-4" /></Button>
+                            <Button variant="ghost" onClick={next}>Omitir <IconChevronRight stroke={1.75} className="h-4 w-4" /></Button>
                         )
                     )}
                 </div>
             ) : (
                 <div className="flex items-center justify-between mt-6">
-                    <Button variant="ghost" onClick={prev}><ChevronLeft className="h-4 w-4" /> Atrás</Button>
+                    <Button variant="ghost" onClick={prev}><IconChevronLeft stroke={1.75} className="h-4 w-4" /> Atrás</Button>
                     <Button variant="ghost" onClick={() => setI(0)}>Empezar de nuevo</Button>
                 </div>
             )}

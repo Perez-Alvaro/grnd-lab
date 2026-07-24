@@ -10,11 +10,47 @@ const normalizeUrl = (url) => {
   return `https://${trimmed}`;
 };
 
+const formatNotes = (notes) => {
+  if (!notes) return "";
+  if (Array.isArray(notes)) return notes.filter(Boolean).join("\n");
+  return String(notes);
+};
+
+// ── Keep-together ────────────────────────────────────────────
+// Cada día se imprime ENTERO en una página (salta a la siguiente si no entra
+// en lo que queda). Solo un día más alto que una página completa fluye con
+// filas atómicas, para no recortarse. La estimación sobreestima a propósito.
+const estimateDayHeight = (day) => {
+  if (day.type === "DESCANSO") return 90;
+  let h = 90; // padding de la card + header del día
+  const warmup = day.warmupExercises || [];
+  if (warmup.length) {
+    h += 60; // título + header de tabla de entrada en calor
+    for (const w of warmup) {
+      h += Math.max(1, Math.ceil(formatNotes(w.notes).length / 42)) * 16 + 14;
+    }
+  }
+  const exercises = day.exercises || [];
+  if (exercises.length) {
+    h += 40; // header de la tabla
+    for (const ex of exercises) {
+      const nameLines = Math.max(1, Math.ceil((ex.name || "").length / 24));
+      h += nameLines * 15 + 17;
+      const notes = formatNotes(ex.notes || ex.note);
+      if (notes) h += Math.ceil(notes.length / 80) * 15 + 17;
+    }
+  }
+  return h;
+};
+
+// Página A4 útil ≈ 770pt; margen de seguridad amplio
+const MAX_KEEP_TOGETHER = 640;
+
 const ExerciseTable = ({ exercises, styles }) => {
   if (!exercises || !exercises.length) return null;
   return (
     <View style={styles.table}>
-      <View style={[styles.tableRow, styles.tableHeaderRow]}>
+      <View style={[styles.tableRow, styles.tableHeaderRow]} wrap={false} minPresenceAhead={40}>
         <Text
           style={[styles.tableCell, styles.tableHeaderCell, styles.exerciseCol]}
         >
@@ -66,6 +102,7 @@ const ExerciseTable = ({ exercises, styles }) => {
         const rows = [
           <View
             key={`${name}-${idx}`}
+            wrap={false}
             style={[
               styles.tableRow,
               idx % 2 === 0 ? null : styles.tableRowAlternate,
@@ -80,10 +117,8 @@ const ExerciseTable = ({ exercises, styles }) => {
             {videoUrl ? (
               <Link
                 src={normalizeUrl(videoUrl)}
-                style={[styles.tableCell, styles.videoCol, styles.videoLink, { position: 'relative' }]}
+                style={[styles.tableCell, styles.videoCol, styles.videoLink]}
               >
-                {/* Capa visual: Texto real invisible 'tapado' por el botón visual */}
-                <Text style={{ position: 'absolute', opacity: 0, fontSize: 1 }}>{normalizeUrl(videoUrl)}</Text>
                 <Text>VER VIDEO</Text>
               </Link>
             ) : (
@@ -96,6 +131,7 @@ const ExerciseTable = ({ exercises, styles }) => {
           rows.push(
             <View
               key={`${name}-${idx}-notes`}
+              wrap={false}
               style={[
                 styles.tableRow,
                 styles.exerciseNotesRow,
@@ -103,7 +139,7 @@ const ExerciseTable = ({ exercises, styles }) => {
               ]}
             >
               <Text style={[styles.tableCell, styles.exerciseNotesCell]}>
-                Notas: {exercise.notes || exercise.note}
+                Notas: {formatNotes(exercise.notes || exercise.note)}
               </Text>
             </View>
           );
@@ -123,7 +159,7 @@ const WarmupTable = ({ warmupExercises, dayNumber, styles }) => {
         Entrada en calor del Día {dayNumber}
       </Text>
       <View style={styles.table}>
-        <View style={[styles.tableRow, styles.tableHeaderRow]}>
+        <View style={[styles.tableRow, styles.tableHeaderRow]} wrap={false} minPresenceAhead={40}>
           <Text style={[styles.tableCell, styles.tableHeaderCell, { flex: 3 }]}>Ejercicio</Text>
           <Text style={[styles.tableCell, styles.tableHeaderCell, { flex: 1 }]}>Duración</Text>
           <Text style={[styles.tableCell, styles.tableHeaderCell, { flex: 4 }]}>Notas</Text>
@@ -131,11 +167,12 @@ const WarmupTable = ({ warmupExercises, dayNumber, styles }) => {
         {warmupExercises.map((ex, idx) => (
           <View
             key={`warmup-${idx}`}
+            wrap={false}
             style={[styles.tableRow, idx % 2 !== 0 ? styles.tableRowAlternate : null]}
           >
             <Text style={[styles.tableCell, { flex: 3 }]}>{ex.name || "—"}</Text>
             <Text style={[styles.tableCell, { flex: 1 }]}>{ex.duration || "—"}</Text>
-            <Text style={[styles.tableCell, { flex: 4 }]}>{ex.notes || "—"}</Text>
+            <Text style={[styles.tableCell, { flex: 4 }]}>{formatNotes(ex.notes) || "—"}</Text>
           </View>
         ))}
       </View>
@@ -146,9 +183,11 @@ const WarmupTable = ({ warmupExercises, dayNumber, styles }) => {
 const DayBlock = ({ day, dayNumber, styles }) => {
   const isRestDay = day.type === "DESCANSO";
 
+  const keepTogether = estimateDayHeight(day) <= MAX_KEEP_TOGETHER;
+
   return (
-    <View style={styles.dayContainer} wrap={false}>
-      <View style={styles.dayHeader}>
+    <View style={styles.dayContainer} wrap={!keepTogether} minPresenceAhead={110}>
+      <View style={styles.dayHeader} wrap={false}>
         <Text style={styles.dayName}>{day.name}</Text>
         <Text
           style={[

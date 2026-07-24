@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useRef, useState } from "react";
-import { Copy, Trash2, Plus, ChevronDown } from "lucide-react";
+import { IconCopy, IconTrash, IconPlus, IconChevronDown } from '@tabler/icons-react';
 import { usePlanContext } from "../../../context/PlanContext.jsx";
 import ExerciseEditor from "./ExerciseEditor.jsx";
 
@@ -68,15 +68,15 @@ const DayEditor = memo(
       previousItemCountRef.current = items.length;
     }, [items.length]);
 
-    const labelClasses = "text-sm font-medium text-gray-400";
+    const labelClasses = "text-sm font-medium text-text-tertiary";
     const inputClasses =
-      "w-full rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] px-4 py-3 text-sm text-white transition-colors focus:border-accent focus:outline-none focus:ring-0";
+      "w-full rounded-lg border border-border bg-primary-bg px-4 py-3 text-sm text-text-primary transition-colors focus:border-accent focus:outline-none focus:ring-0";
 
     return (
       <div
         data-testid="day-editor"
         ref={registerDayRef}
-        className="overflow-hidden rounded-xl border border-[#2E2E2E] bg-[#0A0A0A] shadow-sm transition-all duration-200 ease-in-out"
+        className="overflow-hidden rounded-xl border border-border bg-primary-bg shadow-sm transition-all duration-200 ease-in-out"
       >
         <div className="flex flex-col gap-4 p-5">
           <div className="flex flex-col gap-4">
@@ -87,13 +87,13 @@ const DayEditor = memo(
                 className="flex flex-1 items-center justify-between gap-4 text-left"
               >
                 <div className="flex flex-col gap-1">
-                  <span className="text-xs uppercase tracking-wide text-gray-500">
+                  <span className="text-xs uppercase tracking-wide text-text-quaternary">
                     Día {index + 1}
                   </span>
-                  <span className="text-base font-semibold text-white">
+                  <span className="text-base font-semibold text-text-primary">
                     {day.name ? day.name : `Día ${index + 1}`}
                   </span>
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-gray-400">
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-text-tertiary">
                     <span>
                       {isRestDay
                         ? "Día de descanso"
@@ -103,30 +103,30 @@ const DayEditor = memo(
                     </span>
                     {!isRestDay && items.length > 0 && (
                       <>
-                        <span className="h-1 w-1 rounded-full bg-[#2E2E2E]" />
+                        <span className="h-1 w-1 rounded-full bg-border" />
                         <span>{items.length} {ui.labelPlural}</span>
                       </>
                     )}
                   </div>
                 </div>
-                <ChevronDown
-                  className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                <IconChevronDown stroke={1.75}
+                  className={`h-5 w-5 text-text-quaternary transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
                 />
               </button>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={handleDuplicateDay}
-                  className="inline-flex items-center gap-2 rounded-lg border border-[#2E2E2E] px-3 py-2 text-xs font-semibold text-accent transition-colors hover:border-accent hover:bg-[#101010]"
+                  className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-xs font-semibold text-accent transition-colors hover:border-accent hover:bg-primary-surface-alt"
                 >
-                  <Copy className="h-4 w-4" /> Duplicar
+                  <IconCopy stroke={1.75} className="h-4 w-4" /> Duplicar
                 </button>
                 <button
                   type="button"
                   onClick={handleRemoveDay}
                   className="inline-flex items-center gap-2 rounded-lg border border-red-500/40 px-3 py-2 text-xs font-semibold text-red-400 transition-colors hover:border-red-400 hover:bg-red-500/10"
                 >
-                  <Trash2 className="h-4 w-4" /> Eliminar
+                  <IconTrash stroke={1.75} className="h-4 w-4" /> Eliminar
                 </button>
               </div>
             </div>
@@ -179,7 +179,7 @@ const DayEditor = memo(
                 </div>
 
                 {isRestDay ? (
-                  <p className="rounded-lg border border-dashed border-[#2E2E2E] bg-[#0A0A0A] px-4 py-4 text-sm text-gray-300">
+                  <p className="rounded-lg border border-dashed border-border bg-primary-bg px-4 py-4 text-sm text-text-secondary">
                     Día de descanso. Usa este espacio para pautas de
                     recuperación activa.
                   </p>
@@ -189,14 +189,14 @@ const DayEditor = memo(
                     {ui.showWarmup && day.warmupExercises && day.warmupExercises.length > 0 && (
                       <div className="flex flex-col gap-3">
                         <div className="flex items-center justify-between">
-                          <h5 className="text-sm font-semibold uppercase tracking-wide text-gray-400">
+                          <h5 className="text-sm font-semibold uppercase tracking-wide text-text-tertiary">
                             Entrada en calor ({day.warmupExercises.length})
                           </h5>
                         </div>
-                        <div className="rounded-lg border border-[#2E2E2E] bg-[#0A0A0A] p-3 overflow-x-auto">
+                        <div className="rounded-lg border border-border bg-primary-bg p-3 overflow-x-auto">
                           <table className="w-full text-sm text-text-primary">
                             <thead>
-                              <tr className="border-b border-[#2E2E2E] text-xs uppercase text-text-muted">
+                              <tr className="border-b border-border text-xs uppercase text-text-muted">
                                 <th className="text-left px-3 py-2">Ejercicio</th>
                                 <th className="text-left px-3 py-2">Duración</th>
                                 <th className="text-left px-3 py-2">Notas</th>
@@ -204,10 +204,10 @@ const DayEditor = memo(
                             </thead>
                             <tbody>
                               {day.warmupExercises.map((warmup, idx) => (
-                                <tr key={idx} className="border-b border-[#1E1E1E] hover:bg-[#0E0E0E]">
+                                <tr key={idx} className="border-b border-border-muted hover:bg-primary-surface">
                                   <td className="px-3 py-2">{warmup.name}</td>
-                                  <td className="px-3 py-2 text-gray-400">{warmup.duration}</td>
-                                  <td className="px-3 py-2 text-gray-400 text-xs">{warmup.notes}</td>
+                                  <td className="px-3 py-2 text-text-tertiary">{warmup.duration}</td>
+                                  <td className="px-3 py-2 text-text-tertiary text-xs">{warmup.notes}</td>
                                 </tr>
                               ))}
                             </tbody>
@@ -217,15 +217,15 @@ const DayEditor = memo(
                     )}
 
                     <div className="flex items-center justify-between">
-                      <h5 className="text-sm font-semibold uppercase tracking-wide text-gray-400 capitalize">
+                      <h5 className="text-sm font-semibold uppercase tracking-wide text-text-tertiary capitalize">
                         {ui.labelPlural} ({items.length})
                       </h5>
                       <button
                         type="button"
                         onClick={handleAddItem}
-                        className="inline-flex items-center gap-2 rounded-lg border border-dashed border-[#2E2E2E] px-3 py-2 text-xs font-semibold text-accent transition-colors hover:border-accent hover:bg-[#101010]"
+                        className="inline-flex items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-xs font-semibold text-accent transition-colors hover:border-accent hover:bg-primary-surface-alt"
                       >
-                        <Plus className="h-4 w-4" /> {ui.addLabel}
+                        <IconPlus stroke={1.75} className="h-4 w-4" /> {ui.addLabel}
                       </button>
                     </div>
 

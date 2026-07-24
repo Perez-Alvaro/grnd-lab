@@ -12,10 +12,9 @@ const normalizeUrlText = (url) => {
  * Genera un PDF de una rutina de entrenamiento en formato MOBILE (A4 vertical)
  * Sistema visual 100% mobile-first con cards tipo app y flujo continuo Mynter-style
  * @param {Object} routine - Rutina completa con todos los detalles
- * @param {Object} purchaseInfo - Información de la compra (usuario, fecha, etc)
  * @returns {Blob} - PDF generado como blob
  */
-export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
+export const generateRoutinePDFMobile = (routine) => {
   const doc = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',
@@ -41,32 +40,37 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
   const spacing40 = 14;   // 40px
   
   // Card styling (reducidos para cards más compactas)
-  const cardPadding = 5;  // Reducido de 6mm a 5mm
   const cardRadius = 6;
   const cardGap = 7; // Reducido de 8.5mm a 7mm
-  const cardMinHeight = 20;  // Reducido de 24mm a 20mm
-  
+
   // Colores del sistema (NO MODIFICAR)
   const textPrimary = [28, 28, 28];     // #1C1C1C
   const textSecondary = [110, 110, 110]; // #6E6E6E
   const accent = [46, 74, 95];           // #2E4A5F
   const divider = [224, 224, 224];       // #E0E0E0
-  const bgWhite = [255, 255, 255];       // #FFFFFF
   const bgLight = [250, 250, 250];       // #FAFAFA
 
   let yPos = 0;
+
+  // Banda reservada al pie para el footer (evita que el contenido lo pise)
+  const footerReserve = 8;
+  const pageBottomLimit = pageHeight - margin - footerReserve;
+  // Alto útil de una página completa de contenido
+  const usablePageHeight = pageBottomLimit - margin;
 
   // ============================================
   // HELPER: Verificar espacio en página
   // ============================================
   const checkPageSpace = (requiredSpace) => {
-    if (yPos + requiredSpace > pageHeight - margin) {
+    if (yPos + requiredSpace > pageBottomLimit) {
       doc.addPage();
       yPos = margin;
       return true;
     }
     return false;
   };
+
+  const currentPage = () => doc.internal.getCurrentPageInfo().pageNumber;
 
   // ============================================
   // HELPER: Dibujar card con borde sutil
@@ -156,18 +160,12 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
   yPos += spacing16; // Margin-bottom: 16px (respiración)
 
   const weeks = routine.weeks || [];
-  
-  // Mapa de páginas para links internos
-  const weekPageMap = {};
-  let pageCounter = 2; // Página 1 es la portada
-  
-  weeks.forEach((week, weekIndex) => {
-    const weekNum = week.weekNumber || weekIndex + 1;
-    weekPageMap[weekNum] = pageCounter;
-    
-    const days = week.days || [];
-    pageCounter += days.length; // 1 página por día
-  });
+
+  // Links internos del índice: las páginas reales se conocen recién al renderizar
+  // el contenido (un día puede ocupar más de una página), así que acá solo se
+  // guardan los rectángulos de cada card y los links se agregan al final.
+  const indexLinkRects = [];
+  const weekStartPage = {};
 
   // Renderizar cards de semanas
   // Cada ítem: padding vertical 12-16px, margin-bottom 12px
@@ -177,7 +175,6 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
     const dayCount = days.length;
     
     // Padding reducido
-    const weekCardPaddingV = 4;  // Reducido
     const weekCardPaddingH = 6;  // Reducido
     
     // Altura dinámica de la card (reducida)
@@ -241,9 +238,12 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
     const daysX = margin + (contentWidth - daysWidth) / 2;
     doc.text(daysText, daysX, contentY);
     
-    // Link clickeable (toda la card)
-    doc.link(margin, cardY, contentWidth, cardHeight, { 
-      pageNumber: weekPageMap[weekNum] 
+    // Link clickeable (toda la card) — se agrega al final, cuando ya se conoce
+    // la página real de destino de cada semana.
+    indexLinkRects.push({
+      page: currentPage(),
+      x: margin, y: cardY, w: contentWidth, h: cardHeight,
+      weekNum,
     });
     
     // Margin-bottom reducido entre items de semana
@@ -277,6 +277,11 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
       
       doc.addPage();
       yPos = margin + spacing16;  // Aumentado para más espacio arriba
+
+      // Primera página de la semana → destino del link del índice
+      if (weekStartPage[weekNum] === undefined) {
+        weekStartPage[weekNum] = currentPage();
+      }
 
       // ============================================
       // HEADER DEL DÍA (Estilo App)
@@ -335,6 +340,49 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
       }
 
       // ============================================
+      // ENTRADA EN CALOR (si existe)
+      // ============================================
+
+      const warmup = Array.isArray(day.warmupExercises) ? day.warmupExercises : [];
+      if (warmup.length) {
+        checkPageSpace(spacing24);
+        doc.setFontSize(12);
+        doc.setTextColor(...textPrimary);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Entrada en calor', margin, yPos);
+        yPos += spacing16;
+
+        warmup.forEach((w) => {
+          const wName = w.name || 'Ejercicio';
+          const wDuration = w.duration || w.duracion || '';
+          const header = wDuration ? `${wName}  ·  ${wDuration}` : wName;
+          const headerLines = doc.splitTextToSize(header, contentWidth);
+          const wNoteLines = w.notes
+            ? doc.splitTextToSize(String(w.notes), contentWidth - 4)
+            : [];
+          const headerLineH = 4.2;
+          const noteLineH = 3.8;
+          checkPageSpace(headerLines.length * headerLineH + wNoteLines.length * noteLineH + 2);
+
+          doc.setFontSize(10);
+          doc.setTextColor(...textPrimary);
+          doc.setFont('helvetica', 'bold');
+          doc.text(headerLines, margin, yPos);
+          yPos += headerLines.length * headerLineH;
+
+          if (wNoteLines.length) {
+            doc.setFontSize(9);
+            doc.setTextColor(...textSecondary);
+            doc.setFont('helvetica', 'normal');
+            doc.text(wNoteLines, margin + 4, yPos);
+            yPos += wNoteLines.length * noteLineH;
+          }
+          yPos += 2;
+        });
+        yPos += spacing16;
+      }
+
+      // ============================================
       // BLOQUES DE ENTRENAMIENTO
       // ============================================
 
@@ -370,7 +418,7 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
         // EJERCICIOS (Card Mobile Style)
         // ============================================
 
-        blockExercises.forEach((exercise, exIdx) => {
+        blockExercises.forEach((exercise) => {
           
           // ============================================
           // ESPECIFICACIONES UX/UI RIGUROSAS
@@ -386,7 +434,6 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
           
           // Spacing Specs (reducidos)
           const titleMarginBottom = 3;     // Reducido de 5mm a 3mm
-          const metricsGapHorizontal = 4;  // Reducido
           const notesMarginTop = 3;        // Reducido de 4.9mm a 3mm
           
           // Calcular ancho disponible
@@ -408,15 +455,13 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
           // Bloque de métricas (altura reducida)
           const metricsBlockHeight = 9; // Reducido de 11mm a 9mm
           
-          // Notas del ejercicio (ahora con separador + etiqueta + contenido multilínea)
-          let notesHeight = 0;
-          if (hasNotes) {
-            const noteText = exercise.notes || exercise.note;
-            const noteLines = doc.splitTextToSize(noteText, availableCardWidth);
-            const noteFontSize = 10; // pt
-            const lineHeight = (noteFontSize * 0.35) * 1.4; // pt to mm * line-height
-            notesHeight = 4 + 5 + (noteLines.length * lineHeight); // Separador (4mm) + etiqueta (5mm) + contenido
-          }
+          // Notas del ejercicio (separador + etiqueta + contenido multilínea)
+          const noteText = hasNotes ? (exercise.notes || exercise.note) : '';
+          const noteLines = hasNotes ? doc.splitTextToSize(noteText, availableCardWidth) : [];
+          const noteLineHeight = (10 * 0.35) * 1.4; // pt a mm * line-height
+          const notesHeight = hasNotes
+            ? 4 + 5 + (noteLines.length * noteLineHeight) // Separador (4mm) + etiqueta (5mm) + contenido
+            : 0;
           
           // Altura total de la card (compacta)
           const cardContentHeight = 
@@ -428,25 +473,34 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
             notesHeight +                      // Nota (si existe)
             cardPaddingVertical;               // Bottom padding
           
+          // Si la card completa no entra ni en una página entera, se dibuja la
+          // card solo con título + métricas y las notas fluyen debajo con salto
+          // de página por línea (nunca se dibuja fuera de la hoja).
+          const headerOnlyHeight =
+            cardPaddingVertical + titleHeight + titleMarginBottom +
+            metricsBlockHeight + cardPaddingVertical;
+          const fitsInOnePage = cardContentHeight <= usablePageHeight;
+          const boxHeight = fitsInOnePage ? cardContentHeight : headerOnlyHeight;
+
           // Verificar espacio en página
-          checkPageSpace(cardContentHeight + cardGap);
-          
+          checkPageSpace(boxHeight + cardGap);
+
           const cardY = yPos;
-          
+
           // ============================================
           // DIBUJAR CARD (Border-radius: 16px)
           // ============================================
-          
+
           doc.setDrawColor(...divider);
           doc.setLineWidth(0.5);
           doc.setFillColor(...bgLight);
           doc.roundedRect(
-            margin, 
-            cardY, 
-            contentWidth, 
-            cardContentHeight, 
-            cardBorderRadius, 
-            cardBorderRadius, 
+            margin,
+            cardY,
+            contentWidth,
+            boxHeight,
+            cardBorderRadius,
+            cardBorderRadius,
             'FD'
           );
           
@@ -530,23 +584,18 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
             const videoUrl = exercise.video || exercise.videoUrl;
             const normalized = normalizeUrlText(videoUrl);
             if (normalized) {
+              // textWithLink dibuja SOLO la etiqueta y la hace clickeable
+              // (nunca la URL cruda), alineada a la derecha de la card.
               doc.setFontSize(8);
               doc.setTextColor(...accent);
               doc.setFont('helvetica', 'bold');
 
               const videoLinkText = 'VER VIDEO';
-              
-              const btnWidth = doc.getTextWidth(videoLinkText) + 6;
-              const btnHeight = 6;
-              const linkX = cardContentX + metricsAvailableWidth - btnWidth / 2;
-              const linkY = metricsY - 2;
+              const linkWidth = doc.getTextWidth(videoLinkText);
+              const linkX = cardContentX + availableCardWidth - linkWidth;
+              const linkY = metricsY + 2;
 
-              doc.textWithLink(normalized, linkX, linkY + 4, { url: normalized });
-              doc.setFillColor(...bgLight); // Color de la card (tapa text real)
-              doc.roundedRect(linkX - 3, linkY - 1, btnWidth, btnHeight, 1.5, 1.5, 'F');
-              
-              doc.text(videoLinkText, linkX, linkY + 4);
-              doc.link(linkX - 3, linkY - 1, btnWidth, btnHeight, { url: normalized });
+              doc.textWithLink(videoLinkText, linkX, linkY, { url: normalized });
             }
           }
           
@@ -558,53 +607,85 @@ export const generateRoutinePDFMobile = (routine, purchaseInfo = {}) => {
           // Separador visual + etiqueta clara
           // ============================================
           
-          if (hasNotes) {
+          if (hasNotes && fitsInOnePage) {
             cardContentY += notesMarginTop;
-            
+
             // Separador visual discreto
             doc.setDrawColor(...divider);
             doc.setLineWidth(0.3);
             doc.line(cardContentX, cardContentY, cardContentX + availableCardWidth, cardContentY);
             cardContentY += 4; // Espacio después del separador
-            
+
             // Etiqueta "Notas:" (sin emoji para evitar problemas de encoding)
             doc.setFontSize(10);
             doc.setTextColor(...accent);
             doc.setFont('helvetica', 'bold');
             doc.text('Notas:', cardContentX, cardContentY);
             cardContentY += 5;
-            
-            // Contenido de la nota
+
+            // Contenido de la nota (todas las líneas, ya entra en la card)
             doc.setFontSize(10);
             doc.setTextColor(...textSecondary);
             doc.setFont('helvetica', 'normal');
-            
-            const noteText = exercise.notes || exercise.note;
-            const noteLines = doc.splitTextToSize(noteText, availableCardWidth);
-            
-            // Mostrar todas las líneas (sin limitación)
             doc.text(noteLines, cardContentX, cardContentY);
           }
-          
-          // Actualizar yPos para la siguiente card
-          yPos += cardContentHeight + cardGap - 2;  // -2mm para cards más juntas
+
+          if (fitsInOnePage) {
+            // Actualizar yPos para la siguiente card
+            yPos += cardContentHeight + cardGap - 2;  // -2mm para cards más juntas
+          } else {
+            // Notas fuera de la card, fluyendo con saltos de página por línea
+            yPos = cardY + boxHeight + notesMarginTop + 2;
+
+            checkPageSpace(10);
+            doc.setFontSize(10);
+            doc.setTextColor(...accent);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Notas:', cardContentX, yPos);
+            yPos += 5;
+
+            doc.setFontSize(10);
+            doc.setTextColor(...textSecondary);
+            doc.setFont('helvetica', 'normal');
+            noteLines.forEach((ln) => {
+              checkPageSpace(noteLineHeight);
+              doc.text(ln, cardContentX, yPos);
+              yPos += noteLineHeight;
+            });
+            yPos += cardGap - 2;
+          }
         });
       });
     });
   });
 
   // ============================================
-  // Footer discreto
+  // Footer discreto (en todas las páginas)
   // ============================================
 
   const footerY = pageHeight - margin;
-  doc.setFontSize(8);
-  doc.setTextColor(...textSecondary);
-  doc.setFont('helvetica', 'italic');
-  doc.text('Generado por BaseRutina', margin, footerY);
-
   const currentDate = new Date().toLocaleDateString('es-AR');
-  doc.text(currentDate, pageWidth - margin, footerY, { align: 'right' });
+  const totalPages = doc.internal.getNumberOfPages();
+
+  for (let p = 1; p <= totalPages; p++) {
+    doc.setPage(p);
+    doc.setFontSize(8);
+    doc.setTextColor(...textSecondary);
+    doc.setFont('helvetica', 'italic');
+    doc.text('Generado por Mock', margin, footerY);
+    doc.text(currentDate, pageWidth - margin, footerY, { align: 'right' });
+  }
+
+  // ============================================
+  // Links del índice (con las páginas reales de cada semana)
+  // ============================================
+
+  indexLinkRects.forEach((rect) => {
+    const targetPage = weekStartPage[rect.weekNum];
+    if (!targetPage) return;
+    doc.setPage(rect.page);
+    doc.link(rect.x, rect.y, rect.w, rect.h, { pageNumber: targetPage });
+  });
 
   // ============================================
   // Generar PDF como blob

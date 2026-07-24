@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Document, Page, pdf } from "@react-pdf/renderer";
 import NutritionCoverPage from "./sections/NutritionCoverPage.jsx";
-import NutritionWeekSection from "./sections/NutritionWeekSection.jsx";
+import { NutritionDayPage, NutritionEmptyWeekPage } from "./sections/NutritionWeekSection.jsx";
 import ShoppingListPage, { hasAppendix } from "./sections/ShoppingListPage.jsx";
 import { createNutritionStyles } from "./utils/nutritionPdfStyles.js";
 
@@ -46,16 +46,21 @@ const NutritionPlanDocument = ({ plan }) => {
       <Page size="A4" orientation="portrait" style={styles.page} wrap>
         <NutritionCoverPage plan={plan} styles={styles} />
       </Page>
-      <Page size="A4" orientation="portrait" style={styles.page} wrap>
-        {plan.weeks.map((week, index) => (
-          <NutritionWeekSection
-            key={week.number}
-            week={week}
-            styles={styles}
-            breakBefore={index > 0}
-          />
-        ))}
-      </Page>
+      {/* Una página por día, con encabezado corrido "Día · Semana" en cada
+          página para que el lector nunca pierda el contexto. */}
+      {plan.weeks.flatMap((week) =>
+        week.days.length
+          ? week.days.map((day, di) => (
+              <NutritionDayPage
+                key={`w${week.number}-d${di}`}
+                week={week}
+                day={day}
+                isFirstDayOfWeek={di === 0}
+                styles={styles}
+              />
+            ))
+          : [<NutritionEmptyWeekPage key={`w${week.number}`} week={week} styles={styles} />],
+      )}
       {hasAppendix(plan) ? (
         <Page size="A4" orientation="portrait" style={styles.page} wrap>
           <ShoppingListPage plan={plan} styles={styles} />

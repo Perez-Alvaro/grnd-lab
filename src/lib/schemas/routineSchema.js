@@ -95,26 +95,12 @@ const isValidString = (value, minLength = 0) => {
   return typeof value === 'string' && value.trim().length >= minLength;
 };
 
-const isValidNumber = (value, min = 0, max = Infinity) => {
-  return typeof value === 'number' && !isNaN(value) && value >= min && value <= max;
-};
-
 const isValidEnum = (value, allowed) => {
   return allowed.includes(value);
 };
 
 const isValidArray = (value, minLength = 0) => {
   return Array.isArray(value) && value.length >= minLength;
-};
-
-const isValidUrl = (value) => {
-  if (!value) return true; // URLs are optional
-  try {
-    new URL(value);
-    return true;
-  } catch {
-    return false;
-  }
 };
 
 // ============================================

@@ -79,7 +79,7 @@ export default function Tooltip({
                 <div
                     ref={tooltipRef}
                     role="tooltip"
-                    className={`fixed z-50 rounded-lg bg-neutral-900 px-3 py-2 text-xs text-text-primary shadow-lg border border-border animate-fade-in ${className}`}
+                    className={`fixed z-50 rounded-sm bg-primary-surface-elevated px-3 py-2 text-xs text-text-primary shadow-medium border border-border animate-fade-in ${className}`}
                     style={{
                         top: `${coords.top}px`,
                         left: `${coords.left}px`,

@@ -78,7 +78,9 @@ export function generateNutritionPrompt(metadata = {}) {
     tipoTrabajo = '',
     horasSueno = '',
     objetivo = 'mantenimiento',
-    timeframe = '',
+    nivelDetalle = 'detallado',
+    duracionMeses = '',
+    timeframe = '', // legacy (planes viejos guardados en semanas)
     comidasPorDia = '4',
     horarioEntreno = '',
     horarioTrabajo = '',
@@ -100,6 +102,10 @@ export function generateNutritionPrompt(metadata = {}) {
 
   const activity = ACTIVITY_FACTORS[nivelActividad] || ACTIVITY_FACTORS.Moderado;
   const macros = OBJECTIVE_MACROS[objetivo] || OBJECTIVE_MACROS.mantenimiento;
+  const esSimple = nivelDetalle === 'simple';
+  const duracionTexto = duracionMeses
+    ? `${duracionMeses} ${String(duracionMeses) === '1' ? 'mes' : 'meses'}`
+    : orNone(timeframe, 'Sin plazo definido');
 
   const prompt = `SOS UN LICENCIADO EN NUTRICIÓN DEPORTIVA ARGENTINO, CON EXPERIENCIA EN COMPOSICIÓN CORPORAL Y ADHERENCIA A LARGO PLAZO.
 
@@ -120,7 +126,8 @@ ${line}
 • Tipo de trabajo: ${orNone(tipoTrabajo)} (afecta el NEAT)
 • Horas de sueño promedio: ${orNone(horasSueno)} (afecta recuperación y NEAT)
 • Objetivo: ${macros.label}
-• Plazo objetivo: ${orNone(timeframe, 'Sin plazo definido')}
+• Duración del plan: ${duracionTexto}
+• Nivel de detalle pedido por el coach: ${esSimple ? 'SIMPLE (plan directo, sin extras)' : 'DETALLADO (plan completo con logística y meal prep)'}
 • Comidas por día preferidas: ${orNone(comidasPorDia, '4')}
 • Horario de entrenamiento: ${orNone(horarioEntreno, 'No entrena / no especificado')}
 • Horario de trabajo / disponibilidad para comer: ${orNone(horarioTrabajo)}
@@ -327,7 +334,7 @@ por los del plan real. Generá los 7 días de la semana (Lunes a Domingo) dentro
       "dia": "Lunes",
       "esDiaEntreno": true,
       "comidas": [
-        { "nombre": "Desayuno", "hora": "07:30", "kcal": 380, "emoji": "🍳" }
+        { "nombre": "Desayuno", "hora": "07:30", "kcal": 380 }
       ],
       "totalKcal": 1950
     }
@@ -340,11 +347,18 @@ por los del plan real. Generá los 7 días de la semana (Lunes a Domingo) dentro
 
 REGLAS DEL OUTPUT (obligatorias):
 • "shoppingList" en UNIDADES DE SUPERMERCADO reales (ej: "1 bife mediano", "12 unidades"), NO gramos de receta.
-• "variantes": 2–3 opciones calóricamente equivalentes por comida (±25 kcal), cada una con su videoUrl.
+• NO uses emojis ni símbolos especiales (↔, ⏱, ☐) en ningún texto: el PDF los imprime como caracteres rotos.
+${esSimple ? `• MODO SIMPLE (pedido por el coach — respetar):
+  – "variantes": máximo 1 opción alternativa por comida (o array vacío []).
+  – "mealPrepGuide": array vacío [].
+  – "quickReference": array vacío [].
+  – "preparacion" en 1 oración. "sustituciones" en 1 línea corta.
+  – "notas_semana" con máximo 2 observaciones.` : `• "variantes": 2–3 opciones calóricamente equivalentes por comida (±25 kcal), cada una con su videoUrl.
 • "quickReference" con los 7 días completos (tarjeta de heladera).
 • "mealPrepGuide" con al menos 2–3 preparaciones batch de la semana.
 • "notas_semana" con al menos 2 observaciones contextuales.
-• "preparacion" concisa (2–3 oraciones). NO incluyas micronutrientes (se alucinan) ni precios exactos.
+• "preparacion" concisa (2–3 oraciones).`}
+• NO incluyas micronutrientes (se alucinan) ni precios exactos.
 
 ${notas ? `${line}\n📝 NOTAS ADICIONALES DEL COACH\n${line}\n\n${notas}\n` : ''}
 ${line}

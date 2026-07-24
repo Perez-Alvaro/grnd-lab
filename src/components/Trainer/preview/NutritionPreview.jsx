@@ -1,5 +1,5 @@
 import { memo, useMemo, useState, useCallback } from "react";
-import { ChevronDown, ChevronRight, ExternalLink, AlertTriangle } from "lucide-react";
+import { IconChevronDown, IconChevronRight, IconExternalLink, IconAlertTriangle } from '@tabler/icons-react';
 import { usePlanContext } from "../../../context/PlanContext.jsx";
 
 // Devuelve SIEMPRE una URL http(s) válida y clickeable. Si el valor no es una
@@ -24,7 +24,7 @@ const VideoLink = ({ url, label = "Ver receta" }) => {
   if (!u) return null;
   return (
     <a href={u} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:underline">
-      <ExternalLink className="h-3 w-3" /> {label}
+      <IconExternalLink stroke={1.75} className="h-3 w-3" /> {label}
     </a>
   );
 };
@@ -121,7 +121,7 @@ const WeekBlock = memo(({ week, index, collapsed, onToggle }) => (
         {week.summary && <p className="mt-1 text-sm text-text-tertiary">{week.summary}</p>}
       </div>
       <span className="rounded-full bg-primary-bg p-2 text-accent">
-        {collapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+        {collapsed ? <IconChevronRight stroke={1.75} className="h-5 w-5" /> : <IconChevronDown stroke={1.75} className="h-5 w-5" />}
       </span>
     </button>
     {!collapsed && (
@@ -190,7 +190,7 @@ const NutritionPreview = memo(() => {
         {/* Aviso de derivación */}
         {pm.requiereDerivacion && (
           <div className="flex items-start gap-3 rounded-xl border border-amber-500/40 bg-amber-500/10 p-4">
-            <AlertTriangle className="h-5 w-5 flex-shrink-0 text-amber-400" />
+            <IconAlertTriangle stroke={1.75} className="h-5 w-5 flex-shrink-0 text-amber-400" />
             <div>
               <h3 className="text-sm font-semibold text-amber-300">Requiere derivación a profesional</h3>
               <p className="mt-0.5 text-xs text-text-tertiary">{pm.notaDerivacion || "Se detectó una condición de salud. Recomendá consulta con un profesional matriculado."}</p>

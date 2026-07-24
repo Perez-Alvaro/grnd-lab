@@ -14,7 +14,7 @@ const Input = forwardRef(({
     containerClassName = '',
     ...props
 }, ref) => {
-    const baseClasses = 'rounded-lg border bg-primary-surface px-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted transition-all duration-200 focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50';
+    const baseClasses = 'rounded-sm border bg-primary-surface px-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted transition-all duration-200 focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50';
 
     const borderClasses = error
         ? 'border-error focus:border-error focus:ring-error/20'

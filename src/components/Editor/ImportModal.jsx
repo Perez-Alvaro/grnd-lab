@@ -4,14 +4,14 @@
  */
 
 import { useState, useCallback } from 'react';
-import { Upload, AlertCircle, CheckCircle2, FileJson } from 'lucide-react';
+import { IconUpload, IconAlertCircle, IconCircleCheck, IconJson } from '@tabler/icons-react';
 import Modal, { ModalFooter } from '../ui/Modal.jsx';
 import Button from '../ui/Button.jsx';
 import { universalImport } from '../../lib/transformers/routineTransformer.js';
 
 export default function ImportModal({ open, onClose, onImport }) {
     const [file, setFile] = useState(null);
-    const [jsonData, setJsonData] = useState(null);
+    const [, setJsonData] = useState(null);
     const [validation, setValidation] = useState(null);
     const [loading, setLoading] = useState(false);
     const [dragActive, setDragActive] = useState(false);
@@ -121,7 +121,7 @@ export default function ImportModal({ open, onClose, onImport }) {
                             {loading ? (
                                 <div className="h-12 w-12 animate-spin rounded-full border-4 border-accent border-t-transparent" />
                             ) : (
-                                <Upload className={`h-12 w-12 ${dragActive ? 'text-accent' : 'text-text-muted'}`} />
+                                <IconUpload stroke={1.75} className={`h-12 w-12 ${dragActive ? 'text-accent' : 'text-text-muted'}`} />
                             )}
                         </div>
                         <div className="text-center">
@@ -139,7 +139,7 @@ export default function ImportModal({ open, onClose, onImport }) {
                 <div className="space-y-3">
                     <h3 className="text-sm font-semibold text-text-primary">Formatos aceptados</h3>
                     <p className="text-sm text-text-secondary">
-                        Se aceptan dos formatos: el JSON generado por la IA (Prompt Maestro) y el JSON exportado desde Grind-Lab.
+                        Se aceptan dos formatos: el JSON generado por la IA (Prompt Maestro) y el JSON exportado desde Mock.
                     </p>
                     <details className="group rounded-lg border border-border bg-primary-bg">
                         <summary className="cursor-pointer list-none p-3 text-sm font-medium text-text-primary hover:text-accent transition-colors">
@@ -191,7 +191,7 @@ export default function ImportModal({ open, onClose, onImport }) {
                         <summary className="cursor-pointer list-none p-3 text-sm font-medium text-text-primary hover:text-accent transition-colors">
                             <span className="inline-flex items-center gap-2">
                                 <span className="transform transition-transform duration-200 group-open:rotate-90">▶</span>
-                                Formato exportación de Grind-Lab
+                                Formato exportación de Mock
                             </span>
                         </summary>
                         <div className="border-t border-border p-3">
@@ -236,7 +236,7 @@ export default function ImportModal({ open, onClose, onImport }) {
                 {/* File Info */}
                 {file && (
                     <div className="flex items-center gap-3 rounded-lg border border-border bg-primary-bg p-4">
-                        <FileJson className="h-8 w-8 text-accent flex-shrink-0" />
+                        <IconJson stroke={1.75} className="h-8 w-8 text-accent flex-shrink-0" />
                         <div className="flex-1 min-w-0">
                             <p className="font-medium text-text-primary truncate">{file.name}</p>
                             <p className="text-sm text-text-muted">
@@ -254,9 +254,9 @@ export default function ImportModal({ open, onClose, onImport }) {
                         }`}>
                         <div className="flex items-start gap-3">
                             {validation.success ? (
-                                <CheckCircle2 className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
+                                <IconCircleCheck stroke={1.75} className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
                             ) : (
-                                <AlertCircle className="h-5 w-5 text-error flex-shrink-0 mt-0.5" />
+                                <IconAlertCircle stroke={1.75} className="h-5 w-5 text-error flex-shrink-0 mt-0.5" />
                             )}
                             <div className="flex-1">
                                 <h4 className={`font-semibold ${validation.success ? 'text-success' : 'text-error'
@@ -285,7 +285,7 @@ export default function ImportModal({ open, onClose, onImport }) {
                 {validation?.success && (
                     <div className="rounded-lg border border-warning/20 bg-warning/5 p-4">
                         <div className="flex items-start gap-3">
-                            <AlertCircle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
+                            <IconAlertCircle stroke={1.75} className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
                             <div className="flex-1">
                                 <h4 className="font-semibold text-warning">Advertencia</h4>
                                 <p className="mt-1 text-sm text-text-secondary">

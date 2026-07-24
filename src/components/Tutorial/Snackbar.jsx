@@ -1,10 +1,10 @@
 /**
- * Snackbar - Sistema de notificaciones toast para BaseRutina
+ * Snackbar - Sistema de notificaciones toast para Mock
  * Feedback visual de acciones del usuario
  */
 
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { CheckCircle2, XCircle, AlertCircle, Info, X } from 'lucide-react';
+import { IconCircleCheck, IconCircleX, IconAlertCircle, IconInfoCircle, IconX } from '@tabler/icons-react';
 
 const SnackbarContext = createContext();
 
@@ -18,28 +18,28 @@ export const useSnackbar = () => {
 
 const SNACKBAR_TYPES = {
     success: {
-        icon: CheckCircle2,
+        icon: IconCircleCheck,
         bgColor: 'bg-success/10',
         borderColor: 'border-success/30',
         textColor: 'text-success',
         iconColor: 'text-success',
     },
     error: {
-        icon: XCircle,
+        icon: IconCircleX,
         bgColor: 'bg-error/10',
         borderColor: 'border-error/30',
         textColor: 'text-error',
         iconColor: 'text-error',
     },
     warning: {
-        icon: AlertCircle,
+        icon: IconAlertCircle,
         bgColor: 'bg-warning/10',
         borderColor: 'border-warning/30',
         textColor: 'text-warning',
         iconColor: 'text-warning',
     },
     info: {
-        icon: Info,
+        icon: IconInfoCircle,
         bgColor: 'bg-info/10',
         borderColor: 'border-info/30',
         textColor: 'text-info',
@@ -87,7 +87,7 @@ function Snackbar({ id, message, type = 'info', duration = 5000, onClose }) {
       `}
             role="alert"
         >
-            <Icon className={`h-5 w-5 flex-shrink-0 mt-0.5 ${config.iconColor}`} />
+            <Icon stroke={1.75} className={`h-5 w-5 flex-shrink-0 mt-0.5 ${config.iconColor}`} />
 
             <div className="flex-1 min-w-0">
                 <p className={`text-sm ${config.textColor} leading-relaxed`}>
@@ -100,7 +100,7 @@ function Snackbar({ id, message, type = 'info', duration = 5000, onClose }) {
                 className="flex-shrink-0 text-text-muted hover:text-text-primary transition-colors"
                 aria-label="Cerrar"
             >
-                <X className="h-4 w-4" />
+                <IconX stroke={1.75} className="h-4 w-4" />
             </button>
         </div>
     );

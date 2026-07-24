@@ -48,6 +48,14 @@ const normalizeExercise = (exercise, blockTitle) => {
   };
 };
 
+const normalizeWarmupExercise = (exercise) => ({
+  name:
+    exercise?.name || exercise?.ejercicio || exercise?.nombre || exercise?.title || "Ejercicio",
+  duration:
+    exercise?.duration || exercise?.duracion || exercise?.reps || exercise?.tiempo || "",
+  notes: toArray(exercise?.notes || exercise?.notas).join(" "),
+});
+
 const normalizeDay = (day, index) => {
   const dayName = day?.name || day?.title || day?.titulo || day?.nombre || `Día ${index + 1}`;
   const type = (
@@ -62,6 +70,15 @@ const normalizeDay = (day, index) => {
     day?.notaRecuperacion ||
     "Recuperación activa y movilidad ligera recomendada.";
 
+  // Entrada en calor: formato del editor (warmupExercises) o legacy (entradaEnCalor).
+  // Va a su propia tabla en el PDF, no mezclada con los ejercicios principales.
+  const warmupSource = Array.isArray(day?.warmupExercises)
+    ? day.warmupExercises
+    : Array.isArray(day?.entradaEnCalor)
+      ? day.entradaEnCalor
+      : [];
+  const warmupExercises = warmupSource.map(normalizeWarmupExercise);
+
   let exercises = [];
   if (Array.isArray(day?.exercises)) {
     exercises = day.exercises.map((exercise) => normalizeExercise(exercise));
@@ -72,17 +89,8 @@ const normalizeDay = (day, index) => {
         normalizeExercise(exercise, block?.titulo || block?.tipo),
       ),
     );
-  } else if (
-    Array.isArray(day?.entradaEnCalor) ||
-    Array.isArray(day?.entrenamiento)
-  ) {
-    const warmup = (day?.entradaEnCalor || []).map((exercise) =>
-      normalizeExercise(exercise, "Entrada en calor"),
-    );
-    const training = (day?.entrenamiento || []).map((exercise) =>
-      normalizeExercise(exercise),
-    );
-    exercises = [...warmup, ...training];
+  } else if (Array.isArray(day?.entrenamiento)) {
+    exercises = day.entrenamiento.map((exercise) => normalizeExercise(exercise));
   }
 
   const exerciseNotes = exercises.flatMap((exercise) => exercise.notes || []);
@@ -91,6 +99,7 @@ const normalizeDay = (day, index) => {
     name: dayName,
     type,
     exercises,
+    warmupExercises,
     notes: [
       ...new Set([...exerciseNotes, ...toArray(day?.notes || day?.notas)]),
     ],

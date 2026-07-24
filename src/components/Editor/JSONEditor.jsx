@@ -5,7 +5,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { Code, Eye, AlertCircle, CheckCircle } from 'lucide-react';
+import { IconCode, IconAlertCircle, IconCircleCheck } from '@tabler/icons-react';
 
 // Limpia el JSON de formatos comunes (markdown code blocks, espacios, textos adicionales)
 const cleanJSONText = (text) => {
@@ -30,7 +30,7 @@ const cleanJSONText = (text) => {
 
   // 3. Remover textos típicos de cierre que agregan las IAs
   const outroPhrases = [
-    /[\s\n]*¡éxito\!?$/i,  // "¡Éxito!"
+    /[\s\n]*¡éxito!?$/i,  // "¡Éxito!"
     /[\s\n]*espero\s+que\s+.*$/i,  // "Espero que funcione"
     /[\s\n]*suerte\s+.*$/i,  // "Suerte!"
     /[\s\n]*buena\s+suerte.*$/i,  // "Buena suerte"
@@ -127,7 +127,7 @@ export default function JSONEditor({ value, onChange, className = '' }) {
                 setError('');
                 setHelpMessage('');
                 setCleanedInfo('');
-            } catch (e) {
+            } catch {
                 setError('Error al formatear JSON inicial');
             }
         }
@@ -186,21 +186,21 @@ export default function JSONEditor({ value, onChange, className = '' }) {
     return (
         <div className={`flex flex-col h-full ${className}`}>
             {/* Header con indicador de validación */}
-            <div className="flex items-center justify-between px-4 py-2 bg-[#0A0A0A] border-b border-[#2E2E2E]">
+            <div className="flex items-center justify-between px-4 py-2 bg-primary-bg border-b border-border">
                 <div className="flex items-center gap-2">
-                    <Code className="h-4 w-4 text-accent" />
+                    <IconCode stroke={1.75} className="h-4 w-4 text-accent" />
                     <span className="text-sm font-medium text-text-primary">Editor JSON</span>
                 </div>
 
                 <div className="flex items-center gap-2">
                     {isValid ? (
                         <div className="flex items-center gap-1 text-green-500">
-                            <CheckCircle className="h-4 w-4" />
+                            <IconCircleCheck stroke={1.75} className="h-4 w-4" />
                             <span className="text-xs">Válido</span>
                         </div>
                     ) : (
                         <div className="flex items-center gap-1 text-yellow-500">
-                            <AlertCircle className="h-4 w-4" />
+                            <IconAlertCircle stroke={1.75} className="h-4 w-4" />
                             <span className="text-xs">{helpMessage ? 'Espera instrucciones' : 'Error de sintaxis'}</span>
                         </div>
                     )}
@@ -212,7 +212,7 @@ export default function JSONEditor({ value, onChange, className = '' }) {
                 <textarea
                     value={jsonText}
                     onChange={(e) => handleJsonChange(e.target.value)}
-                    className="w-full h-full p-4 bg-[#0A0A0A] text-text-primary font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-accent/50"
+                    className="w-full h-full p-4 bg-primary-bg text-text-primary font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-accent/50"
                     placeholder="Pega aquí el JSON generado por la IA..."
                     spellCheck={false}
                     style={{
@@ -222,7 +222,7 @@ export default function JSONEditor({ value, onChange, className = '' }) {
                 />
 
                 {/* Número de líneas (opcional, mejora la UX) */}
-                <div className="absolute left-0 top-0 bottom-0 w-12 bg-[#0E0E0E] border-r border-[#2E2E2E] pointer-events-none select-none">
+                <div className="absolute left-0 top-0 bottom-0 w-12 bg-primary-surface border-r border-border pointer-events-none select-none">
                     {jsonText.split('\n').map((_, index) => (
                         <div
                             key={index}
@@ -254,7 +254,7 @@ export default function JSONEditor({ value, onChange, className = '' }) {
             {!isValid && error && !helpMessage && (
                 <div className="px-4 py-2 bg-yellow-500/10 border-t border-yellow-500/20 text-yellow-500 text-xs">
                     <div className="flex items-start gap-2">
-                        <AlertCircle className="h-3 w-3 mt-0.5 flex-shrink-0" />
+                        <IconAlertCircle stroke={1.75} className="h-3 w-3 mt-0.5 flex-shrink-0" />
                         <div className="flex-1">
                             <span className="font-mono block">{error}</span>
                             <span className="text-yellow-400 mt-1 block">💡 Pega solo el JSON que generó la IA, sin markdown (```)</span>
@@ -264,7 +264,7 @@ export default function JSONEditor({ value, onChange, className = '' }) {
             )}
 
             {/* Tips */}
-            <div className="px-4 py-2 bg-[#0E0E0E] border-t border-[#2E2E2E] text-text-muted text-xs">
+            <div className="px-4 py-2 bg-primary-surface border-t border-border text-text-muted text-xs">
                 <div className="flex items-center justify-between">
                     <span>💡 Tip: Copia el JSON limpio que genera la IA (sin bloques de código markdown)</span>
                     {cleanedInfo && (
