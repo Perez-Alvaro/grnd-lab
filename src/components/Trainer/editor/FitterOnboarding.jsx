@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useMemo } from "react";
 import { IconChevronLeft, IconChevronRight, IconSparkles, IconCopy, IconClipboardText, IconExternalLink, IconCheck, IconAlertCircle } from '@tabler/icons-react';
 import { generateAIPrompt } from "../../../utils/promptGenerator.js";
 import { universalImport } from "../../../lib/transformers/routineTransformer.js";
+import { parsePlanJSON } from "../../../lib/planJson.js";
 import { usePlanContext } from "../../../context/PlanContext.jsx";
 import { WORKOUT_STEPS } from "../../../constants/workoutOnboarding.js";
 import { Button } from "../../ui";
@@ -29,6 +30,7 @@ const FitterOnboarding = ({
     const [i, setI] = useState(0);
     const [copied, setCopied] = useState(null);
     const [jsonError, setJsonError] = useState("");
+    const [warning, setWarning] = useState("");
     const [ok, setOk] = useState(false);
     const [showTextarea, setShowTextarea] = useState(false);
     const [jsonInput, setJsonInput] = useState("");
@@ -57,14 +59,21 @@ const FitterOnboarding = ({
     }, [updateMetadata, idx, STEPS.length]);
 
     const importFromText = useCallback((text) => {
-        setJsonError(""); setOk(false);
-        if (!text || !text.trim()) { setJsonError("No encontré nada para pegar. Copiá el JSON de la IA e intentá de nuevo."); return; }
-        let parsed;
-        try { parsed = JSON.parse(text); }
-        catch { setJsonError("Eso no es un JSON válido. Copiá solo lo que te dio la IA, desde { hasta }."); return; }
-        const result = importFn(parsed);
+        setJsonError(""); setWarning(""); setOk(false);
+        // parsePlanJSON limpia el markdown y, si la IA cortó la respuesta por
+        // límite de tokens, recupera la parte que llegó completa.
+        const parsed = parsePlanJSON(text);
+        if (!parsed.ok) { setJsonError(parsed.error); return; }
+        const result = importFn(parsed.data);
         if (!result.success) { setJsonError(result.errors?.[0] || "El JSON no tiene la estructura correcta."); return; }
         onImportJSON(result.data);
+        if (parsed.truncated) {
+            const r = parsed.recovered || {};
+            setWarning(
+                `La IA cortó la respuesta, pero recuperé ${r.days || 0} día(s) con ${r.meals || 0} comida(s). ` +
+                "Revisá que no falte nada: podés completar a mano o volver a generar en modo simple."
+            );
+        }
         setOk(true); setJsonInput(""); setShowTextarea(false);
     }, [onImportJSON, importFn]);
 
@@ -236,6 +245,12 @@ const FitterOnboarding = ({
                                     <div className="mt-3 flex items-start gap-2 p-3 bg-red-500/10 border border-red-500/25 rounded-lg">
                                         <IconAlertCircle stroke={1.75} className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
                                         <p className="text-xs text-red-300">{jsonError}</p>
+                                    </div>
+                                )}
+                                {warning && (
+                                    <div className="mt-3 flex items-start gap-2 p-3 bg-warning/10 border border-warning/25 rounded-lg">
+                                        <IconAlertCircle stroke={1.75} className="w-4 h-4 text-warning flex-shrink-0 mt-0.5" />
+                                        <p className="text-xs text-text-secondary">{warning}</p>
                                     </div>
                                 )}
                                 {ok && (

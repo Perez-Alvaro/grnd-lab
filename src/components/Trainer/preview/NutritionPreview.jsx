@@ -1,26 +1,10 @@
 import { memo, useMemo, useState, useCallback } from "react";
 import { IconChevronDown, IconChevronRight, IconExternalLink, IconAlertTriangle } from '@tabler/icons-react';
 import { usePlanContext } from "../../../context/PlanContext.jsx";
-
-// Devuelve SIEMPRE una URL http(s) válida y clickeable. Si el valor no es una
-// URL absoluta con host (la IA a veces devuelve texto o algo malformado), lo
-// convierte en una búsqueda de YouTube (evita el about:blank#blocked del navegador).
-const buildVideoUrl = (raw) => {
-  if (!raw) return "";
-  const t = String(raw).trim();
-  if (!t) return "";
-  if (!/\s/.test(t)) {
-    const candidate = /^https?:\/\//i.test(t) ? t : `https://${t}`;
-    try {
-      const u = new URL(candidate);
-      if (u.hostname.includes(".")) return u.href;
-    } catch { /* cae al fallback de búsqueda */ }
-  }
-  return `https://www.youtube.com/results?search_query=${encodeURIComponent(t.replace(/^https?:\/\/+/i, ""))}`;
-};
+import { buildRecipeSearchUrl } from "../../../lib/recipeSearch.js";
 
 const VideoLink = ({ url, label = "Ver receta" }) => {
-  const u = buildVideoUrl(url);
+  const u = buildRecipeSearchUrl(url);
   if (!u) return null;
   return (
     <a href={u} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:underline">
