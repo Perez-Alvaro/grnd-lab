@@ -1,26 +1,11 @@
 import { Page, View, Text, Link } from "@react-pdf/renderer";
 import { indexLinkTarget, weekAnchorId } from "../utils/pdfAnchors.js";
-
-// Devuelve SIEMPRE una URL válida; si el valor no es una URL con host, lo
-// convierte en búsqueda de YouTube (mismo criterio que la preview web).
-const buildVideoUrl = (raw) => {
-  if (!raw) return "";
-  const t = String(raw).trim();
-  if (!t) return "";
-  if (!/\s/.test(t)) {
-    const candidate = /^https?:\/\//i.test(t) ? t : `https://${t}`;
-    try {
-      const u = new URL(candidate);
-      if (u.hostname.includes(".")) return u.href;
-    } catch { /* fallback búsqueda */ }
-  }
-  return `https://www.youtube.com/results?search_query=${encodeURIComponent(t.replace(/^https?:\/\/+/i, ""))}`;
-};
+import { buildRecipeSearchUrl } from "../../lib/recipeSearch.js";
 
 const num = (v) => (v === 0 || v ? v : null);
 
 const MealCard = ({ meal, styles, breakBefore = false }) => {
-  const recipe = buildVideoUrl(meal.videoUrl);
+  const recipe = buildRecipeSearchUrl(meal.videoUrl);
   const variantes = meal.variantes || [];
   const macros = [
     num(meal.proteina_g) != null ? `P ${meal.proteina_g}g` : null,
@@ -77,7 +62,7 @@ const MealCard = ({ meal, styles, breakBefore = false }) => {
       {variantes.length > 0 && (
         <View style={styles.variantesWrap}>
           {variantes.map((v, i) => {
-            const vRecipe = buildVideoUrl(v.videoUrl);
+            const vRecipe = buildRecipeSearchUrl(v.videoUrl);
             return (
               <View key={v.id || i} style={styles.varianteRow}>
                 <Text style={styles.varianteLabel}>

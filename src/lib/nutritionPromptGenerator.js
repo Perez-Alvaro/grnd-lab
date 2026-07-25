@@ -2,10 +2,17 @@
  * Generador de Prompt Maestro NUTRICIONAL para IAs externas (ChatGPT/Claude/Gemini).
  *
  * No hay API de IA integrada: esta función devuelve un texto que el coach copia,
- * pega en la IA y trae de vuelta el JSON extendido (planMeta + weeks/days/meals +
- * mealPrepGuide + shoppingList + quickReference + notas_semana).
+ * pega en la IA y trae de vuelta el JSON.
  *
- * Diseño completo en NUTRITION_PLAN_README.md (6 ejes + schema de output).
+ * ── PRESUPUESTO DE TOKENS (importante) ────────────────────────────────────
+ * Las IAs gratuitas cortan la respuesta alrededor de los 4k–8k tokens de
+ * salida. El JSON anterior pedía ~14k para 7 días y se truncaba. Lo que se
+ * sacó del pedido NO se perdió: se deriva en el cliente al importar
+ * (src/lib/transformers/nutritionTransformer.js):
+ *   • videoUrl de cada comida y variante → se arma del nombre (recipeSearch.js).
+ *   • totalDia → se suma de las comidas (además así la cuenta siempre cierra).
+ *   • quickReference (tarjeta de heladera) → es una proyección de los días.
+ * Además el modo simple pide DÍAS MODELO en vez de los 7 días.
  */
 
 // Factores de actividad (Eje 1). El value coincide con las opciones del onboarding.
@@ -61,6 +68,10 @@ const line = '━━━━━━━━━━━━━━━━━━━━━━
 const orNone = (v, fallback = 'No especificado') =>
   v != null && String(v).trim() !== '' ? String(v).trim() : fallback;
 
+/** Línea de dato del atleta; se omite entera si no hay valor (ahorra contexto). */
+const optional = (label, value, suffix = '') =>
+  value != null && String(value).trim() !== '' ? `\n• ${label}: ${String(value).trim()}${suffix}` : '';
+
 /**
  * Genera el Prompt Maestro nutricional a partir de los datos del onboarding.
  * @param {Object} metadata - Respuestas del formulario nutricional.
@@ -107,46 +118,88 @@ export function generateNutritionPrompt(metadata = {}) {
     ? `${duracionMeses} ${String(duracionMeses) === '1' ? 'mes' : 'meses'}`
     : orNone(timeframe, 'Sin plazo definido');
 
+  // ── Estructura de días según el modo ──────────────────────────────────
+  // Simple: 2 días modelo (el coach los duplica/ajusta en el editor).
+  // Detallado: los 7 días de la semana.
+  const estructuraDias = esSimple
+    ? `Generá SOLO 2 DÍAS MODELO dentro de weeks[0].days:
+   1) "Día de entrenamiento"  (esDiaEntreno: true)
+   2) "Día de descanso"       (esDiaEntreno: false)
+   El coach los replica y ajusta en el editor. NO generes los 7 días.`
+    : `Generá los 7 días de la semana (Lunes a Domingo) dentro de weeks[0].days.`;
+
+  const ejemploComida = esSimple
+    ? `        {
+          "name": "Desayuno",
+          "hora": "07:30",
+          "kcal": 380, "proteina_g": 30, "carbos_g": 40, "grasas_g": 8,
+          "ingredientes": "80g avena, 200ml leche descremada, 1 banana, 10g manteca de maní",
+          "preparacion": "Mezclar todo y reposar 5 min.",
+          "sustituciones": "Sin avena: 2 tostadas integrales con ricota.",
+          "variantes": []
+        }`
+    : `        {
+          "name": "Desayuno",
+          "hora": "07:30",
+          "kcal": 380, "proteina_g": 30, "carbos_g": 40, "grasas_g": 8,
+          "ingredientes": "80g avena, 200ml leche descremada, 1 banana, 10g manteca de maní",
+          "preparacion": "Mezclar avena con leche fría, agregar banana pisada y manteca de maní. Reposar 5 min.",
+          "sustituciones": "Sin avena: 2 tostadas integrales con ricota. Sin banana: 1 manzana.",
+          "nota_timing": "Tomalo 30 min antes del entreno si entrenás a la mañana.",
+          "variantes": [
+            { "label": "Versión rápida (5 min)", "ingredientes": "3 huevos revueltos, 2 tostadas integrales, 30g port salut", "kcal": 375, "proteina_g": 28, "carbos_g": 36, "grasas_g": 12 }
+          ]
+        }`;
+
+  const bloquesExtra = esSimple
+    ? ''
+    : `,
+  "mealPrepGuide": [
+    { "preparacion": "Hervir 500g de lentejas y guardar en vianda", "rinde": "Almuerzo lunes, miércoles y viernes", "conservacion": "Heladera hasta 4 días" }
+  ],
+  "shoppingList": {
+    "carnes_y_huevos": [ { "item": "Huevos", "cantidad": "12 unidades" } ],
+    "lacteos": [ { "item": "Yogur griego Ser", "cantidad": "4 unidades" } ],
+    "verduleria": [ { "item": "Batata", "cantidad": "1 kg" } ],
+    "almacen": [ { "item": "Avena", "cantidad": "500g" } ],
+    "aceites_y_condimentos": [ { "item": "Aceite de oliva", "cantidad": "500ml" } ]
+  }`;
+
+  const reglasModo = esSimple
+    ? `• "variantes": dejalas en [] (array vacío). El coach agrega opciones si las necesita.
+• "preparacion" en 1 oración. "sustituciones" en 1 línea corta.
+• NO incluyas "mealPrepGuide" ni "shoppingList".
+• "notas_semana": máximo 2 observaciones.`
+    : `• "variantes": 1–2 opciones calóricamente equivalentes por comida (±25 kcal).
+• "shoppingList" en UNIDADES DE SUPERMERCADO reales ("12 unidades", "1 kg"), NO gramos de receta.
+• "mealPrepGuide": 2–3 preparaciones batch de la semana.
+• "preparacion" concisa (2 oraciones máximo).
+• "notas_semana": 2–3 observaciones contextuales.`;
+
   const prompt = `SOS UN LICENCIADO EN NUTRICIÓN DEPORTIVA ARGENTINO, CON EXPERIENCIA EN COMPOSICIÓN CORPORAL Y ADHERENCIA A LARGO PLAZO.
 
 Tu misión es diseñar un plan nutricional PROFESIONAL, PERSONALIZADO y 100% ADAPTADO AL CONTEXTO ARGENTINO, en formato JSON puro.
 Calculás primero las necesidades energéticas del atleta y recién después distribuís las comidas. Usás vocabulario rioplatense y priorizás alimentos que se consiguen en cualquier supermercado o verdulería del país.
 
 ${line}
-👤 DATOS DEL ATLETA
+DATOS DEL ATLETA
 ${line}
 
 • Nombre del plan: ${name}
 • Coach que firma: ${author}
 • Sexo biológico: ${sexo}
-• Edad: ${orNone(edad)} años
-• Peso: ${orNone(peso)} kg
-• Altura: ${orNone(altura)} cm
+• Edad: ${orNone(edad)} años · Peso: ${orNone(peso)} kg · Altura: ${orNone(altura)} cm
 • Nivel de actividad: ${nivelActividad} (${activity.desc}) → factor ×${activity.factor}
-• Tipo de trabajo: ${orNone(tipoTrabajo)} (afecta el NEAT)
-• Horas de sueño promedio: ${orNone(horasSueno)} (afecta recuperación y NEAT)
 • Objetivo: ${macros.label}
 • Duración del plan: ${duracionTexto}
-• Nivel de detalle pedido por el coach: ${esSimple ? 'SIMPLE (plan directo, sin extras)' : 'DETALLADO (plan completo con logística y meal prep)'}
-• Comidas por día preferidas: ${orNone(comidasPorDia, '4')}
-• Horario de entrenamiento: ${orNone(horarioEntreno, 'No entrena / no especificado')}
-• Horario de trabajo / disponibilidad para comer: ${orNone(horarioTrabajo)}
-• ¿Cena en familia?: ${orNone(comeEnFamilia, 'No especificado')}
-• ¿Puede preparar vianda?: ${orNone(puedeVianda, 'No especificado')}
-• ¿Tiene cocina/heladera en el trabajo?: ${orNone(cocinaTrabajo, 'No especificado')}
-• Tiempo disponible para cocinar: ${orNone(tiempoCocina, 'No especificado')} min/día
-• ¿Tiene heladera y freezer?: ${orNone(heladera, 'No especificado')}
-• Patrón dietario: ${patronDietario}
-• Suplementación actual: ${orNone(suplementacion, 'Ninguna')}
-• Presupuesto semanal aproximado: ${orNone(presupuesto, 'No especificado')}
-
-🍽️ Alimento ancla (lo come todos los días, usalo para maximizar adherencia): ${orNone(ancla, 'No especificado')}
+• Comidas por día: ${orNone(comidasPorDia, '4')}
+• Patrón dietario: ${patronDietario}${optional('Horario de entrenamiento', horarioEntreno)}${optional('Tipo de trabajo (NEAT)', tipoTrabajo)}${optional('Horas de sueño', horasSueno)}${optional('Horario de trabajo / disponibilidad para comer', horarioTrabajo)}${optional('¿Cena en familia?', comeEnFamilia)}${optional('¿Puede preparar vianda?', puedeVianda)}${optional('¿Tiene cocina/heladera en el trabajo?', cocinaTrabajo)}${optional('Tiempo para cocinar', tiempoCocina, ' min/día')}${optional('¿Heladera y freezer?', heladera)}${optional('Suplementación actual', suplementacion)}${optional('Presupuesto semanal', presupuesto)}${optional('Alimento ancla (lo come todos los días — usalo para maximizar adherencia)', ancla)}
 
 ${line}
-⛔ RESTRICCIONES (Eje 5 — RESPETAR SIN EXCEPCIÓN)
+RESTRICCIONES (RESPETAR SIN EXCEPCIÓN)
 ${line}
 
-RESTRICCIONES HARD (NUNCA incluir estos alimentos bajo ningún concepto):
+RESTRICCIONES HARD (NUNCA incluir estos alimentos):
 • Alergias / intolerancias: ${orNone(alergias, 'Ninguna declarada')}
 • Alimentos excluidos por decisión firme: ${orNone(excluidos, 'Ninguno')}
 • Patrón dietario a respetar: ${patronDietario}
@@ -154,34 +207,23 @@ RESTRICCIONES HARD (NUNCA incluir estos alimentos bajo ningún concepto):
 PREFERENCIAS SOFT (evitar salvo que sea imprescindible):
 • Alimentos que prefiere no comer: ${orNone(noPrefiere, 'Ninguno')}
 
-⚠️ SEÑALES DE DERIVACIÓN:
+SEÑALES DE DERIVACIÓN:
 • Patologías / condiciones declaradas: ${orNone(patologias, 'Ninguna')}
-Si detectás hipotiroidismo, SOP, resistencia a la insulina, diabetes, enfermedad cardiovascular o un posible TCA (trastorno de la conducta alimentaria), poné "requiereDerivacion": true en planMeta con una nota clara recomendando consulta con profesional matriculado. NO diseñes un plan terapéutico: el plan sigue siendo de alimentación general saludable.
+Si detectás hipotiroidismo, SOP, resistencia a la insulina, diabetes, enfermedad cardiovascular o un posible TCA, poné "requiereDerivacion": true en planMeta con una nota recomendando consulta con profesional matriculado. NO diseñes un plan terapéutico: el plan sigue siendo de alimentación general saludable.
 
 ${line}
-📐 EJE 1 — CÁLCULO ENERGÉTICO (hacelo internamente ANTES de distribuir)
+EJE 1 — CÁLCULO ENERGÉTICO (hacelo internamente ANTES de distribuir)
 ${line}
 
-1) Calculá la TMB con la fórmula de MIFFLIN-ST JEOR (NO uses Harris-Benedict):
-   • Hombres: TMB = (10 × peso_kg) + (6.25 × altura_cm) − (5 × edad) + 5
-   • Mujeres:  TMB = (10 × peso_kg) + (6.25 × altura_cm) − (5 × edad) − 161
-
-2) Calculá el TDEE = TMB × factor de actividad.
-   Factor de este atleta: ×${activity.factor} (${nivelActividad}).
-
-   Tabla de referencia:
-   • Sedentario (escritorio, sin entreno) ........ ×1.2
-   • Ligeramente activo (1–2 días/sem) ........... ×1.375
-   • Moderadamente activo (3–5 días/sem) ......... ×1.55
-   • Muy activo (6–7 días/sem + trabajo físico) .. ×1.725
-   • Extremadamente activo (doble turno/élite) ... ×1.9
-
-3) Aplicá el balance calórico del objetivo para obtener el targetKcal.
-
-4) Reflejá TMB, TDEE, targetKcal y el déficit/superávit en el objeto planMeta.
+1) TMB con MIFFLIN-ST JEOR (NO Harris-Benedict):
+   • Hombres: (10 × peso_kg) + (6.25 × altura_cm) − (5 × edad) + 5
+   • Mujeres:  (10 × peso_kg) + (6.25 × altura_cm) − (5 × edad) − 161
+2) TDEE = TMB × ${activity.factor} (factor de este atleta).
+3) Aplicá el balance del objetivo para obtener el targetKcal.
+4) Reflejá TMB, TDEE, targetKcal y el déficit/superávit en planMeta.
 
 ${line}
-📊 EJE 2 — DISTRIBUCIÓN DE MACROS (objetivo: ${macros.label})
+EJE 2 — MACROS (objetivo: ${macros.label})
 ${line}
 
 • Proteína: ${macros.proteina}
@@ -189,87 +231,54 @@ ${line}
 • Grasas: ${macros.grasas}
 • Balance calórico: ${macros.balance}
 
-Justificá la distribución elegida en el campo "rationale" de planMeta (2–3 oraciones).
-La suma de macros × sus calorías (P=4, C=4, G=9 kcal/g) debe cuadrar con el targetKcal.
-El "totalDia" de cada día debe cuadrar con el targetKcal (±3%).
+Justificá la distribución en "rationale" de planMeta (2 oraciones).
+La suma de macros × sus calorías (P=4, C=4, G=9) debe cuadrar con el targetKcal.
+Las kcal de las comidas de cada día deben sumar el targetKcal (±3%).
 
 ${line}
-🇦🇷 EJE 3 — CONTEXTO ARGENTINA (el diferenciador real)
+EJE 3 — CONTEXTO ARGENTINA (el diferenciador real)
 ${line}
 
 REGLA MAESTRA: si proponés "chicken breast, brócoli y quinoa" sin alternativa local, fallaste.
-Construí el plan con ingredientes que se consiguen en Coto, Carrefour, Jumbo o verdulería de barrio.
-Para cada alimento importado o caro, incluí una sustitución local entre paréntesis.
+Construí el plan con ingredientes de Coto, Carrefour, Jumbo o verdulería de barrio.
 
-PROTEÍNAS ACCESIBLES:
-• Cortes económicos con buen perfil: paleta, marucha, roast beef, nalga, bola de lomo, osobuco.
-• Huevo (proteína completa y barata — el MVP argentino).
-• Pollo pata-muslo (más económico que la pechuga).
-• Lácteos: ricota (La Serenísima), port salut descremado, yogur griego (Ser, Danone), cottage.
-• Pescado/lata: atún al natural (La Campagnola, Cuisine & Co), sardina, caballa.
-• Vegetales: lentejas, garbanzos, porotos negros, tofu (dietéticas/super grandes).
-
-CARBOHIDRATOS:
-• Avena (La Paulina, Quaker) — base del desayuno.
-• Batata (bajo IG, estacional), papa (subestimada), arroz integral, fideos integrales.
-• Pan integral (Bimbo o casero según contexto).
-• Frutas baratas de temporada: banana, manzana, mandarina.
-
-GRASAS:
-• Maní y manteca de maní (Maní King o genérica de dietética).
-• Aceite de girasol alto oleico (alternativa viable al oliva).
-• Palta (estacional — dar sustitución), nueces/almendras (caras — alternativa con maní).
+• PROTEÍNAS: cortes económicos (paleta, marucha, roast beef, nalga, bola de lomo, osobuco), huevo, pollo pata-muslo, ricota, port salut descremado, yogur griego, atún al natural, sardina, lentejas, garbanzos, porotos, tofu.
+• CARBOS: avena, batata, papa, arroz integral, fideos integrales, pan integral, frutas de estación (banana, manzana, mandarina).
+• GRASAS: maní y manteca de maní, aceite de girasol alto oleico, palta (estacional), nueces/almendras (caras — alternativa con maní).
 
 NO ELIMINAR LA CULTURA ALIMENTARIA (dar estrategia, no prohibición):
-• Mate: contemplar si lleva azúcar (calorías ocultas). No prohibir el ritual — sugerir stevia si lo toma dulce.
-• Asado del domingo: elegir mejor corte + guarnición inteligente, no prohibir.
-• Medialunas / facturas: sustituir con criterio, no eliminar de un plumazo.
+• Mate: contemplar el azúcar (calorías ocultas); sugerir stevia si lo toma dulce, no prohibir el ritual.
+• Asado del domingo: mejor corte + guarnición inteligente.
+• Facturas: sustituir con criterio, no eliminar de un plumazo.
 
 ${line}
-⏰ EJE 4 — TIMING Y ESTRUCTURA (patrón argentino, NO anglosajón)
+EJE 4 — TIMING (patrón argentino, NO anglosajón)
 ${line}
 
-Respetá los horarios de comida argentinos:
 • Desayuno (07:00–09:00): liviano, 15–20% de las kcal.
-• Almuerzo (12:00–14:00): LA COMIDA PRINCIPAL, 30–35% de las kcal.
-• Merienda (16:00–18:30): liviana o post-entreno, 10–15% de las kcal.
-• Cena (21:00–23:00): moderada, 25–30% de las kcal.
-• Colación (opcional, variable): 5–10% de las kcal.
+• Almuerzo (12:00–14:00): LA COMIDA PRINCIPAL, 30–35%.
+• Merienda (16:00–18:30): liviana o post-entreno, 10–15%.
+• Cena (21:00–23:00): moderada, 25–30%.
+• Colación (opcional): 5–10%.
 
-Ubicá los carbos de mayor índice glucémico en la ventana peri-entreno del atleta
-(horario de entreno declarado: ${orNone(horarioEntreno, 'no especificado')}).
-Si la cena es familiar, dá estrategias de adaptación (qué elegir de lo que hay) en lugar
-de proponer una comida completamente distinta al resto de la familia.
+Ubicá los carbos de mayor índice glucémico en la ventana peri-entreno (horario declarado: ${orNone(horarioEntreno, 'no especificado')}).
+Si la cena es familiar, dá estrategias de adaptación (qué elegir de lo que hay) en vez de una comida distinta al resto de la familia.
 
 ${line}
-🎥 EJE — VIDEOS DE RECETAS (campo videoUrl)
+LENGUAJE
 ${line}
 
-Para CADA comida y CADA variante, generá un "videoUrl" que sea una URL de BÚSQUEDA de YouTube
-(NUNCA una URL directa a un video: puede dar 404). Formato exacto:
-
-   https://www.youtube.com/results?search_query=TERMINOS+DE+BUSQUEDA
-
-Usá nombres de recetas en castellano rioplatense y términos específicos del plato argentino.
-Ejemplos:
-   https://www.youtube.com/results?search_query=milanesa+de+paleta+al+horno+sin+aceite
-   https://www.youtube.com/results?search_query=bowl+avena+overnight+oats+receta+facil
-   https://www.youtube.com/results?search_query=lentejas+guisadas+argentina+receta+saludable
+Segunda persona singular informal ("vos"). Vocabulario argentino:
+"kcal" (no "calorías") · "vianda" (no "tupper") · "colación" (no "snack") · "heladera" (no "refrigerador") · "manteca" (no "mantequilla").
 
 ${line}
-🗣️ REGLAS DE LENGUAJE
+ESTRUCTURA JSON DE SALIDA (COPIAR ESTA FORMA EXACTA)
 ${line}
 
-Escribí en segunda persona singular informal ("vos"). Usá vocabulario argentino:
-• "kcal" (no "calorías") · "vianda" (no "tupper") · "almuerzo" (no "comida del mediodía")
-• "colación" (no "snack") · "heladera" (no "refrigerador") · "manteca" (no "mantequilla")
+${estructuraDias}
 
-${line}
-🧾 EJE 6 — ESTRUCTURA JSON DE SALIDA (COPIAR ESTA FORMA EXACTA)
-${line}
-
-Devolvé un ÚNICO objeto JSON con esta estructura. Los valores son de EJEMPLO: reemplazalos
-por los del plan real. Generá los 7 días de la semana (Lunes a Domingo) dentro de weeks[0].days.
+Devolvé un ÚNICO objeto JSON con esta estructura. Los valores son de EJEMPLO:
+reemplazalos por los del plan real.
 
 {
   "planMeta": {
@@ -280,7 +289,7 @@ por los del plan real. Generá los 7 días de la semana (Lunes a Domingo) dentro
     "proteina_g": 175,
     "carbos_g": 195,
     "grasas_g": 65,
-    "rationale": "Déficit moderado del 20% para preservar masa magra en cutting...",
+    "rationale": "Déficit moderado del 20% para preservar masa magra en cutting.",
     "requiereDerivacion": false,
     "notaDerivacion": null
   },
@@ -289,101 +298,60 @@ por los del plan real. Generá los 7 días de la semana (Lunes a Domingo) dentro
       "weekLabel": "Semana estándar",
       "days": [
         {
-          "dayLabel": "Lunes",
+          "dayLabel": "${esSimple ? 'Día de entrenamiento' : 'Lunes'}",
           "esDiaEntreno": true,
           "meals": [
-            {
-              "name": "Desayuno",
-              "hora": "07:30",
-              "kcal": 380,
-              "proteina_g": 30,
-              "carbos_g": 40,
-              "grasas_g": 8,
-              "ingredientes": "80g avena, 200ml leche descremada, 1 banana, 10g manteca de maní",
-              "preparacion": "Mezclar avena con leche fría, agregar banana pisada y manteca de maní. Reposar 5 min.",
-              "sustituciones": "Sin avena: 2 tostadas integrales con ricota. Sin banana: 1 manzana.",
-              "videoUrl": "https://www.youtube.com/results?search_query=bowl+avena+overnight+oats+receta+facil",
-              "nota_timing": "Tomalo 30 min antes del entreno si entrenás a la mañana.",
-              "variantes": [
-                {
-                  "label": "Versión rápida (5 min)",
-                  "ingredientes": "3 huevos revueltos, 2 tostadas integrales, 30g port salut",
-                  "kcal": 375, "proteina_g": 28, "carbos_g": 36, "grasas_g": 12,
-                  "videoUrl": "https://www.youtube.com/results?search_query=huevos+revueltos+desayuno+proteico"
-                }
-              ]
-            }
-          ],
-          "totalDia": { "kcal": 1950, "proteina_g": 175, "carbos_g": 195, "grasas_g": 65 }
+${ejemploComida}
+          ]
         }
       ]
     }
-  ],
-  "mealPrepGuide": [
-    { "preparacion": "Hervir 500g de lentejas y guardar en vianda", "rinde": "Almuerzo lunes, miércoles y viernes", "conservacion": "Heladera hasta 4 días" }
-  ],
-  "shoppingList": {
-    "carnes_y_huevos": [ { "item": "Huevos", "cantidad": "12 unidades" } ],
-    "lacteos": [ { "item": "Yogur griego Ser", "cantidad": "4 unidades (120g c/u)" } ],
-    "verduleria": [ { "item": "Batata", "cantidad": "1 kg" } ],
-    "almacen": [ { "item": "Avena La Paulina", "cantidad": "500g (1 paquete)" } ],
-    "aceites_y_condimentos": [ { "item": "Aceite de oliva", "cantidad": "500ml" } ]
-  },
-  "quickReference": [
-    {
-      "dia": "Lunes",
-      "esDiaEntreno": true,
-      "comidas": [
-        { "nombre": "Desayuno", "hora": "07:30", "kcal": 380 }
-      ],
-      "totalKcal": 1950
-    }
-  ],
+  ]${bloquesExtra},
   "notas_semana": [
     "Los días de entreno tienen 10% más de carbos en el almuerzo.",
     "Tomá el mate sin azúcar; si lo necesitás dulce, usá stevia."
   ]
 }
 
+CAMPOS QUE **NO** DEBÉS INCLUIR (los calcula el sistema — incluirlos hace que la respuesta se corte):
+✗ "videoUrl" en las comidas o variantes (los links se generan solos).
+✗ "totalDia" en los días (se suma de las comidas).
+✗ "quickReference" (se arma con los días).
+
 REGLAS DEL OUTPUT (obligatorias):
-• "shoppingList" en UNIDADES DE SUPERMERCADO reales (ej: "1 bife mediano", "12 unidades"), NO gramos de receta.
-• NO uses emojis ni símbolos especiales (↔, ⏱, ☐) en ningún texto: el PDF los imprime como caracteres rotos.
-${esSimple ? `• MODO SIMPLE (pedido por el coach — respetar):
-  – "variantes": máximo 1 opción alternativa por comida (o array vacío []).
-  – "mealPrepGuide": array vacío [].
-  – "quickReference": array vacío [].
-  – "preparacion" en 1 oración. "sustituciones" en 1 línea corta.
-  – "notas_semana" con máximo 2 observaciones.` : `• "variantes": 2–3 opciones calóricamente equivalentes por comida (±25 kcal), cada una con su videoUrl.
-• "quickReference" con los 7 días completos (tarjeta de heladera).
-• "mealPrepGuide" con al menos 2–3 preparaciones batch de la semana.
-• "notas_semana" con al menos 2 observaciones contextuales.
-• "preparacion" concisa (2–3 oraciones).`}
+${reglasModo}
+• NO uses emojis ni símbolos especiales (↔, ⏱, ☐) en ningún texto: el PDF los imprime rotos.
 • NO incluyas micronutrientes (se alucinan) ni precios exactos.
 
-${notas ? `${line}\n📝 NOTAS ADICIONALES DEL COACH\n${line}\n\n${notas}\n` : ''}
+${notas ? `${line}\nNOTAS ADICIONALES DEL COACH\n${line}\n\n${notas}\n` : ''}
 ${line}
-🚨 FORMATO DE RESPUESTA — CRÍTICO
+FORMATO DE RESPUESTA — CRÍTICO
 ${line}
 
-⚠️ RESPONDÉ ÚNICAMENTE CON EL JSON PURO. NADA MÁS.
+RESPONDÉ ÚNICAMENTE CON EL JSON PURO. NADA MÁS.
 
-❌ NO uses bloques de código markdown (\`\`\`json ni \`\`\`).
-❌ NO agregues texto, títulos, resúmenes ni explicaciones antes o después.
-❌ NO cierres con frases como "¡Éxito!" o "Espero que te sirva".
+✗ NO uses bloques de código markdown (\`\`\`json ni \`\`\`).
+✗ NO agregues texto, títulos, resúmenes ni explicaciones antes o después.
+✗ NO cierres con frases como "¡Éxito!" o "Espero que te sirva".
 
-✅ COMENZÁ exactamente con: {
-✅ TERMINÁ exactamente con: }
-✅ Solo JSON válido, texto plano.
+✓ COMENZÁ exactamente con: {
+✓ TERMINÁ exactamente con: }
+✓ Solo JSON válido, texto plano.
+
+PRESUPUESTO DE RESPUESTA — LEER ANTES DE EMPEZAR:
+Tenés que TERMINAR el JSON sí o sí. Un JSON cerrado y más corto sirve;
+uno cortado a la mitad no sirve para nada. Si ves que te estás quedando sin
+espacio, en este orden: acortá "preparacion", sacá "sustituciones", vaciá
+"variantes". NUNCA dejes el JSON sin cerrar${esSimple ? '' : ' ni omitas días'}.
 
 VALIDACIÓN ANTES DE RESPONDER:
 1. ¿Empieza con { y termina con }?
-2. ¿No hay texto ni markdown alrededor?
-3. ¿Es JSON válido?
-4. ¿El totalDia cuadra con el targetKcal?
-5. ¿Cada comida y variante tiene videoUrl de búsqueda?
-6. ¿Respetaste todas las restricciones hard?
+2. ¿Es JSON válido y está CERRADO por completo?
+3. ¿Las kcal de las comidas suman el targetKcal?
+4. ¿Respetaste todas las restricciones hard?
+5. ¿Omitiste videoUrl, totalDia y quickReference?
 
-Generá el plan nutricional AHORA. Profesional. Argentino. Con videos de receta. Adaptado al atleta.`;
+Generá el plan nutricional AHORA. Profesional. Argentino. Adaptado al atleta.`;
 
   return prompt;
 }
