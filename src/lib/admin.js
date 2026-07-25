@@ -10,11 +10,25 @@ import { supabase } from './supabaseClient.js';
  * Devuelve [{ id, name, role, created_at, subscription }]
  */
 export async function listCoaches() {
-  const { data: profiles, error: pErr } = await supabase
-    .from('profiles')
-    .select('id, name, role, created_at, access_override, trial_until')
-    .order('created_at', { ascending: false });
-  if (pErr) throw pErr;
+  // Intenta traer las columnas de acceso (migración 0006). Si todavía no
+  // están aplicadas, degrada al select base para no romper el dashboard.
+  let profiles;
+  {
+    const full = await supabase
+      .from('profiles')
+      .select('id, name, role, created_at, access_override, trial_until')
+      .order('created_at', { ascending: false });
+    if (full.error) {
+      const base = await supabase
+        .from('profiles')
+        .select('id, name, role, created_at')
+        .order('created_at', { ascending: false });
+      if (base.error) throw base.error;
+      profiles = base.data;
+    } else {
+      profiles = full.data;
+    }
+  }
 
   const { data: subs, error: sErr } = await supabase
     .from('subscriptions')
