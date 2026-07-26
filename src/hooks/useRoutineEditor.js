@@ -287,7 +287,27 @@ export const useRoutineEditor = ({
       if (stored) {
         const parsed = JSON.parse(stored);
         if (parsed?.metadata && parsed?.weeks) {
-          setPlan(parsed);
+          // Sanitizar el draft: fusionar con el estado inicial para garantizar
+          // que todos los campos de metadata existan con sus tipos correctos.
+          // Esto evita crashes cuando drafts guardados con versiones anteriores
+          // tienen campos nulos, indefinidos o con tipos incorrectos.
+          const sanitized = {
+            ...parsed,
+            metadata: {
+              name: "", gender: "", objective: "", durationWeeks: "1",
+              frequency: "", level: "", description: "", notes: "",
+              author: "", tags: "", image: "", price: "",
+              ...parsed.metadata,
+              // Forzar strings en campos que deben ser strings
+              tags: parsed.metadata?.tags ?? "",
+              notes: parsed.metadata?.notes ?? "",
+              description: parsed.metadata?.description ?? "",
+              author: parsed.metadata?.author ?? "",
+              image: parsed.metadata?.image ?? "",
+              price: parsed.metadata?.price != null ? String(parsed.metadata.price) : "",
+            },
+          };
+          setPlan(sanitized);
           setDirty(true);
         }
       }

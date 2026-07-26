@@ -62,7 +62,7 @@ const DayPreview = ({ day }) => {
           {/* Mobile: tarjetas. La tabla medía 720 px de ancho mínimo y obligaba
               a hacer scroll lateral en un teléfono de 375 px. */}
           <div className="space-y-2 md:hidden">
-            {day.exercises.map((exercise, i) => {
+            {(day.exercises || []).map((exercise, i) => {
               const r = toRow(exercise);
               return (
                 <div
@@ -121,7 +121,7 @@ const DayPreview = ({ day }) => {
                 </tr>
               </thead>
               <tbody>
-                {day.exercises.map((exercise, exerciseIndex) => {
+                {(day.exercises || []).map((exercise, exerciseIndex) => {
                   const setsValue = exercise.sets ?? exercise.series;
                   const sets = setsValue === 0 || setsValue ? setsValue : "–";
                   const repsValue = exercise.reps;

@@ -1,10 +1,15 @@
 import { Page, View, Text, Link } from "@react-pdf/renderer";
 import { indexLinkTarget, weekAnchorId } from "../utils/pdfAnchors.js";
 import { buildRecipeSearchUrl } from "../../lib/recipeSearch.js";
+import {
+  PAGE_WIDTH,
+  estimateNutritionPageHeight,
+  estimateNutritionEmptyWeekPageHeight,
+} from "../utils/pageSizing.js";
 
 const num = (v) => (v === 0 || v ? v : null);
 
-const MealCard = ({ meal, styles, breakBefore = false }) => {
+const MealCard = ({ meal, styles }) => {
   const recipe = buildRecipeSearchUrl(meal.videoUrl);
   const variantes = meal.variantes || [];
   const macros = [
@@ -14,10 +19,9 @@ const MealCard = ({ meal, styles, breakBefore = false }) => {
   ].filter(Boolean);
 
   return (
-    // Máximo 2 comidas por página: la 3.ª, 5.ª, etc. fuerzan salto de página
-    // (breakBefore) y cada card se mantiene ENTERA (wrap={false}) para que la
-    // tabla principal nunca quede cortada entre páginas.
-    <View style={styles.mealCard} wrap={false} break={breakBefore} minPresenceAhead={70}>
+    // La página del día tiene alto dinámico (ver pageSizing), así que todas las
+    // comidas entran en una sola página. wrap={false} mantiene la card entera.
+    <View style={styles.mealCard} wrap={false}>
       <View style={styles.mealHeader} wrap={false}>
         <Text style={styles.mealName}>
           {meal.name || "Comida"}
@@ -95,12 +99,7 @@ const DayBlock = ({ day, styles }) => {
         <Text style={styles.restMessage}>Sin comidas cargadas.</Text>
       ) : (
         (day.meals || []).map((meal, idx) => (
-          <MealCard
-            key={meal.id || idx}
-            meal={meal}
-            styles={styles}
-            breakBefore={idx > 0 && idx % 2 === 0}
-          />
+          <MealCard key={meal.id || idx} meal={meal} styles={styles} />
         ))
       )}
     </View>
@@ -108,14 +107,18 @@ const DayBlock = ({ day, styles }) => {
 };
 
 /**
- * Una página (o más, si el día desborda) por DÍA. El encabezado corrido
- * (fixed) repite "Día · Semana X" en TODAS las páginas del día para que el
- * lector nunca se pierda, con link permanente al índice.
+ * Una página por DÍA, con alto DINÁMICO (ver pageSizing) para que todas las
+ * comidas entren sin cortarse y sin páginas fijas A4. El encabezado corrido
+ * (fixed) repite "Día · Semana X" con link permanente al índice.
  */
 export const NutritionDayPage = ({ week, day, isFirstDayOfWeek, styles }) => {
   const weekLabel = week.title || `Semana ${week.number}`;
   return (
-    <Page size="A4" orientation="portrait" style={styles.pageWithRunningHeader} wrap>
+    <Page
+      size={{ width: PAGE_WIDTH, height: estimateNutritionPageHeight(day, { isFirstDayOfWeek }) }}
+      style={styles.pageWithRunningHeader}
+      wrap={false}
+    >
       <View fixed style={styles.runningHeader}>
         <Text style={styles.runningHeaderDay}>{`${day.name}  ·  ${weekLabel}`}</Text>
         <Link src={indexLinkTarget()} style={styles.runningHeaderLink}>Volver al índice</Link>
@@ -135,7 +138,11 @@ export const NutritionDayPage = ({ week, day, isFirstDayOfWeek, styles }) => {
 
 /** Página mínima para una semana sin días: mantiene vivo el anchor del índice. */
 export const NutritionEmptyWeekPage = ({ week, styles }) => (
-  <Page size="A4" orientation="portrait" style={styles.page} wrap>
+  <Page
+    size={{ width: PAGE_WIDTH, height: estimateNutritionEmptyWeekPageHeight() }}
+    style={styles.page}
+    wrap={false}
+  >
     <View id={weekAnchorId(week.number)}>
       <Text style={styles.weekTitle}>{week.title || `Semana ${week.number}`}</Text>
       <Text style={styles.restMessage}>Sin días cargados.</Text>
