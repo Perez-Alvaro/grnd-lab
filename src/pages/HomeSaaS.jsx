@@ -219,17 +219,6 @@ function SectionHeader({ tag, icon, headline, subline }) {
     );
 }
 
-function GlowCard({ children, className = '' }) {
-    return (
-        <div className="relative group h-full">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-accent/20 to-accent/0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur" />
-            <div className={`relative rounded-2xl border border-border bg-primary-surface h-full ${className}`}>
-                {children}
-            </div>
-        </div>
-    );
-}
-
 /* ─────────────────────────────────────────────
    SERVICIOS — Rutinas + Nutrición (dual offering)
 ───────────────────────────────────────────── */

@@ -6,7 +6,9 @@
  *     (bloquear / desbloquear / modo testing hasta una fecha).
  *   - Uso: qué editor se usa más.
  *   - Buzón: reclamos y bugs de los entrenadores.
- *   - Accesos directos a ambos editores (el admin nunca está bloqueado).
+ *   - Datos de transferencia: la cuenta que ve el coach al pagar.
+ * A los editores se llega con el botón "Panel de entrenador" del header
+ * (el admin nunca está bloqueado por suscripción).
  * Todo pasa por RLS (is_admin()) — un coach no puede ver esta data.
  */
 import { useEffect, useState, useCallback } from 'react';
@@ -17,7 +19,6 @@ import {
   IconChartBar, IconMenu2, IconX, IconTestPipe,
 } from '@tabler/icons-react';
 import { useAuth } from '../store/authStore.jsx';
-import { useProtectedLink } from '../lib/routeObfuscator.js';
 import {
   listCoaches, getMetrics, activateSubscription, setSubscriptionStatus,
   setAccessOverride, setTrialUntil,
@@ -74,7 +75,6 @@ function accessInfo(c) {
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const editorPath = useProtectedLink();
 
   const [section, setSection] = useState('pagos');
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -120,11 +120,6 @@ export default function AdminDashboard() {
     { id: 'uso', label: 'Uso de editores', icon: IconChartBar },
     { id: 'buzon', label: 'Buzón', icon: IconMessageReport, badge: openFeedback.length },
     { id: 'transferencia', label: 'Datos de transferencia', icon: IconBuildingBank },
-  ];
-
-  const EDITOR_LINKS = [
-    { label: 'Editor de rutinas', icon: IconBarbell, to: editorPath },
-    { label: 'Editor de nutrición', icon: IconSalad, to: `${editorPath}?planType=nutrition` },
   ];
 
   const goSection = (id) => { setSection(id); setSidebarOpen(false); };
@@ -253,18 +248,6 @@ export default function AdminDashboard() {
         </button>
       ))}
 
-      <p className="px-3 pt-4 pb-1 text-2xs font-semibold text-text-muted uppercase tracking-wider">Editores</p>
-      {EDITOR_LINKS.map(({ label, icon: Icon, to }) => (
-        <button
-          key={label}
-          onClick={() => navigate(to)}
-          className="flex min-h-[44px] items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-text-secondary hover:bg-primary-bg hover:text-text-primary transition-colors"
-        >
-          <Icon stroke={1.75} className="h-4 w-4 flex-shrink-0" />
-          <span className="flex-1 text-left">{label}</span>
-          <IconExternalLink stroke={1.75} className="h-3.5 w-3.5 text-text-muted" />
-        </button>
-      ))}
     </nav>
   );
 
