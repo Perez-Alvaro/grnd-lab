@@ -4,7 +4,7 @@
  */
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconUsers, IconPlus, IconBarbell, IconPencil, IconTrash, IconFileText, IconChevronRight, IconLogout, IconBolt, IconTarget, IconSalad } from '@tabler/icons-react';
+import { IconUsers, IconPlus, IconBarbell, IconPencil, IconTrash, IconFileText, IconChevronRight, IconLogout, IconBolt, IconTarget, IconSalad, IconShieldLock } from '@tabler/icons-react';
 import { useAuth } from '../store/authStore.jsx';
 import { useProtectedLink } from '../lib/routeObfuscator.js';
 import { listAthletes, createAthlete, updateAthlete, deleteAthlete } from '../lib/athletes.js';
@@ -102,9 +102,19 @@ export default function CoachDashboard() {
               <p className="text-xs text-text-muted">Hola, {user?.name}</p>
             </div>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => { logout(); navigate('/'); }}>
-            <IconLogout stroke={1.75} className="h-4 w-4" /> Salir
-          </Button>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {/* Solo para admins: volver al panel de administración */}
+            {user?.role === 'admin' && (
+              <Button variant="outline" size="sm" onClick={() => navigate('/admin')}>
+                <IconShieldLock stroke={1.75} className="h-4 w-4" />
+                <span className="hidden sm:inline">Panel de admin</span>
+              </Button>
+            )}
+            <Button variant="ghost" size="sm" onClick={() => { logout(); navigate('/'); }}>
+              <IconLogout stroke={1.75} className="h-4 w-4" />
+              <span className="hidden sm:inline">Salir</span>
+            </Button>
+          </div>
         </div>
       </header>
 

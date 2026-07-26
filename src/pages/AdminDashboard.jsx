@@ -287,9 +287,17 @@ export default function AdminDashboard() {
               <p className="text-xs text-text-muted truncate">{user?.name}</p>
             </div>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => { logout(); navigate('/'); }}>
-            <IconLogout stroke={1.75} className="h-4 w-4" /> Salir
-          </Button>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {/* El admin también es coach: atajo a su propio panel de entrenador */}
+            <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
+              <IconBarbell stroke={1.75} className="h-4 w-4" />
+              <span className="hidden sm:inline">Panel de entrenador</span>
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => { logout(); navigate('/'); }}>
+              <IconLogout stroke={1.75} className="h-4 w-4" />
+              <span className="hidden sm:inline">Salir</span>
+            </Button>
+          </div>
         </div>
       </header>
 
