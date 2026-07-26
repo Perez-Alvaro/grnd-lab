@@ -241,10 +241,10 @@ const SERVICES = [
         badgeClass: 'bg-accent/15 text-accent border-accent/25',
         // Foto propia: guardá la imagen como public/assets/rutinas.jpg.
         // Mientras no exista, imageFallback evita la imagen rota.
-        image: '/assets/rutinas.jpg',
+        image: '/assets/paso-1.png',
         imageFallback: 'https://images.pexels.com/photos/4162449/pexels-photo-4162449.jpeg?auto=compress&cs=tinysrgb&w=1200',
         imageAlt: 'Dos atletas chocando el puño en el gimnasio',
-        title: 'Rutinas de entrenamiento',
+        title: 'Planes de entrenamiento',
         desc: 'Armá la base de cualquier plan en minutos: fuerza, hipertrofia o pérdida de grasa. Vos ajustás cada detalle y lo exportás con tu marca.',
         points: ['Editor en vivo', 'Export a PDF profesional', 'Organizado por atleta'],
     },
@@ -252,9 +252,9 @@ const SERVICES = [
         icon: IconSalad,
         badge: 'Disponible',
         badgeClass: 'bg-accent/15 text-accent border-accent/25',
-        image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1200',
+        image: '/assets/paso-2.png',
         imageAlt: 'Ensalada de quinoa con vegetales frescos',
-        title: 'Planes nutricionales argentinos',
+        title: 'Planes nutricionales',
         desc: 'Planes de comida pensados para Argentina, con alimentos que se consiguen en el súper de tu zona. Con lista de compras, meal prep y tarjeta de heladera incluidos.',
         points: ['Alimentos locales y económicos', 'Lista de compras y meal prep', 'Cálculo calórico y macros por objetivo'],
     },
@@ -267,57 +267,62 @@ function ServicesSection() {
             className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 border-b border-border"
             style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}
         >
-            <SectionHeader headline="Entrenamiento y nutrición, en un solo lugar" />
 
-            <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
-                {SERVICES.map((s) => (
-                    <GlowCard key={s.title} className="overflow-hidden">
-                        <div className="flex h-full flex-col">
-                            {/* Foto real en vez de un ícono genérico */}
-                            <div className="relative aspect-[16/9] w-full overflow-hidden">
-                                <img
-                                    src={s.image}
-                                    alt={s.imageAlt}
-                                    loading="lazy"
-                                    className="h-full w-full object-cover"
-                                    onError={(e) => {
-                                        // La foto propia todavía no está en public/assets
-                                        if (s.imageFallback && e.currentTarget.src !== s.imageFallback) {
-                                            e.currentTarget.src = s.imageFallback;
-                                        }
-                                    }}
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-primary-surface via-primary-surface/25 to-transparent" />
-                                <span className={`absolute right-3 top-3 rounded-full border px-3 py-1 text-xs font-semibold backdrop-blur-sm ${s.badgeClass}`}>
-                                    {s.badge}
-                                </span>
-                                <div className="absolute bottom-3 left-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary-bg/70 text-accent backdrop-blur-sm">
-                                    <s.icon className="h-5 w-5" />
-                                </div>
+            <div className="space-y-20 sm:space-y-24">
+                {SERVICES.map((s, index) => {
+                    const textFirst = index % 2 === 0;
+
+                    const textBlock = (
+                        <div className="max-w-xl">
+                            <div className="mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-accent/20 bg-accent/8 px-3 py-1 text-xs font-medium text-accent">
+                                <s.icon className="h-3.5 w-3.5" />
+                                {s.badge}
                             </div>
-                            <div className="flex flex-1 flex-col p-6 sm:p-8">
-                                <h3 className="mb-3 text-xl font-bold text-text-primary font-display">{s.title}</h3>
-                                <p className="mb-6 leading-relaxed text-text-secondary">{s.desc}</p>
-                                <ul className="mt-auto space-y-2.5">
-                                    {s.points.map((p) => (
-                                        <li key={p} className="flex items-center gap-2.5 text-sm text-text-secondary">
-                                            <IconCircleCheck stroke={1.75} className="h-4 w-4 flex-shrink-0 text-accent" />
-                                            {p}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                            <h3 className="mb-4 text-[clamp(1.9rem,4vw,3.5rem)] font-bold tracking-tight text-text-primary font-display leading-[0.98]">
+                                {s.title}
+                            </h3>
+                            <p className="mb-8 max-w-lg text-lg leading-relaxed text-text-secondary">
+                                {s.desc}
+                            </p>
+                            <ul className="grid gap-3 text-sm sm:grid-cols-2">
+                                {s.points.map((p) => (
+                                    <li key={p} className="flex items-center gap-2.5 text-text-secondary">
+                                        <IconCircleCheck stroke={1.75} className="h-4 w-4 flex-shrink-0 text-accent" />
+                                        {p}
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
-                    </GlowCard>
-                ))}
+                    );
+
+                    const imageBlock = (
+                        <div className="relative mx-auto w-full max-w-[34rem]">
+                            <img
+                                src={s.image}
+                                alt={s.imageAlt}
+                                loading="lazy"
+                                className="h-auto w-full object-contain drop-shadow-[0_32px_80px_rgba(0,0,0,0.42)]"
+                                onError={(e) => {
+                                    if (s.imageFallback && e.currentTarget.src !== s.imageFallback) {
+                                        e.currentTarget.src = s.imageFallback;
+                                    }
+                                }}
+                            />
+                            <div className="pointer-events-none absolute inset-x-12 bottom-3 h-10 rounded-full bg-accent/10 blur-3xl" />
+                        </div>
+                    );
+
+                    return (
+                        <div key={s.title} className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+                            {textFirst ? textBlock : imageBlock}
+                            {textFirst ? imageBlock : textBlock}
+                        </div>
+                    );
+                })}
             </div>
         </section>
     );
 }
-
-/* ─────────────────────────────────────────────
-   NAVBAR
-───────────────────────────────────────────── */
 
 function Navbar({ onScrollTo }) {
     const [scrolled, setScrolled] = useState(false);
