@@ -10,7 +10,7 @@ const RoutinePreview = memo(() => {
 
   const tags = useMemo(
     () =>
-      plan.metadata.tags
+      (plan.metadata.tags || "")
         .split(",")
         .map((tag) => tag.trim())
         .filter(Boolean),
