@@ -232,7 +232,7 @@ export default function LoginModal() {
                         placeholder="••••••••"
                         autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
                         disabled={isLoading}
-                        className={`w-full rounded-xl border bg-primary-bg pl-10 pr-12 py-3 text-sm text-text-primary placeholder:text-text-quaternary transition-colors focus:outline-none disabled:opacity-50 ${
+                        className={`w-full rounded-xl border bg-primary-bg pl-10 pr-12 py-3 text-base sm:text-sm text-text-primary placeholder:text-text-quaternary transition-colors focus:outline-none disabled:opacity-50 ${
                           fieldErrors.password ? 'border-red-500/50 focus:border-red-500' : 'border-border focus:border-accent'
                         }`}
                       />
@@ -321,7 +321,7 @@ function Field({ id, label, icon: Icon, type, value, onChange, placeholder, auto
           placeholder={placeholder}
           autoComplete={autoComplete}
           disabled={disabled}
-          className={`w-full rounded-xl border bg-primary-bg pl-10 pr-4 py-3 text-sm text-text-primary placeholder:text-text-quaternary transition-colors focus:outline-none disabled:opacity-50 ${
+          className={`w-full rounded-xl border bg-primary-bg pl-10 pr-4 py-3 text-base sm:text-sm text-text-primary placeholder:text-text-quaternary transition-colors focus:outline-none disabled:opacity-50 ${
             error ? 'border-red-500/50 focus:border-red-500' : 'border-border focus:border-accent'
           }`}
         />

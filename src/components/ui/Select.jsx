@@ -16,7 +16,7 @@ const Select = forwardRef(({
     containerClassName = '',
     ...props
 }, ref) => {
-    const baseClasses = 'rounded-sm border bg-primary-surface px-4 py-2.5 pr-10 text-sm text-text-primary transition-all duration-200 focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none';
+    const baseClasses = 'rounded-sm border bg-primary-surface px-4 py-2.5 pr-10 min-h-[44px] text-base sm:text-sm text-text-primary transition-all duration-200 focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none';
 
     const borderClasses = error
         ? 'border-error focus:border-error focus:ring-error/20'

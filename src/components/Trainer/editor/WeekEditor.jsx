@@ -141,14 +141,14 @@ const WeekEditor = memo(
                 <button
                   type="button"
                   onClick={() => handleDuplicateWeek(week.id)}
-                  className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-accent transition-colors hover:border-accent hover:bg-primary-surface-alt"
+                  className="inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-accent transition-colors hover:border-accent hover:bg-primary-surface-alt"
                 >
                   <IconCopy stroke={1.75} className="h-4 w-4" /> Duplicar semana
                 </button>
                 <button
                   type="button"
                   onClick={() => handleRemoveWeek(week.id)}
-                  className="inline-flex items-center gap-2 rounded-lg border border-red-500/40 px-3 py-2 text-sm font-medium text-red-400 transition-colors hover:border-red-400 hover:bg-red-500/10"
+                  className="inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-red-500/40 px-3 py-2 text-sm font-medium text-red-400 transition-colors hover:border-red-400 hover:bg-red-500/10"
                 >
                   <IconTrash stroke={1.75} className="h-4 w-4" /> Eliminar semana
                 </button>
@@ -165,7 +165,7 @@ const WeekEditor = memo(
                   value={week.title}
                   onChange={handleWeekFieldChange(week.id, "title")}
                   placeholder={`Semana ${index + 1}`}
-                  className="w-full rounded-lg border border-border bg-primary-bg px-4 py-3 text-sm text-text-primary transition-colors focus:border-accent focus:outline-none focus:ring-0"
+                  className="w-full rounded-lg border border-border bg-primary-bg px-4 py-3 text-base sm:text-sm text-text-primary transition-colors focus:border-accent focus:outline-none focus:ring-0"
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -177,7 +177,7 @@ const WeekEditor = memo(
                   value={week.summary}
                   onChange={handleWeekFieldChange(week.id, "summary")}
                   placeholder="Descripción corta del enfoque semanal"
-                  className="w-full rounded-lg border border-border bg-primary-bg px-4 py-3 text-sm text-text-primary transition-colors focus:border-accent focus:outline-none focus:ring-0"
+                  className="w-full rounded-lg border border-border bg-primary-bg px-4 py-3 text-base sm:text-sm text-text-primary transition-colors focus:border-accent focus:outline-none focus:ring-0"
                 />
               </div>
               <div className="md:col-span-2 flex flex-col gap-2">
@@ -189,7 +189,7 @@ const WeekEditor = memo(
                   value={week.notes}
                   onChange={handleWeekFieldChange(week.id, "notes")}
                   placeholder="Notas generales, recordatorios o mensajes clave de la semana"
-                  className="min-h-[100px] w-full resize-none rounded-lg border border-border bg-primary-bg px-4 py-3 text-sm text-text-primary transition-colors focus:border-accent focus:outline-none focus:ring-0"
+                  className="min-h-[100px] w-full resize-none rounded-lg border border-border bg-primary-bg px-4 py-3 text-base sm:text-sm text-text-primary transition-colors focus:border-accent focus:outline-none focus:ring-0"
                 />
               </div>
             </div>
@@ -202,7 +202,7 @@ const WeekEditor = memo(
                 <button
                   type="button"
                   onClick={() => addDay(week.id)}
-                  className="inline-flex items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-sm font-semibold text-accent transition-colors hover:border-accent hover:bg-primary-surface-alt"
+                  className="inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-sm font-semibold text-accent transition-colors hover:border-accent hover:bg-primary-surface-alt"
                 >
                   <IconPlus stroke={1.75} className="h-4 w-4" /> Agregar día
                 </button>
@@ -211,25 +211,29 @@ const WeekEditor = memo(
               <div className="flex flex-col gap-4">
                 {week.days.map((day, dayIndex) => (
                   <div key={day.id} className="flex items-start gap-2">
-                    {/* Reorder arrows */}
-                    <div className="flex flex-col gap-1 pt-4 flex-shrink-0">
+                    {/* Reordenar día. Eran de 28x28 px: por debajo del mínimo
+                        de 44x44 y con 4 px de separación, imposibles de acertar
+                        con el pulgar. Ahora 44x44 con 8 px entre ellas. */}
+                    <div className="flex flex-col gap-2 pt-4 flex-shrink-0">
                       <button
                         type="button"
                         disabled={dayIndex === 0}
                         onClick={() => reorderDay(week.id, dayIndex, dayIndex - 1)}
-                        className="flex items-center justify-center w-7 h-7 rounded-md border border-border bg-primary-bg text-text-quaternary transition-colors hover:border-accent hover:text-accent disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:border-border disabled:hover:text-text-quaternary"
+                        className="flex h-11 w-11 items-center justify-center rounded-md border border-border bg-primary-bg text-text-quaternary transition-colors hover:border-accent hover:text-accent active:scale-95 disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:border-border disabled:hover:text-text-quaternary"
+                        aria-label={`Mover el día ${dayIndex + 1} hacia arriba`}
                         title="Mover arriba"
                       >
-                        <IconChevronUp stroke={1.75} className="h-3.5 w-3.5" />
+                        <IconChevronUp stroke={1.75} className="h-4 w-4" />
                       </button>
                       <button
                         type="button"
                         disabled={dayIndex === week.days.length - 1}
                         onClick={() => reorderDay(week.id, dayIndex, dayIndex + 1)}
-                        className="flex items-center justify-center w-7 h-7 rounded-md border border-border bg-primary-bg text-text-quaternary transition-colors hover:border-accent hover:text-accent disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:border-border disabled:hover:text-text-quaternary"
+                        className="flex h-11 w-11 items-center justify-center rounded-md border border-border bg-primary-bg text-text-quaternary transition-colors hover:border-accent hover:text-accent active:scale-95 disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:border-border disabled:hover:text-text-quaternary"
+                        aria-label={`Mover el día ${dayIndex + 1} hacia abajo`}
                         title="Mover abajo"
                       >
-                        <IconChevronDown stroke={1.75} className="h-3.5 w-3.5" />
+                        <IconChevronDown stroke={1.75} className="h-4 w-4" />
                       </button>
                     </div>
                     <div className="flex-1 min-w-0">

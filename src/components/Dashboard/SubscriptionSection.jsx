@@ -11,7 +11,8 @@ import {
   IconCopy, IconFileText, IconReceipt, IconTestPipe, IconLock,
 } from '@tabler/icons-react';
 import useSubscription from '../../hooks/useSubscription.js';
-import { PLANS, TRANSFER_INFO, SELECTED_PLAN_KEY, submitPayment } from '../../lib/subscriptions.js';
+import { PLANS, SELECTED_PLAN_KEY, submitPayment } from '../../lib/subscriptions.js';
+import { getTransferInfo, DEFAULT_TRANSFER_INFO } from '../../lib/settings.js';
 import { Button, Input, Select, Modal, ModalFooter, Badge } from '../ui';
 import { toast } from '../../utils/toast.js';
 
@@ -160,6 +161,8 @@ function PaymentModal({ open, initialPlan, onClose, onSubmitted }) {
   const [reference, setReference] = useState('');
   const [file, setFile] = useState(null);
   const [sending, setSending] = useState(false);
+  // Los datos de transferencia los edita el admin desde su panel (app_settings).
+  const [transferInfo, setTransferInfo] = useState(DEFAULT_TRANSFER_INFO);
   const fileRef = useRef(null);
 
   useEffect(() => {
@@ -168,6 +171,7 @@ function PaymentModal({ open, initialPlan, onClose, onSubmitted }) {
       setReference('');
       setFile(null);
       if (fileRef.current) fileRef.current.value = '';
+      getTransferInfo().then(setTransferInfo);
     }
   }, [open, initialPlan]);
 
@@ -224,10 +228,10 @@ function PaymentModal({ open, initialPlan, onClose, onSubmitted }) {
           <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide">
             Transferí ${planInfo.priceUSD} USD (o su equivalente en pesos) a:
           </p>
-          <TransferRow label="Titular" value={TRANSFER_INFO.titular} onCopy={copy} />
-          <TransferRow label="Alias" value={TRANSFER_INFO.alias} onCopy={copy} />
-          {TRANSFER_INFO.cbu && <TransferRow label="CBU" value={TRANSFER_INFO.cbu} onCopy={copy} />}
-          <p className="text-xs text-text-muted pt-1">{TRANSFER_INFO.nota}</p>
+          <TransferRow label="Titular" value={transferInfo.titular} onCopy={copy} />
+          <TransferRow label="Alias" value={transferInfo.alias} onCopy={copy} />
+          {transferInfo.cbu && <TransferRow label="CBU" value={transferInfo.cbu} onCopy={copy} />}
+          <p className="text-xs text-text-muted pt-1">{transferInfo.nota}</p>
         </div>
 
         <Input

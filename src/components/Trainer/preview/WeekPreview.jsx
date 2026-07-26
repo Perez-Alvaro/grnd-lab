@@ -1,5 +1,5 @@
 import { Fragment, memo } from "react";
-import { IconChevronDown, IconChevronRight } from '@tabler/icons-react';
+import { IconChevronDown, IconChevronRight, IconBrandYoutube } from '@tabler/icons-react';
 
 /** Asegura que la URL tenga protocolo absoluto para que el navegador no la trate como ruta relativa */
 const normalizeUrl = (url) => {
@@ -9,6 +9,30 @@ const normalizeUrl = (url) => {
   if (/^https?:\/\//i.test(trimmed)) return trimmed;
   return `https://${trimmed}`;
 };
+
+/** Normaliza un ejercicio a los valores que se muestran (tarjeta y tabla). */
+const toRow = (exercise) => {
+  const val = (v) => (v === 0 || v ? v : "–");
+  const rawNote = exercise.note ?? exercise.notes;
+  return {
+    name: exercise.name || "—",
+    sets: val(exercise.sets ?? exercise.series),
+    reps: val(exercise.reps),
+    rest: val(exercise.rest ?? exercise.descanso),
+    rir: val(exercise.rir),
+    tempo: val(exercise.tempo ?? exercise.cadencia),
+    video: normalizeUrl(exercise.video || exercise.videoUrl),
+    note: Array.isArray(rawNote) ? rawNote.join("\n") : rawNote,
+  };
+};
+
+/** Dato suelto de la tarjeta mobile (label arriba, valor en mono abajo). */
+const Metric = ({ label, value }) => (
+  <div className="min-w-0">
+    <p className="text-[10px] uppercase tracking-wide text-text-tertiary">{label}</p>
+    <p className="font-mono text-sm font-semibold text-text-primary truncate">{value}</p>
+  </div>
+);
 
 const DayPreview = ({ day }) => {
   const isRest = day.type === "DESCANSO";
@@ -35,7 +59,49 @@ const DayPreview = ({ day }) => {
 
       {!isRest && (
         <div className="space-y-3">
-          <div className="overflow-x-auto">
+          {/* Mobile: tarjetas. La tabla medía 720 px de ancho mínimo y obligaba
+              a hacer scroll lateral en un teléfono de 375 px. */}
+          <div className="space-y-2 md:hidden">
+            {day.exercises.map((exercise, i) => {
+              const r = toRow(exercise);
+              return (
+                <div
+                  key={exercise.id || i}
+                  className="rounded-md border border-border bg-primary-surface p-3"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-sm font-semibold text-text-primary">{r.name}</p>
+                    {r.video && (
+                      <a
+                        href={r.video}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Ver video de ${r.name} en YouTube`}
+                        className="flex h-11 w-11 -my-2 -mr-1 flex-shrink-0 items-center justify-center rounded-sm text-accent"
+                      >
+                        <IconBrandYoutube stroke={1.75} className="h-5 w-5" />
+                      </a>
+                    )}
+                  </div>
+                  <div className="mt-2 grid grid-cols-5 gap-2">
+                    <Metric label="Series" value={r.sets} />
+                    <Metric label="Reps" value={r.reps} />
+                    <Metric label="Desc" value={r.rest} />
+                    <Metric label="RIR" value={r.rir} />
+                    <Metric label="Cad" value={r.tempo} />
+                  </div>
+                  {r.note && (
+                    <p className="mt-2 border-t border-border pt-2 text-xs leading-relaxed text-text-secondary whitespace-pre-line">
+                      {r.note}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop: tabla completa */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="min-w-[720px] w-full border-collapse text-sm">
               <thead>
                 <tr className="text-[11px] uppercase tracking-wide text-text-tertiary border-b border-border">

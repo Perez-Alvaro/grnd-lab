@@ -14,13 +14,8 @@ export const PLANS = {
   anual:      { label: 'Anual',      days: 365, months: 12, priceUSD: 48 },
 };
 
-/** Datos para la transferencia — completar con la cuenta real. */
-export const TRANSFER_INFO = {
-  titular: 'Alvaro Raul Perez',
-  alias: 'mock.entrenamiento',   // TODO: reemplazar por el alias real
-  cbu: '',                        // TODO: reemplazar por el CBU real
-  nota: 'Enviá el comprobante desde tu panel para que activemos tu acceso.',
-};
+// Los datos de transferencia se editan desde el panel de admin y viven en la
+// tabla app_settings (migración 0007). Ver getTransferInfo() en lib/settings.js.
 
 /** Clave usada por el landing para recordar el plan elegido antes del signup. */
 export const SELECTED_PLAN_KEY = 'mock:selectedPlan';

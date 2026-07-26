@@ -13,7 +13,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   IconUsers, IconCircleCheck, IconClock, IconCurrencyDollar, IconLogout, IconBolt,
-  IconReceipt, IconExternalLink, IconBarbell, IconSalad, IconMessageReport,
+  IconReceipt, IconExternalLink, IconBarbell, IconSalad, IconMessageReport, IconBuildingBank,
   IconChartBar, IconMenu2, IconX, IconTestPipe,
 } from '@tabler/icons-react';
 import { useAuth } from '../store/authStore.jsx';
@@ -27,6 +27,7 @@ import {
 import { PLANS } from '../lib/subscriptions.js';
 import { FEEDBACK_STATUS_LABEL } from '../lib/feedback.js';
 import { Button, Badge } from '../components/ui';
+import TransferSettings from '../components/Admin/TransferSettings.jsx';
 import { toast } from '../utils/toast.js';
 
 const STATUS_VARIANT = {
@@ -118,6 +119,7 @@ export default function AdminDashboard() {
     { id: 'clientes', label: 'Clientes y accesos', icon: IconUsers },
     { id: 'uso', label: 'Uso de editores', icon: IconChartBar },
     { id: 'buzon', label: 'Buzón', icon: IconMessageReport, badge: openFeedback.length },
+    { id: 'transferencia', label: 'Datos de transferencia', icon: IconBuildingBank },
   ];
 
   const EDITOR_LINKS = [
@@ -524,6 +526,8 @@ export default function AdminDashboard() {
                   )}
                 </Panel>
               )}
+
+              {section === 'transferencia' && <TransferSettings />}
             </>
           )}
         </main>
