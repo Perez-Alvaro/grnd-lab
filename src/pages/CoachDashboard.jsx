@@ -4,7 +4,7 @@
  */
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconUsers, IconPlus, IconBarbell, IconPencil, IconTrash, IconFileText, IconChevronRight, IconLogout, IconBolt, IconTarget, IconSalad, IconShieldLock } from '@tabler/icons-react';
+import { IconUsers, IconPlus, IconBarbell, IconPencil, IconTrash, IconChevronRight, IconLogout, IconBolt, IconTarget, IconSalad, IconShieldLock } from '@tabler/icons-react';
 import { useAuth } from '../store/authStore.jsx';
 import { useProtectedLink } from '../lib/routeObfuscator.js';
 import { listAthletes, createAthlete, updateAthlete, deleteAthlete } from '../lib/athletes.js';
@@ -122,12 +122,6 @@ export default function CoachDashboard() {
         {/* Suscripción: estado del pago + informar transferencia */}
         <SubscriptionSection />
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-          <StatCard icon={IconUsers} label="Atletas" value={athletes.length} />
-          <StatCard icon={IconFileText} label="Rutinas" value={routines.length} />
-          <StatCard icon={IconSalad} label="Planes nutrición" value={nutritionPlans.length} />
-        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.3fr] gap-6 lg:gap-8">
           {/* Athletes list */}
@@ -307,17 +301,6 @@ export default function CoachDashboard() {
 
 /* ── Subcomponentes ─────────────────────────────────────────── */
 
-function StatCard({ icon: Icon, label, value }) {
-  return (
-    <div className="rounded-md border border-border bg-primary-surface p-4">
-      <div className="flex items-center gap-2 text-text-muted mb-1">
-        <Icon stroke={1.75} className="h-4 w-4" />
-        <span className="text-xs uppercase tracking-wide">{label}</span>
-      </div>
-      <p className="text-2xl font-bold text-text-primary font-mono">{value}</p>
-    </div>
-  );
-}
 
 function EmptyState({ icon: Icon, title, subtitle, action }) {
   return (
