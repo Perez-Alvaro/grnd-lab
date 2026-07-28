@@ -16,36 +16,6 @@ const formatNotes = (notes) => {
   return String(notes);
 };
 
-// ── Keep-together ────────────────────────────────────────────
-// Cada día se imprime ENTERO en una página (salta a la siguiente si no entra
-// en lo que queda). Solo un día más alto que una página completa fluye con
-// filas atómicas, para no recortarse. La estimación sobreestima a propósito.
-const estimateDayHeight = (day) => {
-  if (day.type === "DESCANSO") return 90;
-  let h = 90; // padding de la card + header del día
-  const warmup = day.warmupExercises || [];
-  if (warmup.length) {
-    h += 60; // título + header de tabla de entrada en calor
-    for (const w of warmup) {
-      h += Math.max(1, Math.ceil(formatNotes(w.notes).length / 42)) * 16 + 14;
-    }
-  }
-  const exercises = day.exercises || [];
-  if (exercises.length) {
-    h += 40; // header de la tabla
-    for (const ex of exercises) {
-      const nameLines = Math.max(1, Math.ceil((ex.name || "").length / 24));
-      h += nameLines * 15 + 17;
-      const notes = formatNotes(ex.notes || ex.note);
-      if (notes) h += Math.ceil(notes.length / 80) * 15 + 17;
-    }
-  }
-  return h;
-};
-
-// Página A4 útil ≈ 770pt; margen de seguridad amplio
-const MAX_KEEP_TOGETHER = 640;
-
 const ExerciseTable = ({ exercises, styles }) => {
   if (!exercises || !exercises.length) return null;
   return (
@@ -180,13 +150,14 @@ const WarmupTable = ({ warmupExercises, dayNumber, styles }) => {
   );
 };
 
+// La card del día ya no necesita heurísticas de salto: cada día vive en su
+// propia <Page> con altura dinámica (ver PlanRenderer + pageSizing), así que
+// nunca se corta. wrap={false} garantiza que react-pdf no lo intente paginar.
 const DayBlock = ({ day, dayNumber, styles }) => {
   const isRestDay = day.type === "DESCANSO";
 
-  const keepTogether = estimateDayHeight(day) <= MAX_KEEP_TOGETHER;
-
   return (
-    <View style={styles.dayContainer} wrap={!keepTogether} minPresenceAhead={110}>
+    <View style={styles.dayContainer} wrap={false}>
       <View style={styles.dayHeader} wrap={false}>
         <Text style={styles.dayName}>{day.name}</Text>
         <Text
@@ -214,25 +185,37 @@ const DayBlock = ({ day, dayNumber, styles }) => {
   );
 };
 
-const WeekSection = ({ week, styles, breakBefore = false }) => (
-  <View
-    style={styles.weekSection}
-    break={breakBefore}
-    id={weekAnchorId(week.number)}
-  >
-    <View style={styles.weekHeader}>
-      <Text style={styles.weekTitle}>{week.title}</Text>
-      {week.notes && week.notes.length ? (
-        <Text style={styles.weekSubtitle}>{week.notes.join("\n")}</Text>
-      ) : null}
-      <Link src={indexLinkTarget()} style={styles.backToIndex}>
-        Volver al índice
-      </Link>
-    </View>
-    {week.days.map((day, idx) => (
-      <DayBlock key={`${week.number}-${idx}`} day={day} dayNumber={day.dayNumber ?? idx + 1} styles={styles} />
-    ))}
+/** Encabezado de semana (con anchor del índice). Solo en el primer día de la semana. */
+const WeekHeader = ({ week, styles }) => (
+  <View style={styles.weekHeader} id={weekAnchorId(week.number)} wrap={false}>
+    <Text style={styles.weekTitle}>{week.title}</Text>
+    {week.notes && week.notes.length ? (
+      <Text style={styles.weekSubtitle}>{week.notes.join("\n")}</Text>
+    ) : null}
+    <Link src={indexLinkTarget()} style={styles.backToIndex}>
+      Volver al índice
+    </Link>
   </View>
 );
 
-export default WeekSection;
+/**
+ * Contenido de la página de UN día de entrenamiento: encabezado de semana
+ * (opcional, solo el primer día) + la card del día. Va dentro de una <Page>
+ * de altura dinámica en PlanRenderer.
+ */
+export const WorkoutDayContent = ({ week, day, dayNumber, showWeekHeader = false, styles }) => (
+  <>
+    {showWeekHeader ? <WeekHeader week={week} styles={styles} /> : null}
+    <DayBlock day={day} dayNumber={dayNumber} styles={styles} />
+  </>
+);
+
+/** Contenido mínimo para una semana sin días: mantiene vivo el anchor del índice. */
+export const EmptyWeekContent = ({ week, styles }) => (
+  <>
+    <WeekHeader week={week} styles={styles} />
+    <Text style={styles.restMessage}>Sin días cargados.</Text>
+  </>
+);
+
+export default WorkoutDayContent;
