@@ -41,54 +41,52 @@ export default function PDFExportModal({ open, onClose, onSelectType }) {
 
                 {/* Description */}
                 <p className="text-text-secondary text-sm mb-6">
-                    Selecciona el formato de exportación según tu preferencia:
+                    ¿Cómo va a usar tu cliente este PDF?
                 </p>
 
-                {/* Options */}
+                {/* Options — nombradas por USO, no por el dispositivo que las genera */}
                 <div className="space-y-3">
-                    {/* Mobile Option */}
-                    <button
-                        onClick={() => handleSelect('mobile')}
-                        className="w-full p-4 rounded-xl border-2 border-border hover:border-accent bg-surface-alt hover:bg-surface-elevated transition-all group"
-                    >
-                        <div className="flex items-start gap-4">
-                            <div className="p-3 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-primary-bg transition-colors">
-                                <IconDeviceMobile stroke={1.75} className="h-6 w-6" />
-                            </div>
-                            <div className="flex-1 text-left">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <h3 className="font-semibold text-text-primary">
-                                        Formato Mobile
-                                    </h3>
-                                    <span className="px-2 py-0.5 text-xs rounded-md bg-red-500/10 text-red-600 font-medium">
-                                        En desarrollo!
-                                    </span>
-                                </div>
-                                <p className="text-sm text-text-tertiary">
-                                    Diseño tipo tarjetas premium, optimizado para móviles con índice interactivo
-                                </p>
-                            </div>
-                        </div>
-                    </button>
-
-                    {/* Desktop Option */}
+                    {/* Desktop engine = tabla compacta, la opción sólida */}
                     <button
                         onClick={() => handleSelect('desktop')}
-                        className="w-full p-4 rounded-xl border-2 border-border hover:border-accent bg-surface-alt hover:bg-surface-elevated transition-all group"
+                        className="w-full p-4 rounded-xl border-2 border-accent/60 hover:border-accent bg-surface-alt hover:bg-surface-elevated transition-all group text-left"
                     >
                         <div className="flex items-start gap-4">
                             <div className="p-3 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-primary-bg transition-colors">
                                 <IconDeviceDesktop stroke={1.75} className="h-6 w-6" />
                             </div>
-                            <div className="flex-1 text-left">
-                                <h3 className="font-semibold text-text-primary mb-1">
-                                    Formato Desktop
-                                </h3>
-                                <span className="px-2 py-0.5 text-xs rounded-md bg-green-500/10 text-green-600 font-medium">
+                            <div className="flex-1">
+                                <div className="flex flex-wrap items-center gap-2 mb-1">
+                                    <h3 className="font-semibold text-text-primary">Para imprimir o mandar</h3>
+                                    <span className="px-2 py-0.5 text-xs rounded-md bg-success/10 text-success font-medium">
                                         Recomendado
                                     </span>
+                                </div>
                                 <p className="text-sm text-text-tertiary">
-                                    Diseño clásico en tabla, compacto y fácil de imprimir, con indice interactivo
+                                    Tabla clásica y compacta, con índice para saltar a cada semana.
+                                </p>
+                            </div>
+                        </div>
+                    </button>
+
+                    {/* Mobile engine = tarjetas, todavía en pruebas */}
+                    <button
+                        onClick={() => handleSelect('mobile')}
+                        className="w-full p-4 rounded-xl border-2 border-border hover:border-accent bg-surface-alt hover:bg-surface-elevated transition-all group text-left"
+                    >
+                        <div className="flex items-start gap-4">
+                            <div className="p-3 rounded-lg bg-accent/10 text-accent group-hover:bg-accent group-hover:text-primary-bg transition-colors">
+                                <IconDeviceMobile stroke={1.75} className="h-6 w-6" />
+                            </div>
+                            <div className="flex-1">
+                                <div className="flex flex-wrap items-center gap-2 mb-1">
+                                    <h3 className="font-semibold text-text-primary">Para leer en el celular</h3>
+                                    <span className="px-2 py-0.5 text-xs rounded-md bg-warning/10 text-warning font-medium">
+                                        En pruebas
+                                    </span>
+                                </div>
+                                <p className="text-sm text-text-tertiary">
+                                    Tarjetas grandes, una por ejercicio. Puede tener detalles sin terminar.
                                 </p>
                             </div>
                         </div>

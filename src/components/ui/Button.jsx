@@ -14,10 +14,14 @@ const variants = {
     accent: 'bg-accent text-primary-bg hover:bg-accent-light active:bg-accent-dark shadow-lg shadow-accent/20 disabled:bg-border disabled:text-text-quaternary',
 };
 
+// En mobile todo control llega a 44px de alto (mínimo táctil de Apple HIG /
+// Material). A partir de sm: recuperamos la densidad compacta del desktop.
 const sizes = {
-    sm: 'px-3 py-1.5 text-sm h-8',
-    md: 'px-4 py-2 text-base h-10',
+    sm: 'px-3 text-sm h-11 sm:h-8 sm:py-1.5',
+    md: 'px-4 text-base h-12 sm:h-10 sm:py-2',
     lg: 'px-6 py-3 text-lg h-12',
+    // Icon-only: cuadrado y siempre tocable.
+    icon: 'p-0 h-11 w-11 sm:h-9 sm:w-9',
 };
 
 const Button = forwardRef(({

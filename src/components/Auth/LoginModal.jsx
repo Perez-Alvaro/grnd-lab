@@ -8,6 +8,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IconX, IconLock, IconMail, IconUser, IconEye, IconEyeOff, IconLoader2, IconBolt, IconAlertCircle, IconCircleCheck } from '@tabler/icons-react';
 import { useAuth } from '../../store/authStore.jsx';
+import { acceptTerms } from '../../lib/terms.js';
+import TermsModal from '../Legal/TermsModal.jsx';
 
 const FOCUSABLE =
   'button:not([disabled]), input:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])';
@@ -32,6 +34,8 @@ export default function LoginModal() {
   const [showPassword, setShowPassword] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
   const [notice, setNotice] = useState(null); // mensaje de éxito (confirmá email / revisá tu correo)
+  const [acceptedTerms, setAcceptedTerms] = useState(false); // sin marcar por defecto: el consentimiento tiene que ser un acto del usuario
+  const [termsOpen, setTermsOpen] = useState(false);
 
   const modalRef = useRef(null);
   const firstFocusRef = useRef(null);
@@ -92,6 +96,9 @@ export default function LoginModal() {
       if (mode !== 'reset' && !password) errors.password = 'La contraseña es requerida';
       if (mode === 'signup' && password && password.length < 6)
         errors.password = 'Mínimo 6 caracteres';
+      // Consentimiento explícito: sin esto no hay alta.
+      if (mode === 'signup' && !acceptedTerms)
+        errors.terms = 'Tenés que aceptar los términos y condiciones para crear la cuenta.';
       if (Object.keys(errors).length) return setFieldErrors(errors);
       setFieldErrors({});
 
@@ -104,6 +111,12 @@ export default function LoginModal() {
         }
       } else if (mode === 'signup') {
         const result = await signup(name.trim(), cleanEmail, password);
+        // Queda registrado qué versión aceptó y cuándo. Si falla (p. ej. la
+        // sesión todavía no está lista por confirmación por email), la
+        // compuerta TermsGate se lo vuelve a pedir al entrar.
+        if (result.success) {
+          try { await acceptTerms(); } catch { /* lo resuelve TermsGate */ }
+        }
         if (result.success && result.needsConfirmation) {
           setNotice('Te enviamos un email para confirmar tu cuenta. Revisá tu bandeja.');
         } else if (result.success) {
@@ -116,7 +129,7 @@ export default function LoginModal() {
         }
       }
     },
-    [mode, name, email, password, login, signup, resetPassword, navigate]
+    [mode, name, email, password, acceptedTerms, login, signup, resetPassword, navigate]
   );
 
   if (!isModalOpen) return null;
@@ -250,6 +263,41 @@ export default function LoginModal() {
                   </div>
                 )}
 
+                {/* Consentimiento de T&C: solo en el alta, sin premarcar y
+                    con el texto completo a un clic. */}
+                {mode === 'signup' && (
+                  <div className="space-y-1">
+                    <label className="flex cursor-pointer items-start gap-3">
+                      <input
+                        type="checkbox"
+                        checked={acceptedTerms}
+                        onChange={(e) => {
+                          setAcceptedTerms(e.target.checked);
+                          if (e.target.checked) {
+                            setFieldErrors((prev) => ({ ...prev, terms: null }));
+                          }
+                        }}
+                        disabled={isLoading}
+                        className="mt-0.5 h-5 w-5 flex-shrink-0 accent-accent"
+                        aria-describedby="terms-help"
+                      />
+                      <span id="terms-help" className="text-xs leading-relaxed text-text-secondary">
+                        Leí y acepto los{' '}
+                        <button
+                          type="button"
+                          onClick={() => setTermsOpen(true)}
+                          className="font-semibold text-accent underline"
+                        >
+                          términos y condiciones
+                        </button>
+                        . Entiendo que Mock es una herramienta de asistencia y que soy el
+                        único responsable profesional de los planes que genere y entregue.
+                      </span>
+                    </label>
+                    {fieldErrors.terms && <p className="text-xs text-red-400">{fieldErrors.terms}</p>}
+                  </div>
+                )}
+
                 <button
                   type="submit"
                   disabled={isLoading}
@@ -294,6 +342,8 @@ export default function LoginModal() {
           </div>
         </div>
       </div>
+
+      <TermsModal open={termsOpen} onClose={() => setTermsOpen(false)} />
 
       <style>{`
         @keyframes modalEntrance {

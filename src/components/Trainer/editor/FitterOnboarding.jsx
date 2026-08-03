@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
-import { IconChevronLeft, IconChevronRight, IconSparkles, IconCopy, IconClipboardText, IconExternalLink, IconCheck, IconAlertCircle } from '@tabler/icons-react';
+import { IconChevronLeft, IconChevronRight, IconSparkles, IconCopy, IconClipboardText, IconExternalLink, IconCheck, IconAlertCircle, IconEye, IconFileDownload, IconDeviceFloppy, IconCircleCheck } from '@tabler/icons-react';
 import { generateAIPrompt } from "../../../utils/promptGenerator.js";
 import { universalImport } from "../../../lib/transformers/routineTransformer.js";
 import { parsePlanJSON } from "../../../lib/planJson.js";
@@ -19,15 +19,38 @@ const AI_PLATFORMS = [
 
 const inputCls = "w-full rounded-xl border border-border bg-primary-bg px-4 py-3 text-base text-text-primary placeholder:text-text-quaternary transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20";
 
+// Clave para persistir el paso actual del cuestionario, separada por tipo de
+// plan. En mobile, al abrir la IA en otra pestaña el navegador descarta la
+// pestaña de la app; al volver recarga y sin esto el wizard volvía al paso 0.
+const stepStorageKey = (planTypeId) => `mock:onb-step:${planTypeId || "workout"}`;
+
+const readStoredStep = (key) => {
+    try {
+        const raw = localStorage.getItem(key);
+        const n = raw == null ? 0 : Number(raw);
+        return Number.isFinite(n) && n >= 0 ? n : 0;
+    } catch {
+        return 0;
+    }
+};
+
 const FitterOnboarding = ({
     onCopyPrompt,
     onImportJSON,
     steps = WORKOUT_STEPS,
     generatePrompt = generateAIPrompt,
     importFn = universalImport,
+    planTypeId = "workout",
+    // Acciones del "paso 3": qué hacer una vez que el plan quedó cargado.
+    onGoToPreview,
+    onExportPdf,
+    onSave,
+    planNoun = "rutina",
 }) => {
-    const { metadata, updateMetadata } = usePlanContext();
-    const [i, setI] = useState(0);
+    const { metadata, updateMetadata, weeks } = usePlanContext();
+    const STEP_KEY = useMemo(() => stepStorageKey(planTypeId), [planTypeId]);
+    // Restaura el paso donde estaba el usuario (sobre todo el paso final de pegar).
+    const [i, setI] = useState(() => readStoredStep(STEP_KEY));
     const [copied, setCopied] = useState(null);
     const [jsonError, setJsonError] = useState("");
     const [warning, setWarning] = useState("");
@@ -46,6 +69,26 @@ const FitterOnboarding = ({
     const idx = Math.min(i, STEPS.length - 1);
     const step = STEPS[idx];
     const progress = ((idx + 1) / STEPS.length) * 100;
+
+    // "Cargamos 4 semanas y 16 días." — confirma en concreto qué entró.
+    const loadedSummary = useMemo(() => {
+        const w = weeks?.length || 0;
+        if (!w) return "";
+        const d = weeks.reduce((acc, week) => acc + (week.days?.length || 0), 0);
+        return `Cargamos ${w} ${w === 1 ? "semana" : "semanas"} y ${d} ${d === 1 ? "día" : "días"}.`;
+    }, [weeks]);
+
+    // Agrupa los pasos por sección para que "Paso 7 de 30" no sea el único
+    // contexto: el coach ve en qué bloque está y cuánto le falta de ese bloque.
+    const sectionInfo = useMemo(() => {
+        if (!step?.section) return null;
+        const inSection = STEPS.filter((s) => s.section === step.section);
+        return {
+            label: step.section,
+            position: inSection.indexOf(step) + 1,
+            total: inSection.length,
+        };
+    }, [STEPS, step]);
     const val = step.field ? (metadata[step.field] || "") : "";
     const filled = !step.required || (val && val.toString().trim() !== "");
 
@@ -75,7 +118,15 @@ const FitterOnboarding = ({
             );
         }
         setOk(true); setJsonInput(""); setShowTextarea(false);
-    }, [onImportJSON, importFn]);
+        // Cargado con éxito: el borrador del paso ya no hace falta.
+        try { localStorage.removeItem(STEP_KEY); } catch { /* noop */ }
+    }, [onImportJSON, importFn, STEP_KEY]);
+
+    // "Empezar de nuevo": vuelve al paso 0 y limpia el borrador del paso.
+    const restart = useCallback(() => {
+        try { localStorage.removeItem(STEP_KEY); } catch { /* noop */ }
+        setI(0); setJsonError(""); setWarning(""); setOk(false); setShowTextarea(false); setJsonInput("");
+    }, [STEP_KEY]);
 
     const smartPaste = useCallback(async () => {
         try {
@@ -100,6 +151,11 @@ const FitterOnboarding = ({
         window.open(platform.url, "_blank", "noopener,noreferrer");
     }, [metadata, generatePrompt]);
 
+    // Persiste el paso actual para sobrevivir el descarte de pestaña en mobile.
+    useEffect(() => {
+        try { localStorage.setItem(STEP_KEY, String(i)); } catch { /* storage lleno / bloqueado */ }
+    }, [i, STEP_KEY]);
+
     useEffect(() => {
         const el = document.querySelector("input[data-onb], textarea[data-onb]");
         if (el) setTimeout(() => el.focus(), 60);
@@ -109,9 +165,18 @@ const FitterOnboarding = ({
         <div className="mx-auto max-w-2xl">
             {/* Progreso */}
             <div className="mb-6">
-                <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-text-tertiary">Paso {idx + 1} de {STEPS.length}</span>
-                    <span className="text-xs font-medium text-accent">{Math.round(progress)}%</span>
+                <div className="flex items-center justify-between gap-3 mb-2">
+                    {sectionInfo ? (
+                        <span className="min-w-0 truncate text-xs font-semibold text-text-secondary">
+                            {sectionInfo.label}
+                            <span className="ml-1.5 font-medium text-text-tertiary">
+                                {sectionInfo.position}/{sectionInfo.total}
+                            </span>
+                        </span>
+                    ) : (
+                        <span className="text-xs font-medium text-text-tertiary">Paso {idx + 1} de {STEPS.length}</span>
+                    )}
+                    <span className="flex-shrink-0 text-xs font-medium text-accent">{Math.round(progress)}%</span>
                 </div>
                 <div className="h-1.5 bg-primary-bg rounded-full overflow-hidden">
                     <motion.div className="h-full bg-accent" initial={false} animate={{ width: `${progress}%` }} transition={{ duration: 0.4, ease: "easeOut" }} />
@@ -156,6 +221,9 @@ const FitterOnboarding = ({
                     {step.kind === "text" && (
                         <input
                             data-onb type="text" value={val}
+                            // inputMode numérico en edad/peso/altura: sin esto el
+                            // celular abre el teclado alfabético para escribir un número.
+                            inputMode={step.inputMode || "text"}
                             onChange={(e) => updateMetadata(step.field, e.target.value)}
                             onKeyDown={(e) => e.key === "Enter" && filled && next()}
                             placeholder={step.placeholder} className={inputCls}
@@ -170,9 +238,60 @@ const FitterOnboarding = ({
                         />
                     )}
 
-                    {/* Paso final: generar */}
-                    {step.kind === "completion" && (
+                    {/* Plan cargado: el "paso 3" — qué hacer ahora */}
+                    {step.kind === "completion" && ok && (
                         <div className="space-y-4">
+                            <div className="rounded-2xl border border-accent/40 bg-accent/5 p-6 text-center">
+                                <div className="mx-auto mb-3 inline-flex h-14 w-14 items-center justify-center rounded-full bg-accent/15">
+                                    <IconCircleCheck stroke={1.75} className="h-8 w-8 text-accent" />
+                                </div>
+                                <h4 className="text-lg font-semibold text-text-primary font-display">
+                                    ¡Tu {planNoun} está lista!
+                                </h4>
+                                <p className="mx-auto mt-1.5 max-w-xs text-sm leading-relaxed text-text-tertiary">
+                                    {loadedSummary} Revisala y descargala para mandársela a tu cliente.
+                                </p>
+                            </div>
+
+                            {warning && (
+                                <div className="flex items-start gap-2 rounded-lg border border-warning/25 bg-warning/10 p-3">
+                                    <IconAlertCircle stroke={1.75} className="mt-0.5 h-4 w-4 flex-shrink-0 text-warning" />
+                                    <p className="text-xs text-text-secondary">{warning}</p>
+                                </div>
+                            )}
+
+                            <div className="space-y-2.5">
+                                {onGoToPreview && (
+                                    <Button variant="accent" size="lg" onClick={onGoToPreview} className="h-14 w-full text-base">
+                                        <IconEye stroke={1.75} className="h-5 w-5" /> Ver el plan
+                                    </Button>
+                                )}
+                                {onExportPdf && (
+                                    <Button variant="outline" size="lg" onClick={onExportPdf} className="h-14 w-full text-base">
+                                        <IconFileDownload stroke={1.75} className="h-5 w-5" /> Descargar PDF
+                                    </Button>
+                                )}
+                                {onSave && (
+                                    <Button variant="ghost" size="md" onClick={onSave} className="w-full">
+                                        <IconDeviceFloppy stroke={1.75} className="h-4 w-4" /> Guardar en mi cuenta
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Paso final: generar */}
+                    {step.kind === "completion" && !ok && (
+                        <div className="space-y-4">
+                            {/* Tranquiliza: podés salir a la IA y volver sin perder nada */}
+                            <div className="flex items-start gap-2.5 rounded-xl bg-accent/10 border border-accent/25 px-4 py-3">
+                                <IconCheck stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
+                                <p className="text-xs text-text-secondary leading-relaxed">
+                                    <strong className="text-text-primary">Tu progreso queda guardado.</strong> Podés ir a la IA,
+                                    copiar la respuesta y volver acá para pegarla. Si se cierra la app, al volver seguís en este paso.
+                                </p>
+                            </div>
+
                             {/* 1. Abrir IA con el prompt copiado */}
                             <div className="rounded-2xl border border-border bg-primary-bg p-5">
                                 <div className="flex items-start gap-3 mb-4">
@@ -232,11 +351,11 @@ const FitterOnboarding = ({
                                     <div className="space-y-3">
                                         <textarea
                                             value={jsonInput} onChange={(e) => setJsonInput(e.target.value)}
-                                            placeholder="Pegá acá el JSON completo (desde { hasta })…"
+                                            placeholder="Pegá acá todo lo que te respondió la IA (desde la primera { hasta la última })…"
                                             className={`${inputCls} min-h-[160px] resize-none font-mono text-xs`} rows={8} autoFocus
                                         />
                                         <Button variant="accent" size="lg" onClick={() => importFromText(jsonInput)} disabled={!jsonInput.trim()} className="w-full">
-                                            <IconClipboardText stroke={1.75} className="h-4 w-4" /> Cargar rutina
+                                            <IconClipboardText stroke={1.75} className="h-4 w-4" /> Cargar {planNoun}
                                         </Button>
                                     </div>
                                 )}
@@ -245,18 +364,6 @@ const FitterOnboarding = ({
                                     <div className="mt-3 flex items-start gap-2 p-3 bg-red-500/10 border border-red-500/25 rounded-lg">
                                         <IconAlertCircle stroke={1.75} className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
                                         <p className="text-xs text-red-300">{jsonError}</p>
-                                    </div>
-                                )}
-                                {warning && (
-                                    <div className="mt-3 flex items-start gap-2 p-3 bg-warning/10 border border-warning/25 rounded-lg">
-                                        <IconAlertCircle stroke={1.75} className="w-4 h-4 text-warning flex-shrink-0 mt-0.5" />
-                                        <p className="text-xs text-text-secondary">{warning}</p>
-                                    </div>
-                                )}
-                                {ok && (
-                                    <div className="mt-3 flex items-center gap-2 p-3 bg-accent/10 border border-accent/25 rounded-lg">
-                                        <IconCheck stroke={1.75} className="w-4 h-4 text-accent flex-shrink-0" />
-                                        <p className="text-xs text-text-secondary">¡Rutina cargada! Mirala en la vista previa.</p>
                                     </div>
                                 )}
                             </div>
@@ -282,10 +389,15 @@ const FitterOnboarding = ({
                         )
                     )}
                 </div>
+            ) : ok ? (
+                // Ya está cargado: "Atrás" volvería a la pantalla de pegar y confunde.
+                <div className="mt-6 flex justify-center">
+                    <Button variant="ghost" size="sm" onClick={restart}>Empezar de nuevo</Button>
+                </div>
             ) : (
                 <div className="flex items-center justify-between mt-6">
                     <Button variant="ghost" onClick={prev}><IconChevronLeft stroke={1.75} className="h-4 w-4" /> Atrás</Button>
-                    <Button variant="ghost" onClick={() => setI(0)}>Empezar de nuevo</Button>
+                    <Button variant="ghost" onClick={restart}>Empezar de nuevo</Button>
                 </div>
             )}
         </div>

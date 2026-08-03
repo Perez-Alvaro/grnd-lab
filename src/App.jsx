@@ -12,6 +12,7 @@ import AdminDashboard from "./pages/AdminDashboard.jsx";
 import ProtectedRoute from "./components/Auth/ProtectedRoute.jsx";
 import SubscriptionGate from "./components/Auth/SubscriptionGate.jsx";
 import LoginModal from "./components/Auth/LoginModal.jsx";
+import TermsGate from "./components/Legal/TermsGate.jsx";
 
 // Derive the protected path at runtime — never a plain string in source
 const { path: EDITOR_PATH } = getRouteConfig();
@@ -31,6 +32,9 @@ function AppContent() {
 
       {/* Global login modal — always mounted, controlled via authStore */}
       <LoginModal />
+
+      {/* Bloquea la app hasta que el usuario logueado acepte los T&C vigentes. */}
+      <TermsGate />
 
       <main>
         <Routes>
@@ -69,6 +73,9 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
+
+          {/* TEMP DEBUG — quitar */}
+          <Route path="/__ntest" element={<RoutineEditor />} />
 
           {/* Catch all — redirect to SaaS home */}
           <Route path="*" element={<HomeSaaS />} />

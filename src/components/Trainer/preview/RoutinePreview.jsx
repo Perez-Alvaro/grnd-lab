@@ -1,10 +1,11 @@
 import { memo, useMemo, useState, useCallback } from "react";
 import { usePlanContext } from "../../../context/PlanContext.jsx";
 import WeekPreview from "./WeekPreview.jsx";
+import PreviewEmptyState from "./PreviewEmptyState.jsx";
 import { buildWeekAnchors } from "../../../pdf/utils/pdfAnchors.js";
 import { TRAINING_GOAL_LABELS } from "../../../constants/objectives.js";
 
-const RoutinePreview = memo(() => {
+const RoutinePreview = memo(({ onGoToAssistant }) => {
   const { plan } = usePlanContext();
   const [collapsed, setCollapsed] = useState(() => new Set());
 
@@ -30,6 +31,10 @@ const RoutinePreview = memo(() => {
       return next;
     });
   }, []);
+
+  if (!plan.weeks?.length) {
+    return <PreviewEmptyState onGoToAssistant={onGoToAssistant} />;
+  }
 
   return (
     <aside

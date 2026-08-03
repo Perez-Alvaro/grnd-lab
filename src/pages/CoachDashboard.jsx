@@ -4,7 +4,7 @@
  */
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconUsers, IconPlus, IconBarbell, IconPencil, IconTrash, IconChevronRight, IconLogout, IconBolt, IconTarget, IconSalad, IconShieldLock } from '@tabler/icons-react';
+import { IconUsers, IconPlus, IconBarbell, IconPencil, IconTrash, IconChevronRight, IconChevronLeft, IconLogout, IconBolt, IconTarget, IconSalad, IconShieldLock } from '@tabler/icons-react';
 import { useAuth } from '../store/authStore.jsx';
 import { useProtectedLink } from '../lib/routeObfuscator.js';
 import { listAthletes, createAthlete, updateAthlete, deleteAthlete } from '../lib/athletes.js';
@@ -14,6 +14,9 @@ import { Button, Input, Select, Textarea, Modal, ModalFooter, Badge } from '../c
 import SubscriptionSection from '../components/Dashboard/SubscriptionSection.jsx';
 import FeedbackSection from '../components/Dashboard/FeedbackSection.jsx';
 import { toast } from '../utils/toast.js';
+
+/** "0 rutinas" / "1 rutina" / "3 rutinas" — el `2 rut · 1 nutri` anterior era críptico. */
+const countLabel = (n, singular, plural) => `${n} ${n === 1 ? singular : plural}`;
 
 const LEVELS = [
   { value: '', label: 'Sin especificar' },
@@ -123,9 +126,12 @@ export default function CoachDashboard() {
         <SubscriptionSection />
 
 
+        {/* En mobile es una navegación lista → detalle (con "Volver"), no dos
+            bloques apilados: antes al tocar un atleta el detalle se rellenaba
+            fuera de pantalla y parecía que no pasaba nada. */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.3fr] gap-6 lg:gap-8">
           {/* Athletes list */}
-          <section>
+          <section className={selected ? 'hidden lg:block' : 'block'}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide">Tus atletas</h2>
               <Button size="sm" onClick={openNew}><IconPlus stroke={1.75} className="h-4 w-4" /> Nuevo atleta</Button>
@@ -156,7 +162,7 @@ export default function CoachDashboard() {
                         <div className="flex items-center gap-2 mt-1 flex-wrap">
                           {a.goal && <Badge>{a.goal}</Badge>}
                           {a.level && <Badge variant="secondary">{a.level}</Badge>}
-                          <span className="text-xs text-text-muted">{routinesOf(a.id).length} rut · {nutritionOf(a.id).length} nutri</span>
+                          <span className="text-xs text-text-muted">{countLabel(routinesOf(a.id).length, 'rutina', 'rutinas')} · {countLabel(nutritionOf(a.id).length, 'plan', 'planes')}</span>
                         </div>
                       </div>
                       <IconChevronRight stroke={1.75} className="h-4 w-4 text-text-muted flex-shrink-0" />
@@ -168,11 +174,19 @@ export default function CoachDashboard() {
           </section>
 
           {/* Selected athlete detail */}
-          <section>
+          <section className={selected ? 'block' : 'hidden lg:block'}>
             {selected ? (
-              <div className="rounded-xl border border-border bg-primary-surface p-6">
-                <div className="flex items-start justify-between mb-6">
-                  <div>
+              <div className="rounded-xl border border-border bg-primary-surface p-4 sm:p-6">
+                {/* Back a la lista — sin esto, en mobile no hay salida del detalle */}
+                <button
+                  onClick={() => setSelected(null)}
+                  className="lg:hidden -ml-2 mb-3 inline-flex min-h-[44px] items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-text-secondary hover:text-text-primary"
+                >
+                  <IconChevronLeft stroke={1.75} className="h-4 w-4" /> Tus atletas
+                </button>
+
+                <div className="flex items-start justify-between gap-3 mb-6">
+                  <div className="min-w-0">
                     <h2 className="text-xl font-bold text-text-primary font-display">{selected.name}</h2>
                     {selected.email && <p className="text-sm text-text-muted">{selected.email}</p>}
                     <div className="flex items-center gap-2 mt-2 flex-wrap">
@@ -181,9 +195,14 @@ export default function CoachDashboard() {
                     </div>
                     {selected.notes && <p className="text-sm text-text-secondary mt-3">{selected.notes}</p>}
                   </div>
-                  <div className="flex gap-1">
-                    <Button variant="ghost" size="sm" onClick={() => openEdit(selected)} aria-label="Editar"><IconPencil stroke={1.75} className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="sm" onClick={() => handleDeleteAthlete(selected)} aria-label="Eliminar"><IconTrash stroke={1.75} className="h-4 w-4" /></Button>
+                  {/* Eliminar separado de Editar: pegados y a 32px se toca el equivocado */}
+                  <div className="flex flex-shrink-0 items-center gap-3">
+                    <Button variant="ghost" size="icon" onClick={() => openEdit(selected)} aria-label={`Editar a ${selected.name}`}>
+                      <IconPencil stroke={1.75} className="h-5 w-5" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleDeleteAthlete(selected)} aria-label={`Eliminar a ${selected.name}`} className="text-error hover:bg-error/10">
+                      <IconTrash stroke={1.75} className="h-5 w-5" />
+                    </Button>
                   </div>
                 </div>
 
@@ -232,8 +251,8 @@ export default function CoachDashboard() {
                                 <p className="text-xs text-text-muted">Editada {new Date(r.updated_at).toLocaleDateString('es-AR')}</p>
                               </div>
                             </button>
-                            <Button variant="ghost" size="sm" onClick={() => handleDeleteRoutine(r)} aria-label="Eliminar rutina">
-                              <IconTrash stroke={1.75} className="h-4 w-4" />
+                            <Button variant="ghost" size="icon" onClick={() => handleDeleteRoutine(r)} aria-label={`Eliminar la rutina ${r.title}`} className="ml-2 text-error hover:bg-error/10">
+                              <IconTrash stroke={1.75} className="h-5 w-5" />
                             </Button>
                           </div>
                         ))}
@@ -265,8 +284,8 @@ export default function CoachDashboard() {
                                 <p className="text-xs text-text-muted">Editado {new Date(p.updated_at).toLocaleDateString('es-AR')}</p>
                               </div>
                             </button>
-                            <Button variant="ghost" size="sm" onClick={() => handleDeleteNutritionPlan(p)} aria-label="Eliminar plan nutricional">
-                              <IconTrash stroke={1.75} className="h-4 w-4" />
+                            <Button variant="ghost" size="icon" onClick={() => handleDeleteNutritionPlan(p)} aria-label={`Eliminar el plan ${p.title}`} className="ml-2 text-error hover:bg-error/10">
+                              <IconTrash stroke={1.75} className="h-5 w-5" />
                             </Button>
                           </div>
                         ))}

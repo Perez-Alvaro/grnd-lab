@@ -1,6 +1,7 @@
 import { memo, useMemo, useState, useCallback } from "react";
 import { IconChevronDown, IconChevronRight, IconExternalLink, IconAlertTriangle } from '@tabler/icons-react';
 import { usePlanContext } from "../../../context/PlanContext.jsx";
+import PreviewEmptyState from "./PreviewEmptyState.jsx";
 import { buildRecipeSearchUrl } from "../../../lib/recipeSearch.js";
 
 const VideoLink = ({ url, label = "Ver receta" }) => {
@@ -123,7 +124,7 @@ const WeekBlock = memo(({ week, index, collapsed, onToggle }) => (
 ));
 WeekBlock.displayName = "NutritionWeekBlock";
 
-const NutritionPreview = memo(() => {
+const NutritionPreview = memo(({ onGoToAssistant }) => {
   const { plan } = usePlanContext();
   const [collapsed, setCollapsed] = useState(() => new Set());
   const meta = plan.metadata || {};
@@ -146,6 +147,15 @@ const NutritionPreview = memo(() => {
     if (pm.grasas_g) out.push(`G ${pm.grasas_g}g`);
     return out;
   }, [pm]);
+
+  if (!plan.weeks?.length) {
+    return (
+      <PreviewEmptyState
+        subtitle="Respondé las preguntas del asistente y pegá la respuesta de la IA. El plan de comidas va a aparecer acá."
+        onGoToAssistant={onGoToAssistant}
+      />
+    );
+  }
 
   return (
     <aside className="flex h-full flex-col rounded-2xl border border-border bg-primary-bg" data-testid="nutrition-preview">

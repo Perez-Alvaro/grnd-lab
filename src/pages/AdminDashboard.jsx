@@ -14,7 +14,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  IconUsers, IconCircleCheck, IconClock, IconCurrencyDollar, IconLogout, IconBolt,
+  IconUsers, IconLogout, IconBolt,
   IconReceipt, IconExternalLink, IconBarbell, IconSalad, IconMessageReport, IconBuildingBank,
   IconChartBar, IconMenu2, IconX, IconTestPipe,
 } from '@tabler/icons-react';
@@ -113,6 +113,14 @@ export default function AdminDashboard() {
 
   const pendingPayments = payments.filter((p) => p.status === 'submitted');
   const openFeedback = feedback.filter((f) => f.status !== 'resolved');
+
+  // Plata REAL cobrada en los últimos 30 días.
+  // Antes se mostraba "MRR", que acá no existe: los planes son pago único y
+  // la renovación es manual, así que amortizar el anual a $4/mes daba un
+  // número de suscripción recurrente que nadie está cobrando todos los meses.
+  const cobrado30d = payments
+    .filter((p) => p.status === 'approved' && Date.now() - new Date(p.created_at).getTime() < 30 * 86400000)
+    .reduce((sum, p) => sum + Number(p.amount_usd || 0), 0);
 
   const SECTIONS = [
     { id: 'pagos', label: 'Pagos', icon: IconReceipt, badge: pendingPayments.length },
@@ -314,12 +322,16 @@ export default function AdminDashboard() {
 
         {/* Contenido */}
         <main className="flex-1 min-w-0 px-4 sm:px-6 py-6 sm:py-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
-            <StatCard icon={IconUsers} label="Coaches" value={metrics.totalCoaches} />
-            <StatCard icon={IconCircleCheck} label="Pagos vigentes" value={metrics.active} />
-            <StatCard icon={IconClock} label="Por chequear" value={pendingPayments.length} />
-            <StatCard icon={IconCurrencyDollar} label="MRR (USD)" value={`$${metrics.mrr}`} />
-          </div>
+          {/* Resumen: solo donde aporta (pagos y clientes). En el buzón o en
+              los datos de transferencia era scroll muerto antes del contenido.
+              "Por chequear" no está acá: ya es el badge del ítem Pagos. */}
+          {(section === 'pagos' || section === 'clientes') && (
+            <div className="mb-6 grid grid-cols-3 gap-px overflow-hidden rounded-md border border-border bg-border sm:mb-8 sm:gap-4 sm:border-0 sm:bg-transparent">
+              <StatCard label="Coaches" value={metrics.totalCoaches} />
+              <StatCard label="Con acceso" value={metrics.active} />
+              <StatCard label="Cobrado 30d" value={`$${cobrado30d}`} hint="USD que impactaron" />
+            </div>
+          )}
 
           {loading ? (
             <p className="text-sm text-text-muted">Cargando…</p>
@@ -335,22 +347,29 @@ export default function AdminDashboard() {
                       {payments.map((p) => {
                         const st = PAYMENT_STATUS[p.status] || { label: p.status, variant: 'default' };
                         return (
-                          <div key={p.id} className="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-6 py-4">
-                            <div className="flex items-start gap-3 min-w-0">
-                              <IconReceipt stroke={1.75} className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
-                              <div className="min-w-0">
-                                <p className="text-sm font-medium text-text-primary truncate">
-                                  {p.coach_name} · {PLANS[p.plan]?.label || p.plan} · ${p.amount_usd} USD
-                                </p>
-                                <p className="text-xs text-text-muted">
-                                  {new Date(p.created_at).toLocaleString('es-AR')}
-                                  {p.reference && ` · Ref: ${p.reference}`}
-                                  {p.status === 'approved' && p.period_end &&
-                                    ` · habilitado hasta ${new Date(p.period_end).toLocaleDateString('es-AR')}`}
+                          <div key={p.id} className="px-4 sm:px-6 py-4 sm:flex sm:flex-wrap sm:items-center sm:justify-between sm:gap-3">
+                            {/* En mobile el nombre iba truncado en una sola
+                                línea junto al plan y al monto: se leía a medias.
+                                Ahora el monto queda arriba a la derecha y el
+                                resto baja a su propia línea. */}
+                            <div className="min-w-0">
+                              <div className="flex items-start justify-between gap-2">
+                                <p className="text-sm font-medium text-text-primary">{p.coach_name}</p>
+                                <p className="font-mono text-sm font-bold text-text-primary sm:hidden">
+                                  ${p.amount_usd}
                                 </p>
                               </div>
+                              <p className="mt-0.5 text-xs text-text-muted">
+                                {PLANS[p.plan]?.label || p.plan}
+                                <span className="hidden sm:inline"> · ${p.amount_usd} USD</span>
+                                {' · '}
+                                {new Date(p.created_at).toLocaleDateString('es-AR')}
+                                {p.reference && ` · Ref: ${p.reference}`}
+                                {p.status === 'approved' && p.period_end &&
+                                  ` · hasta ${new Date(p.period_end).toLocaleDateString('es-AR')}`}
+                              </p>
                             </div>
-                            <div className="flex items-center gap-2 flex-wrap">
+                            <div className="mt-3 flex flex-wrap items-center gap-2 sm:mt-0">
                               <Badge variant={st.variant}>{st.label}</Badge>
                               <Button size="sm" variant="ghost" onClick={() => handleViewReceipt(p)}>
                                 <IconExternalLink stroke={1.75} className="h-4 w-4" /> Comprobante
@@ -521,14 +540,16 @@ export default function AdminDashboard() {
 
 /* ── Subcomponentes ─────────────────────────────────────────── */
 
-function StatCard({ icon: Icon, label, value }) {
+/**
+ * Dato del resumen. En mobile es una tira compacta de 3 (sin íconos, que no
+ * aportaban información); desde sm: vuelve a ser una tarjeta con borde.
+ */
+function StatCard({ label, value, hint }) {
   return (
-    <div className="rounded-md border border-border bg-primary-surface p-4">
-      <div className="flex items-center gap-2 text-text-muted mb-1">
-        <Icon stroke={1.75} className="h-4 w-4" />
-        <span className="text-xs uppercase tracking-wide">{label}</span>
-      </div>
-      <p className="text-2xl font-bold text-text-primary font-mono">{value}</p>
+    <div className="bg-primary-surface p-3 sm:rounded-md sm:border sm:border-border sm:p-4">
+      <p className="text-2xs uppercase tracking-wide text-text-muted sm:text-xs">{label}</p>
+      <p className="mt-0.5 font-mono text-xl font-bold text-text-primary sm:text-2xl">{value}</p>
+      {hint && <p className="hidden text-2xs text-text-muted sm:block">{hint}</p>}
     </div>
   );
 }

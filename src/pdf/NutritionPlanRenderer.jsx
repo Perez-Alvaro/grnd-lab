@@ -3,6 +3,7 @@ import { Document, Page, pdf } from "@react-pdf/renderer";
 import NutritionCoverPage from "./sections/NutritionCoverPage.jsx";
 import { NutritionDayPage, NutritionEmptyWeekPage } from "./sections/NutritionWeekSection.jsx";
 import ShoppingListPage, { hasAppendix } from "./sections/ShoppingListPage.jsx";
+import LegalPage from "./sections/LegalPage.jsx";
 import { createNutritionStyles } from "./utils/nutritionPdfStyles.js";
 
 /**
@@ -66,6 +67,11 @@ const NutritionPlanDocument = ({ plan }) => {
           <ShoppingListPage plan={plan} styles={styles} />
         </Page>
       ) : null}
+
+      {/* Términos y condiciones: SIEMPRE la última página del documento. */}
+      <Page size="A4" orientation="portrait" style={styles.page} wrap>
+        <LegalPage variant="nutrition" author={plan.author} />
+      </Page>
     </Document>
   );
 };

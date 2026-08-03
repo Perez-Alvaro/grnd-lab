@@ -3,6 +3,7 @@ import { Document, Page, pdf } from "@react-pdf/renderer";
 import CoverPage from "./sections/CoverPage.js";
 import { WorkoutDayContent, EmptyWeekContent } from "./sections/WeekSection.js";
 import ProgressPage from "./sections/ProgressPage.js";
+import LegalPage from "./sections/LegalPage.jsx";
 import { createBaseStyles } from "./utils/pdfStyles.js";
 import { normalizePlanData } from "./utils/pdfLayout.js";
 import {
@@ -76,6 +77,11 @@ const PlanDocument = ({ plan }) => {
           <ProgressPage progress={plan.progress} styles={styles} />
         </Page>
       ) : null}
+
+      {/* Términos y condiciones: SIEMPRE la última página del documento. */}
+      <Page size="A4" orientation="portrait" style={styles.page} wrap>
+        <LegalPage variant="workout" author={plan.author} />
+      </Page>
     </Document>
   );
 };

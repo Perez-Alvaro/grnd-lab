@@ -250,8 +250,34 @@ export const buildInitialPlan = (template, leaf = WORKOUT_LEAF) => {
   };
 };
 
-const buildDraftKey = (templateId) =>
-  `plan-editor-draft-${templateId || "new"}`;
+// La clave incluye el tipo de hoja (exercises = rutina, meals = nutrición) para
+// que el borrador de rutina y el de nutrición NO colisionen: ambos usan
+// templateId=null al crear, así que sin esto compartían "plan-editor-draft-new"
+// y al volver de la IA un editor restauraba el borrador del otro.
+/**
+ * Fusiona la metadata previa (lo que cargó el coach en la encuesta) con la que
+ * trae un plan importado de la IA. Regla: se parte de la previa y se superponen
+ * SOLO los valores no vacíos del import; el título y el autor que escribió el
+ * coach ganan siempre si existen (la IA no repite el nombre interno del plan,
+ * así que sin esto el import lo pisaba con "" y se perdía el título del PDF).
+ */
+export const mergeImportedMetadata = (prevMetadata = {}, importedMetadata = {}) => {
+  const merged = { ...prevMetadata };
+  for (const [k, v] of Object.entries(importedMetadata)) {
+    const isEmpty =
+      v == null ||
+      v === "" ||
+      (Array.isArray(v) && v.length === 0) ||
+      (typeof v === "object" && !Array.isArray(v) && Object.keys(v).length === 0);
+    if (!isEmpty) merged[k] = v;
+  }
+  merged.name = prevMetadata.name || importedMetadata.name || "";
+  merged.author = prevMetadata.author || importedMetadata.author || "";
+  return merged;
+};
+
+const buildDraftKey = (templateId, leafKey = "exercises") =>
+  `plan-editor-draft-${leafKey}-${templateId || "new"}`;
 
 const PLAN_VALIDATION_MESSAGES = {
   NAME: "El plan debe tener un nombre.",
@@ -271,7 +297,7 @@ export const useRoutineEditor = ({
   const basePlan = useMemo(() => buildInitialPlan(template, leaf), [template, leaf]);
   const [plan, setPlan] = useState(basePlan);
   const [dirty, setDirty] = useState(false);
-  const draftKey = useMemo(() => buildDraftKey(templateId), [templateId]);
+  const draftKey = useMemo(() => buildDraftKey(templateId, leafKey), [templateId, leafKey]);
   const restoredDraftRef = useRef(false);
 
   useEffect(() => {
@@ -514,6 +540,36 @@ export const useRoutineEditor = ({
     [updateWeek],
   );
 
+  // Reordenamiento por lista de ids (para drag-and-drop): recibe el orden final
+  // y reacomoda el array. Devuelve el estado previo si la lista no coincide.
+  const setWeeksOrder = useCallback(
+    (orderedIds) => {
+      return applyPlanChange((prev) => {
+        const byId = new Map(prev.weeks.map((w) => [w.id, w]));
+        const next = orderedIds.map((id) => byId.get(id)).filter(Boolean);
+        if (next.length !== prev.weeks.length) return prev;
+        const unchanged = next.every((w, idx) => w === prev.weeks[idx]);
+        if (unchanged) return prev;
+        return { ...prev, weeks: next };
+      });
+    },
+    [applyPlanChange],
+  );
+
+  const setDaysOrder = useCallback(
+    (weekId, orderedIds) => {
+      return updateWeek(weekId, (week) => {
+        const byId = new Map(week.days.map((d) => [d.id, d]));
+        const next = orderedIds.map((id) => byId.get(id)).filter(Boolean);
+        if (next.length !== week.days.length) return week;
+        const unchanged = next.every((d, idx) => d === week.days[idx]);
+        if (unchanged) return week;
+        return { ...week, days: next };
+      });
+    },
+    [updateWeek],
+  );
+
   const updateWeekField = useCallback(
     (weekId, field, value) => {
       return updateWeek(weekId, (week) => {
@@ -625,7 +681,13 @@ export const useRoutineEditor = ({
     const normalizedPlan = normalizeImport
       ? normalizeImport(newPlan)
       : buildInitialPlan(newPlan, leaf);
-    setPlan(normalizedPlan);
+
+    // Importar reemplaza las semanas (eso viene de la IA), pero NO debe borrar
+    // la metadata que cargó el coach en la encuesta (sobre todo el título).
+    setPlan((prev) => ({
+      ...normalizedPlan,
+      metadata: mergeImportedMetadata(prev.metadata, normalizedPlan.metadata || {}),
+    }));
     setDirty(true);
   }, [normalizeImport, leaf]);
 
@@ -805,6 +867,8 @@ export const useRoutineEditor = ({
     duplicateDay,
     removeDay,
     reorderDay,
+    setWeeksOrder,
+    setDaysOrder,
     updateWeekField,
     updateDayField,
     setDayType,

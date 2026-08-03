@@ -288,6 +288,26 @@ ${gender?.toLowerCase().includes('masculino') || gender?.toLowerCase().includes(
 ⚙️ INSTRUCCIONES CRÍTICAS DE GENERACIÓN
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+0️⃣ CALIDAD ANTES QUE CANTIDAD (leer primero):
+   Esto es una PLANIFICACIÓN, no un relleno de JSON. Un plan de pocas semanas
+   bien progresado vale más que muchas semanas copiadas.
+
+   ❌ PROHIBIDO: repetir la misma semana cambiándole solo el número.
+   ✅ CADA semana tiene que diferenciarse de la anterior en algo CONCRETO y
+      visible en los números: series, repeticiones, RIR, descanso, cadencia o
+      selección de ejercicios.
+
+   Progresión mínima esperada a lo largo de las ${durationWeeks} semanas:
+   • RIR baja (ej: semana 1 → RIR 3, última semana → RIR 1): se acumula fatiga.
+   • Volumen o intensidad sube de forma gradual, no de golpe.
+   • Si el plan tiene 4 semanas o más, la ÚLTIMA es de descarga (deload):
+     ~40% menos volumen y RIR 3-4, para asimilar lo entrenado.
+   • En "notes" de cada semana explicá EN UNA LÍNEA qué cambia respecto de la
+     anterior y por qué (es lo que el coach le muestra al cliente).
+
+   Los ejercicios base pueden mantenerse entre semanas (eso es correcto para
+   medir progreso), pero los números NO pueden ser idénticos.
+
 1️⃣ ESTRUCTURA DE DÍAS:
    • Genera ${durationWeeks} semanas completas
    • Cada semana: ${frequency} días de entrenamiento
@@ -587,13 +607,21 @@ Si eres Gemini, Claude, GPT, o cualquier IA:
 - Sin bloques de código
 - Solo el objeto JSON completo y válido
 
+PRESUPUESTO DE RESPUESTA — LEER ANTES DE EMPEZAR:
+Tenés que TERMINAR el JSON sí o sí. Un JSON cerrado y más corto sirve; uno
+cortado a la mitad no sirve para nada. Si ves que te estás quedando sin
+espacio, en este orden: acortá las "notes" de los ejercicios, bajá a 5-6
+ejercicios principales por día. NUNCA dejes el JSON sin cerrar ni entregues
+menos de las ${durationWeeks} semanas pedidas.
+
 VALIDACIÓN FINAL ANTES DE RESPONDER:
 Antes de responder, verifica:
 1. ¿Comienza con { exactamente?
 2. ¿Termina con } exactamente?
 3. ¿No hay texto adicional antes ni después?
 4. ¿No hay bloques de código?
-5. ¿Es JSON válido?
+5. ¿Es JSON válido y está CERRADO por completo?
+6. ¿Las ${durationWeeks} semanas tienen números DISTINTOS entre sí (no son copias)?
 
 Si algo falla en la validación, no respondas. Di "Espera" y intenta de nuevo.
 

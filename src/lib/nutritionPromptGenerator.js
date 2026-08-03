@@ -12,7 +12,9 @@
  *   • videoUrl de cada comida y variante → se arma del nombre (recipeSearch.js).
  *   • totalDia → se suma de las comidas (además así la cuenta siempre cierra).
  *   • quickReference (tarjeta de heladera) → es una proyección de los días.
- * Además el modo simple pide DÍAS MODELO en vez de los 7 días.
+ * Además AMBOS modos piden DÍAS MODELO (2 en simple, 3 en detallado) en vez
+ * de los 7 días: pedir la semana entera generaba 5 días de relleno y hacía
+ * que las IAs gratuitas cortaran la respuesta.
  */
 
 // Factores de actividad (Eje 1). El value coincide con las opciones del onboarding.
@@ -118,15 +120,23 @@ export function generateNutritionPrompt(metadata = {}) {
     ? `${duracionMeses} ${String(duracionMeses) === '1' ? 'mes' : 'meses'}`
     : orNone(timeframe, 'Sin plazo definido');
 
-  // ── Estructura de días según el modo ──────────────────────────────────
-  // Simple: 2 días modelo (el coach los duplica/ajusta en el editor).
-  // Detallado: los 7 días de la semana.
+  // ── Estructura de días: SIEMPRE días modelo ───────────────────────────
+  // Pedir los 7 días producía 5 días de relleno (variaciones cosméticas del
+  // mismo menú) y hacía que las IAs gratuitas cortaran la respuesta. Un plan
+  // nutricional real se arma con días arquetipo que el coach replica.
   const estructuraDias = esSimple
     ? `Generá SOLO 2 DÍAS MODELO dentro de weeks[0].days:
    1) "Día de entrenamiento"  (esDiaEntreno: true)
    2) "Día de descanso"       (esDiaEntreno: false)
-   El coach los replica y ajusta en el editor. NO generes los 7 días.`
-    : `Generá los 7 días de la semana (Lunes a Domingo) dentro de weeks[0].days.`;
+   NO generes los 7 días de la semana.`
+    : `Generá SOLO 3 DÍAS MODELO dentro de weeks[0].days:
+   1) "Día de entrenamiento"  (esDiaEntreno: true)  — más carbos, peri-entreno
+   2) "Día de descanso"       (esDiaEntreno: false) — menos carbos, más grasas
+   3) "Día social / comida afuera" (esDiaEntreno: false) — cómo resolver un
+      asado, una pizza o una cena afuera sin romper el objetivo
+   NO generes los 7 días de la semana: el coach replica estos modelos.
+   Que los 3 días sean REALMENTE distintos entre sí, no el mismo menú
+   con los gramos cambiados.`;
 
   const ejemploComida = esSimple
     ? `        {
@@ -298,7 +308,7 @@ reemplazalos por los del plan real.
       "weekLabel": "Semana estándar",
       "days": [
         {
-          "dayLabel": "${esSimple ? 'Día de entrenamiento' : 'Lunes'}",
+          "dayLabel": "Día de entrenamiento",
           "esDiaEntreno": true,
           "meals": [
 ${ejemploComida}

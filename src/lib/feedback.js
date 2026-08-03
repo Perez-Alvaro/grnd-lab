@@ -32,12 +32,9 @@ export async function submitFeedback({ type, subject, message }) {
   return data;
 }
 
-/** Reportes del usuario actual, más recientes primero. */
-export async function listMyFeedback() {
-  const { data, error } = await supabase
-    .from('feedback')
-    .select('*')
-    .order('created_at', { ascending: false });
-  if (error) throw error;
-  return data;
-}
+// listMyFeedback() se eliminó a propósito: el buzón del coach es SOLO para
+// enviar y los reclamos los lee únicamente el admin (listAllFeedback en
+// lib/admin.js). Además hacía select('*') sin filtrar por user_id, así que
+// para un admin devolvía los reportes de TODOS en su propio panel de coach.
+// Si alguna vez hace falta volver a listarlos, filtrar explícitamente por
+// user_id y no confiar solo en RLS para acotar el alcance.

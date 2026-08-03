@@ -80,13 +80,10 @@ export async function getMetrics() {
     s?.status === 'active' && s.current_period_end && new Date(s.current_period_end).getTime() > now;
   const active = coaches.filter((c) => isVigente(c.subscription)).length;
   const pending = coaches.filter((c) => c.subscription && !isVigente(c.subscription)).length;
-  // Equivalente mensual de cada plan (mensual $10, trimestral $27/3, anual $48/12)
-  const MONTHLY = { mensual: 10, trimestral: 9, anual: 4, starter: 5, pro: 10, studio: 15 };
-  const mrr = coaches.reduce((sum, c) => {
-    if (isVigente(c.subscription)) return sum + (MONTHLY[c.subscription.plan] || 0);
-    return sum;
-  }, 0);
-  return { totalCoaches, active, pending, mrr };
+  // Sin MRR: los planes son pago único con renovación manual, así que no hay
+  // ingreso recurrente que medir. El panel muestra "Cobrado 30d", que sale de
+  // los pagos aprobados reales (ver AdminDashboard).
+  return { totalCoaches, active, pending };
 }
 
 /* ─────────────────────────────────────────────
