@@ -132,14 +132,10 @@ const DayEditor = memo(
             </div>
           </div>
 
-          <div
-            className={`grid transition-all duration-200 ease-in-out ${
-              isOpen
-                ? "grid-rows-[1fr] opacity-100"
-                : "grid-rows-[0fr] opacity-0 pointer-events-none"
-            }`}
-          >
-            <div className="min-h-0 overflow-hidden">
+          {/* Render condicional: la clase grid-rows-[0fr] no colapsa en este
+              proyecto (Tailwind no genera esa utilidad arbitraria), así que se
+              montaba siempre. Con isOpen && ... el día colapsa de verdad. */}
+          {isOpen && (
               <div className="flex flex-col gap-6 pt-2">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="flex flex-col gap-2">
@@ -244,8 +240,7 @@ const DayEditor = memo(
                   </div>
                 )}
               </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     );

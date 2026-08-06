@@ -14,6 +14,7 @@ import useRoutineEditor from "../hooks/useRoutineEditor.js";
 import { getPlanTypeConfig } from "../config/planTypes.js";
 import usePDFExport from "../hooks/usePDFExport.js";
 import PlanMetadataForm from "../components/Trainer/editor/PlanMetadataForm.jsx";
+import StepsMetadataForm from "../components/Trainer/editor/StepsMetadataForm.jsx";
 import FitterOnboarding from "../components/Trainer/editor/FitterOnboarding.jsx";
 import ImportModal from "../components/Editor/ImportModal.jsx";
 import ExportModal from "../components/Editor/ExportModal.jsx";
@@ -64,6 +65,25 @@ const copyText = async (text) => {
   }
 };
 
+// ¿El borrador local ya tiene un plan GENERADO (algún ítem con nombre)?
+// Sirve para decidir el modo inicial del editor: si ya hay un plan, se abre
+// directo el editor a mano (el cuestionario ya cumplió); si no, el cuestionario.
+// Ojo: un plan nuevo tiene días con ítems vacíos (name: ""), así que no cuentan.
+const draftHasGeneratedPlan = (leafKey) => {
+  try {
+    const raw = localStorage.getItem(`plan-editor-draft-${leafKey}-new`);
+    if (!raw) return false;
+    const data = JSON.parse(raw);
+    return (data?.weeks || []).some((w) =>
+      (w?.days || []).some((day) =>
+        (day?.[leafKey] || []).some((it) => (it?.name || "").trim() !== "")
+      )
+    );
+  } catch {
+    return false;
+  }
+};
+
 export default function RoutineEditorPage() {
   const navigate = useNavigate();
   const exportPDF = usePDFExport();
@@ -82,7 +102,13 @@ export default function RoutineEditorPage() {
   const [showToolsMenu, setShowToolsMenu] = useState(false);
   // Un único selector de modo. Antes había tres apilados (Editor↔Preview,
   // Asistido↔Avanzado, IA↔Manual) y dos de ellos eran el mismo eje.
-  const [editorMode, setEditorMode] = useState("ai"); // 'ai' | 'manual'
+  // El cuestionario corre UNA sola vez. Si estás editando un plan existente, o
+  // el borrador ya tiene un plan generado, se abre directo el editor a mano
+  // con todo cargado (no se vuelve a mostrar el preguntero).
+  const [editorMode, setEditorMode] = useState(() => {
+    const editingExisting = !!(searchParams.get("planId") || searchParams.get("routineId"));
+    return editingExisting || draftHasGeneratedPlan(config.leaf.key) ? "manual" : "ai";
+  }); // 'ai' | 'manual'
   const [mobileView, setMobileView] = useState("editor"); // 'editor' | 'preview' (solo mobile)
 
   // Uso por editor (workout vs nutrition) para el dashboard del admin
@@ -180,7 +206,12 @@ export default function RoutineEditorPage() {
 
   const handleImport = useCallback((importedData) => {
     try {
-      planEditor.loadPlan(importedData);
+      // expandToDuration: en nutrición, replica el bloque modelo por mes según
+      // la duración elegida en la encuesta (el round-trip de carga NO lo hace).
+      planEditor.loadPlan(importedData, { expandToDuration: true });
+      // El cuestionario cumplió: pasamos al editor a mano con todo cargado.
+      // Al recargar, draftHasGeneratedPlan() mantiene este modo.
+      setEditorMode("manual");
       snackbar.success(TUTORIAL_SNACKBARS.jsonLoaded);
       setShowImportModal(false);
       setMobileView("preview"); // tras importar, mostramos el resultado en mobile
@@ -329,7 +360,14 @@ export default function RoutineEditorPage() {
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    {config.hasManualForm && <PlanMetadataForm onCopyPrompt={handleCopyPrompt} />}
+                    {config.hasManualForm ? (
+                      <PlanMetadataForm onCopyPrompt={handleCopyPrompt} />
+                    ) : (
+                      // Nutrición (y cualquier editor sin form propio): metadata
+                      // editable a partir de los mismos pasos del onboarding, para
+                      // poder cambiar el título y demás al reeditar un plan.
+                      <StepsMetadataForm steps={config.steps} onCopyPrompt={handleCopyPrompt} />
+                    )}
                     <WeekEditor />
                   </div>
                 )}

@@ -156,6 +156,10 @@ export function nutritionAIToEditor(json = {}) {
 
   return {
     metadata: {
+      // Preserva TODA la metadata guardada (respuestas de la encuesta: sexo,
+      // edad, objetivo, etc.). Sin esto, al reabrir un plan guardado esos
+      // campos se perdían y no se podían editar "a mano".
+      ...metaSource,
       name: json.name || metaSource.name || '',
       author: metaSource.author || json.author || '',
       // Extras del JSON extendido (persisten para preview / PDF)

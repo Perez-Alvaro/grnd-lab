@@ -16,6 +16,8 @@ function DayRow({ weekId, day, index, daysCount, reorderDay, onActionError }) {
     <Reorder.Item
       as="div"
       value={day}
+      layout="position"
+      transition={{ duration: 0 }}
       dragListener={false}
       dragControls={controls}
       className="flex items-start gap-2"
@@ -76,6 +78,8 @@ function WeekCard({
     <Reorder.Item
       as="div"
       value={week}
+      layout="position"
+      transition={{ duration: 0 }}
       dragListener={false}
       dragControls={controls}
       id={weekDomId(index)}
@@ -142,13 +146,10 @@ function WeekCard({
         </div>
       </div>
 
-      {/* Cuerpo colapsable */}
-      <div
-        className={`grid transition-all duration-200 ease-in-out ${
-          open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0 pointer-events-none"
-        }`}
-      >
-        <div className="min-h-0 overflow-hidden">
+      {/* Cuerpo colapsable. Render condicional (no clases grid-rows-[0fr]): en
+          este proyecto Tailwind no aplica esa utilidad arbitraria, así que el
+          truco de grid-rows no colapsaba la altura y la tarjeta seguía enorme. */}
+      {open && (
           <div className="flex flex-col gap-5 border-t border-border p-4 sm:p-5">
             <div className="grid gap-4 md:grid-cols-2">
               <div className="flex flex-col gap-2">
@@ -200,8 +201,7 @@ function WeekCard({
               </Reorder.Group>
             </div>
           </div>
-        </div>
-      </div>
+        )}
     </Reorder.Item>
   );
 }

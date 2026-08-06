@@ -6,7 +6,6 @@ import { parsePlanJSON } from "../../../lib/planJson.js";
 import { usePlanContext } from "../../../context/PlanContext.jsx";
 import { WORKOUT_STEPS } from "../../../constants/workoutOnboarding.js";
 import { Button } from "../../ui";
-import { motion, AnimatePresence } from "framer-motion";
 
 const AI_PLATFORMS = [
     { id: "chatgpt", name: "ChatGPT", url: "https://chatgpt.com/",
@@ -179,12 +178,15 @@ const FitterOnboarding = ({
                     <span className="flex-shrink-0 text-xs font-medium text-accent">{Math.round(progress)}%</span>
                 </div>
                 <div className="h-1.5 bg-primary-bg rounded-full overflow-hidden">
-                    <motion.div className="h-full bg-accent" initial={false} animate={{ width: `${progress}%` }} transition={{ duration: 0.4, ease: "easeOut" }} />
+                    <div className="h-full bg-accent transition-[width] duration-300 ease-out" style={{ width: `${progress}%` }} />
                 </div>
             </div>
 
-            <AnimatePresence mode="wait">
-                <motion.div key={step.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.25 }}>
+            {/* Cambio de paso INSTANTÁNEO. Antes usaba AnimatePresence mode="wait"
+                de framer-motion; si la animación de salida se interrumpía (los chips
+                autoavanzan cada 220 ms) el wizard quedaba trabado en un paso o
+                crasheaba. La key por paso alcanza para que React resetee el subárbol. */}
+            <div key={step.id}>
                     {/* Pregunta (chat de Fitter) */}
                     <div className="flex gap-3 mb-5">
                         <div className="flex-shrink-0 w-9 h-9 rounded-full bg-accent flex items-center justify-center shadow-md shadow-accent/20">
@@ -369,8 +371,7 @@ const FitterOnboarding = ({
                             </div>
                         </div>
                     )}
-                </motion.div>
-            </AnimatePresence>
+                </div>
 
             {/* Navegación (los chips autoavanzan; igual dejamos Atrás y Siguiente/Omitir) */}
             {step.kind !== "completion" ? (

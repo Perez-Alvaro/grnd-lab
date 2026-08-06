@@ -74,9 +74,6 @@ function AppContent() {
             }
           />
 
-          {/* TEMP DEBUG — quitar */}
-          <Route path="/__ntest" element={<RoutineEditor />} />
-
           {/* Catch all — redirect to SaaS home */}
           <Route path="*" element={<HomeSaaS />} />
         </Routes>

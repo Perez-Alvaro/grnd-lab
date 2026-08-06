@@ -672,7 +672,7 @@ export const useRoutineEditor = ({
     localStorage.removeItem(draftKey);
   }, [draftKey]);
 
-  const loadPlan = useCallback((newPlan) => {
+  const loadPlan = useCallback((newPlan, { expandToDuration = false } = {}) => {
     if (!newPlan) {
       throw new Error("Invalid plan structure");
     }
@@ -684,10 +684,29 @@ export const useRoutineEditor = ({
 
     // Importar reemplaza las semanas (eso viene de la IA), pero NO debe borrar
     // la metadata que cargó el coach en la encuesta (sobre todo el título).
-    setPlan((prev) => ({
-      ...normalizedPlan,
-      metadata: mergeImportedMetadata(prev.metadata, normalizedPlan.metadata || {}),
-    }));
+    setPlan((prev) => {
+      const metadata = mergeImportedMetadata(prev.metadata, normalizedPlan.metadata || {});
+      let weeks = normalizedPlan.weeks;
+
+      // NUTRICIÓN: la IA genera un solo bloque de "días modelo" (para no cortar
+      // por tokens). Si el coach eligió N meses de duración, replicamos el bloque
+      // una vez por mes ("Mes 1", "Mes 2"…) para que el plan REFLEJE la duración
+      // elegida (antes daba siempre "una semana"). Solo en el import de la IA
+      // (expandToDuration): en el round-trip el plan ya trae sus semanas.
+      if (expandToDuration && leaf.key === "meals" && weeks?.length === 1) {
+        const months = parseInt(metadata.duracionMeses, 10);
+        if (Number.isFinite(months) && months > 1) {
+          const model = weeks[0];
+          weeks = Array.from({ length: Math.min(months, 12) }, (_, m) =>
+            m === 0
+              ? { ...model, title: "Mes 1" }
+              : { ...cloneWeek(model, leaf), title: `Mes ${m + 1}` },
+          );
+        }
+      }
+
+      return { ...normalizedPlan, weeks, metadata };
+    });
     setDirty(true);
   }, [normalizeImport, leaf]);
 
