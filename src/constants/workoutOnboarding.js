@@ -20,12 +20,21 @@ export const WORKOUT_STEPS = [
   { id: 'objective', section: 'El entrenamiento', field: 'objective', kind: 'chips', required: true,
     q: '¿Cuál es el objetivo principal?',
     options: TRAINING_GOALS.map((g) => ({ v: g.value, label: g.label })) },
-  // 1 a 6 semanas. Arriba de 6 la IA se queda sin tokens de salida y empieza a
-  // copiar y pegar semanas iguales en vez de progresar el plan.
+  // Hasta 12 semanas. Más de 1 semana habilita el mesociclo con onda de carga/descarga.
   { id: 'durationWeeks', section: 'El entrenamiento', field: 'durationWeeks', kind: 'chips', required: true, suffix: ' sem',
     q: '¿Cuántas semanas dura el plan?',
-    sub: 'Un bloque corto y bien progresado rinde más que doce semanas repetidas.',
-    options: [{ v: '1' }, { v: '2' }, { v: '3' }, { v: '4' }, { v: '5' }, { v: '6' }] },
+    sub: 'De 2 semanas en adelante el plan sigue un mesociclo con ondas de carga y descarga (serrucho). Un bloque corto y bien progresado rinde más que doce semanas repetidas.',
+    options: [{ v: '1' }, { v: '2' }, { v: '3' }, { v: '4' }, { v: '5' }, { v: '6' }, { v: '8' }, { v: '10' }, { v: '12' }] },
+  // Step condicional: solo aparece si la duración es más de 1 semana.
+  { id: 'mesocicloObjetivo', section: 'El entrenamiento', field: 'mesocicloObjetivo', kind: 'chips', required: false,
+    q: '¿En qué enfocás el mesociclo?',
+    sub: 'Define la estructura de carga/descarga entre semanas.',
+    showIf: (metadata) => parseInt(metadata.durationWeeks || '1', 10) > 1,
+    options: [
+      { v: 'Hipertrofia', label: 'Hipertrofia (6–12 reps, volumen creciente)' },
+      { v: 'Fuerza', label: 'Fuerza (3–6 reps, 80–95% 1RM)' },
+      { v: 'Pérdida de grasa', label: 'Pérdida de grasa (densidad alta, poco descanso)' },
+    ] },
   { id: 'description', section: 'El entrenamiento', field: 'description', kind: 'textarea', required: true,
     q: 'Contá el método de entrenamiento',
     sub: 'Tiempo de sesión, volumen, técnicas. Cuanto más claro, mejor arma la IA.',

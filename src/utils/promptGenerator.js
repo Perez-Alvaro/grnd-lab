@@ -17,11 +17,25 @@ export function generateAIPrompt(metadata) {
     frequency = '4',
     objective = 'Fitness general',
     durationWeeks = '4',
+    mesocicloObjetivo = '',
     level = 'Intermedio',
     tags = '',
     notes = '',
     author = 'Coach'
   } = metadata;
+
+  const semanas = parseInt(durationWeeks, 10) || 4;
+  const esMesociclo = semanas > 1;
+  // Calcula dónde va cada deload según el tipo de mesociclo:
+  // Fuerza: deload cada 3 semanas. Hipertofia: cada 4. Grasa: cada 3.
+  const frecDeload = mesocicloObjetivo === 'Fuerza' ? 3
+    : mesocicloObjetivo === 'Pérdida de grasa' ? 3
+    : 4; // Hipertrofia o sin especificar
+  const semanasDeload = Array.from({ length: semanas }, (_, i) => i + 1)
+    .filter(s => s % frecDeload === 0);
+  const deloadTexto = semanasDeload.length
+    ? semanasDeload.map(s => `Semana ${s}`).join(', ')
+    : `Semana ${semanas}`;
 
   const prompt = `ERES UN ENTRENADOR PERSONAL DE ÉLITE CON EXPERIENCIA EN PERIODIZACIÓN Y PSICOLOGÍA DEL RENDIMIENTO.
 
@@ -54,6 +68,7 @@ Las notas de cada ejercicio deben reflejar excelencia técnica COMBINADA con un 
     "level": "${level}",
     "frequency": "${frequency}",
     "durationWeeks": "${durationWeeks}",
+    "mesocicloObjetivo": "${mesocicloObjetivo || 'No especificado'}",
     "tags": "${tags}"
   },
   "weeks": [
@@ -473,28 +488,75 @@ ${gender?.toLowerCase().includes('masculino') || gender?.toLowerCase().includes(
 
 7️⃣ VARIACIÓN Y PERIODIZACIÓN ENTRE SEMANAS:
 
-   Diferencia SEMANAS para prevenir meseta de adaptación:
+${esMesociclo ? `
+   ⚡ ESTE PLAN TIENE ${durationWeeks} SEMANAS: SE APLICA ESTRUCTURA DE MESOCICLO PROGRESIVO.
 
-   PARADIGMA A - VOLUMEN PROGRESIVO (para hipertrofia):
-   - Semana 1-2: Sets base, reps superiores (~8-12)
-   - Semana 3-4: AUMENTA sets (+1 set por ejercicio), mantén o baja reps
-   - Progresión: Volumen total = sets x reps x peso
+   PRINCIPIO DE ONDA SERRUCHO (OBLIGATORIO):
+   El volumen/intensidad NO sube linealmente. Sube, baja (deload), vuelve a subir
+   más alto. Esto se llama "onda de carga" y es lo que separa la planificación
+   profesional del relleno de JSON.
 
-   PARADIGMA B - INTENSIDAD PROGRESIVA (para fuerza):
-   - Semana 1-2: Reps base, peso controlado (aprendizaje)
-   - Semana 3-4: MANTÉN sets, REDUCE reps, AUMENTA peso
-   - Progresión: Peso lineal semana a semana (~2.5-5%)
+   SEMANAS DE DELOAD (reducir ~40% el volumen total, RIR 3-4): ${deloadTexto}
+   SEMANAS DE CARGA: todas las demás — cada una más exigente que la anterior.
 
-   PARADIGMA C - VARIACIÓN TÉCNICA (para versatilidad):
-   - Semana 1: Ejercicio A con técnica X
-   - Semana 2: Ejercicio A con técnica Y (ej: pausa, tiempo)
-   - Semana 3: Ejercicio A con técnica Z (ej: tempo, ROM)
-   - Propósito: Estimula músculos constantemente, previene aburrimiento
+   ${mesocicloObjetivo === 'Fuerza' || objective === 'Fuerza' ? `
+   💪 MESOCICLO DE FUERZA (${durationWeeks} semanas):
+   • Reps primarias: 3–6 (fuerza pura, 80–95% 1RM)
+   • Cada semana de carga: +2.5–5% de peso O −1 rep con mismo peso
+   • Progreso visible entre semanas: RIR baja de 3 → 2 → 1 → 0 (deload vuelve a 3)
+   • Series por ejercicio principal: 4–6 series
+   • Descanso: 120–180s (recuperación nerviosa completa)
+   • Semana deload: -40% volumen, mismo patrón, peso 60–70% del máximo anterior
+   ESTRUCTURA SEMANA A SEMANA (guiá la IA en los números exactos de cada semana):
+   S1: Carga 1 — RIR 3, sets base. Aprendizaje del patrón.
+   S2: Carga 2 — RIR 2, +1 set o +2.5% peso. Aumento gradual.
+   S3 (deload si Fuerza): DELOAD — RIR 4, −40% volumen, peso 65%. Recuperación activa.
+   S4+: Reinicia ciclo más alto. Cada bloque de 3 semanas supera al anterior.
+   ` : ''}
 
-   REGLA GENERAL:
-   - Varía EJERCICIOS pero MANTÉN PATRONES DE MOVIMIENTO
-   - Si Semana 1: Press de Banca → Semana 3: Press Inclinado (igual patrón, distinto ángulo)
-   - Mantén consistencia: Mismo split, mismo volumen, diferente estímulo
+   ${mesocicloObjetivo === 'Hipertrofia' || (!mesocicloObjetivo && objective === 'Volumen muscular') || (!mesocicloObjetivo && !objective) ? `
+   📈 MESOCICLO DE HIPERTROFIA (${durationWeeks} semanas):
+   • Reps primarias: 6–12 (rango de hipertrofia pura)
+   • Cada semana de carga: +1 serie por ejercicio O +1–2 reps con mismo peso
+   • Progreso visible entre semanas: volumen sube, RIR baja (3 → 2 → 1 → 0)
+   • Series por ejercicio: 3 (sem 1) → 4 (sem 2) → 4–5 (sem 3+)
+   • Descanso: 60–90s (compuestos), 45–60s (aislados)
+   • Semana deload: -40% volumen, RIR 3-4, peso similar
+   ESTRUCTURA SEMANA A SEMANA:
+   S1: Carga 1 — 3 series, RIR 3. Baseline del bloque.
+   S2: Carga 2 — 4 series, RIR 2. Volumen total mayor que S1.
+   S3: Carga 3 — 4–5 series, RIR 1. Pico de volumen del bloque.
+   S4 (deload si Hipertrofia): DELOAD — 3 series, RIR 3-4. Asimilación y recuperación.
+   S5+: Reinicia con base más alta. Cada bloque de 4 semanas supera al anterior.
+   ` : ''}
+
+   ${mesocicloObjetivo === 'Pérdida de grasa' || (!mesocicloObjetivo && objective === 'Pérdida de grasa') ? `
+   🔥 MESOCICLO DE PÉRDIDA DE GRASA (${durationWeeks} semanas):
+   • Reps primarias: 12–15 (volumen metabólico)
+   • Cada semana de carga: densidad creciente (menos descanso O más reps con mismo peso)
+   • Progreso: descanso baja de 60s → 45s → 30s sin reducir peso ni reps
+   • Estructura de circuito o super-series para maximizar gasto calórico
+   • Semana deload: vuelve a 60s descanso, −1 serie, RIR 3-4
+   ESTRUCTURA SEMANA A SEMANA:
+   S1: Carga 1 — 3 series, descanso 60s, RIR 2. Base del bloque.
+   S2: Carga 2 — 3–4 series, descanso 45s. Mayor densidad.
+   S3 (deload si PG): DELOAD — 3 series, descanso 60s, RIR 3. Recuperación metabólica.
+   S4+: Reinicia con densidad más alta. Cada bloque supera al anterior.
+   ` : ''}
+
+` : `
+   PLAN DE UNA SOLA SEMANA: aplica los parámetros del objetivo sin necesidad
+   de periodización entre semanas. Foco en calidad técnica y RIR correcto.
+`}
+
+   REGLA ABSOLUTA (aplica siempre):
+   ❌ PROHIBIDO: repetir la misma semana cambiándole solo el número.
+   ✅ CADA semana tiene que diferenciarse de la anterior en algo CONCRETO y
+      visible en los números: series, repeticiones, RIR, descanso, cadencia o
+      selección de ejercicios.
+   ✅ Los ejercicios base pueden mantenerse (medir progreso), los números NO.
+   ✅ En "notes" de cada semana: explicá EN UNA LÍNEA qué cambia y por qué.
+
 
 8️⃣ DISTRIBUCIÓN DE GRUPOS MUSCULARES (Depende de forma elegida):
 
@@ -622,6 +684,8 @@ Antes de responder, verifica:
 4. ¿No hay bloques de código?
 5. ¿Es JSON válido y está CERRADO por completo?
 6. ¿Las ${durationWeeks} semanas tienen números DISTINTOS entre sí (no son copias)?
+${esMesociclo ? `7. ¿El patrón de carga/descarga es visible? Las semanas de deload (${deloadTexto}) tienen ~40% menos volumen.
+8. ¿Ningún par de semanas consecutivas tiene exactamente los mismos sets/reps/RIR?` : ''}
 
 Si algo falla en la validación, no respondas. Di "Espera" y intenta de nuevo.
 

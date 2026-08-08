@@ -73,14 +73,7 @@ export const NUTRITION_STEPS = [
       { v: 'recomposicion', label: 'Recomposición' },
       { v: 'rendimiento', label: 'Rendimiento deportivo' },
     ] },
-  { id: 'duracionMeses', section: 'Objetivo', field: 'duracionMeses', kind: 'chips', required: true,
-    q: '¿Cuántos meses dura el plan?', sub: 'La duración total del plan nutricional.',
-    options: [
-      { v: '1', label: '1 mes' },
-      { v: '2', label: '2 meses' },
-      { v: '3', label: '3 meses' },
-      { v: '4', label: '4 meses' },
-    ] },
+
 
   // ── Eje 4: timing y comidas ─────────────────────────────────
   { id: 'comidasPorDia', section: 'Rutina diaria', field: 'comidasPorDia', kind: 'chips', required: true,

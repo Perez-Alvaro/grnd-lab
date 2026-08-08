@@ -311,6 +311,29 @@ export const useRoutineEditor = ({
     try {
       const stored = localStorage.getItem(draftKey);
       if (stored) {
+        // PROTECCIÓN CONTRA CONTAMINACIÓN ENTRE SESIONES DE CREACIÓN:
+        // El draft "new" (plan sin ID) se comparte entre todas las veces que el
+        // usuario abre "crear plan". Sin este guard, al crear una dieta B el
+        // editor restauraba los datos de la dieta A que quedó sin guardar,
+        // porque ambas usan la misma clave "plan-editor-draft-meals-new".
+        //
+        // Regla: solo restaurar el draft "new" si el usuario YA ESTABA en esa
+        // sesión de creación (sessionStorage tiene el flag). Si no existe,
+        // se abrió el editor desde cero → descartar draft viejo, empezar limpio.
+        //
+        // Los planes con ID real (templateId != null) nunca pasan por aquí:
+        // tienen su propia clave por ID y se restauran siempre.
+        const isNewPlan = !templateId;
+        const sessionFlagKey = `draft-session-${draftKey}`;
+        const sessionActive = sessionStorage.getItem(sessionFlagKey) === '1';
+
+        if (isNewPlan && !sessionActive) {
+          // Nueva sesión de creación → ignorar draft anterior y limpiar
+          localStorage.removeItem(draftKey);
+          restoredDraftRef.current = true;
+          return;
+        }
+
         const parsed = JSON.parse(stored);
         if (parsed?.metadata && parsed?.weeks) {
           // Sanitizar el draft: fusionar con el estado inicial para garantizar
@@ -342,11 +365,16 @@ export const useRoutineEditor = ({
       localStorage.removeItem(draftKey);
     }
     restoredDraftRef.current = true;
-  }, [draftKey]);
+  }, [draftKey, templateId]);
 
   useEffect(() => {
     if (!dirty) return;
     try {
+      // Activar el flag de sesión cuando el draft empieza a guardarse.
+      // Esto permite que las recargas dentro de la misma sesión de creación
+      // sí restauren el borrador (el usuario no perdió su trabajo accidentalmente).
+      const sessionFlagKey = `draft-session-${draftKey}`;
+      sessionStorage.setItem(sessionFlagKey, '1');
       localStorage.setItem(draftKey, JSON.stringify(plan));
     } catch (error) {
       console.error("Error saving draft", error);

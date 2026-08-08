@@ -92,8 +92,6 @@ export function generateNutritionPrompt(metadata = {}) {
     horasSueno = '',
     objetivo = 'mantenimiento',
     nivelDetalle = 'detallado',
-    duracionMeses = '',
-    timeframe = '', // legacy (planes viejos guardados en semanas)
     comidasPorDia = '4',
     horarioEntreno = '',
     horarioTrabajo = '',
@@ -116,27 +114,25 @@ export function generateNutritionPrompt(metadata = {}) {
   const activity = ACTIVITY_FACTORS[nivelActividad] || ACTIVITY_FACTORS.Moderado;
   const macros = OBJECTIVE_MACROS[objetivo] || OBJECTIVE_MACROS.mantenimiento;
   const esSimple = nivelDetalle === 'simple';
-  const duracionTexto = duracionMeses
-    ? `${duracionMeses} ${String(duracionMeses) === '1' ? 'mes' : 'meses'}`
-    : orNone(timeframe, 'Sin plazo definido');
 
-  // ── Estructura de días: SIEMPRE días modelo ───────────────────────────
-  // Pedir los 7 días producía 5 días de relleno (variaciones cosméticas del
-  // mismo menú) y hacía que las IAs gratuitas cortaran la respuesta. Un plan
-  // nutricional real se arma con días arquetipo que el coach replica.
-  const estructuraDias = esSimple
-    ? `Generá SOLO 2 DÍAS MODELO dentro de weeks[0].days:
-   1) "Día de entrenamiento"  (esDiaEntreno: true)
-   2) "Día de descanso"       (esDiaEntreno: false)
-   NO generes los 7 días de la semana.`
-    : `Generá SOLO 3 DÍAS MODELO dentro de weeks[0].days:
-   1) "Día de entrenamiento"  (esDiaEntreno: true)  — más carbos, peri-entreno
-   2) "Día de descanso"       (esDiaEntreno: false) — menos carbos, más grasas
-   3) "Día social / comida afuera" (esDiaEntreno: false) — cómo resolver un
-      asado, una pizza o una cena afuera sin romper el objetivo
-   NO generes los 7 días de la semana: el coach replica estos modelos.
-   Que los 3 días sean REALMENTE distintos entre sí, no el mismo menú
-   con los gramos cambiados.`;
+  // ── Estructura de días: siempre la semana completa (Lun–Dom) ─────────
+  // El coach necesita un plan real para cada día de la semana, no días-modelo.
+  // Cada día tiene su propio conjunto de comidas adaptado a si es día de
+  // entrenamiento o descanso. Esto es lo que el atleta recibe en el PDF.
+  const estructuraDias = `Generá los 7 días de la semana dentro de weeks[0].days, en este orden:
+   1) "Lunes"      (esDiaEntreno: según el horario del atleta)
+   2) "Martes"     (esDiaEntreno: según el horario del atleta)
+   3) "Miércoles"  (esDiaEntreno: según el horario del atleta)
+   4) "Jueves"     (esDiaEntreno: según el horario del atleta)
+   5) "Viernes"    (esDiaEntreno: según el horario del atleta)
+   6) "Sábado"     (esDiaEntreno: según el horario del atleta)
+   7) "Domingo"    (esDiaEntreno: false — día de descanso / social)
+
+   REGLA DE VARIEDAD: Los días de entrenamiento tienen más carbos peri-entreno;
+   los días de descanso tienen menos carbos y más grasas. El domingo contempla
+   la comida social argentina (asado, pizza, reunión familiar) con estrategia
+   real en vez de prohibición.
+   Los 7 días deben ser REALMENTE distintos; no copies el mismo menú con gramos cambiados.`;
 
   const ejemploComida = esSimple
     ? `        {
@@ -146,7 +142,9 @@ export function generateNutritionPrompt(metadata = {}) {
           "ingredientes": "80g avena, 200ml leche descremada, 1 banana, 10g manteca de maní",
           "preparacion": "Mezclar todo y reposar 5 min.",
           "sustituciones": "Sin avena: 2 tostadas integrales con ricota.",
-          "variantes": []
+          "variantes": [
+            { "label": "Alternativa rápida", "ingredientes": "3 huevos revueltos, 2 tostadas integrales, 30g port salut", "kcal": 375, "proteina_g": 28, "carbos_g": 36, "grasas_g": 12 }
+          ]
         }`
     : `        {
           "name": "Desayuno",
@@ -157,7 +155,8 @@ export function generateNutritionPrompt(metadata = {}) {
           "sustituciones": "Sin avena: 2 tostadas integrales con ricota. Sin banana: 1 manzana.",
           "nota_timing": "Tomalo 30 min antes del entreno si entrenás a la mañana.",
           "variantes": [
-            { "label": "Versión rápida (5 min)", "ingredientes": "3 huevos revueltos, 2 tostadas integrales, 30g port salut", "kcal": 375, "proteina_g": 28, "carbos_g": 36, "grasas_g": 12 }
+            { "label": "Versión rápida (5 min)", "ingredientes": "3 huevos revueltos, 2 tostadas integrales, 30g port salut", "kcal": 375, "proteina_g": 28, "carbos_g": 36, "grasas_g": 12 },
+            { "label": "Versión vegana", "ingredientes": "80g avena, 200ml leche de avena, 1 banana, 10g manteca de maní, semillas de chia 10g", "kcal": 370, "proteina_g": 12, "carbos_g": 52, "grasas_g": 11 }
           ]
         }`;
 
@@ -176,11 +175,11 @@ export function generateNutritionPrompt(metadata = {}) {
   }`;
 
   const reglasModo = esSimple
-    ? `• "variantes": dejalas en [] (array vacío). El coach agrega opciones si las necesita.
+    ? `• "variantes": OBLIGATORIA al menos 1 variante por comida (alternativa rápida calóricamente equivalente ±30 kcal).
 • "preparacion" en 1 oración. "sustituciones" en 1 línea corta.
 • NO incluyas "mealPrepGuide" ni "shoppingList".
 • "notas_semana": máximo 2 observaciones.`
-    : `• "variantes": 1–2 opciones calóricamente equivalentes por comida (±25 kcal).
+    : `• "variantes": OBLIGATORIAS 1–2 opciones calóricamente equivalentes por comida (±25 kcal). NUNCA dejes "variantes": [].
 • "shoppingList" en UNIDADES DE SUPERMERCADO reales ("12 unidades", "1 kg"), NO gramos de receta.
 • "mealPrepGuide": 2–3 preparaciones batch de la semana.
 • "preparacion" concisa (2 oraciones máximo).
@@ -201,7 +200,6 @@ ${line}
 • Edad: ${orNone(edad)} años · Peso: ${orNone(peso)} kg · Altura: ${orNone(altura)} cm
 • Nivel de actividad: ${nivelActividad} (${activity.desc}) → factor ×${activity.factor}
 • Objetivo: ${macros.label}
-• Duración del plan: ${duracionTexto}
 • Comidas por día: ${orNone(comidasPorDia, '4')}
 • Patrón dietario: ${patronDietario}${optional('Horario de entrenamiento', horarioEntreno)}${optional('Tipo de trabajo (NEAT)', tipoTrabajo)}${optional('Horas de sueño', horasSueno)}${optional('Horario de trabajo / disponibilidad para comer', horarioTrabajo)}${optional('¿Cena en familia?', comeEnFamilia)}${optional('¿Puede preparar vianda?', puedeVianda)}${optional('¿Tiene cocina/heladera en el trabajo?', cocinaTrabajo)}${optional('Tiempo para cocinar', tiempoCocina, ' min/día')}${optional('¿Heladera y freezer?', heladera)}${optional('Suplementación actual', suplementacion)}${optional('Presupuesto semanal', presupuesto)}${optional('Alimento ancla (lo come todos los días — usalo para maximizar adherencia)', ancla)}
 
@@ -351,8 +349,9 @@ RESPONDÉ ÚNICAMENTE CON EL JSON PURO. NADA MÁS.
 PRESUPUESTO DE RESPUESTA — LEER ANTES DE EMPEZAR:
 Tenés que TERMINAR el JSON sí o sí. Un JSON cerrado y más corto sirve;
 uno cortado a la mitad no sirve para nada. Si ves que te estás quedando sin
-espacio, en este orden: acortá "preparacion", sacá "sustituciones", vaciá
-"variantes". NUNCA dejes el JSON sin cerrar${esSimple ? '' : ' ni omitas días'}.
+espacio, en este orden: acortá "preparacion", luego acortá "sustituciones".
+JAMÁS vacíes "variantes" ni omitas días: los 7 días y la variante de cada
+comida son INNEGOCIABLES. NUNCA dejes el JSON sin cerrar.
 
 VALIDACIÓN ANTES DE RESPONDER:
 1. ¿Empieza con { y termina con }?
@@ -360,6 +359,8 @@ VALIDACIÓN ANTES DE RESPONDER:
 3. ¿Las kcal de las comidas suman el targetKcal?
 4. ¿Respetaste todas las restricciones hard?
 5. ¿Omitiste videoUrl, totalDia y quickReference?
+6. ¿Generaste los 7 días de la semana (Lun–Dom)?
+7. ¿Cada comida tiene al menos 1 variante en "variantes"?
 
 Generá el plan nutricional AHORA. Profesional. Argentino. Adaptado al atleta.`;
 
