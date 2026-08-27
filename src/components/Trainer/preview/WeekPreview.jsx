@@ -14,6 +14,11 @@ const normalizeUrl = (url) => {
 const toRow = (exercise) => {
   const val = (v) => (v === 0 || v ? v : "–");
   const rawNote = exercise.note ?? exercise.notes;
+  const rawVideo = (exercise.video || exercise.videoUrl || "").trim();
+  // Si hay URL explícita la usa; si no, busca en YouTube por nombre del ejercicio
+  const video = rawVideo
+    ? (/^https?:\/\//i.test(rawVideo) ? rawVideo : `https://${rawVideo}`)
+    : `https://www.youtube.com/results?search_query=${encodeURIComponent((exercise.name || "").trim())}`;
   return {
     name: exercise.name || "—",
     sets: val(exercise.sets ?? exercise.series),
@@ -21,10 +26,11 @@ const toRow = (exercise) => {
     rest: val(exercise.rest ?? exercise.descanso),
     rir: val(exercise.rir),
     tempo: val(exercise.tempo ?? exercise.cadencia),
-    video: normalizeUrl(exercise.video || exercise.videoUrl),
+    video,
     note: Array.isArray(rawNote) ? rawNote.join("\n") : rawNote,
   };
 };
+
 
 /** Dato suelto de la tarjeta mobile (label arriba, valor en mono abajo). */
 const Metric = ({ label, value }) => (
@@ -132,7 +138,10 @@ const DayPreview = ({ day }) => {
                   const tempoValue = exercise.tempo ?? exercise.cadencia;
                   const tempo =
                     tempoValue === 0 || tempoValue ? tempoValue : "–";
-                  const videoUrl = exercise.video || exercise.videoUrl;
+                   const rawVideo = (exercise.video || exercise.videoUrl || "").trim();
+                  const videoUrl = rawVideo
+                    ? (/^https?:\/\//i.test(rawVideo) ? rawVideo : `https://${rawVideo}`)
+                    : `https://www.youtube.com/results?search_query=${encodeURIComponent((exercise.name || "").trim())}`;
                   const rawNote = exercise.note ?? exercise.notes;
                   const note = Array.isArray(rawNote)
                     ? rawNote.join("\n")
@@ -160,19 +169,15 @@ const DayPreview = ({ day }) => {
                           {tempo}
                         </td>
                         <td className="px-3 py-3 text-right align-top">
-                          {videoUrl && normalizeUrl(videoUrl) ? (
-                            <a
-                              href={normalizeUrl(videoUrl)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              aria-label="Ver video del ejercicio en YouTube"
-                              className="text-xs font-semibold text-accent underline hover:text-text-primary transition-colors"
-                            >
-                              Link YouTube
-                            </a>
-                          ) : (
-                            <span className="text-text-tertiary">–</span>
-                          )}
+                          <a
+                            href={videoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Ver video de ${exercise.name || "ejercicio"} en YouTube`}
+                            className="inline-flex items-center gap-1 text-xs font-semibold text-accent underline hover:text-text-primary transition-colors"
+                          >
+                            <IconBrandYoutube stroke={1.75} className="h-4 w-4" /> YouTube
+                          </a>
                         </td>
                       </tr>
                       {note && (

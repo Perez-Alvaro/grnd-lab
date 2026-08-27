@@ -4,11 +4,17 @@ import { usePlanContext } from "../../../context/PlanContext.jsx";
 import PreviewEmptyState from "./PreviewEmptyState.jsx";
 import { buildRecipeSearchUrl } from "../../../lib/recipeSearch.js";
 
-const VideoLink = ({ url, label = "Ver receta" }) => {
-  const u = buildRecipeSearchUrl(url);
-  if (!u) return null;
+const VideoLink = ({ url, name = "", label = "Ver receta" }) => {
+  const raw = (url || "").trim();
+  // Si hay URL explícita la respeta; si no, busca en YouTube por el nombre
+  const href = raw
+    ? buildRecipeSearchUrl(raw)
+    : name.trim()
+      ? `https://www.youtube.com/results?search_query=${encodeURIComponent(name.trim())}`
+      : "";
+  if (!href) return null;
   return (
-    <a href={u} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:underline">
+    <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:underline">
       <IconExternalLink stroke={1.75} className="h-3 w-3" /> {label}
     </a>
   );
@@ -52,7 +58,7 @@ const MealCard = ({ meal }) => {
       )}
 
       <div className="mt-3 flex flex-wrap items-center gap-3">
-        <VideoLink url={meal.videoUrl} />
+        <VideoLink url={meal.videoUrl} name={meal.name} />
       </div>
 
       {variantes.length > 0 && (
@@ -65,7 +71,7 @@ const MealCard = ({ meal }) => {
                 {(v.kcal === 0 || v.kcal) && <span className="text-xs text-text-tertiary">{v.kcal} kcal</span>}
               </div>
               {v.ingredientes && <p className="mt-1 text-xs text-text-secondary">{v.ingredientes}</p>}
-              <div className="mt-1.5"><VideoLink url={v.videoUrl} /></div>
+              <div className="mt-1.5"><VideoLink url={v.videoUrl} name={v.label} /></div>
             </div>
           ))}
         </div>
