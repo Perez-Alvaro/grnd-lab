@@ -14,7 +14,7 @@ const VideoLink = ({ url, name = "", label = "Ver receta" }) => {
       : "";
   if (!href) return null;
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:underline">
+    <a href={href} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="inline-flex items-center gap-1 text-xs font-semibold text-accent hover:underline">
       <IconExternalLink stroke={1.75} className="h-3 w-3" /> {label}
     </a>
   );

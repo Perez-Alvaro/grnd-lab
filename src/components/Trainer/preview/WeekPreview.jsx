@@ -75,19 +75,18 @@ const DayPreview = ({ day }) => {
                   key={exercise.id || i}
                   className="rounded-md border border-border bg-primary-surface p-3"
                 >
-                  <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center justify-between gap-2">
                     <p className="text-sm font-semibold text-text-primary">{r.name}</p>
-                    {r.video && (
-                      <a
-                        href={r.video}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`Ver video de ${r.name} en YouTube`}
-                        className="flex h-11 w-11 -my-2 -mr-1 flex-shrink-0 items-center justify-center rounded-sm text-accent"
-                      >
-                        <IconBrandYoutube stroke={1.75} className="h-5 w-5" />
-                      </a>
-                    )}
+                    <a
+                      href={r.video}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Ver video de ${r.name} en YouTube`}
+                      className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <IconBrandYoutube stroke={1.75} className="h-5 w-5" />
+                    </a>
                   </div>
                   <div className="mt-2 grid grid-cols-5 gap-2">
                     <Metric label="Series" value={r.sets} />
@@ -175,6 +174,7 @@ const DayPreview = ({ day }) => {
                             rel="noopener noreferrer"
                             aria-label={`Ver video de ${exercise.name || "ejercicio"} en YouTube`}
                             className="inline-flex items-center gap-1 text-xs font-semibold text-accent underline hover:text-text-primary transition-colors"
+                            onClick={(e) => e.stopPropagation()}
                           >
                             <IconBrandYoutube stroke={1.75} className="h-4 w-4" /> YouTube
                           </a>
