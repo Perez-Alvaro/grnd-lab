@@ -1,3 +1,5 @@
+import { buildExerciseVideoUrl } from "../../lib/recipeSearch.js";
+
 const toArray = (value) => {
   if (!value) return [];
   if (Array.isArray(value)) return value.filter(Boolean).map(String);
@@ -12,38 +14,29 @@ const normalizeExercise = (exercise, blockTitle) => {
   const series = variant.series ?? exercise.series ?? "";
   const reps = variant.reps ?? exercise.reps ?? "";
   const descanso = variant.descanso ?? exercise.descanso ?? "";
-  
-  // Soportar tanto RIR como RPE
-  const rir = variant.rir ?? exercise.rir ?? variant.rpe ?? exercise.rpe ?? "";
-  
-  const tempo = variant.tempo ?? exercise.tempo ?? variant.cadencia ?? exercise.cadencia ?? "";
-  
-  // Nuevos campos agregados del formato del editor
-  const duracion = exercise.duracion ?? "";
-  const cues = exercise.cues ?? "";
-  const progresion = exercise.progresion ?? "";
+  const duracion = variant.duracion ?? exercise.duracion ?? "";
+  const rir = variant.rir ?? exercise.rir ?? "";
+  const tempo = variant.cadencia ?? exercise.cadencia ?? "";
 
-  const baseNotes = [
-    blockTitle && blockTitle !== "Entrenamiento"
-      ? `Bloque: ${blockTitle}`
-      : null,
-  ]
-    .concat(toArray(exercise?.notes || exercise?.notas))
-    .concat(cues ? [`Cues: ${cues}`] : [])
-    .concat(progresion ? [`Progresión: ${progresion}`] : [])
-    .filter(Boolean);
+  const notesList = [
+    ...(blockTitle ? [`Bloque: ${blockTitle}`] : []),
+    ...toArray(exercise?.notes || exercise?.note || exercise?.notas),
+    ...toArray(variant?.cues || exercise?.cues),
+    ...toArray(variant?.progresion || exercise?.progresion),
+  ];
+
+  const baseNotes = notesList.join("\n");
+  const name = exercise?.ejercicio || exercise?.title || exercise?.name || exercise?.nombre || "Ejercicio";
 
   return {
-    name:
-      exercise?.ejercicio || exercise?.title || exercise?.name || exercise?.nombre || "Ejercicio",
+    name,
     series: series ? String(series) : "",
     reps: reps ? String(reps) : "",
     descanso: descanso ? String(descanso) : "",
     duracion: duracion ? String(duracion) : "",
     rir: (rir === 0 || rir) ? String(rir) : "",
     tempo: (tempo === 0 || tempo) ? String(tempo) : "",
-    videoUrl:
-      exercise?.videoUrl || exercise?.youtubeLink || exercise?.video || "",
+    videoUrl: buildExerciseVideoUrl(exercise?.videoUrl || exercise?.youtubeLink || exercise?.video || name),
     notes: baseNotes,
   };
 };

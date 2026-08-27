@@ -87,7 +87,7 @@ Las notas de cada ejercicio deben reflejar excelencia técnica COMBINADA con un 
               "tempo": "0000",
               "rest": "0s",
               "notes": "Movilidad articular: extensiones torácicas + apertura de cadera en cuadrupedia. Respira profundo, prioriza rango sin dolor. Calienta articulaciones clave antes de cargar.",
-              "video": "https://www.youtube.com/watch?v=QOVaHwm-Q6U"
+              "video": ""
             },
             {
               "name": "[ENTRADA EN CALOR] Rotaciones de hombro + círculos de brazos",
@@ -97,7 +97,7 @@ Las notas de cada ejercicio deben reflejar excelencia técnica COMBINADA con un 
               "tempo": "0000",
               "rest": "0s",
               "notes": "Movilidad articular específica: rotación escapular controlada, 10 reps adelante y atrás. Postura alta, sin dolor. Hombros listos, cero lesiones mañana.",
-              "video": "https://www.youtube.com/watch?v=Uvn65Eqk0SM"
+              "video": ""
             },
             {
               "name": "[ENTRADA EN CALOR] Flexiones de pecho activación",
@@ -107,7 +107,7 @@ Las notas de cada ejercicio deben reflejar excelencia técnica COMBINADA con un 
               "tempo": "2010",
               "rest": "30s",
               "notes": "TÉCNICA: Flexiones controladas sin carga. Activar pectorales y escápula. Cada rep cuenta. Disciplina en detalles es hábito diario.",
-              "video": "https://www.youtube.com/watch?v=IODxDxX7oi4"
+              "video": ""
             },
             {
               "name": "Press de Banca con Barra",
@@ -117,7 +117,7 @@ Las notas de cada ejercicio deben reflejar excelencia técnica COMBINADA con un 
               "tempo": "3010",
               "rest": "90s",
               "notes": "TÉCNICA: Pies firmes. Omóplatos retraídos. Baja 3 seg, pausa mínima, sube explosivo 1 seg. Tu movimiento base. No negocies forma por peso. Sufre hoy, celebra después.",
-              "video": "https://www.youtube.com/watch?v=rT7DgCr-3pg"
+              "video": ""
             },
             {
               "name": "Press Inclinado con Mancuernas",
@@ -127,7 +127,7 @@ Las notas de cada ejercicio deben reflejar excelencia técnica COMBINADA con un 
               "tempo": "2010",
               "rest": "60s",
               "notes": "TÉCNICA: Banco 45°. Mancuernas a hombros. Baja hasta estiramiento sin sacrificar forma. 2 seg bajada, 1 seg subida. Pecho superior. Cuando duela, estás creciendo.",
-              "video": "https://www.youtube.com/watch?v=8iPEnn-ltC8"
+              "video": ""
             },
             {
               "name": "Fondos en Paralelas o Tríceps Cuerda",
@@ -137,7 +137,7 @@ Las notas de cada ejercicio deben reflejar excelencia técnica COMBINADA con un 
               "tempo": "2010",
               "rest": "60s",
               "notes": "TÉCNICA: Fondos cuerpo vertical, codos al torso, baja 2 seg hasta 90°. Cuerda inclinado, codos fijos, extiende explosivo. Elige tu variante. Incomodidad = progreso.",
-              "video": "https://www.youtube.com/watch?v=pDMXNSucLco"
+              "video": ""
             },
             {
               "name": "Elevaciones Laterales con Mancuernas",
@@ -147,7 +147,7 @@ Las notas de cada ejercicio deben reflejar excelencia técnica COMBINADA con un 
               "tempo": "2020",
               "rest": "45s",
               "notes": "TÉCNICA: De pie, torso neutral. Sube hasta altura hombros (NO más). Codos flectados. Pausa 1 seg arriba, baja 2 seg. Hombros anchos se construyen. Cada rep es ladrillo.",
-              "video": "https://www.youtube.com/watch?v=q-g_Yy-T90w"
+              "video": ""
             }
           ]
         }
@@ -413,34 +413,13 @@ ${gender?.toLowerCase().includes('masculino') || gender?.toLowerCase().includes(
    tempo: Cadencia 4 dígitos o "0000" para natural. "3010", "2020", "0000"
    rest: Descanso entre series. "30s", "60s", "90s", "120s", "0s"
    notes: MÁXIMO 2-3 RENGLONES (~250 caracteres). TÉCNICA + MOTIVACIÓN BREVE. NUNCA excedas para que PDF imprima bien.
-   video: URL YouTube REAL y VERIFICADA.
+   video: Opcional (string vacío "" o URL específica). La plataforma arma automáticamente el link de búsqueda en YouTube con el nombre del ejercicio.
 
-5️⃣ VIDEOS DE YOUTUBE - CRÍTICO PARA PROFESIONALISMO:
-
-   FORMATO: "https://www.youtube.com/watch?v=[ID_VIDEO]"
-
-   CANALES VERIFICADOS Y CONFIABLES:
-   ✓ AthleanX (Jeff Cavaliere) - Biomecánica perfecta
-   ✓ Jeff Nippard - Ciencia basada en evidencia
-   ✓ Powerexplosive - Técnica hispana de élite
-   ✓ ScottHermanFitness - Demos claras técnica
-   ✓ Omar Isuf (OMarcusFlexington) - Análisis profundo
-   ✓ Stronger by Science - Investigación aplicada
-
-   REFERENCIAS VERIFICADAS (Base de datos de calidad):
-   - Press de Banca: https://www.youtube.com/watch?v=rT7DgCr-3pg (AthleanX)
-   - Sentadilla: https://www.youtube.com/watch?v=ultWZbUMPL8 (Jeff Nippard)
-   - Peso Muerto: https://www.youtube.com/watch?v=hd7xwxjwe8U (Jeff Nippard)
-   - Dominadas: https://www.youtube.com/watch?v=eGo4IYlbE5g (ScottHermanFitness)
-   - Remo Barra: https://www.youtube.com/watch?v=G8V_GCN3hOE (Powerexplosive)
-   - Flexiones: https://www.youtube.com/watch?v=IODxDxX7oi4 (ScottHermanFitness)
-   - Cardio/Trote: https://www.youtube.com/watch?v=loZXw7aFTQ4 (Generic pero claro)
-
-   ⚠️ REGLA DE ORO CRÍTICA:
-   - SI NO ESTÁS 100% SEGURO que un video existe y está HABILITADO, NO LO INCLUYAS
-   - VIDEOS ROTOS = PÉRDIDA TOTAL DE PROFESIONALISMO
-   - Mejor: Usa referencias verificadas que conoces que funcionan
-   - Búsqueda de alternativas: Mismo canal, mismo ejercicio, si cambia el ID
+5️⃣ VIDEOS DE YOUTUBE:
+   La plataforma genera de forma automática el enlace de búsqueda de YouTube para cada ejercicio utilizando su nombre.
+   - Puedes dejar "video": "" para ahorrar tokens.
+   - Si deseas especificar una URL exacta (ej: de un canal propio o tutorial específico), puedes colocarla.
+   - De lo contrario, dejar "video": "" y el sistema se encarga de dirigir al usuario a los resultados en YouTube según el título del ejercicio.
 
 6️⃣ PARÁMETROS POR OBJETIVO (Niveles de intensidad y volumen):
 
@@ -616,11 +595,9 @@ Cada EJERCICIO (incluido calentamiento) debe tener:
 ✅ tempo (4 dígitos o "0000")
 ✅ rest (duración con "s")
 ✅ notes (MÍNIMO 2-3 renglones: TÉCNICA + MOTIVACIÓN)
-✅ video (URL YouTube VERIFICADA - SIN VIDEOS ROTOS)
+✅ video (opcional / "" - la plataforma genera el link de búsqueda en YouTube automáticamente con el nombre)
 
 NO FALTES en notas. Las notas separan profesionales de amateurs. Cada ejercicio tiene una historia técnica que contar + un mensaje de mentalidad que recortar.
-
-Video roto = rutina incompleta. Referencias verificadas SIEMPRE.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🚨 FORMATO DE RESPUESTA - CRÍTICO PARA TODAS LAS IAS

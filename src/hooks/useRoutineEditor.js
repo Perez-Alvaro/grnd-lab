@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { buildExerciseVideoUrl } from "../lib/recipeSearch.js";
 
 const createId = () => Math.random().toString(36).slice(2, 10);
 
@@ -82,7 +83,6 @@ const convertLegacyExercise = (exercise) => {
     : {};
 
   const noteValue = exercise?.notes || exercise?.note || exercise?.notas || "";
-  const rawVideoUrl = exercise?.videoUrl || exercise?.youtubeLink || exercise?.video || "";
 
   return {
     id: createId(),
@@ -92,7 +92,7 @@ const convertLegacyExercise = (exercise) => {
     rest: variant.descanso || exercise?.descanso || exercise?.rest || "",
     rir: variant.rir || exercise?.rir || "",
     tempo: variant.cadencia || exercise?.cadencia || exercise?.tempo || "",
-    video: normalizeUrlValue(rawVideoUrl),
+    video: buildExerciseVideoUrl(exercise),
     note: noteValue,
   };
 };
@@ -800,14 +800,14 @@ export const useRoutineEditor = ({
             series: exercise.sets,
             descanso: exercise.rest,
             cadencia: exercise.tempo,
-            videoUrl: exercise.video,
+            videoUrl: buildExerciseVideoUrl(exercise),
             // Aliases para compatibilidad
             sets: exercise.sets,
             reps: exercise.reps,
             rest: exercise.rest,
             rir: exercise.rir,
             tempo: exercise.tempo,
-            video: exercise.video,
+            video: buildExerciseVideoUrl(exercise),
             notes: exercise.note,
             note: exercise.note,
           })),

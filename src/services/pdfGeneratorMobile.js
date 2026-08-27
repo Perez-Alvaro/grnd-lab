@@ -1,4 +1,5 @@
 import jsPDF from 'jspdf';
+import { buildExerciseVideoUrl } from '../lib/recipeSearch.js';
 
 const normalizeUrlText = (url) => {
   if (!url || typeof url !== 'string') return '';
@@ -424,7 +425,8 @@ export const generateRoutinePDFMobile = (routine) => {
           // ESPECIFICACIONES UX/UI RIGUROSAS
           // ============================================
           
-          const hasVideo = !!(exercise.video || exercise.videoUrl);
+          const videoUrl = buildExerciseVideoUrl(exercise);
+          const hasVideo = !!videoUrl;
           const hasNotes = !!(exercise.notes || exercise.note);
           
           // Card Container Specs (Reducidos para cards más pequeñas)
@@ -580,8 +582,7 @@ export const generateRoutinePDFMobile = (routine) => {
           // Jerarquía: Acción secundaria
           // ============================================
           
-          if (hasVideo) {
-            const videoUrl = exercise.video || exercise.videoUrl;
+          if (hasVideo && videoUrl) {
             const normalized = normalizeUrlText(videoUrl);
             if (normalized) {
               // textWithLink dibuja SOLO la etiqueta y la hace clickeable

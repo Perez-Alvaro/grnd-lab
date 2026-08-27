@@ -78,4 +78,34 @@ export const buildMealRecipeUrl = (meal = {}) => {
   return name ? buildRecipeSearchUrl(`${name} receta saludable`) : '';
 };
 
+/**
+ * Arma la búsqueda de video de un ejercicio en YouTube a partir de su nombre o URL provista.
+ * Si ya tiene una URL (YouTube, Drive, etc.), la respeta. Si no, busca el nombre del ejercicio en YouTube.
+ * @param {Object|string} exercise - Ejercicio con { name, video, videoUrl } o string con nombre/URL.
+ * @returns {string} URL de video o de búsqueda en YouTube.
+ */
+export const buildExerciseVideoUrl = (exercise = {}) => {
+  if (!exercise) return '';
+  if (typeof exercise === 'string') {
+    const trimmed = exercise.trim();
+    if (!trimmed) return '';
+    // Si ya es URL
+    if (/^https?:\/\//i.test(trimmed) || (trimmed.startsWith('www.') && !/\s/.test(trimmed))) {
+      return buildRecipeSearchUrl(trimmed);
+    }
+    const cleanName = trimmed.replace(/^\[ENTRADA EN CALOR\]\s*/i, '').trim();
+    return buildRecipeSearchUrl(cleanName || trimmed);
+  }
+
+  const rawVideo = String(exercise.video || exercise.videoUrl || '').trim();
+  if (rawVideo) {
+    return buildRecipeSearchUrl(rawVideo);
+  }
+
+  const name = String(exercise.name || exercise.nombre || '').trim();
+  if (!name || name === '—' || name === '-') return '';
+  const cleanName = name.replace(/^\[ENTRADA EN CALOR\]\s*/i, '').trim();
+  return buildRecipeSearchUrl(cleanName || name);
+};
+
 export default buildMealRecipeUrl;

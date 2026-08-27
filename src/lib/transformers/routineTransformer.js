@@ -8,6 +8,7 @@
  */
 
 import { validateRoutineSchema } from '../schemas/routineSchema.js';
+import { buildExerciseVideoUrl } from '../recipeSearch.js';
 
 const createId = () => Math.random().toString(36).slice(2, 10);
 
@@ -174,7 +175,7 @@ function importFromAIFormat(jsonData) {
               tempo: ex.tempo || '',
               cues: ex.cues || '',
               progression: ex.progression || ex.progresion || '',
-              video: ex.video || '',
+              video: buildExerciseVideoUrl(ex),
               note: ex.notes || ex.note || ex.notas || '',
             }))
           };
@@ -286,7 +287,7 @@ export function importToEditor(jsonData) {
                   tempo: ejercicio.tempo || '',
                   cues: ejercicio.cues || '',
                   progression: ejercicio.progresion || '',
-                  video: ejercicio.video || '',
+                  video: buildExerciseVideoUrl(ejercicio),
                   note: ejercicio.notas || '',
                 }))
           };
@@ -352,7 +353,8 @@ export function editorToPDF(planData) {
           descanso: exercise.rest || '',
           rir: exercise.rir || '',
           cadencia: exercise.tempo || '',
-          videoUrl: exercise.video || '',
+          videoUrl: buildExerciseVideoUrl(exercise),
+          video: buildExerciseVideoUrl(exercise),
           notes: exercise.note || '',
         }))
       }))

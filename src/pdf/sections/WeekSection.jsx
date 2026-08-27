@@ -1,5 +1,6 @@
 import { View, Text, Link } from "@react-pdf/renderer";
 import { indexLinkTarget, weekAnchorId } from "../utils/pdfAnchors.js";
+import { buildExerciseVideoUrl } from "../../lib/recipeSearch.js";
 
 const normalizeUrl = (url) => {
   if (!url || typeof url !== 'string') return '';
@@ -66,7 +67,7 @@ const ExerciseTable = ({ exercises, styles }) => {
         const rir = exercise.rir === 0 || exercise.rir ? exercise.rir : "–";
         const tempoValue = exercise.tempo ?? exercise.cadencia;
         const tempo = tempoValue === 0 || tempoValue ? tempoValue : "–";
-        const videoUrl = exercise.video || exercise.videoUrl;
+        const videoUrl = buildExerciseVideoUrl(exercise);
         const hasNotes = !!(exercise.notes || exercise.note);
 
         const rows = [

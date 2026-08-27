@@ -1,5 +1,6 @@
 import { Fragment, memo } from "react";
 import { IconChevronDown, IconChevronRight, IconBrandYoutube } from '@tabler/icons-react';
+import { buildExerciseVideoUrl } from "../../../lib/recipeSearch.js";
 
 /** Asegura que la URL tenga protocolo absoluto para que el navegador no la trate como ruta relativa */
 const normalizeUrl = (url) => {
@@ -14,11 +15,7 @@ const normalizeUrl = (url) => {
 const toRow = (exercise) => {
   const val = (v) => (v === 0 || v ? v : "–");
   const rawNote = exercise.note ?? exercise.notes;
-  const rawVideo = (exercise.video || exercise.videoUrl || "").trim();
-  // Si hay URL explícita la usa; si no, busca en YouTube por nombre del ejercicio
-  const video = rawVideo
-    ? (/^https?:\/\//i.test(rawVideo) ? rawVideo : `https://${rawVideo}`)
-    : `https://www.youtube.com/results?search_query=${encodeURIComponent((exercise.name || "").trim())}`;
+  const video = buildExerciseVideoUrl(exercise);
   return {
     name: exercise.name || "—",
     sets: val(exercise.sets ?? exercise.series),
@@ -137,10 +134,7 @@ const DayPreview = ({ day }) => {
                   const tempoValue = exercise.tempo ?? exercise.cadencia;
                   const tempo =
                     tempoValue === 0 || tempoValue ? tempoValue : "–";
-                   const rawVideo = (exercise.video || exercise.videoUrl || "").trim();
-                  const videoUrl = rawVideo
-                    ? (/^https?:\/\//i.test(rawVideo) ? rawVideo : `https://${rawVideo}`)
-                    : `https://www.youtube.com/results?search_query=${encodeURIComponent((exercise.name || "").trim())}`;
+                  const videoUrl = buildExerciseVideoUrl(exercise);
                   const rawNote = exercise.note ?? exercise.notes;
                   const note = Array.isArray(rawNote)
                     ? rawNote.join("\n")
