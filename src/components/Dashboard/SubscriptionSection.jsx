@@ -70,17 +70,25 @@ export default function SubscriptionSection() {
               <p className="text-sm text-text-muted mt-1">Cargando…</p>
             ) : state.code === 'vigente' ? (
               <p className="text-sm text-text-secondary mt-1">
-                Plan {planInfo?.label || subscription?.plan} · te quedan{' '}
-                <strong className="text-text-primary font-mono">{state.daysLeft}</strong> días
-                (vence el {state.periodEnd?.toLocaleDateString('es-AR')}).
+                {planInfo?.isLifetime || subscription?.plan === 'lifetime' ? (
+                  <>
+                    Acceso <strong className="text-accent font-semibold">de por vida activo</strong> · Asistente Mock habilitado con soporte en sistema activo.
+                  </>
+                ) : (
+                  <>
+                    Plan {planInfo?.label || subscription?.plan} · te quedan{' '}
+                    <strong className="text-text-primary font-mono">{state.daysLeft}</strong> días
+                    (vence el {state.periodEnd?.toLocaleDateString('es-AR')}).
+                  </>
+                )}
               </p>
             ) : state.code === 'testing' ? (
               <p className="text-sm text-text-secondary mt-1">
-                Tenés acceso completo de prueba hasta el{' '}
+                Tenés acceso completo de prueba por 24 hs hasta el{' '}
                 <strong className="text-text-primary">
                   {state.trialUntil?.toLocaleDateString('es-AR')} a las {state.trialUntil?.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
                 </strong>
-                . Después vas a necesitar un pago vigente para seguir.
+                . Después podés activar tu acceso de por vida por única transferencia.
               </p>
             ) : state.code === 'habilitado' ? (
               <p className="text-sm text-text-secondary mt-1">
@@ -94,13 +102,13 @@ export default function SubscriptionSection() {
             ) : state.code === 'enviado' ? (
               <p className="text-sm text-text-secondary mt-1">
                 Recibimos tu comprobante. Cuando el administrador confirme el impacto,
-                se habilitan los editores automáticamente.
+                se habilita tu acceso de por vida automáticamente.
               </p>
             ) : (
               <p className="text-sm text-text-secondary mt-1">
                 {state.expired
-                  ? 'Tu período venció y los editores quedaron deshabilitados. Informá el pago para reactivarlos.'
-                  : 'Todavía no tenés un pago vigente. Elegí un plan e informá la transferencia para empezar.'}
+                  ? 'Tu período de prueba venció. Informá la transferencia de $75.000 ARS para activar tu acceso de por vida.'
+                  : 'Todavía no tenés un pago vigente. Informá la transferencia única de $75.000 ARS para obtener tu asistente Mock de por vida.'}
               </p>
             )}
           </div>
@@ -120,13 +128,14 @@ export default function SubscriptionSection() {
           <div className="space-y-2">
             {payments.slice(0, 5).map((p) => {
               const st = PAYMENT_STATUS[p.status] || { label: p.status, variant: 'default' };
+              const currentP = PLANS[p.plan];
               return (
                 <div key={p.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border bg-primary-bg px-4 py-2.5">
                   <div className="flex items-center gap-3 min-w-0">
                     <IconReceipt stroke={1.75} className="h-4 w-4 text-text-muted flex-shrink-0" />
                     <div className="min-w-0">
                       <p className="text-sm text-text-primary">
-                        {PLANS[p.plan]?.label || p.plan} · ${p.amount_usd} USD
+                        {currentP?.label || p.plan} · {currentP?.priceARS ? `$${currentP.priceARS.toLocaleString('es-AR')} ARS (Pago único)` : `$${p.amount_usd} USD`}
                       </p>
                       <p className="text-xs text-text-muted">
                         {new Date(p.created_at).toLocaleDateString('es-AR')}
@@ -146,7 +155,7 @@ export default function SubscriptionSection() {
 
       <PaymentModal
         open={modalOpen}
-        initialPlan={preselectedPlan || subscription?.plan}
+        initialPlan={preselectedPlan || subscription?.plan || 'lifetime'}
         onClose={() => setModalOpen(false)}
         onSubmitted={() => { setModalOpen(false); refresh(); }}
       />
@@ -157,7 +166,7 @@ export default function SubscriptionSection() {
 /* ── Modal para informar la transferencia ───────────────────── */
 
 function PaymentModal({ open, initialPlan, onClose, onSubmitted }) {
-  const [plan, setPlan] = useState('mensual');
+  const [plan, setPlan] = useState('lifetime');
   const [reference, setReference] = useState('');
   const [file, setFile] = useState(null);
   const [sending, setSending] = useState(false);
@@ -167,7 +176,7 @@ function PaymentModal({ open, initialPlan, onClose, onSubmitted }) {
 
   useEffect(() => {
     if (open) {
-      setPlan(PLANS[initialPlan] ? initialPlan : 'mensual');
+      setPlan(PLANS[initialPlan] ? initialPlan : 'lifetime');
       setReference('');
       setFile(null);
       if (fileRef.current) fileRef.current.value = '';
@@ -175,7 +184,7 @@ function PaymentModal({ open, initialPlan, onClose, onSubmitted }) {
     }
   }, [open, initialPlan]);
 
-  const planInfo = PLANS[plan];
+  const planInfo = PLANS[plan] || PLANS.lifetime;
 
   const copy = async (text, label) => {
     try {
@@ -218,7 +227,7 @@ function PaymentModal({ open, initialPlan, onClose, onSubmitted }) {
         <Select label="Plan" value={plan} onChange={(e) => setPlan(e.target.value)}>
           {Object.entries(PLANS).map(([id, p]) => (
             <option key={id} value={id}>
-              {p.label} · ${p.priceUSD} USD ({p.days} días)
+              {p.label} · {p.priceARS ? `$${p.priceARS.toLocaleString('es-AR')} ARS` : `$${p.priceUSD} USD`} {p.isLifetime ? '(Un solo pago de por vida)' : `(${p.days} días)`}
             </option>
           ))}
         </Select>
@@ -226,7 +235,7 @@ function PaymentModal({ open, initialPlan, onClose, onSubmitted }) {
         {/* Datos de la cuenta */}
         <div className="rounded-lg border border-accent/25 bg-accent/5 p-4 space-y-2">
           <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide">
-            Transferí ${planInfo.priceUSD} USD (o su equivalente en pesos) a:
+            Transferí {planInfo?.priceARS ? `$${planInfo.priceARS.toLocaleString('es-AR')} ARS (Única transferencia)` : `$${planInfo?.priceUSD} USD`} a:
           </p>
           <TransferRow label="Titular" value={transferInfo.titular} onCopy={copy} />
           <TransferRow label="Alias" value={transferInfo.alias} onCopy={copy} />

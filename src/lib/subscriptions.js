@@ -9,9 +9,10 @@ import { supabase } from './supabaseClient.js';
 
 /** Planes vendidos en el landing (deben coincidir con PRICING_TIERS). */
 export const PLANS = {
-  mensual:    { label: 'Mensual',    days: 30,  months: 1,  priceUSD: 10 },
-  trimestral: { label: 'Trimestral', days: 90,  months: 3,  priceUSD: 27 },
-  anual:      { label: 'Anual',      days: 365, months: 12, priceUSD: 48 },
+  lifetime:   { label: 'Acceso de por vida', days: 3650, months: 120, priceUSD: 60, priceARS: 75000, isLifetime: true },
+  mensual:    { label: 'Mensual (Legacy)',    days: 30,   months: 1,   priceUSD: 10, priceARS: 12000 },
+  trimestral: { label: 'Trimestral (Legacy)', days: 90,   months: 3,   priceUSD: 27, priceARS: 32000 },
+  anual:      { label: 'Anual (Legacy)',      days: 365,  months: 12,  priceUSD: 48, priceARS: 60000 },
 };
 
 // Los datos de transferencia se editan desde el panel de admin y viven en la

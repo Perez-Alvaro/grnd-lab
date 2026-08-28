@@ -7,7 +7,12 @@
  * Copy: claro, directo, humano — beneficios concretos, sin jerga de IA
  */
 
-import { IconClock, IconUsers, IconCircleCheck, IconArrowRight, IconBolt, IconTarget, IconShield, IconSparkles, IconChevronDown, IconStar, IconBarbell, IconMenu2, IconX, IconMessageCircle, IconCalendar, IconSalad } from '@tabler/icons-react';
+import {
+    IconClock, IconUsers, IconCircleCheck, IconCircleX, IconArrowRight,
+    IconBolt, IconTarget, IconShield, IconSparkles, IconChevronDown,
+    IconStar, IconBarbell, IconMenu2, IconX, IconMessageCircle,
+    IconCalendar, IconSalad, IconInfinity, IconBuildingBank, IconHeadset
+} from '@tabler/icons-react';
 import { Button } from '../components/ui';
 import DotGrid from '../components/ui/DotGrid';
 import FAQ from '../components/ui/FAQ';
@@ -99,92 +104,55 @@ const EDITOR_STEPS = [
 
 const PRICING_TIERS = [
     {
-        id: 'mensual',
-        name: 'Mensual',
-        totalUSD: 10,
-        perMonthUSD: 10,
-        perMonthARS: 10000,
-        period: '/mes',
-        billedAs: 'Se renueva cada mes',
-        description: 'Para probar sin comprometerte. Cancelás cuando quieras.',
-        cta: 'Empezar ahora',
-        ctaVariant: 'outline',
-        savings: null,
-        highlight: false,
-        badge: null,
-        features: [
-            'Rutinas y planes de nutrición ilimitados',
-            'Exportación PDF profesional',
-            'Compatible con ChatGPT, Claude y Gemini',
-            'Soporte por email',
-        ],
-    },
-    {
-        id: 'trimestral',
-        name: 'Trimestral',
-        totalUSD: 27,
-        perMonthUSD: 9,
-        perMonthARS: 9000,
-        period: '/mes',
-        billedAs: 'Pago único: USD 27 por 3 meses completos',
-        description: 'Pagás una vez y tenés 3 meses. El que más eligen.',
-        cta: 'Elegir este plan',
+        id: 'lifetime',
+        name: 'Acceso de por vida',
+        totalARS: 75000,
+        totalUSD: 60,
+        period: 'único pago',
+        billedAs: 'Única transferencia bancaria · Sin cuotas mensuales',
+        description: 'Basta de suscripciones y depender mensualmente. Invertí una sola vez y crecé con Mock de por vida.',
+        cta: 'Empezar prueba gratis de 24 hs',
+        ctaSecondary: 'Comprar acceso de por vida ($75.000 ARS)',
         ctaVariant: 'default',
-        savings: { label: 'Ahorrás $3 vs mensual', pct: '10% off', monthlySaved: 1 },
+        savings: { label: 'Sin mensualidades ni costos fijos', pct: 'De por vida', monthlySaved: null },
         highlight: true,
-        badge: 'Más elegido',
+        badge: 'El Gran Diferenciador · De por vida',
         features: [
-            'Rutinas y planes de nutrición ilimitados',
-            'Exportación PDF profesional',
+            'Asistente Mock de por vida (rutinas y nutrición)',
+            'Mínimo 1 año de soporte garantizado en sistema activo',
+            'Prueba de 24 hs gratis incluida antes de invertir',
+            'Exportación PDF profesional ilimitada con tu marca',
             'Compatible con ChatGPT, Claude y Gemini',
-            'Soporte prioritario por email',
-            'Acceso a nuevas features antes',
-        ],
-    },
-    {
-        id: 'anual',
-        name: 'Anual',
-        totalUSD: 48,
-        perMonthUSD: 4,
-        perMonthARS: 4000,
-        period: '/mes',
-        billedAs: 'Pago único: USD 48 por 12 meses completos',
-        description: 'Pagás una vez y tenés todo el año. El más conveniente.',
-        cta: 'Elegir este plan',
-        ctaVariant: 'outline',
-        savings: { label: 'Ahorrás $72 vs pagar mensual', pct: '60% off', monthlySaved: 6 },
-        highlight: false,
-        badge: null,
-        features: [
-            'Rutinas y planes de nutrición ilimitados',
-            'Exportación PDF profesional',
-            'Compatible con ChatGPT, Claude y Gemini',
-            'Soporte prioritario + WhatsApp',
-            'Acceso a nuevas features antes',
+            'Nutrición completa adaptada a Argentina',
+            'Sin tarjetas de crédito atadas ni débitos automáticos',
         ],
     },
 ];
 
 const FAQ_ITEMS = [
     {
-        question: '¿Esto reemplaza al entrenador?',
-        answer: 'No. Mock arma una base de trabajo. Vos revisás cada ejercicio y cada comida antes de mandar el plan. El criterio profesional siempre es tuyo, y el plan sale con tu firma.',
+        question: '¿Cómo funciona el pago único de $75.000 ARS?',
+        answer: 'Hacés una única transferencia bancaria por $75.000 ARS y obtenés acceso de por vida a tu asistente Mock. No hay renovaciones automáticas, ni cobros mensuales ni costos ocultos.',
+    },
+    {
+        question: '¿Cómo funciona la prueba gratuita de 24 horas antes de invertir?',
+        answer: 'Al crear tu cuenta contás con 24 horas de acceso total y sin costo a todas las funcionalidades. Podés generar rutinas, armar planes de nutrición y exportar PDFs con tus clientes reales antes de hacer la transferencia.',
+    },
+    {
+        question: '¿Qué incluye el soporte garantizado de mínimo 1 año?',
+        answer: 'Garantizamos soporte técnico prioritario, mantenimiento continuo del servidor y actualizaciones en el sistema activo para asegurar el correcto funcionamiento y evolución de tu asistente Mock.',
+    },
+    {
+        question: '¿Por qué Mock no cobra suscripción mensual?',
+        answer: 'Porque creemos que como entrenador tenés que reinvertir en tu propio negocio sin depender de gastos fijos mensuales. Pagás una sola vez y la herramienta es tuya para siempre.',
+    },
+    {
+        question: '¿Esto reemplaza mi criterio como entrenador?',
+        answer: 'No. Mock arma una base de trabajo profesional en segundos. Vos revisás cada ejercicio y cada comida antes de mandar el plan. El criterio profesional siempre es tuyo, y el plan sale con tu firma.',
     },
     {
         question: '¿La nutrición está incluida?',
         answer: 'Sí. Con la misma cuenta armás rutinas de entrenamiento y planes de alimentación pensados para Argentina, con alimentos de supermercado, lista de compras y guía de meal prep. Todo se exporta en PDF.',
-    },
-    {
-        question: '¿Necesito saber de tecnología?',
-        answer: 'No hace falta nada especial. Respondés unas preguntas sobre tu cliente, copiás el prompt que genera Mock y lo pegás en ChatGPT o la IA que ya usás. Eso es todo.',
-    },
-    {
-        question: '¿Puedo modificar los planes?',
-        answer: 'Sí, completamente. Tenés un editor para cambiar cualquier ejercicio, serie, comida o nota. El plan es tuyo y lo ajustás como querés antes de exportarlo.',
-    },
-    {
-        question: '¿Puedo cancelar cuando quiero?',
-        answer: 'Sí. Cancelás desde tu cuenta en cualquier momento, sin penalidades ni trámites. Seguís teniendo acceso hasta que termine el período que pagaste.',
     },
 ];
 
@@ -845,154 +813,126 @@ function EditorStepsSection() {
    PRICING
 ───────────────────────────────────────────── */
 
-function PricingSection({ onSelectPlan }) {
+function PricingSection({ onSelectPlan, onSignup }) {
     return (
         <section id="pricing" className="section-elevated-bg border-b border-border" style={{ padding: 'var(--space-section) 0' }}>
-            <div className="mx-auto max-w-7xl px-6 lg:px-8">
-                <div className="mx-auto max-w-2xl text-center mb-6 scroll-reveal">
+            <div className="mx-auto max-w-4xl px-6 lg:px-8">
+                {/* Header Breve */}
+                <div className="mx-auto max-w-2xl text-center mb-8 scroll-reveal">
+                    <SectionTag icon={IconInfinity} label="Basta de Suscripciones" />
                     <h2
                         className="font-bold tracking-tight text-text-primary font-display"
                         style={{ fontSize: 'var(--text-h2)', lineHeight: '1.1' }}
                     >
-                        Precios
+                        Un solo pago de por vida.{' '}
+                        <span className="bg-gradient-to-r from-accent via-accent-light to-accent-secondary bg-clip-text text-transparent">
+                            Crecé con Mock.
+                        </span>
                     </h2>
-                    <p className="mt-4 text-lg text-text-secondary">
-                        Todo incluido en los tres. Solo cambia cada cuánto pagás.
+                    <p className="mt-3 text-base sm:text-lg text-text-secondary">
+                        Sin costos mensuales ni ataduras. Probá 24 horas gratis antes de invertir.
                     </p>
                 </div>
 
-                <div className="mx-auto max-w-xl mb-14 text-center scroll-reveal">
-                    <div className="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-accent/5 border border-accent/20">
-                        <IconShield stroke={1.75} className="h-5 w-5 text-accent flex-shrink-0" />
-                        <div className="text-left">
-                            <div className="text-sm font-semibold text-text-primary">Probalo sin riesgo</div>
-                            <div className="text-xs text-text-secondary mt-0.5">
-                                Tenés 24 hs después de la compra para probarlo con clientes reales. Si no es para vos, cancelás sin preguntas.
-                            </div>
+                {/* Tarjeta Principal Compacta */}
+                <div className="mx-auto max-w-xl scroll-reveal">
+                    <div className="relative rounded-3xl border-2 border-accent/60 bg-primary-surface p-6 sm:p-8 shadow-2xl shadow-accent/15 pricing-card-glow flex flex-col">
+                        {/* Badge superior */}
+                        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20">
+                            <span className="inline-flex items-center gap-1.5 text-xs font-black text-primary-bg bg-accent px-4 py-1.5 rounded-full shadow-md shadow-accent/40 uppercase tracking-wider">
+                                <IconStar stroke={1.75} className="h-3.5 w-3.5 fill-white flex-shrink-0" />
+                                Acceso de por vida · Pago único
+                            </span>
                         </div>
+
+                        {/* Precio */}
+                        <div className="text-center pt-2 mb-6">
+                            <div className="flex items-baseline justify-center gap-2">
+                                <span
+                                    className="font-black text-accent font-display tracking-tight"
+                                    style={{ fontSize: 'clamp(42px, 6vw, 56px)', lineHeight: 1 }}
+                                >
+                                    $75.000
+                                </span>
+                                <span className="text-text-secondary text-sm sm:text-base font-semibold">ARS</span>
+                            </div>
+                            <p className="text-xs text-text-tertiary mt-1.5">
+                                Única transferencia bancaria · Sin mensualidades
+                            </p>
+                        </div>
+
+                        {/* Bullets concretos */}
+                        <ul className="space-y-2.5 text-sm text-text-secondary mb-6 rounded-2xl bg-primary-bg/70 border border-border p-4 sm:p-5">
+                            <li className="flex items-center gap-2.5">
+                                <IconCircleCheck stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0" />
+                                <span><strong className="text-text-primary">Asistente Mock de por vida</strong> (rutinas y dietas ilimitadas)</span>
+                            </li>
+                            <li className="flex items-center gap-2.5">
+                                <IconClock stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0" />
+                                <span><strong className="text-text-primary">Prueba gratis de 24 hs</strong> antes de invertir</span>
+                            </li>
+                            <li className="flex items-center gap-2.5">
+                                <IconHeadset stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0" />
+                                <span><strong className="text-text-primary">Mínimo 1 año de soporte garantizado</strong> en sistema activo</span>
+                            </li>
+                            <li className="flex items-center gap-2.5">
+                                <IconCircleCheck stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0" />
+                                <span><strong className="text-text-primary">Exportación PDF profesional</strong> ilimitada con tu marca</span>
+                            </li>
+                            <li className="flex items-center gap-2.5">
+                                <IconSparkles stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0" />
+                                <span>Compatible con <strong className="text-text-primary">ChatGPT, Claude y Gemini</strong></span>
+                            </li>
+                        </ul>
+
+                        {/* CTAs rápidos */}
+                        <div className="flex flex-col sm:flex-row items-center gap-3">
+                            <Button
+                                variant="accent"
+                                size="lg"
+                                onClick={onSignup}
+                                className="w-full shadow-lg shadow-accent/30 hover:shadow-accent/50 font-bold"
+                            >
+                                Probar 24 hs gratis
+                                <IconArrowRight stroke={1.75} className="ml-2 h-4 w-4" />
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="lg"
+                                onClick={() => onSelectPlan('lifetime')}
+                                className="w-full border-border hover:border-accent/60 font-semibold"
+                            >
+                                Comprar acceso ($75.000 ARS)
+                            </Button>
+                        </div>
+
+                        <p className="text-center text-[11px] text-text-quaternary mt-3">
+                            Sin tarjeta requerida para la prueba · Transferencia en pesos
+                        </p>
                     </div>
                 </div>
 
-                <div className="mx-auto max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-                    {PRICING_TIERS.map((tier, i) => (
-                        <div
-                            key={i}
-                            className={`relative group scroll-reveal reveal-delay-${i + 1} ${tier.highlight ? 'pt-6' : ''}`}
-                        >
-                            {tier.highlight && tier.badge && (
-                                <div className="absolute top-0 left-1/2 -translate-x-1/2 z-20">
-                                    <span className="inline-flex items-center gap-1.5 text-xs font-black text-primary-bg bg-accent px-5 py-1.5 rounded-full shadow-lg shadow-accent/40 tracking-wide uppercase">
-                                        <IconStar stroke={1.75} className="h-3 w-3 fill-white flex-shrink-0" />
-                                        {tier.badge}
-                                    </span>
-                                </div>
-                            )}
-
-                            {tier.highlight && (
-                                <div className="absolute inset-0 -inset-1 rounded-3xl bg-gradient-to-b from-accent/30 to-accent/5 blur-xl opacity-50 transition-opacity duration-300 group-hover:opacity-75" />
-                            )}
-
-                            <div className={`relative rounded-3xl border p-7 h-full flex flex-col ${
-                                tier.highlight
-                                    ? 'border-accent/50 bg-primary-surface pricing-card-glow'
-                                    : 'border-border bg-primary-surface'
-                            }`}>
-                                <h3 className="text-xl font-bold text-text-primary font-display mb-3">{tier.name}</h3>
-
-                                <div className="mb-2">
-                                    {tier.id === 'trimestral' && (
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span className="text-sm text-text-quaternary line-through">$30 USD (3 × $10)</span>
-                                            <span className="text-xs font-bold text-green-400 bg-green-400/10 px-2 py-0.5 rounded-full">−10%</span>
-                                        </div>
-                                    )}
-                                    {tier.id === 'anual' && (
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span className="text-sm text-text-quaternary line-through">$120 USD (12 × $10)</span>
-                                            <span className="text-xs font-bold text-green-400 bg-green-400/10 px-2 py-0.5 rounded-full">−60%</span>
-                                        </div>
-                                    )}
-                                    {tier.id === 'mensual' && <div className="mb-1 h-5" />}
-
-                                    <div className="flex items-baseline gap-1">
-                                        <span
-                                            className={`font-black ${tier.highlight ? 'text-accent' : 'text-text-primary'}`}
-                                            style={{ fontSize: 'clamp(40px, 5vw, 52px)', lineHeight: 1 }}
-                                        >
-                                            ${tier.totalUSD}
-                                        </span>
-                                        <span className="text-text-tertiary text-sm ml-1">USD</span>
-                                    </div>
-                                    <p className="text-xs text-text-tertiary mt-1">{tier.billedAs}</p>
-                                </div>
-
-                                {tier.savings && (
-                                    <div className={`my-4 px-4 py-2.5 rounded-xl text-sm font-medium ${
-                                        tier.highlight
-                                            ? 'bg-accent/15 border border-accent/30 text-accent'
-                                            : 'bg-primary-bg border border-border text-text-secondary'
-                                    }`}>
-                                        {tier.id === 'trimestral' ? (
-                                            <span>Pago único de <strong>3 meses</strong> · {tier.savings.label}</span>
-                                        ) : tier.id === 'anual' ? (
-                                            <span>Pago único de <strong>12 meses</strong> · {tier.savings.label}</span>
-                                        ) : (
-                                            <span>{tier.savings.label} vs plan mensual</span>
-                                        )}
-                                    </div>
-                                )}
-
-                                <p className="text-sm text-text-secondary mb-5">{tier.description}</p>
-
-                                <ul className="space-y-3 flex-1 mb-7">
-                                    {tier.features.map((f, j) => (
-                                        <li key={j} className="flex items-start gap-3 text-sm text-text-secondary">
-                                            <IconCircleCheck stroke={1.75} className={`h-4 w-4 flex-shrink-0 mt-0.5 ${
-                                                tier.highlight ? 'text-accent' : 'text-text-tertiary'
-                                            }`} />
-                                            {f}
-                                        </li>
-                                    ))}
-                                </ul>
-
-                                <Button
-                                    variant={tier.ctaVariant}
-                                    size="md"
-                                    onClick={() => onSelectPlan(tier.id)}
-                                    className={`w-full group ${
-                                        tier.highlight
-                                            ? 'shadow-xl shadow-accent/30 hover:shadow-accent/50'
-                                            : 'border-border hover:border-accent/50'
-                                    }`}
-                                >
-                                    {tier.cta}
-                                    <IconArrowRight stroke={1.75} className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                                </Button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                <div className="mt-10 mx-auto max-w-3xl text-center space-y-3 scroll-reveal">
-                    <p className="text-xs text-text-quaternary">
-                        * El equivalente en pesos es aproximado y se actualiza según la cotización del dólar al momento de la facturación.
-                    </p>
-                    <div className="flex flex-wrap items-center justify-center gap-6 pt-2">
-                        <div className="flex items-center gap-2 text-sm text-text-tertiary">
-                            <IconCircleCheck stroke={1.75} className="h-4 w-4 text-accent" />
-                            Todo incluido en los tres planes
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-text-tertiary">
-                            <IconShield stroke={1.75} className="h-4 w-4 text-accent" />
-                            Cancelás cuando quieras
-                        </div>
+                {/* Micro badges de confianza */}
+                <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-xs text-text-tertiary scroll-reveal">
+                    <div className="flex items-center gap-1.5">
+                        <IconInfinity stroke={1.75} className="h-4 w-4 text-accent" />
+                        <span>Sin suscripciones mensuales</span>
+                    </div>
+                    <span>•</span>
+                    <div className="flex items-center gap-1.5">
+                        <IconClock stroke={1.75} className="h-4 w-4 text-accent" />
+                        <span>24 hs de prueba libre</span>
+                    </div>
+                    <span>•</span>
+                    <div className="flex items-center gap-1.5">
+                        <IconBuildingBank stroke={1.75} className="h-4 w-4 text-accent" />
+                        <span>Única transferencia</span>
                     </div>
                 </div>
             </div>
         </section>
     );
 }
-
 
 /* ─────────────────────────────────────────────
    FAQ
@@ -1051,8 +991,6 @@ function FinalCTASection({ onSignup }) {
                 </p>
 
                 <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 scroll-reveal reveal-delay-2">
-                    {/* Antes hacía scroll a #contact, una sección que ya no se
-                        renderiza: el botón no hacía nada. Ahora abre el registro. */}
                     <button
                         onClick={onSignup}
                         className="btn-hero-primary group inline-flex items-center justify-center gap-2 h-14 px-10 rounded-xl bg-accent text-primary-bg font-bold text-base w-full sm:w-auto"
@@ -1073,11 +1011,12 @@ function FinalCTASection({ onSignup }) {
 
                 <div className="mt-10 flex flex-wrap items-center justify-center gap-6 scroll-reveal reveal-delay-3">
                     {[
-                        { icon: IconShield,       text: 'Tus planes quedan guardados en tu cuenta' },
-                        { icon: IconClock,        text: 'Tu primer plan en minutos' },
-                        { icon: IconCircleCheck, text: 'Cancelás cuando quieras' },
+                        { icon: IconInfinity,    text: 'Un solo pago de por vida' },
+                        { icon: IconClock,       text: '24 hs de prueba gratis' },
+                        { icon: IconBuildingBank, text: 'Única transferencia ($75.000 ARS)' },
+                        { icon: IconHeadset,     text: 'Mínimo 1 año de soporte garantizado' },
                     ].map((item, i) => (
-                        <div key={i} className="flex items-center gap-2 text-sm text-white/60">
+                        <div key={i} className="flex items-center gap-2 text-sm text-white/70">
                             <item.icon stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0" />
                             {item.text}
                         </div>
@@ -1120,7 +1059,10 @@ function Footer({ onScrollTo }) {
                                 { label: 'Preguntas frecuentes', action: () => onScrollTo('faq') },
                             ].map(link => (
                                 <li key={link.label}>
-                                    <button onClick={link.action} className="text-sm text-text-secondary hover:text-text-primary transition-colors">
+                                    <button
+                                        onClick={link.action}
+                                        className="text-sm text-text-secondary hover:text-text-primary transition-colors text-left"
+                                    >
                                         {link.label}
                                     </button>
                                 </li>
@@ -1136,19 +1078,10 @@ function Footer({ onScrollTo }) {
                                     href="https://wa.me/5492996086076"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-sm text-text-secondary hover:text-text-primary transition-colors"
+                                    className="text-sm text-text-secondary hover:text-text-primary transition-colors inline-flex items-center gap-2"
                                 >
-                                    Escribir por WhatsApp
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="https://wa.me/5492996086076"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-sm text-text-secondary hover:text-text-primary transition-colors"
-                                >
-                                    Soporte
+                                    <IconMessageCircle stroke={1.75} className="h-4 w-4 text-accent" />
+                                    WhatsApp: +54 9 299 608-6076
                                 </a>
                             </li>
                             <li>
@@ -1160,14 +1093,13 @@ function Footer({ onScrollTo }) {
                     </div>
                 </div>
 
-                <div className="mt-12 pt-8 border-t border-border">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                        <p className="text-xs text-text-quaternary">© 2026 Mock. Todos los derechos reservados.</p>
-                        <div className="flex items-center gap-2 text-xs text-text-quaternary">
-                            <IconShield stroke={1.75} className="h-3.5 w-3.5 text-accent" />
-                            Tus planes son tuyos: los exportás o los borrás cuando quieras
-                        </div>
-                    </div>
+                <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <p className="text-xs text-text-quaternary">
+                        © {new Date().getFullYear()} Mock. Todos los derechos reservados.
+                    </p>
+                    <p className="text-xs text-text-quaternary">
+                        Un solo pago de por vida · Crece con Mock
+                    </p>
                 </div>
             </div>
         </footer>
@@ -1175,7 +1107,7 @@ function Footer({ onScrollTo }) {
 }
 
 /* ─────────────────────────────────────────────
-   ROOT COMPONENT
+   MAIN PAGE
 ───────────────────────────────────────────── */
 
 export default function HomeSaaS() {
@@ -1223,7 +1155,7 @@ export default function HomeSaaS() {
             <PainPointsSection />
             <ServicesSection />
             <EditorStepsSection onScrollTo={scrollToSection} />
-            <PricingSection onSelectPlan={handleSelectPlan} />
+            <PricingSection onSelectPlan={handleSelectPlan} onSignup={() => openLoginModal('signup')} />
             <FAQSection />
             <FinalCTASection onSignup={() => openLoginModal('signup')} />
             <Footer onScrollTo={scrollToSection} />
