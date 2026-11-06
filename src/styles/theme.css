@@ -1,36 +1,37 @@
 /* ================================
-   GRIND LAB — Color System (themeable)
-   Tokens como canal RGB "R G B" para usar con rgb(var(--x) / <alpha>).
-   El tema se controla con data-theme en <html> (lo estampa un script
-   no-flash en index.html antes del paint, según localStorage o el sistema).
+   GRIND LAB — Color System (Tema claro forzado)
+   Por requerimiento, solo queda habilitado el tema claro
+   y se bloquea el tema oscuro en todos los dispositivos.
    ================================ */
 
-:root {
-  color-scheme: dark;
+:root,
+:root[data-theme="light"],
+:root[data-theme="dark"] {
+  color-scheme: light !important;
 
-  /* ── Canales RGB (se intercambian por tema) ── */
-  --c-bg: 11 11 15;
-  --c-surface: 20 20 25;
-  --c-surface-alt: 26 26 32;
-  --c-surface-elevated: 32 32 42;
+  /* ── Canales RGB (Tema Claro) ── */
+  --c-bg: 247 248 250;
+  --c-surface: 255 255 255;
+  --c-surface-alt: 240 242 245;
+  --c-surface-elevated: 255 255 255;
 
-  --c-border: 42 42 53;
-  --c-border-strong: 53 53 74;
-  --c-border-muted: 31 31 40;
+  --c-border: 226 229 234;
+  --c-border-strong: 203 208 216;
+  --c-border-muted: 237 239 242;
 
-  --c-text-primary: 255 255 255;
-  --c-text-secondary: 200 200 210;
-  --c-text-tertiary: 140 140 160;
-  --c-text-quaternary: 100 100 120;
+  --c-text-primary: 17 20 24;
+  --c-text-secondary: 71 78 87;
+  --c-text-tertiary: 110 117 127;
+  --c-text-quaternary: 150 157 166;
 
-  --c-accent: 91 179 160;          /* teal */
-  --c-accent-light: 123 213 185;   /* mint (hover) */
-  --c-accent-dark: 62 142 140;     /* teal oscuro (active) */
-  --c-accent-secondary: 165 227 214;
-  --c-text-accent: 123 213 185;    /* accent como texto sobre fondo oscuro */
+  --c-accent: 47 125 118;          /* teal profundo para contraste sobre blanco */
+  --c-accent-light: 40 110 104;
+  --c-accent-dark: 32 90 85;
+  --c-accent-secondary: 91 179 160;
+  --c-text-accent: 40 110 104;
 
   /* ── Aliases legacy (los consumen index.css / html / body) ──
-     Referencian los canales → se re-resuelven solos al cambiar de tema. */
+     Referencian los canales → se re-resuelven solos. */
   --color-bg: rgb(var(--c-bg));
   --color-surface: rgb(var(--c-surface));
   --color-surface-alt: rgb(var(--c-surface-alt));
@@ -58,30 +59,10 @@
   --color-muted: var(--color-text-tertiary);
 }
 
-/* ================================
-   TEMA CLARO
-   Solo redefine los canales; los aliases legacy se recalculan solos.
-   ================================ */
-:root[data-theme="light"] {
-  color-scheme: light;
-
-  --c-bg: 247 248 250;
-  --c-surface: 255 255 255;
-  --c-surface-alt: 240 242 245;
-  --c-surface-elevated: 255 255 255;
-
-  --c-border: 226 229 234;
-  --c-border-strong: 203 208 216;
-  --c-border-muted: 237 239 242;
-
-  --c-text-primary: 17 20 24;
-  --c-text-secondary: 71 78 87;
-  --c-text-tertiary: 110 117 127;
-  --c-text-quaternary: 150 157 166;
-
-  --c-accent: 47 125 118;          /* teal profundo para contraste sobre blanco */
-  --c-accent-light: 40 110 104;
-  --c-accent-dark: 32 90 85;
-  --c-accent-secondary: 91 179 160;
-  --c-text-accent: 40 110 104;
+@media (prefers-color-scheme: dark) {
+  :root,
+  :root[data-theme="dark"],
+  :root[data-theme="light"] {
+    color-scheme: light !important;
+  }
 }

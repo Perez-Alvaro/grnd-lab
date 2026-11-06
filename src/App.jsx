@@ -36,6 +36,15 @@ function ToastInitializer() {
 }
 
 function AppContent() {
+  React.useEffect(() => {
+    try {
+      localStorage.setItem('theme', 'light');
+    } catch (err) {
+      void err;
+      // Ignorar fallas de localStorage
+    }
+    document.documentElement.setAttribute('data-theme', 'light');
+  }, []);
   return (
     <div className="min-h-screen bg-primary-bg text-text-primary font-sans">
       <ToastInitializer />

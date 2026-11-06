@@ -1,22 +1,17 @@
 <!doctype html>
-<html lang="en">
+<html lang="es" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="dark light" />
-    <!-- Tema sin flash: estampa data-theme antes del primer paint -->
+    <meta name="color-scheme" content="light" />
+    <!-- Tema claro forzado: estampa data-theme="light" antes del primer paint y bloquea modo oscuro -->
     <script>
       (function () {
         try {
-          var t = localStorage.getItem('theme');
-          if (t !== 'light' && t !== 'dark') {
-            t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-          }
-          document.documentElement.setAttribute('data-theme', t);
-        } catch (e) {
-          document.documentElement.setAttribute('data-theme', 'dark');
-        }
+          localStorage.setItem('theme', 'light');
+        } catch (e) {}
+        document.documentElement.setAttribute('data-theme', 'light');
       })();
     </script>
     <meta name="description" content="Mock te ayuda a hacer planes completos: la rutina y la nutrición de cada cliente en una sola herramienta. Vos ponés el criterio, la IA hace el trabajo pesado." />
