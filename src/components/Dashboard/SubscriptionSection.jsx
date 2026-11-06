@@ -307,7 +307,7 @@ function PaymentModal({ open, initialPlan, onClose, onSubmitted }) {
 
   useEffect(() => {
     if (open) {
-      setPlan(PLANS[initialPlan] && initialPlan !== 'freemium' ? initialPlan : 'pro_monthly');
+      setPlan(initialPlan === 'pro_annual' ? 'pro_annual' : 'pro_monthly');
       setReference('');
       setFile(null);
       if (fileRef.current) fileRef.current.value = '';
@@ -357,10 +357,10 @@ function PaymentModal({ open, initialPlan, onClose, onSubmitted }) {
       <div className="space-y-4">
         <Select label="Plan" value={plan} onChange={(e) => setPlan(e.target.value)}>
           {Object.entries(PLANS)
-            .filter(([id]) => id !== 'freemium')
+            .filter(([id]) => id === 'pro_monthly' || id === 'pro_annual')
             .map(([id, p]) => (
               <option key={id} value={id}>
-                {p.label} · {p.priceARS ? `$${p.priceARS.toLocaleString('es-AR')} ARS` : `$${p.priceUSD} USD`} {p.isLifetime ? '(Un solo pago de por vida)' : `(${p.days} días)`}
+                {p.label} · ${p.priceARS.toLocaleString('es-AR')} ARS ({p.days} días)
               </option>
             ))}
         </Select>

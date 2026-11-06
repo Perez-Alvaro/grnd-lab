@@ -7,16 +7,46 @@
  */
 import { supabase } from './supabaseClient.js';
 
-/** Planes vendidos en el landing (deben coincidir con PRICING_TIERS). */
-export const PLANS = {
-  freemium:    { label: 'Freemium',            days: 3650, months: 120, priceUSD: 0,   priceARS: 0,      isFreemium: true, limitRoutines: 3 },
+/**
+ * Planes activos y comercializables del producto (coincidentes con PRICING_TIERS del landing).
+ * Freemium: hasta 3 rutinas sin tarjeta.
+ * Pro Mensual: $15.000 ARS / 30 días.
+ * Pro Anual: $120.000 ARS / 365 días ($10.000 ARS/mes).
+ */
+export const ACTIVE_PLANS = {
+  freemium:    { label: 'Plan Inicial',        days: 3650, months: 120, priceUSD: 0,   priceARS: 0,      isFreemium: true, limitRoutines: 3 },
   pro_monthly: { label: 'Pro Mensual',         days: 30,   months: 1,   priceUSD: 15,  priceARS: 15000,  isMonthly: true },
   pro_annual:  { label: 'Pro Anual',           days: 365,  months: 12,  priceUSD: 120, priceARS: 120000, isAnnual: true },
+};
+
+/** Planes históricos retirados (conservados únicamente para resolver registros históricos en BD) */
+export const LEGACY_PLANS = {
   lifetime:    { label: 'Acceso de por vida',  days: 3650, months: 120, priceUSD: 60,  priceARS: 75000,  isLifetime: true },
   mensual:     { label: 'Mensual (Legacy)',    days: 30,   months: 1,   priceUSD: 10,  priceARS: 12000 },
   trimestral:  { label: 'Trimestral (Legacy)', days: 90,   months: 3,   priceUSD: 27,  priceARS: 32000 },
   anual:       { label: 'Anual (Legacy)',      days: 365,  months: 12,  priceUSD: 48,  priceARS: 60000 },
 };
+
+/**
+ * PLANS expone únicamente los planes activos en Object.keys() / Object.entries(),
+ * pero resuelve por proxy los identificadores de planes heredados para no romper registros existentes.
+ */
+export const PLANS = new Proxy(ACTIVE_PLANS, {
+  get(target, prop) {
+    if (prop in target) return target[prop];
+    if (typeof prop === 'string' && prop in LEGACY_PLANS) return LEGACY_PLANS[prop];
+    return undefined;
+  },
+  has(target, prop) {
+    return prop in target || prop in LEGACY_PLANS;
+  },
+  ownKeys(target) {
+    return Object.keys(target);
+  },
+  getOwnPropertyDescriptor(target, prop) {
+    return Object.getOwnPropertyDescriptor(target, prop);
+  },
+});
 
 // Los datos de transferencia se editan desde el panel de admin y viven en la
 // tabla app_settings (migración 0007). Ver getTransferInfo() en lib/settings.js.
@@ -65,6 +95,7 @@ export async function listMyPayments() {
  * @param {{plan:string, reference?:string, file:File}} input
  */
 export async function submitPayment({ plan, reference, file }) {
+  if (plan !== 'pro_monthly' && plan !== 'pro_annual') throw new Error('Plan inválido. Opciones disponibles: Pro Mensual o Pro Anual.');
   const planInfo = PLANS[plan];
   if (!planInfo) throw new Error('Plan inválido');
   if (!file) throw new Error('Falta el comprobante');
