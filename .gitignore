@@ -24,6 +24,7 @@ dist-ssr
 
 # Agent scratchpads and runtime logs
 .agents/
+supabase/.temp/
 
 # Logs
 logs

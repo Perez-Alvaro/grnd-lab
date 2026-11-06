@@ -11,7 +11,8 @@ import {
     IconUsers, IconCircleCheck, IconArrowRight,
     IconBolt, IconTarget, IconSparkles, IconChevronDown,
     IconStar, IconMenu2, IconX, IconMessageCircle,
-    IconCalendar, IconBuildingBank, IconHeadset
+    IconCalendar, IconBuildingBank, IconHeadset,
+    IconBarbell, IconSalad
 } from '@tabler/icons-react';
 import { Button } from '../components/ui';
 import DotGrid from '../components/ui/DotGrid';
