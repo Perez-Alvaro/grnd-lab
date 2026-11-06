@@ -15,6 +15,8 @@ export default function Modal({
     showCloseButton = true,
     closeOnBackdrop = true,
     closeOnEsc = true,
+    zIndex = 'z-50',
+    className = '',
 }) {
     const dialogRef = useRef(null);
 
@@ -54,7 +56,7 @@ export default function Modal({
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm animate-fade-in"
+            className={`fixed inset-0 ${zIndex} flex items-center justify-center bg-black/70 backdrop-blur-sm animate-fade-in ${className}`}
             onClick={handleBackdropClick}
         >
             <div

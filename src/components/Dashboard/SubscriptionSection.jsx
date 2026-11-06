@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   IconCreditCard, IconUpload, IconCircleCheck, IconClockPause, IconAlertTriangle,
   IconCopy, IconFileText, IconReceipt, IconTestPipe, IconLock, IconBolt, IconSparkles, IconCheck,
+  IconChevronDown, IconChevronUp,
 } from '@tabler/icons-react';
 import useSubscription from '../../hooks/useSubscription.js';
 import { PLANS, SELECTED_PLAN_KEY, submitPayment } from '../../lib/subscriptions.js';
@@ -37,6 +38,27 @@ export default function SubscriptionSection() {
   const [modalOpen, setModalOpen] = useState(false);
   const [preselectedPlan, setPreselectedPlan] = useState(null);
   const [mpLoading, setMpLoading] = useState(null); // 'pro_monthly' | 'pro_annual' | null
+  const [isExpanded, setIsExpanded] = useState(() => {
+    try {
+      const saved = localStorage.getItem('mock:subscription_expanded');
+      if (saved !== null) return saved === 'true';
+    } catch (err) {
+      void err;
+    }
+    return false; // Desplegable: cerrado por defecto para no molestar al entrenador
+  });
+
+  const toggleExpanded = () => {
+    setIsExpanded((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem('mock:subscription_expanded', String(next));
+      } catch (err) {
+      void err;
+    }
+      return next;
+    });
+  };
 
   // Si vino del landing con un plan elegido, abrimos el modal directamente.
   useEffect(() => {
@@ -44,6 +66,7 @@ export default function SubscriptionSection() {
     if (stored && PLANS[stored]) {
       localStorage.removeItem(SELECTED_PLAN_KEY);
       setPreselectedPlan(stored);
+      setIsExpanded(true);
       setModalOpen(true);
     }
   }, []);
@@ -54,6 +77,7 @@ export default function SubscriptionSection() {
     const paymentStatus = params.get('payment');
     if (paymentStatus === 'success') {
       toast.success('¡Pago confirmado! Tu suscripción fue activada exitosamente.');
+      setIsExpanded(true);
       refresh();
       const newUrl = window.location.pathname;
       window.history.replaceState({}, document.title, newUrl);
@@ -85,79 +109,131 @@ export default function SubscriptionSection() {
   const StateIcon = ui.icon;
   const planInfo = subscription?.plan ? PLANS[subscription.plan] : null;
 
+  const getSummaryText = () => {
+    if (loading) return 'Cargando estado…';
+    if (state.code === 'vigente') {
+      if (planInfo?.isLifetime || subscription?.plan === 'lifetime') {
+        return 'Acceso de por vida activo · Todas las funciones habilitadas';
+      }
+      return `Plan ${planInfo?.label || subscription?.plan || 'Pro'} · ${state.daysLeft} días restantes (vence el ${state.periodEnd?.toLocaleDateString('es-AR')})`;
+    }
+    if (state.code === 'testing') {
+      return `Período de prueba activo (${state.hoursLeft} hs restantes)`;
+    }
+    if (state.code === 'habilitado') {
+      return 'Acceso completo habilitado por el administrador';
+    }
+    if (state.code === 'enviado') {
+      return 'Comprobante de pago enviado · esperando confirmación';
+    }
+    if (state.code === 'bloqueado') {
+      return 'Acceso bloqueado por el administrador';
+    }
+    if (state.expired) {
+      return 'Período vencido · Suscribite a Pro para continuar creando';
+    }
+    return 'Plan Inicial · Hasta 3 rutinas gratis sin costo';
+  };
+
   return (
-    <section className="mb-8 rounded-xl border border-border bg-primary-surface p-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
+    <section className="mb-6 rounded-xl border border-border bg-primary-surface overflow-hidden transition-all">
+      {/* Cabecera desplegable compacta: muestra estado y no interfiere con el trabajo del entrenador */}
+      <div className="flex flex-wrap items-center justify-between gap-4 p-4 sm:p-5">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10 flex-shrink-0">
             <IconCreditCard stroke={1.75} className="h-5 w-5 text-accent" />
           </div>
-          <div>
+          <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-lg font-bold text-text-primary font-display">Suscripción</h2>
+              <h2 className="text-base sm:text-lg font-bold text-text-primary font-display">Suscripción</h2>
               {!loading && (
                 <Badge variant={ui.variant}>
                   <StateIcon stroke={1.75} className="h-3 w-3" /> {state.label}
                 </Badge>
               )}
             </div>
-            {loading ? (
-              <p className="text-sm text-text-muted mt-1">Cargando…</p>
-            ) : state.code === 'vigente' ? (
-              <p className="text-sm text-text-secondary mt-1">
-                {planInfo?.isLifetime || subscription?.plan === 'lifetime' ? (
-                  <>
-                    Acceso <strong className="text-accent font-semibold">de por vida activo</strong> · Asistente Mock habilitado con soporte en sistema activo.
-                  </>
-                ) : (
-                  <>
-                    Plan {planInfo?.label || subscription?.plan} · te quedan{' '}
-                    <strong className="text-text-primary font-mono">{state.daysLeft}</strong> días
-                    (vence el {state.periodEnd?.toLocaleDateString('es-AR')}).
-                  </>
-                )}
-              </p>
-            ) : state.code === 'testing' ? (
-              <p className="text-sm text-text-secondary mt-1">
-                Tenés acceso completo de prueba por 24 hs hasta el{' '}
-                <strong className="text-text-primary">
-                  {state.trialUntil?.toLocaleDateString('es-AR')} a las {state.trialUntil?.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
-                </strong>
-                . Podés suscribirte con Mercado Pago o informar una transferencia para mantener tu acceso.
-              </p>
-            ) : state.code === 'habilitado' ? (
-              <p className="text-sm text-text-secondary mt-1">
-                El administrador te habilitó el acceso completo sin cargo por ahora.
-              </p>
-            ) : state.code === 'bloqueado' ? (
-              <p className="text-sm text-text-secondary mt-1">
-                El administrador bloqueó tu acceso a los editores. Si creés que es un error,
-                escribinos desde el buzón de abajo.
-              </p>
-            ) : state.code === 'enviado' ? (
-              <p className="text-sm text-text-secondary mt-1">
-                Recibimos tu comprobante. Cuando el administrador confirme el impacto,
-                se habilita tu acceso automáticamente.
-              </p>
-            ) : (
-              <p className="text-sm text-text-secondary mt-1">
-                {state.expired
-                  ? 'Tu período venció. Suscribite a Pro Mensual ($15.000 ARS/mes) o Pro Anual ($120.000 ARS/año) con Mercado Pago o transferencia.'
-                  : 'Todavía no tenés un plan activo. Podés crear hasta 3 rutinas en el plan Freemium o suscribirte a Pro para acceso ilimitado.'}
-              </p>
-            )}
+            <p className="text-xs sm:text-sm text-text-secondary truncate mt-0.5">
+              {getSummaryText()}
+            </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
-          <Button variant="secondary" size="sm" onClick={() => setModalOpen(true)}>
-            <IconUpload stroke={1.75} className="h-4 w-4" /> Informar transferencia
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleExpanded}
+            className="flex items-center gap-1.5 text-text-secondary hover:text-text-primary"
+            aria-expanded={isExpanded}
+          >
+            <span>{isExpanded ? 'Ocultar planes' : 'Ver planes y opciones'}</span>
+            {isExpanded ? (
+              <IconChevronUp stroke={1.75} className="h-4 w-4" />
+            ) : (
+              <IconChevronDown stroke={1.75} className="h-4 w-4" />
+            )}
           </Button>
         </div>
       </div>
 
-      {/* Planes con Mercado Pago */}
-      <div className="mt-6 pt-5 border-t border-border">
+      {/* Contenido desplegable con detalle de planes, Mercado Pago, transferencias e historial */}
+      {isExpanded && (
+        <div className="px-4 pb-6 sm:px-6 pt-3 border-t border-border space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-primary-bg p-4">
+            <div className="text-sm text-text-secondary">
+              {loading ? (
+                <p className="text-text-muted">Cargando…</p>
+              ) : state.code === 'vigente' ? (
+                <p>
+                  {planInfo?.isLifetime || subscription?.plan === 'lifetime' ? (
+                    <>
+                      Acceso <strong className="text-accent font-semibold">de por vida activo</strong> · Asistente Mock habilitado con soporte en sistema activo.
+                    </>
+                  ) : (
+                    <>
+                      Plan {planInfo?.label || subscription?.plan} · te quedan{' '}
+                      <strong className="text-text-primary font-mono">{state.daysLeft}</strong> días
+                      (vence el {state.periodEnd?.toLocaleDateString('es-AR')}).
+                    </>
+                  )}
+                </p>
+              ) : state.code === 'testing' ? (
+                <p>
+                  Tenés acceso completo de prueba por 24 hs hasta el{' '}
+                  <strong className="text-text-primary">
+                    {state.trialUntil?.toLocaleDateString('es-AR')} a las {state.trialUntil?.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
+                  </strong>
+                  . Podés suscribirte con Mercado Pago o informar una transferencia para mantener tu acceso.
+                </p>
+              ) : state.code === 'habilitado' ? (
+                <p>
+                  El administrador te habilitó el acceso completo sin cargo por ahora.
+                </p>
+              ) : state.code === 'bloqueado' ? (
+                <p>
+                  El administrador bloqueó tu acceso a los editores. Si creés que es un error,
+                  escribinos desde el buzón de abajo.
+                </p>
+              ) : state.code === 'enviado' ? (
+                <p>
+                  Recibimos tu comprobante. Cuando el administrador confirme el impacto,
+                  se habilita tu acceso automáticamente.
+                </p>
+              ) : (
+                <p>
+                  {state.expired
+                    ? 'Tu período venció. Suscribite a Pro Mensual ($15.000 ARS/mes) o Pro Anual ($120.000 ARS/año) con Mercado Pago o transferencia.'
+                    : 'Todavía no tenés un plan activo. Podés crear hasta 3 rutinas en el plan Freemium o suscribirte a Pro para acceso ilimitado.'}
+                </p>
+              )}
+            </div>
+            <Button variant="secondary" size="sm" onClick={() => setModalOpen(true)}>
+              <IconUpload stroke={1.75} className="h-4 w-4" /> Informar transferencia
+            </Button>
+          </div>
+
+          {/* Planes con Mercado Pago */}
+          <div>
         <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
           <h3 className="text-sm font-semibold text-text-primary flex items-center gap-2 font-display">
             <IconSparkles stroke={1.75} className="h-4 w-4 text-accent" />
@@ -281,6 +357,8 @@ export default function SubscriptionSection() {
               );
             })}
           </div>
+        </div>
+      )}
         </div>
       )}
 

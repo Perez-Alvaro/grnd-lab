@@ -6,9 +6,9 @@
 import { Modal, ModalFooter, Button } from '../ui';
 import TermsContent from './TermsContent.jsx';
 
-export default function TermsModal({ open, onClose }) {
+export default function TermsModal({ open, onClose, zIndex = "z-[200]" }) {
   return (
-    <Modal open={open} onClose={onClose} title="Términos y condiciones" size="lg">
+    <Modal open={open} onClose={onClose} title="Términos y condiciones" size="lg" zIndex={zIndex}>
       <div className="max-h-[60vh] overflow-y-auto px-6 py-5">
         <TermsContent showTitle={false} />
       </div>

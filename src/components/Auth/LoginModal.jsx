@@ -10,6 +10,7 @@ import { IconX, IconLock, IconMail, IconUser, IconEye, IconEyeOff, IconLoader2, 
 import { useAuth } from '../../store/authStore.jsx';
 import { acceptTerms } from '../../lib/terms.js';
 import TermsModal from '../Legal/TermsModal.jsx';
+import PrivacyModal from '../Legal/PrivacyModal.jsx';
 
 const FOCUSABLE =
   'button:not([disabled]), input:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])';
@@ -36,6 +37,7 @@ export default function LoginModal() {
   const [notice, setNotice] = useState(null); // mensaje de éxito (confirmá email / revisá tu correo)
   const [acceptedTerms, setAcceptedTerms] = useState(false); // sin marcar por defecto: el consentimiento tiene que ser un acto del usuario
   const [termsOpen, setTermsOpen] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
 
   const modalRef = useRef(null);
   const firstFocusRef = useRef(null);
@@ -58,6 +60,7 @@ export default function LoginModal() {
   useEffect(() => {
     if (!isModalOpen) return;
     function handleKeyDown(e) {
+      if (termsOpen || privacyOpen) return;
       if (e.key === 'Escape' && !isLoading) return closeLoginModal();
       if (e.key === 'Tab' && modalRef.current) {
         const focusable = [...modalRef.current.querySelectorAll(FOCUSABLE)];
@@ -74,7 +77,7 @@ export default function LoginModal() {
     }
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isModalOpen, isLoading, closeLoginModal]);
+  }, [isModalOpen, isLoading, closeLoginModal, termsOpen, privacyOpen]);
 
   useEffect(() => {
     if (user && isModalOpen) closeLoginModal();
@@ -290,6 +293,14 @@ export default function LoginModal() {
                         >
                           términos y condiciones
                         </button>
+                        {' '}y la{' '}
+                        <button
+                          type="button"
+                          onClick={() => setPrivacyOpen(true)}
+                          className="font-semibold text-accent underline"
+                        >
+                          política de privacidad
+                        </button>
                         . Entiendo que Mock es una herramienta de asistencia y que soy el
                         único responsable profesional de los planes que genere y entregue.
                       </span>
@@ -343,7 +354,8 @@ export default function LoginModal() {
         </div>
       </div>
 
-      <TermsModal open={termsOpen} onClose={() => setTermsOpen(false)} />
+      <TermsModal open={termsOpen} onClose={() => setTermsOpen(false)} zIndex="z-[200]" />
+      <PrivacyModal open={privacyOpen} onClose={() => setPrivacyOpen(false)} zIndex="z-[200]" />
 
       <style>{`
         @keyframes modalEntrance {

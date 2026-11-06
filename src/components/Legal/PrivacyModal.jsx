@@ -7,9 +7,9 @@
 import { Modal, ModalFooter, Button } from '../ui';
 import PrivacyContent from './PrivacyContent.jsx';
 
-export default function PrivacyModal({ open, onClose }) {
+export default function PrivacyModal({ open, onClose, zIndex = "z-[200]" }) {
   return (
-    <Modal open={open} onClose={onClose} title="Política de Privacidad" size="lg">
+    <Modal open={open} onClose={onClose} title="Política de Privacidad" size="lg" zIndex={zIndex}>
       <div className="max-h-[65vh] overflow-y-auto pr-2">
         <PrivacyContent showTitle={false} />
       </div>
