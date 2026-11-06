@@ -1,4 +1,4 @@
-import { View, Text, Link } from "@react-pdf/renderer";
+import { StyleSheet, View, Text, Link } from "@react-pdf/renderer";
 import {
   INDEX_ANCHOR,
   weekLinkTarget,
@@ -8,6 +8,18 @@ import {
   FRIDGE_ANCHOR,
 } from "../utils/pdfAnchors.js";
 import { hasShopping } from "./ShoppingListPage.jsx";
+
+const localStyles = StyleSheet.create({
+  brandTitle: {
+    fontSize: 12,
+    fontWeight: 700,
+    color: "#2E4A5F",
+    textAlign: "center",
+    letterSpacing: 1.5,
+    textTransform: "uppercase",
+    marginBottom: 6,
+  },
+});
 
 const MetadataRow = ({ items, styles }) => (
   <View style={styles.metadataRow}>
@@ -22,6 +34,16 @@ const MetadataRow = ({ items, styles }) => (
 
 const NutritionCoverPage = ({ plan, styles }) => {
   const pm = plan.planMeta || {};
+  const cleanBrand = (val) => (typeof val === "string" && val.trim().length > 0 ? val.trim() : null);
+  const brandName =
+    cleanBrand(plan.brandName) ||
+    cleanBrand(plan.metadata?.brandName) ||
+    cleanBrand(plan.metadata?.author) ||
+    cleanBrand(plan.metadata?.coach) ||
+    cleanBrand(plan.author) ||
+    cleanBrand(plan.coach) ||
+    (typeof window !== "undefined" && cleanBrand(window?.localStorage?.getItem?.("mock:coach-brand-name"))) ||
+    "Mock";
 
   // Accesos del índice a las secciones del apéndice (evitan scrollear todo el
   // PDF): mismas cards que las semanas para que no pasen desapercibidos.
@@ -53,6 +75,9 @@ const NutritionCoverPage = ({ plan, styles }) => {
     <View style={styles.coverWrapper} id={INDEX_ANCHOR}>
       <View style={styles.coverHeader}>
         <View style={styles.headerSection}>
+          <Text style={[localStyles.brandTitle, styles.brandTitle]}>
+            {String(brandName).toUpperCase()}
+          </Text>
           <Text style={styles.planTitle}>{plan.title}</Text>
           {plan.author ? (
             <Text style={styles.planDescription}>Plan nutricional · {plan.author}</Text>

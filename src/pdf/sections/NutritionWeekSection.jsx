@@ -111,8 +111,14 @@ const DayBlock = ({ day, styles }) => {
  * comidas entren sin cortarse y sin páginas fijas A4. El encabezado corrido
  * (fixed) repite "Día · Semana X" con link permanente al índice.
  */
-export const NutritionDayPage = ({ week, day, isFirstDayOfWeek, styles }) => {
+export const NutritionDayPage = ({ week, day, brandName, isFirstDayOfWeek, styles }) => {
   const weekLabel = week.title || `Semana ${week.number}`;
+  const cleanBrand = (val) => (typeof val === "string" && val.trim().length > 0 ? val.trim() : null);
+  const resolvedBrandName =
+    cleanBrand(brandName) ||
+    cleanBrand(week?.brandName) ||
+    (typeof window !== "undefined" && cleanBrand(window?.localStorage?.getItem?.("mock:coach-brand-name"))) ||
+    "Mock";
   return (
     <Page
       size={{ width: PAGE_WIDTH, height: estimateNutritionPageHeight(day, { isFirstDayOfWeek }) }}
@@ -120,7 +126,7 @@ export const NutritionDayPage = ({ week, day, isFirstDayOfWeek, styles }) => {
       wrap={false}
     >
       <View fixed style={styles.runningHeader}>
-        <Text style={styles.runningHeaderDay}>{`${day.name}  ·  ${weekLabel}`}</Text>
+        <Text style={styles.runningHeaderDay}>{`${resolvedBrandName}  ·  ${day.name}  ·  ${weekLabel}`}</Text>
         <Link src={indexLinkTarget()} style={styles.runningHeaderLink}>Volver al índice</Link>
       </View>
 

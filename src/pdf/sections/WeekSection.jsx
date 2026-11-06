@@ -1,6 +1,30 @@
-import { View, Text, Link } from "@react-pdf/renderer";
+import { StyleSheet, View, Text, Link } from "@react-pdf/renderer";
 import { indexLinkTarget, weekAnchorId } from "../utils/pdfAnchors.js";
 import { buildExerciseVideoUrl } from "../../lib/recipeSearch.js";
+
+const localStyles = StyleSheet.create({
+  runningHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E0E0E0",
+    paddingBottom: 6,
+    marginBottom: 10,
+  },
+  runningHeaderBrand: {
+    fontSize: 9,
+    fontWeight: 700,
+    color: "#2E4A5F",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  runningHeaderLink: {
+    fontSize: 9,
+    color: "#6E6E6E",
+    textDecoration: "none",
+  },
+});
 
 const normalizeUrl = (url) => {
   if (!url || typeof url !== 'string') return '';
@@ -204,12 +228,37 @@ const WeekHeader = ({ week, styles }) => (
  * (opcional, solo el primer día) + la card del día. Va dentro de una <Page>
  * de altura dinámica en PlanRenderer.
  */
-export const WorkoutDayContent = ({ week, day, dayNumber, showWeekHeader = false, styles }) => (
-  <>
-    {showWeekHeader ? <WeekHeader week={week} styles={styles} /> : null}
-    <DayBlock day={day} dayNumber={dayNumber} styles={styles} />
-  </>
-);
+export const WorkoutDayContent = ({
+  week,
+  day,
+  dayNumber,
+  showWeekHeader = false,
+  brandName,
+  styles,
+}) => {
+  const cleanBrand = (val) => (typeof val === "string" && val.trim().length > 0 ? val.trim() : null);
+  const resolvedBrand =
+    cleanBrand(brandName) ||
+    cleanBrand(week?.brandName) ||
+    (typeof window !== "undefined" && cleanBrand(window?.localStorage?.getItem?.("mock:coach-brand-name"))) ||
+    "Mock";
+  const weekTitle = week?.title || `Semana ${week?.number || 1}`;
+
+  return (
+    <>
+      <View style={[localStyles.runningHeader, styles?.runningHeader]} wrap={false}>
+        <Text style={[localStyles.runningHeaderBrand, styles?.runningHeaderBrand]}>
+          {`${resolvedBrand} · ${day.name} · ${weekTitle}`}
+        </Text>
+        <Link src={indexLinkTarget()} style={[localStyles.runningHeaderLink, styles?.runningHeaderLink]}>
+          Volver al índice
+        </Link>
+      </View>
+      {showWeekHeader ? <WeekHeader week={week} styles={styles} /> : null}
+      <DayBlock day={day} dayNumber={dayNumber} styles={styles} />
+    </>
+  );
+};
 
 /** Contenido mínimo para una semana sin días: mantiene vivo el anchor del índice. */
 export const EmptyWeekContent = ({ week, styles }) => (

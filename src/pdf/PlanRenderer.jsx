@@ -63,6 +63,7 @@ const PlanDocument = ({ plan }) => {
               day={day}
               dayNumber={dayNumber}
               showWeekHeader={showWeekHeader}
+              brandName={plan.brandName}
               styles={styles}
             />
           ) : (

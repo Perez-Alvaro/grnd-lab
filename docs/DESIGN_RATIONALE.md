@@ -32,7 +32,7 @@ Es una **herramienta de interpretación visual** que usa IA como motor de razona
 El usuario tiene acceso completo al JSON:
 - **Edición en vivo** (Split View)
 - **Importación/Exportación** sin lock-in
-- **Portable** (todo local, sin backend)
+- **Portable** (importación/exportación JSON estándar sin lock-in)
 
 **Razón**: Profesionales necesitan **ownership** de sus datos. Sin vendor lock-in.
 
@@ -114,13 +114,13 @@ Configura → Copia Prompt → IA genera → Pega JSON → Edita → Exporta
 | **Costo** | $20-100/mes en APIs | $0 (usa IA gratuita) |
 | **Control** | Black box | JSON editable |
 | **Portabilidad** | Lock-in a proveedor | Exportable a cualquier sistema |
-| **Privacidad** | Datos en servidores externos | Todo local |
+| **Privacidad** | Datos compartidos con LLMs externos | Control y aislamiento por RLS |
 | **Flexibilidad** | Limitado a API | Cambia de IA cuando quieras |
 
 **Microcopy**:
-> "No pagamos millones en APIs para que tú pagues suscripciones.  
-> Usamos el poder de la IA gratuita + ingeniería de prompts de élite.  
-> El resultado: tú tienes control total, nosotros te damos las herramientas."
+> "No encarecemos el servicio con costos exorbitantes de API.  
+> Usamos el poder de la IA con ingeniería de prompts de élite.  
+> El resultado: vos tenés control total y herramientas profesionales a precio accesible."
 
 ---
 
@@ -217,8 +217,8 @@ Para Volumen Muscular:
 > "¿Listo para crear con criterio profesional?"
 
 **Subheadline**:
-> "Sin registros. Sin pagos. Sin complicaciones.  
-> Solo tú, tu IA favorita, y GRIND LAB."
+> "Empezá gratis con 3 rutinas sin costo ni tarjeta requerida.  
+> Solo vos, tu criterio profesional y Mock."
 
 **CTA**:
 - **Primario**: "Ir al Editor"
@@ -341,7 +341,7 @@ src/
 - **Code Splitting**: Lazy load del editor
 - **Debounce**: 500ms en JSON editor para evitar re-renders
 - **Memoization**: React.memo en componentes de preview
-- **No Backend**: Todo client-side (cero latencia de red)
+- **Arquitectura Híbrida**: Frontend reactivo con persistencia segura en Supabase (RLS)
 
 ---
 

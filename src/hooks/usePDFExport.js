@@ -1,6 +1,4 @@
 import { useCallback } from "react";
-import { generateTrainingPlanPDF } from "../pdf/PlanRenderer.js";
-import { downloadRoutinePDFMobile } from "../services/pdfGeneratorMobile.js";
 
 export const usePDFExport = () =>
   useCallback(async (planData, type = 'desktop') => {
@@ -11,10 +9,12 @@ export const usePDFExport = () =>
     
     // Si es tipo mobile, usar el generador mobile
     if (type === 'mobile') {
+      const { downloadRoutinePDFMobile } = await import("../services/pdfGeneratorMobile.js");
       return downloadRoutinePDFMobile(planData);
     }
     
     // Por defecto, usar el generador desktop
+    const { generateTrainingPlanPDF } = await import("../pdf/PlanRenderer.js");
     return generateTrainingPlanPDF(planData);
   }, []);
 

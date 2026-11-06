@@ -69,14 +69,6 @@ const adjustDuration = (metadata, previousWeekCount, nextWeekCount) => {
   return metadata;
 };
 
-const normalizeUrlValue = (url) => {
-  if (!url || typeof url !== 'string') return '';
-  const trimmed = url.trim();
-  if (/^https?:\/\//i.test(trimmed)) return trimmed;
-  if (trimmed.startsWith('//')) return `https:${trimmed}`;
-  return `https://${trimmed}`;
-};
-
 const convertLegacyExercise = (exercise) => {
   const variant = Array.isArray(exercise?.variantes)
     ? exercise.variantes[0] || {}

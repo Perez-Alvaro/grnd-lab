@@ -24,7 +24,11 @@ import ExerciseEditor from '../components/Trainer/editor/ExerciseEditor.jsx';
 import MealEditor from '../components/Trainer/editor/MealEditor.jsx';
 import RoutinePreview from '../components/Trainer/preview/RoutinePreview.jsx';
 import NutritionPreview from '../components/Trainer/preview/NutritionPreview.jsx';
-import { generateNutritionPlanPDF } from '../pdf/NutritionPlanRenderer.jsx';
+
+export const generateNutritionPlanPDF = async (plan) => {
+  const { generateNutritionPlanPDF: renderPDF } = await import('../pdf/NutritionPlanRenderer.jsx');
+  return renderPDF(plan);
+};
 
 const createId = () => Math.random().toString(36).slice(2, 10);
 
@@ -114,9 +118,19 @@ export const PLAN_TYPES = {
     importFromAI: universalImportNutrition,
     Preview: NutritionPreview,
     // PDF: exportación directa (una sola variante, react-pdf).
-    pdfExport: generateNutritionPlanPDF,
+    pdfExport: async (plan) => {
+      const { generateNutritionPlanPDF: renderPDF } = await import('../pdf/NutritionPlanRenderer.jsx');
+      return renderPDF(plan);
+    },
+    pdfGenerator: async (plan) => {
+      const { generateNutritionPlanPDF: renderPDF } = await import('../pdf/NutritionPlanRenderer.jsx');
+      return renderPDF(plan);
+    },
   },
 };
+
+/** Alias de PLAN_TYPES para compatibilidad */
+export const workoutTypes = PLAN_TYPES;
 
 /** Devuelve la config de un planType, con fallback a 'workout'. */
 export const getPlanTypeConfig = (planType) => PLAN_TYPES[planType] || PLAN_TYPES.workout;

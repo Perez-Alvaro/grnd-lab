@@ -22,6 +22,9 @@ dist-ssr
 *.sln
 *.sw?
 
+# Agent scratchpads and runtime logs
+.agents/
+
 # Logs
 logs
 *.log

@@ -5,6 +5,7 @@ import { universalImport } from "../../../lib/transformers/routineTransformer.js
 import { parsePlanJSON } from "../../../lib/planJson.js";
 import { usePlanContext } from "../../../context/PlanContext.jsx";
 import { WORKOUT_STEPS } from "../../../constants/workoutOnboarding.js";
+import { SAMPLE_WORKOUT_ROUTINE } from "../../../constants/sampleWorkoutRoutine.js";
 import { Button } from "../../ui";
 
 const AI_PLATFORMS = [
@@ -127,6 +128,14 @@ const FitterOnboarding = ({
         setI(0); setJsonError(""); setWarning(""); setOk(false); setShowTextarea(false); setJsonInput("");
     }, [STEP_KEY]);
 
+    // Carga directa de la rutina de ejemplo de 4 semanas sin pasar por IA
+    const handleLoadSample = useCallback(() => {
+        try { localStorage.removeItem(STEP_KEY); } catch { /* noop */ }
+        setI(0); setJsonError(""); setWarning(""); setOk(true); setShowTextarea(false); setJsonInput("");
+        onImportJSON(SAMPLE_WORKOUT_ROUTINE);
+        if (onGoToPreview) onGoToPreview();
+    }, [STEP_KEY, onImportJSON, onGoToPreview]);
+
     const smartPaste = useCallback(async () => {
         try {
             const text = await navigator.clipboard.readText();
@@ -162,6 +171,36 @@ const FitterOnboarding = ({
 
     return (
         <div className="mx-auto max-w-2xl">
+            {/* Banner de inicio rápido: Cargar rutina de ejemplo */}
+            {(!planTypeId || planTypeId === "workout") && (
+                <div
+                    data-testid="load-sample-routine-banner"
+                    className="mb-6 rounded-2xl border border-accent/30 bg-gradient-to-r from-accent/15 via-accent/10 to-primary-surface p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm"
+                >
+                    <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                            <span className="inline-flex items-center justify-center rounded-md bg-accent/20 px-2 py-0.5 text-[11px] font-bold text-accent uppercase tracking-wider">
+                                Inicio rápido
+                            </span>
+                            <p className="text-sm font-semibold text-text-primary">¿Querés probar Mock sin configurar?</p>
+                        </div>
+                        <p className="text-xs text-text-secondary leading-relaxed">
+                            Cargá una rutina completa de 4 semanas lista para editar y exportar a PDF, sin completar los pasos ni consultar una IA.
+                        </p>
+                    </div>
+                    <Button
+                        type="button"
+                        variant="accent"
+                        size="md"
+                        onClick={handleLoadSample}
+                        data-testid="load-sample-routine-button"
+                        className="w-full sm:w-auto flex-shrink-0 shadow-md shadow-accent/20"
+                    >
+                        <IconSparkles stroke={1.75} className="h-4 w-4" /> Cargar rutina de ejemplo
+                    </Button>
+                </div>
+            )}
+
             {/* Progreso */}
             <div className="mb-6">
                 <div className="flex items-center justify-between gap-3 mb-2">
@@ -369,6 +408,28 @@ const FitterOnboarding = ({
                                     </div>
                                 )}
                             </div>
+
+                            {/* Opción rápida: Cargar rutina de ejemplo en paso final */}
+                            {(!planTypeId || planTypeId === "workout") && (
+                                <div className="rounded-2xl border border-dashed border-accent/40 bg-accent/5 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                    <div>
+                                        <h4 className="text-sm font-semibold text-text-primary">¿Preferís saltar la IA y ver un ejemplo real?</h4>
+                                        <p className="text-xs text-text-tertiary leading-relaxed mt-0.5">
+                                            Cargá directamente una rutina modelo de 4 semanas con ejercicios, series, descanso y cadencia ya configurados.
+                                        </p>
+                                    </div>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="lg"
+                                        onClick={handleLoadSample}
+                                        data-testid="load-sample-routine-step10"
+                                        className="w-full sm:w-auto border-accent/40 text-accent hover:bg-accent hover:text-primary-bg flex-shrink-0"
+                                    >
+                                        <IconSparkles stroke={1.75} className="h-4 w-4" /> Cargar rutina de ejemplo
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

@@ -92,8 +92,29 @@ export const generateRoutinePDFMobile = (routine) => {
   // PORTADA + ÍNDICE INTERACTIVO
   // ============================================
 
+  // Resolver marca personal / coach
+  const cleanBrand = (val) => (typeof val === 'string' && val.trim().length > 0 ? val.trim() : null);
+  const brandName =
+    cleanBrand(routine.metadata?.brandName) ||
+    cleanBrand(routine.brandName) ||
+    cleanBrand(routine.metadata?.author) ||
+    cleanBrand(routine.author) ||
+    cleanBrand(routine.metadata?.coach) ||
+    cleanBrand(routine.coach) ||
+    (typeof window !== 'undefined' && cleanBrand(window?.localStorage?.getItem?.('mock:coach-brand-name'))) ||
+    'Mock';
+
   // Padding top: 32-40px
   yPos = spacing40;
+
+  // Marca personal / Coach destacada directamente sobre el título
+  if (brandName) {
+    doc.setFontSize(11);
+    doc.setTextColor(...accent);
+    doc.setFont('helvetica', 'bold');
+    doc.text(brandName.toUpperCase(), margin, yPos);
+    yPos += 7;
+  }
 
   // ============================================
   // TÍTULO PRINCIPAL (24-28px, bold, line-height 1.3)
@@ -136,12 +157,12 @@ export const generateRoutinePDFMobile = (routine) => {
   doc.text(metadata, margin, yPos);
   yPos += 6; // Más espaciado
 
-  // Coach (si existe)
-  if (routine.author || routine.coach) {
+  // Coach / Marca (si existe)
+  if (brandName || routine.author || routine.coach) {
     doc.setFontSize(11); // Reducido de 13px a 11px
     doc.setTextColor(...accent);
     doc.setFont('helvetica', 'bold');
-    doc.text(`Coach: ${routine.author || routine.coach}`, margin, yPos);
+    doc.text(`Coach / Marca: ${brandName || routine.author || routine.coach}`, margin, yPos);
     yPos += 6; // Más espaciado
   }
 
@@ -285,19 +306,21 @@ export const generateRoutinePDFMobile = (routine) => {
       }
 
       // ============================================
-      // HEADER DEL DÍA (Estilo App)
+      // HEADER DEL DÍA (Estilo App) con Marca Personal
       // ============================================
 
-      // Badge discreto: Semana X
+      // Running header: Marca Personal y Semana
       doc.setFontSize(9);
-      doc.setTextColor(...textSecondary);
-      doc.setFont('helvetica', 'normal');
-      doc.text(`Semana ${weekNum}`, margin, yPos);
+      doc.setTextColor(...accent);
+      doc.setFont('helvetica', 'bold');
+      const headerBrand = brandName ? `${brandName.toUpperCase()} · Semana ${weekNum}` : `Semana ${weekNum}`;
+      doc.text(headerBrand, margin, yPos);
       yPos += spacing8 + 2;  // Más espaciado
 
       // Nombre del plan (discreto)
       doc.setFontSize(8);
       doc.setTextColor(...textSecondary);
+      doc.setFont('helvetica', 'normal');
       const planName = (routine.name || routine.title || '').substring(0, 40);
       doc.text(planName, margin, yPos);
       yPos += spacing16 + 2;  // Más espaciado
@@ -673,7 +696,8 @@ export const generateRoutinePDFMobile = (routine) => {
     doc.setFontSize(8);
     doc.setTextColor(...textSecondary);
     doc.setFont('helvetica', 'italic');
-    doc.text('Generado por Mock', margin, footerY);
+    const footerText = brandName && brandName !== 'Mock' ? `${brandName} · Generado por Mock` : 'Generado por Mock';
+    doc.text(footerText, margin, footerY);
     doc.text(currentDate, pageWidth - margin, footerY, { align: 'right' });
   }
 

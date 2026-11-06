@@ -13,12 +13,19 @@ import { createNutritionStyles } from "./utils/nutritionPdfStyles.js";
 export const normalizeNutritionPlan = (planData) => {
   const meta = planData?.metadata || planData || {};
   const pm = meta.planMeta || {};
+  const brandName =
+    meta.brandName ||
+    meta.author ||
+    meta.coach ||
+    (typeof window !== "undefined" && window?.localStorage?.getItem?.("mock:coach-brand-name")) ||
+    "Mock";
   const weeksSource = Array.isArray(planData?.weeks) ? planData.weeks : [];
 
   const weeks = weeksSource.map((w, i) => ({
     number: i + 1,
     title: w?.title || `Semana ${i + 1}`,
     summary: w?.summary || "",
+    brandName,
     notes: Array.isArray(w?.notes) ? w.notes.filter(Boolean).join("\n") : w?.notes || "",
     days: (w?.days || []).map((d, di) => ({
       name: d?.name || `Día ${di + 1}`,
@@ -30,13 +37,14 @@ export const normalizeNutritionPlan = (planData) => {
 
   return {
     title: meta.name || "Plan nutricional",
-    author: meta.author || "",
+    author: meta.author || brandName || "",
+    brandName,
     planMeta: pm,
     mealPrepGuide: meta.mealPrepGuide || [],
     shoppingList: meta.shoppingList || {},
     quickReference: meta.quickReference || [],
     notasSemana: meta.notas_semana || [],
-    weeks: weeks.length ? weeks : [{ number: 1, title: "Semana 1", summary: "", notes: "", days: [] }],
+    weeks: weeks.length ? weeks : [{ number: 1, title: "Semana 1", summary: "", brandName, notes: "", days: [] }],
   };
 };
 
@@ -56,6 +64,7 @@ const NutritionPlanDocument = ({ plan }) => {
                 key={`w${week.number}-d${di}`}
                 week={week}
                 day={day}
+                brandName={plan.brandName}
                 isFirstDayOfWeek={di === 0}
                 styles={styles}
               />

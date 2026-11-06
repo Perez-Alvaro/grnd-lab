@@ -24,6 +24,7 @@ import { Button } from "../components/ui";
 import JSONEditor from "../components/Editor/JSONEditor.jsx";
 import { useSnackbar, TUTORIAL_SNACKBARS } from "../components/Tutorial/Snackbar.jsx";
 import { trackEvent } from "../lib/usage.js";
+import { SAMPLE_WORKOUT_ROUTINE } from "../constants/sampleWorkoutRoutine.js";
 
 const buildContextValue = (planEditor) => ({
   plan: planEditor.plan,
@@ -320,6 +321,11 @@ export default function RoutineEditorPage() {
                       <button onClick={() => { setShowImportModal(true); setShowToolsMenu(false); }} className={menuItem}>
                         <IconJson stroke={1.75} className="h-4 w-4 flex-shrink-0 text-text-tertiary" /> Pegar respuesta de la IA
                       </button>
+                      {isWorkout && (
+                        <button onClick={() => { handleImport(SAMPLE_WORKOUT_ROUTINE); setShowToolsMenu(false); }} className={menuItem}>
+                          <IconSparkles stroke={1.75} className="h-4 w-4 flex-shrink-0 text-text-tertiary" /> Cargar rutina de ejemplo
+                        </button>
+                      )}
                       <div className="my-1 border-t border-border" />
                       <p className="px-4 pt-2 pb-1 text-[11px] font-semibold uppercase tracking-wide text-text-quaternary">Avanzado</p>
                       <button onClick={() => { setShowExportModal(true); setShowToolsMenu(false); }} className={menuItem}>

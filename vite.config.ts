@@ -17,4 +17,30 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ["lucide-react"],
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          const normalizedId = id.replace(/\\/g, '/');
+          if (normalizedId.includes('@react-pdf/renderer') || normalizedId.includes('@react-pdf')) {
+            return 'pdf-engine';
+          }
+          if (normalizedId.includes('jspdf')) {
+            return 'jspdf-engine';
+          }
+          if (
+            normalizedId.includes('node_modules/react/') ||
+            normalizedId.includes('node_modules/react-dom/') ||
+            normalizedId.includes('node_modules/react-router/') ||
+            normalizedId.includes('node_modules/react-router-dom/') ||
+            normalizedId.includes('node_modules/scheduler/') ||
+            normalizedId.includes('node_modules/tslib/') ||
+            normalizedId.includes('vite/preload-helper')
+          ) {
+            return 'vendor';
+          }
+        },
+      },
+    },
+  },
 });

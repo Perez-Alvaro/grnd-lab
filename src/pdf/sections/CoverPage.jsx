@@ -1,6 +1,18 @@
-import { View, Text, Link } from "@react-pdf/renderer";
+import { StyleSheet, View, Text, Link } from "@react-pdf/renderer";
 import { INDEX_ANCHOR, weekLinkTarget } from "../utils/pdfAnchors.js";
 import { TRAINING_GOAL_LABELS } from "../../constants/objectives.js";
+
+const localStyles = StyleSheet.create({
+  brandTitle: {
+    fontSize: 12,
+    fontWeight: 700,
+    color: "#2E4A5F",
+    textAlign: "center",
+    letterSpacing: 1.5,
+    textTransform: "uppercase",
+    marginBottom: 6,
+  },
+});
 
 const MetadataRow = ({ items, styles }) => (
   <View style={styles.metadataRow}>
@@ -28,6 +40,18 @@ const Tags = ({ tags, styles }) => {
 };
 
 const CoverPage = ({ plan, styles }) => {
+  // Resolve white-label coach brand name
+  const cleanBrand = (val) => (typeof val === "string" && val.trim().length > 0 ? val.trim() : null);
+  const brandName =
+    cleanBrand(plan.brandName) ||
+    cleanBrand(plan.metadata?.brandName) ||
+    cleanBrand(plan.metadata?.author) ||
+    cleanBrand(plan.metadata?.coach) ||
+    cleanBrand(plan.author) ||
+    cleanBrand(plan.coach) ||
+    (typeof window !== "undefined" && cleanBrand(window?.localStorage?.getItem?.("mock:coach-brand-name"))) ||
+    "Mock";
+
   // Format objective label
   const objectiveLabel = TRAINING_GOAL_LABELS[plan.objective] || plan.objective;
 
@@ -44,6 +68,9 @@ const CoverPage = ({ plan, styles }) => {
       <View style={styles.coverHeader}>
         {/* Header Section */}
         <View style={styles.headerSection}>
+          <Text style={[localStyles.brandTitle, styles.brandTitle]}>
+            {String(brandName).toUpperCase()}
+          </Text>
           <Text style={styles.planTitle}>{plan.title}</Text>
           {plan.description ? (
             <Text style={styles.planDescription}>{plan.description}</Text>
@@ -64,13 +91,13 @@ const CoverPage = ({ plan, styles }) => {
             />
           ) : null}
 
-          {/* Second row: Duration, Frequency, Coach */}
-          {(durationText !== "—" || frequencyText !== "—" || plan.author || plan.user) ? (
+          {/* Second row: Duration, Frequency, Coach / Marca */}
+          {(durationText !== "—" || frequencyText !== "—" || brandName || plan.author || plan.user) ? (
             <MetadataRow
               items={[
                 { label: "DURACIÓN", value: durationText },
                 { label: "FRECUENCIA", value: frequencyText },
-                { label: "COACH", value: plan.author || plan.user },
+                { label: "COACH / MARCA", value: brandName !== "Mock" ? brandName : (plan.author || plan.user || "Mock") },
               ]}
               styles={styles}
             />

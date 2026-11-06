@@ -2,15 +2,6 @@ import { Fragment, memo } from "react";
 import { IconChevronDown, IconChevronRight, IconBrandYoutube } from '@tabler/icons-react';
 import { buildExerciseVideoUrl } from "../../../lib/recipeSearch.js";
 
-/** Asegura que la URL tenga protocolo absoluto para que el navegador no la trate como ruta relativa */
-const normalizeUrl = (url) => {
-  if (!url || typeof url !== 'string') return "";
-  const trimmed = url.trim();
-  if (!trimmed) return "";
-  if (/^https?:\/\//i.test(trimmed)) return trimmed;
-  return `https://${trimmed}`;
-};
-
 /** Normaliza un ejercicio a los valores que se muestran (tarjeta y tabla). */
 const toRow = (exercise) => {
   const val = (v) => (v === 0 || v ? v : "–");

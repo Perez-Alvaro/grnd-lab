@@ -143,28 +143,71 @@ const normalizeProgress = (plan) => {
   };
 };
 
+export const resolveBrandName = (input = {}) => {
+  if (!input || typeof input !== "object") return "Mock";
+  const meta = input?.metadata || input?.meta || input;
+
+  const clean = (val) => (typeof val === "string" && val.trim().length > 0 ? val.trim() : null);
+
+  const candidate =
+    clean(meta?.brandName) ||
+    clean(input?.brandName) ||
+    clean(meta?.marca) ||
+    clean(meta?.author) ||
+    clean(input?.author) ||
+    clean(meta?.coach) ||
+    clean(input?.coach) ||
+    clean(meta?.trainer) ||
+    clean(meta?.autor) ||
+    clean(input?.userName) ||
+    clean(input?.user);
+
+  if (candidate) return candidate;
+
+  if (typeof window !== "undefined" && window?.localStorage) {
+    try {
+      const stored = window.localStorage.getItem("mock:coach-brand-name");
+      const cleanedStored = clean(stored);
+      if (cleanedStored) {
+        return cleanedStored;
+      }
+    } catch {
+      // Ignore localStorage read errors in restricted contexts
+    }
+  }
+
+  return "Mock";
+};
+
 export const normalizePlanData = async (planData) => {
   // Soportar tanto formato plano como formato con 'meta'
   const metadata = planData?.meta || planData || {};
+  const brandName = resolveBrandName(planData);
   const weeksSource = planData?.weeks || planData?.semanas || metadata?.weeks || metadata?.semanas;
   const daysFallback = planData?.days || planData?.dias || metadata?.days || metadata?.dias;
 
   let weeks = [];
   if (Array.isArray(weeksSource) && weeksSource.length) {
-    weeks = weeksSource.map((week, index) => normalizeWeek(week, index));
+    weeks = weeksSource.map((week, index) => {
+      const normalized = normalizeWeek(week, index);
+      return { ...normalized, brandName };
+    });
   } else if (Array.isArray(daysFallback) && daysFallback.length) {
     weeks = [
-      normalizeWeek(
-        {
-          title: "Semana 1",
-          description: metadata?.notes || metadata?.notas,
-          days: daysFallback,
-        },
-        0,
-      ),
+      {
+        ...normalizeWeek(
+          {
+            title: "Semana 1",
+            description: metadata?.notes || metadata?.notas,
+            days: daysFallback,
+          },
+          0,
+        ),
+        brandName,
+      },
     ];
   } else {
-    weeks = [normalizeWeek({ title: "Semana 1", days: [] }, 0)];
+    weeks = [{ ...normalizeWeek({ title: "Semana 1", days: [] }, 0), brandName }];
   }
 
   const progressSource =
@@ -198,7 +241,8 @@ export const normalizePlanData = async (planData) => {
     image: "",  // No images in PDF
     description: metadata?.description || metadata?.descripcion || "",
     level: metadata?.level || metadata?.nivel || "",
-    author: metadata?.author || metadata?.coach || metadata?.trainer || metadata?.autor || "",
+    brandName,
+    author: metadata?.author || metadata?.coach || metadata?.trainer || metadata?.autor || brandName || "",
     durationWeeks: metadata?.durationWeeks || metadata?.semanas || metadata?.duracion || "",
     equipment: metadata?.equipment || metadata?.equipamiento || "",
     tags: tagsArray,
