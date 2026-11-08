@@ -92,7 +92,7 @@ export const generateRoutinePDFMobile = (routine) => {
   // PORTADA + ÍNDICE INTERACTIVO
   // ============================================
 
-  // Resolver marca personal / coach
+  // Resolver marca personal / coach y logo
   const cleanBrand = (val) => (typeof val === 'string' && val.trim().length > 0 ? val.trim() : null);
   const brandName =
     cleanBrand(routine.metadata?.brandName) ||
@@ -104,8 +104,26 @@ export const generateRoutinePDFMobile = (routine) => {
     (typeof window !== 'undefined' && cleanBrand(window?.localStorage?.getItem?.('mock:coach-brand-name'))) ||
     'Mock';
 
+  const brandLogo =
+    cleanBrand(routine.metadata?.brandLogo) ||
+    cleanBrand(routine.brandLogo) ||
+    (typeof window !== 'undefined' && cleanBrand(window?.localStorage?.getItem?.('mock:coach-brand-logo'))) ||
+    null;
+
   // Padding top: 32-40px
   yPos = spacing40;
+
+  // Logo de marca en portada móvil (si existe)
+  if (brandLogo) {
+    try {
+      const logoW = 38;
+      const logoH = 14;
+      doc.addImage(brandLogo, 'PNG', margin, yPos, logoW, logoH);
+      yPos += logoH + 4;
+    } catch (_err) {
+      void _err;
+    }
+  }
 
   // Marca personal / Coach destacada directamente sobre el título
   if (brandName) {

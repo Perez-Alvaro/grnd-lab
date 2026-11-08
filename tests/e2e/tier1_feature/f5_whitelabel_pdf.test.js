@@ -105,4 +105,45 @@ export const tests = [
       );
     },
   },
+  {
+    id: 'F5-07',
+    name: 'src/lib/branding.js exists and exports branding and logo processing functions',
+    feature: 'F5',
+    tier: 1,
+    fn: async () => {
+      const content = readFileContent('src/lib/branding.js');
+      assert(content !== null, 'src/lib/branding.js must exist');
+      assertMatches(content, /getCoachBranding/i, 'Must export getCoachBranding');
+      assertMatches(content, /saveCoachBranding/i, 'Must export saveCoachBranding');
+      assertMatches(content, /processLogoFile/i, 'Must export processLogoFile');
+    },
+  },
+  {
+    id: 'F5-08',
+    name: 'CoverPage and NutritionCoverPage render brandLogo image on cover page',
+    feature: 'F5',
+    tier: 1,
+    fn: async () => {
+      const workoutCover = readFileContent('src/pdf/sections/CoverPage.jsx');
+      assertMatches(workoutCover, /brandLogo/i, 'CoverPage.jsx must resolve brandLogo');
+      assertMatches(workoutCover, /<Image.*brandLogo/s, 'CoverPage.jsx must render Image component with brandLogo');
+
+      const nutritionCover = readFileContent('src/pdf/sections/NutritionCoverPage.jsx');
+      assertMatches(nutritionCover, /brandLogo/i, 'NutritionCoverPage.jsx must resolve brandLogo');
+      assertMatches(nutritionCover, /<Image.*brandLogo/s, 'NutritionCoverPage.jsx must render Image component with brandLogo');
+    },
+  },
+  {
+    id: 'F5-09',
+    name: 'PlanMetadataForm includes brand name and logo upload controls',
+    feature: 'F5',
+    tier: 1,
+    fn: async () => {
+      const form = readFileContent('src/components/Trainer/editor/PlanMetadataForm.jsx');
+      assert(form !== null, 'PlanMetadataForm.jsx must exist');
+      assertMatches(form, /brandLogo/i, 'PlanMetadataForm must handle brandLogo');
+      assertMatches(form, /processLogoFile/i, 'PlanMetadataForm must use processLogoFile');
+      assertMatches(form, /saveCoachBranding/i, 'PlanMetadataForm must allow saving as default branding');
+    },
+  },
 ];

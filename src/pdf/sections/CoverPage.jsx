@@ -1,8 +1,17 @@
-import { StyleSheet, View, Text, Link } from "@react-pdf/renderer";
+import { StyleSheet, View, Text, Link, Image } from "@react-pdf/renderer";
 import { INDEX_ANCHOR, weekLinkTarget } from "../utils/pdfAnchors.js";
 import { TRAINING_GOAL_LABELS } from "../../constants/objectives.js";
 
 const localStyles = StyleSheet.create({
+  logoContainer: {
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  brandLogo: {
+    maxHeight: 48,
+    maxWidth: 160,
+    objectFit: "contain",
+  },
   brandTitle: {
     fontSize: 12,
     fontWeight: 700,
@@ -52,6 +61,14 @@ const CoverPage = ({ plan, styles }) => {
     (typeof window !== "undefined" && cleanBrand(window?.localStorage?.getItem?.("mock:coach-brand-name"))) ||
     "Mock";
 
+  const brandLogo =
+    cleanBrand(plan.brandLogo) ||
+    cleanBrand(plan.metadata?.brandLogo) ||
+    cleanBrand(plan.logo) ||
+    cleanBrand(plan.metadata?.logo) ||
+    (typeof window !== "undefined" && cleanBrand(window?.localStorage?.getItem?.("mock:coach-brand-logo"))) ||
+    null;
+
   // Format objective label
   const objectiveLabel = TRAINING_GOAL_LABELS[plan.objective] || plan.objective;
 
@@ -68,6 +85,11 @@ const CoverPage = ({ plan, styles }) => {
       <View style={styles.coverHeader}>
         {/* Header Section */}
         <View style={styles.headerSection}>
+          {brandLogo ? (
+            <View style={localStyles.logoContainer}>
+              <Image src={brandLogo} style={localStyles.brandLogo} />
+            </View>
+          ) : null}
           <Text style={[localStyles.brandTitle, styles.brandTitle]}>
             {String(brandName).toUpperCase()}
           </Text>

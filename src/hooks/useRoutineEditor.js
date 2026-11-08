@@ -167,6 +167,8 @@ export const buildInitialPlan = (template, leaf = WORKOUT_LEAF) => {
         description: "",
         notes: "",
         author: "",
+        brandName: "",
+        brandLogo: "",
         tags: "",
         image: "",
         price: "",
@@ -689,10 +691,16 @@ export const useRoutineEditor = ({
 
   const markAsSaved = useCallback(() => {
     setDirty(false);
-    localStorage.removeItem(draftKey);
+    try {
+      localStorage.removeItem(draftKey);
+      const sessionFlagKey = 'draft-session-' + draftKey;
+      sessionStorage.removeItem(sessionFlagKey);
+    } catch (e) {
+      console.error('Error clearing draft', e);
+    }
   }, [draftKey]);
 
-  const loadPlan = useCallback((newPlan, { expandToDuration = false } = {}) => {
+  const loadPlan = useCallback((newPlan, { expandToDuration = false, markDirty = true } = {}) => {
     if (!newPlan) {
       throw new Error("Invalid plan structure");
     }
@@ -727,7 +735,7 @@ export const useRoutineEditor = ({
 
       return { ...normalizedPlan, weeks, metadata };
     });
-    setDirty(true);
+    setDirty(Boolean(markDirty));
   }, [normalizeImport, leaf]);
 
   const validatePlan = useCallback(() => {
@@ -770,6 +778,9 @@ export const useRoutineEditor = ({
       gender: plan.metadata.gender,  // Para metadata
       author: plan.metadata.author,
       coach: plan.metadata.author,  // Alias
+      brandName: plan.metadata.brandName || plan.metadata.author || (typeof window !== "undefined" && window?.localStorage?.getItem("mock:coach-brand-name")) || "Mock",
+      brandLogo: plan.metadata.brandLogo || (typeof window !== "undefined" && window?.localStorage?.getItem("mock:coach-brand-logo")) || null,
+      metadata: plan.metadata,
       notes: plan.metadata.notes,
       description: plan.metadata.description,
       level: plan.metadata.level,

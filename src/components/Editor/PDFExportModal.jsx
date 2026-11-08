@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconX, IconDeviceMobile, IconDeviceDesktop } from '@tabler/icons-react';
+import { IconX, IconDeviceMobile, IconDeviceDesktop, IconSparkles } from '@tabler/icons-react';
 import { Button } from '../ui';
 
 /**
@@ -39,8 +39,16 @@ export default function PDFExportModal({ open, onClose, onSelectType }) {
                     </button>
                 </div>
 
+                {/* Reaseguro visual de marca blanca */}
+                <div className="mb-4 rounded-xl border border-accent/20 bg-accent/5 px-3 py-2.5 text-xs text-text-secondary flex items-center gap-2.5">
+                    <IconSparkles stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0" />
+                    <p className="truncate">
+                        Exportando con tu <strong className="text-text-primary">marca y logo</strong> en la portada.
+                    </p>
+                </div>
+
                 {/* Description */}
-                <p className="text-text-secondary text-sm mb-6">
+                <p className="text-text-secondary text-sm mb-4">
                     ¿Cómo va a usar tu cliente este PDF?
                 </p>
 

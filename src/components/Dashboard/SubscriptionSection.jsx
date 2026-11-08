@@ -8,12 +8,11 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   IconCreditCard, IconUpload, IconCircleCheck, IconClockPause, IconAlertTriangle,
-  IconCopy, IconFileText, IconReceipt, IconTestPipe, IconLock, IconBolt, IconSparkles, IconCheck,
+  IconCopy, IconFileText, IconReceipt, IconTestPipe, IconLock, IconSparkles, IconCheck,
   IconChevronDown, IconChevronUp,
 } from '@tabler/icons-react';
 import useSubscription from '../../hooks/useSubscription.js';
 import { PLANS, SELECTED_PLAN_KEY, submitPayment } from '../../lib/subscriptions.js';
-import { startMercadoPagoCheckout } from '../../lib/mercadoPago.js';
 import { getTransferInfo, DEFAULT_TRANSFER_INFO } from '../../lib/settings.js';
 import { Button, Input, Select, Modal, ModalFooter, Badge } from '../ui';
 import { toast } from '../../utils/toast.js';
@@ -37,7 +36,6 @@ export default function SubscriptionSection() {
   const { loading, subscription, payments, state, refresh } = useSubscription();
   const [modalOpen, setModalOpen] = useState(false);
   const [preselectedPlan, setPreselectedPlan] = useState(null);
-  const [mpLoading, setMpLoading] = useState(null); // 'pro_monthly' | 'pro_annual' | null
   const [isExpanded, setIsExpanded] = useState(() => {
     try {
       const saved = localStorage.getItem('mock:subscription_expanded');
@@ -93,16 +91,9 @@ export default function SubscriptionSection() {
     }
   }, [refresh]);
 
-  const handleMpCheckout = async (plan) => {
-    try {
-      setMpLoading(plan);
-      await startMercadoPagoCheckout(plan);
-    } catch (err) {
-      console.error(err);
-      toast.error(err.message || 'Error al iniciar checkout con Mercado Pago');
-    } finally {
-      setMpLoading(null);
-    }
+  const openTransferForPlan = (plan) => {
+    setPreselectedPlan(plan);
+    setModalOpen(true);
   };
 
   const ui = STATE_UI[state.code] || STATE_UI.pendiente;
@@ -203,7 +194,7 @@ export default function SubscriptionSection() {
                   <strong className="text-text-primary">
                     {state.trialUntil?.toLocaleDateString('es-AR')} a las {state.trialUntil?.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
                   </strong>
-                  . Podés suscribirte con Mercado Pago o informar una transferencia para mantener tu acceso.
+                  . Podés informar una transferencia bancaria para mantener tu acceso.
                 </p>
               ) : state.code === 'habilitado' ? (
                 <p>
@@ -222,8 +213,8 @@ export default function SubscriptionSection() {
               ) : (
                 <p>
                   {state.expired
-                    ? 'Tu período venció. Suscribite a Pro Mensual ($15.000 ARS/mes) o Pro Anual ($120.000 ARS/año) con Mercado Pago o transferencia.'
-                    : 'Todavía no tenés un plan activo. Podés crear hasta 3 rutinas en el plan Freemium o suscribirte a Pro para acceso ilimitado.'}
+                    ? 'Tu período venció. Suscribite a Pro Mensual ($15.000 ARS/mes) o Pro Anual ($120.000 ARS/año) por transferencia bancaria.'
+                    : 'Todavía no tenés un plan activo. Podés crear hasta 3 rutinas en el plan Freemium o suscribirte a Pro por transferencia para acceso ilimitado.'}
                 </p>
               )}
             </div>
@@ -232,14 +223,14 @@ export default function SubscriptionSection() {
             </Button>
           </div>
 
-          {/* Planes con Mercado Pago */}
+          {/* Planes por Transferencia Bancaria (Mercado Pago deshabilitado hasta API prod) */}
           <div>
         <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
           <h3 className="text-sm font-semibold text-text-primary flex items-center gap-2 font-display">
             <IconSparkles stroke={1.75} className="h-4 w-4 text-accent" />
-            Suscripción inmediata con Mercado Pago
+            Planes Pro por Transferencia Bancaria
           </h3>
-          <p className="text-xs text-text-muted">Activación automática al instante en pesos argentinos (ARS)</p>
+          <p className="text-xs text-text-muted">En pesos argentinos (ARS) · Informás el comprobante y te activamos el acceso</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -269,27 +260,25 @@ export default function SubscriptionSection() {
               <Button
                 variant="accent"
                 className="w-full"
-                onClick={() => handleMpCheckout('pro_monthly')}
-                loading={mpLoading === 'pro_monthly'}
-                disabled={Boolean(mpLoading)}
+                onClick={() => openTransferForPlan('pro_monthly')}
               >
-                <IconBolt stroke={1.75} className="h-4 w-4" />
-                Suscribirme con Mercado Pago
+                <IconUpload stroke={1.75} className="h-4 w-4" />
+                Elegir Pro Mensual (Transferencia)
               </Button>
             </div>
           </div>
 
           {/* Pro Anual */}
           <div className="rounded-xl border-2 border-accent/40 bg-accent/5 p-5 flex flex-col justify-between relative">
-            <div className="absolute -top-3 right-4">
-              <Badge variant="accent" className="bg-accent text-primary-bg font-semibold">
+            <div className="absolute -top-3 left-4 sm:left-5">
+              <Badge variant="accent-solid" className="font-semibold shadow-sm">
                 ¡Ahorrá $60.000 ARS!
               </Badge>
             </div>
             <div>
               <div className="flex items-center justify-between gap-2">
                 <h4 className="font-bold text-text-primary">Pro Anual</h4>
-                <Badge variant="success">365 días</Badge>
+                <Badge variant="accent" className="font-semibold">365 días</Badge>
               </div>
               <p className="text-2xl font-bold font-mono text-text-primary mt-2">
                 $120.000 <span className="text-xs font-normal text-text-muted">ARS / año</span>
@@ -310,12 +299,10 @@ export default function SubscriptionSection() {
               <Button
                 variant="accent"
                 className="w-full"
-                onClick={() => handleMpCheckout('pro_annual')}
-                loading={mpLoading === 'pro_annual'}
-                disabled={Boolean(mpLoading)}
+                onClick={() => openTransferForPlan('pro_annual')}
               >
-                <IconBolt stroke={1.75} className="h-4 w-4" />
-                Suscribirme con Mercado Pago
+                <IconUpload stroke={1.75} className="h-4 w-4" />
+                Elegir Pro Anual (Transferencia)
               </Button>
             </div>
           </div>

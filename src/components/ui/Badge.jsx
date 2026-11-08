@@ -8,10 +8,11 @@ import { forwardRef } from 'react';
 const variants = {
     default: 'bg-primary-surface-alt text-text-secondary border-border',
     accent: 'bg-accent/10 text-accent border-accent/20',
+    'accent-solid': 'bg-accent text-white border-accent shadow-sm',
     secondary: 'bg-accent-secondary/10 text-accent-secondary border-accent-secondary/20',
-    success: 'bg-success/10 text-success border-success/20',
-    warning: 'bg-warning/10 text-warning border-warning/20',
-    error: 'bg-error/10 text-error border-error/20',
+    success: 'bg-success/10 text-emerald-700 border-success/20',
+    warning: 'bg-warning/10 text-amber-700 border-warning/20',
+    error: 'bg-error/10 text-rose-700 border-error/20',
 };
 
 const sizes = {

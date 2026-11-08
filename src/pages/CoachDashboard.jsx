@@ -4,7 +4,7 @@
  */
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconUsers, IconPlus, IconBarbell, IconPencil, IconTrash, IconChevronRight, IconChevronLeft, IconLogout, IconBolt, IconTarget, IconSalad, IconShieldLock } from '@tabler/icons-react';
+import { IconUsers, IconPlus, IconBarbell, IconPencil, IconTrash, IconChevronRight, IconChevronLeft, IconLogout, IconBolt, IconTarget, IconSalad, IconShieldLock, IconPalette } from '@tabler/icons-react';
 import { useAuth } from '../store/authStore.jsx';
 import { useProtectedLink } from '../lib/routeObfuscator.js';
 import { listAthletes, createAthlete, updateAthlete, deleteAthlete } from '../lib/athletes.js';
@@ -13,6 +13,7 @@ import { listNutritionPlans, deleteNutritionPlan } from '../lib/nutritionPlans.j
 import { Button, Input, Select, Textarea, Modal, ModalFooter, Badge } from '../components/ui';
 import SubscriptionSection from '../components/Dashboard/SubscriptionSection.jsx';
 import FeedbackSection from '../components/Dashboard/FeedbackSection.jsx';
+import BrandSettingsModal from '../components/Dashboard/BrandSettingsModal.jsx';
 import { toast } from '../utils/toast.js';
 
 /** "0 rutinas" / "1 rutina" / "3 rutinas" — el `2 rut · 1 nutri` anterior era críptico. */
@@ -38,6 +39,7 @@ export default function CoachDashboard() {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [brandModalOpen, setBrandModalOpen] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -106,6 +108,11 @@ export default function CoachDashboard() {
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
+            <Button variant="secondary" size="sm" onClick={() => setBrandModalOpen(true)}>
+              <IconPalette stroke={1.75} className="h-4 w-4" />
+              <span className="hidden sm:inline">Mi Marca / Logo</span>
+            </Button>
+
             {/* Solo para admins: volver al panel de administración */}
             {user?.role === 'admin' && (
               <Button variant="outline" size="sm" onClick={() => navigate('/admin')}>
@@ -313,6 +320,11 @@ export default function CoachDashboard() {
         athlete={editing}
         onClose={() => setModalOpen(false)}
         onSaved={() => { setModalOpen(false); load(); }}
+      />
+
+      <BrandSettingsModal
+        open={brandModalOpen}
+        onClose={() => setBrandModalOpen(false)}
       />
     </div>
   );

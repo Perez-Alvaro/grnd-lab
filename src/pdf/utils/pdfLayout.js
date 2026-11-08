@@ -179,10 +179,36 @@ export const resolveBrandName = (input = {}) => {
   return "Mock";
 };
 
+export const resolveBrandLogo = (planData) => {
+  const meta = planData?.meta || planData?.metadata || {};
+  const clean = (val) => (typeof val === "string" && val.trim().length > 0 ? val.trim() : null);
+
+  const candidate =
+    clean(meta?.brandLogo) ||
+    clean(planData?.brandLogo) ||
+    clean(meta?.logo) ||
+    clean(planData?.logo);
+
+  if (candidate) return candidate;
+
+  if (typeof window !== "undefined" && window?.localStorage) {
+    try {
+      const stored = window.localStorage.getItem("mock:coach-brand-logo");
+      const cleanedStored = clean(stored);
+      if (cleanedStored) return cleanedStored;
+    } catch {
+      // Ignore localStorage read errors
+    }
+  }
+
+  return null;
+};
+
 export const normalizePlanData = async (planData) => {
   // Soportar tanto formato plano como formato con 'meta'
   const metadata = planData?.meta || planData || {};
   const brandName = resolveBrandName(planData);
+  const brandLogo = resolveBrandLogo(planData);
   const weeksSource = planData?.weeks || planData?.semanas || metadata?.weeks || metadata?.semanas;
   const daysFallback = planData?.days || planData?.dias || metadata?.days || metadata?.dias;
 
@@ -242,6 +268,7 @@ export const normalizePlanData = async (planData) => {
     description: metadata?.description || metadata?.descripcion || "",
     level: metadata?.level || metadata?.nivel || "",
     brandName,
+    brandLogo,
     author: metadata?.author || metadata?.coach || metadata?.trainer || metadata?.autor || brandName || "",
     durationWeeks: metadata?.durationWeeks || metadata?.semanas || metadata?.duracion || "",
     equipment: metadata?.equipment || metadata?.equipamiento || "",

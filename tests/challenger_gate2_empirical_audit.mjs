@@ -240,6 +240,69 @@ runTest('Total exercise count across all 4 weeks is EXACTLY 92', () => {
 });
 
 // ---------------------------------------------------------------------------
+// 2b. SAMPLE NUTRITION PLAN SCHEMA & PROMPT CONFORMANCE AUDIT
+// ---------------------------------------------------------------------------
+console.log('\n--- 2b. SAMPLE NUTRITION PLAN SCHEMA & PROMPT CONFORMANCE AUDIT ---');
+
+const sampleNutritionModule = await import('../src/constants/sampleNutritionPlan.js');
+const nutritionPlan = sampleNutritionModule.SAMPLE_NUTRITION_PLAN;
+const nutritionTransformerModule = await import('../src/lib/transformers/nutritionTransformer.js');
+const { universalImportNutrition } = nutritionTransformerModule;
+const nutritionPromptModule = await import('../src/lib/nutritionPromptGenerator.js');
+const { generateNutritionPrompt } = nutritionPromptModule;
+
+runTest('SAMPLE_NUTRITION_PLAN is exported and is an object', () => {
+  assert(nutritionPlan && typeof nutritionPlan === 'object', 'SAMPLE_NUTRITION_PLAN must be a valid object');
+});
+
+runTest('SAMPLE_NUTRITION_PLAN matches Prompt Maestro JSON schema', () => {
+  assert(nutritionPlan.planMeta, 'Must have planMeta');
+  assert(typeof nutritionPlan.planMeta.targetKcal === 'number', 'planMeta.targetKcal must be a number');
+  assert(typeof nutritionPlan.planMeta.proteina_g === 'number', 'planMeta.proteina_g must be a number');
+  assert(typeof nutritionPlan.planMeta.carbos_g === 'number', 'planMeta.carbos_g must be a number');
+  assert(typeof nutritionPlan.planMeta.grasas_g === 'number', 'planMeta.grasas_g must be a number');
+  assert(Array.isArray(nutritionPlan.weeks), 'Must have weeks array');
+  assert(nutritionPlan.weeks.length === 1, 'Sample plan must have 1 week with 7 days');
+  assert(nutritionPlan.weeks[0].days.length === 7, `Expected 7 days, got ${nutritionPlan.weeks[0].days.length}`);
+  assert(Array.isArray(nutritionPlan.mealPrepGuide), 'Must have mealPrepGuide array');
+  assert(nutritionPlan.shoppingList && typeof nutritionPlan.shoppingList === 'object', 'Must have shoppingList object');
+  assert(Array.isArray(nutritionPlan.notas_semana), 'Must have notas_semana array');
+});
+
+runTest('All meals contain dual measurement (grams and relative portions)', () => {
+  let mealCount = 0;
+  nutritionPlan.weeks[0].days.forEach((day, dIdx) => {
+    assert(day.meals && day.meals.length > 0, `Day ${dIdx + 1} has no meals`);
+    day.meals.forEach((meal, mIdx) => {
+      mealCount++;
+      const mContext = `Day ${dIdx + 1} Meal ${mIdx + 1} ("${meal.name}")`;
+      assert(meal.ingredientes && meal.ingredientes.trim().length > 0, `${mContext} missing ingredientes`);
+      // Check dual measurement format: grams/ml and relative portion in parentheses
+      assert(meal.ingredientes.includes('(') && meal.ingredientes.includes(')'), `${mContext} ingredientes must include relative portion in parentheses`);
+      assert(meal.ingredientes.includes('g') || meal.ingredientes.includes('ml'), `${mContext} ingredientes must include grams or ml`);
+    });
+  });
+  console.log(`    Validated dual measurements across ${mealCount} meals.`);
+});
+
+runTest('universalImportNutrition successfully processes SAMPLE_NUTRITION_PLAN', () => {
+  const result = universalImportNutrition(nutritionPlan);
+  assert(result.success, `Import failed: ${result.errors?.join(', ')}`);
+  assert(result.data.weeks[0].days.length === 7, 'Imported plan must have 7 days');
+  assert(result.data.metadata.shoppingList, 'Imported plan must preserve shoppingList');
+  assert(result.data.metadata.mealPrepGuide, 'Imported plan must preserve mealPrepGuide');
+  assert(result.data.metadata.quickReference?.length === 7, 'Imported plan must derive 7 days in quickReference');
+});
+
+runTest('generateNutritionPrompt mandates grams and relative portions in instructions', () => {
+  const prompt = generateNutritionPrompt({ name: 'Test Plan', autor: 'Test' });
+  assert(prompt.includes('GRAMOS + PORCIONES RELATIVAS CASERAS'), 'Prompt must contain relative portions rule title');
+  assert(prompt.includes('taza al ras'), 'Prompt must include taza relative measure example');
+  assert(prompt.includes('cucharada sopera'), 'Prompt must include cucharada relative measure example');
+  assert(prompt.includes('palma de la mano'), 'Prompt must include palma de la mano relative measure example');
+});
+
+// ---------------------------------------------------------------------------
 // 3. TRANSFORMER COMPATIBILITY & REVERSIBILITY
 // ---------------------------------------------------------------------------
 console.log('\n--- 3. TRANSFORMER COMPATIBILITY & REVERSIBILITY ---');

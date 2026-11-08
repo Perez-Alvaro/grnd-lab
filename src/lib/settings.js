@@ -12,21 +12,21 @@ import { supabase } from './supabaseClient.js';
 
 export const TRANSFER_INFO_KEY = 'transfer_info';
 
-/** Valores por defecto: los que estaban hardcodeados antes de la migración. */
+/** Valores por defecto: cuenta oficial de cobro para suscripciones por transferencia. */
 export const DEFAULT_TRANSFER_INFO = {
   titular: 'Alvaro Raul Perez',
-  alias: 'mock.entrenamiento',
-  cbu: '',
-  banco: '',
+  alias: 'perezalvaro.mp',
+  cbu: '0000003100086589169240',
+  banco: 'Mercado Pago',
   nota: 'Enviá el comprobante desde tu panel para que activemos tu acceso.',
 };
 
 /** Campos del formulario de transferencia (los consume el panel de admin). */
 export const TRANSFER_FIELDS = [
   { name: 'titular', label: 'Titular de la cuenta', placeholder: 'Nombre y apellido como figura en el banco', required: true },
-  { name: 'alias', label: 'Alias', placeholder: 'mock.entrenamiento', required: true },
-  { name: 'cbu', label: 'CBU / CVU', placeholder: '22 dígitos', inputMode: 'numeric' },
-  { name: 'banco', label: 'Banco o billetera', placeholder: 'Ej: Mercado Pago, Galicia' },
+  { name: 'alias', label: 'Alias', placeholder: 'perezalvaro.mp', required: true },
+  { name: 'cbu', label: 'CBU / CVU', placeholder: '0000003100086589169240', inputMode: 'numeric' },
+  { name: 'banco', label: 'Banco o billetera', placeholder: 'Mercado Pago' },
   { name: 'nota', label: 'Nota para el coach', placeholder: 'Instrucción que ve el coach al pagar', textarea: true },
 ];
 

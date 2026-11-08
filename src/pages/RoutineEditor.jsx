@@ -25,6 +25,7 @@ import JSONEditor from "../components/Editor/JSONEditor.jsx";
 import { useSnackbar, TUTORIAL_SNACKBARS } from "../components/Tutorial/Snackbar.jsx";
 import { trackEvent } from "../lib/usage.js";
 import { SAMPLE_WORKOUT_ROUTINE } from "../constants/sampleWorkoutRoutine.js";
+import { SAMPLE_NUTRITION_PLAN } from "../constants/sampleNutritionPlan.js";
 
 const buildContextValue = (planEditor) => ({
   plan: planEditor.plan,
@@ -90,7 +91,7 @@ export default function RoutineEditorPage() {
   const exportPDF = usePDFExport();
   const snackbar = useSnackbar();
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const planType = searchParams.get("planType") || "workout";
   const config = useMemo(() => getPlanTypeConfig(planType), [planType]);
   const Preview = config.Preview;
@@ -144,7 +145,8 @@ export default function RoutineEditorPage() {
     (async () => {
       try {
         const r = await config.lib.get(pid);
-        planEditor.loadPlan(r.data);
+        planEditor.loadPlan(r.data, { markDirty: false });
+        markAsSaved();
         setPlanId(r.id);
       } catch (error) {
         console.error("Error cargando el plan:", error);
@@ -154,16 +156,25 @@ export default function RoutineEditorPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const { plan, metadata, markAsSaved } = planEditor;
+
   const handleSave = useCallback(async () => {
     setSaving(true);
     try {
       const saved = await config.lib.save({
         id: planId,
-        title: planEditor.metadata.name || config.labels.untitled,
-        data: planEditor.plan,
+        title: metadata.name || config.labels.untitled,
+        data: plan,
         athlete_id: athleteId,
       });
       setPlanId(saved.id);
+      markAsSaved();
+      if (!planId && saved?.id) {
+        const paramKey = config.id === "nutrition" ? "planId" : "routineId";
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.set(paramKey, saved.id);
+        setSearchParams(nextParams, { replace: true });
+      }
       trackEvent("plan_saved", config.id);
       snackbar.success("Cambios guardados");
     } catch (error) {
@@ -172,7 +183,7 @@ export default function RoutineEditorPage() {
     } finally {
       setSaving(false);
     }
-  }, [config, planId, athleteId, planEditor.metadata.name, planEditor.plan, snackbar]);
+  }, [config, planId, athleteId, metadata.name, plan, markAsSaved, searchParams, setSearchParams, snackbar]);
 
   const handleBack = useCallback(() => {
     if (planEditor.dirty && !window.confirm("Hay cambios sin guardar. ¿Desea salir igualmente?")) return;
@@ -321,9 +332,13 @@ export default function RoutineEditorPage() {
                       <button onClick={() => { setShowImportModal(true); setShowToolsMenu(false); }} className={menuItem}>
                         <IconJson stroke={1.75} className="h-4 w-4 flex-shrink-0 text-text-tertiary" /> Pegar respuesta de la IA
                       </button>
-                      {isWorkout && (
+                      {isWorkout ? (
                         <button onClick={() => { handleImport(SAMPLE_WORKOUT_ROUTINE); setShowToolsMenu(false); }} className={menuItem}>
                           <IconSparkles stroke={1.75} className="h-4 w-4 flex-shrink-0 text-text-tertiary" /> Cargar rutina de ejemplo
+                        </button>
+                      ) : (
+                        <button onClick={() => { handleImport(SAMPLE_NUTRITION_PLAN); setShowToolsMenu(false); }} className={menuItem}>
+                          <IconSparkles stroke={1.75} className="h-4 w-4 flex-shrink-0 text-text-tertiary" /> Cargar plan nutricional de ejemplo
                         </button>
                       )}
                       <div className="my-1 border-t border-border" />

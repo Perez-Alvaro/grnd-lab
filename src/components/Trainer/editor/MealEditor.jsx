@@ -110,7 +110,7 @@ const MealEditor = memo(({ weekId, dayId, item, onActionError }) => {
       {/* Ingredientes */}
       <div className="flex flex-col gap-2">
         <label className={labelCls}>Ingredientes</label>
-        <textarea rows={2} value={item.ingredientes || ""} onChange={onChange("ingredientes")} placeholder="Ej: 80g avena, 200ml leche descremada, 1 banana, 10g manteca de maní" className={areaCls} />
+        <textarea rows={2} value={item.ingredientes || ""} onChange={onChange("ingredientes")} placeholder="Ej: 80g avena (1 taza), 200ml leche descremada (1 taza), 1 banana, 15g manteca de maní (1 cda)" className={areaCls} />
       </div>
 
       {/* Preparación */}

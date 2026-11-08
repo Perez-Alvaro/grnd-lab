@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Link } from "@react-pdf/renderer";
+import { StyleSheet, View, Text, Link, Image } from "@react-pdf/renderer";
 import {
   INDEX_ANCHOR,
   weekLinkTarget,
@@ -10,6 +10,15 @@ import {
 import { hasShopping } from "./ShoppingListPage.jsx";
 
 const localStyles = StyleSheet.create({
+  logoContainer: {
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  brandLogo: {
+    maxHeight: 48,
+    maxWidth: 160,
+    objectFit: "contain",
+  },
   brandTitle: {
     fontSize: 12,
     fontWeight: 700,
@@ -45,6 +54,14 @@ const NutritionCoverPage = ({ plan, styles }) => {
     (typeof window !== "undefined" && cleanBrand(window?.localStorage?.getItem?.("mock:coach-brand-name"))) ||
     "Mock";
 
+  const brandLogo =
+    cleanBrand(plan.brandLogo) ||
+    cleanBrand(plan.metadata?.brandLogo) ||
+    cleanBrand(plan.logo) ||
+    cleanBrand(plan.metadata?.logo) ||
+    (typeof window !== "undefined" && cleanBrand(window?.localStorage?.getItem?.("mock:coach-brand-logo"))) ||
+    null;
+
   // Accesos del índice a las secciones del apéndice (evitan scrollear todo el
   // PDF): mismas cards que las semanas para que no pasen desapercibidos.
   const quickAccess = [
@@ -75,6 +92,11 @@ const NutritionCoverPage = ({ plan, styles }) => {
     <View style={styles.coverWrapper} id={INDEX_ANCHOR}>
       <View style={styles.coverHeader}>
         <View style={styles.headerSection}>
+          {brandLogo ? (
+            <View style={localStyles.logoContainer}>
+              <Image src={brandLogo} style={localStyles.brandLogo} />
+            </View>
+          ) : null}
           <Text style={[localStyles.brandTitle, styles.brandTitle]}>
             {String(brandName).toUpperCase()}
           </Text>

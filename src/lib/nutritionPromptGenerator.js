@@ -139,24 +139,24 @@ export function generateNutritionPrompt(metadata = {}) {
           "name": "Desayuno",
           "hora": "07:30",
           "kcal": 380, "proteina_g": 30, "carbos_g": 40, "grasas_g": 8,
-          "ingredientes": "80g avena, 200ml leche descremada, 1 banana, 10g manteca de maní",
+          "ingredientes": "80g de avena tradicional (1 taza al ras), 200ml de leche descremada (1 taza), 1 banana mediana (1 unidad), 15g de manteca de maní (1 cucharada sopera)",
           "preparacion": "Mezclar todo y reposar 5 min.",
           "sustituciones": "Sin avena: 2 tostadas integrales con ricota.",
           "variantes": [
-            { "label": "Alternativa rápida", "ingredientes": "3 huevos revueltos, 2 tostadas integrales, 30g port salut", "kcal": 375, "proteina_g": 28, "carbos_g": 36, "grasas_g": 12 }
+            { "label": "Alternativa rápida", "ingredientes": "3 huevos revueltos (3 unidades), 60g de pan integral (2 tostadas), 40g de queso port salut descremado (1 feta gruesa / 2 dedos)", "kcal": 375, "proteina_g": 28, "carbos_g": 36, "grasas_g": 12 }
           ]
         }`
     : `        {
           "name": "Desayuno",
           "hora": "07:30",
           "kcal": 380, "proteina_g": 30, "carbos_g": 40, "grasas_g": 8,
-          "ingredientes": "80g avena, 200ml leche descremada, 1 banana, 10g manteca de maní",
+          "ingredientes": "80g de avena tradicional (1 taza al ras), 200ml de leche descremada (1 taza), 1 banana mediana (1 unidad), 15g de manteca de maní (1 cucharada sopera)",
           "preparacion": "Mezclar avena con leche fría, agregar banana pisada y manteca de maní. Reposar 5 min.",
           "sustituciones": "Sin avena: 2 tostadas integrales con ricota. Sin banana: 1 manzana.",
           "nota_timing": "Tomalo 30 min antes del entreno si entrenás a la mañana.",
           "variantes": [
-            { "label": "Versión rápida (5 min)", "ingredientes": "3 huevos revueltos, 2 tostadas integrales, 30g port salut", "kcal": 375, "proteina_g": 28, "carbos_g": 36, "grasas_g": 12 },
-            { "label": "Versión vegana", "ingredientes": "80g avena, 200ml leche de avena, 1 banana, 10g manteca de maní, semillas de chia 10g", "kcal": 370, "proteina_g": 12, "carbos_g": 52, "grasas_g": 11 }
+            { "label": "Versión rápida (5 min)", "ingredientes": "3 huevos revueltos (3 unidades), 60g de pan integral (2 tostadas), 40g de queso port salut descremado (1 feta gruesa / 2 dedos)", "kcal": 375, "proteina_g": 28, "carbos_g": 36, "grasas_g": 12 },
+            { "label": "Versión vegana", "ingredientes": "80g de avena (1 taza al ras), 200ml de leche de avena o almendras (1 taza), 1 banana (1 unidad), 15g de manteca de maní (1 cucharada sopera), 10g de semillas de chía (1 cucharada de postre)", "kcal": 370, "proteina_g": 12, "carbos_g": 52, "grasas_g": 11 }
           ]
         }`;
 
@@ -175,11 +175,13 @@ export function generateNutritionPrompt(metadata = {}) {
   }`;
 
   const reglasModo = esSimple
-    ? `• "variantes": OBLIGATORIA al menos 1 variante por comida (alternativa rápida calóricamente equivalente ±30 kcal).
+    ? `• "ingredientes": SIEMPRE gramos exactos + medida casera relativa entre paréntesis (ej: "80g avena (1 taza)").
+• "variantes": OBLIGATORIA al menos 1 variante por comida (alternativa rápida calóricamente equivalente ±30 kcal).
 • "preparacion" en 1 oración. "sustituciones" en 1 línea corta.
 • NO incluyas "mealPrepGuide" ni "shoppingList".
 • "notas_semana": máximo 2 observaciones.`
-    : `• "variantes": OBLIGATORIAS 1–2 opciones calóricamente equivalentes por comida (±25 kcal). NUNCA dejes "variantes": [].
+    : `• "ingredientes": SIEMPRE gramos exactos + medida casera relativa entre paréntesis (ej: "80g avena (1 taza)").
+• "variantes": OBLIGATORIAS 1–2 opciones calóricamente equivalentes por comida (±25 kcal). NUNCA dejes "variantes": [].
 • "shoppingList" en UNIDADES DE SUPERMERCADO reales ("12 unidades", "1 kg"), NO gramos de receta.
 • "mealPrepGuide": 2–3 preparaciones batch de la semana.
 • "preparacion" concisa (2 oraciones máximo).
@@ -273,6 +275,27 @@ Ubicá los carbos de mayor índice glucémico en la ventana peri-entreno (horari
 Si la cena es familiar, dá estrategias de adaptación (qué elegir de lo que hay) en vez de una comida distinta al resto de la familia.
 
 ${line}
+EJE 5 — MEDICIÓN OBLIGATORIA: GRAMOS + PORCIONES RELATIVAS CASERAS
+${line}
+
+En TODOS los ingredientes de cada comida y de cada variante, indicá SIEMPRE la cantidad en GRAMOS EXACTOS (o ml) acompañada OBLIGATORIAMENTE de su EQUIVALENCIA EN MEDIDA CASERA / RELATIVA entre paréntesis.
+El atleta necesita precisión para cuadrar macros con balanza, y a la vez referencias cotidianas si come fuera o no dispone de balanza:
+
+✓ Formato obligatorio: "Xg de ingrediente (porción relativa casera)"
+• Secos / avena / harinas: "80g de avena tradicional (1 taza al ras)"
+• Líquidos / lácteos: "200ml de leche descremada (1 taza)"
+• Untables / aceites: "15g de manteca de maní (1 cucharada sopera)", "10ml de aceite de oliva (1 cucharada sopera o 1 cucharadita)"
+• Carnes / pescados: "160g de pechuga de pollo (1 filete mediano / palma de la mano)", "180g de bife de nalga (1 bife grande)"
+• Huevos / frutas enteras: "3 huevos (3 unidades)", "1 banana madura (1 unidad mediana)"
+• Quesos / fiambres: "40g de queso port salut (1 feta gruesa / 2 dedos)"
+• Tubérculos / cereales cocidos: "200g de batata o papa hervida (1 unidad mediana)", "220g de arroz integral cocido (1 taza y media)"
+• Frutos secos / semillas: "20g de nueces (1 puñado chico / 4 mariposas)", "10g de semillas (1 cucharada de postre)"
+
+✗ NUNCA indiques solo gramos (ej: "80g avena" es inválido).
+✗ NUNCA indiques solo la medida casera (ej: "1 taza de avena" es inválido).
+Ambas medidas son SIEMPRE obligatorias en cada ingrediente.
+
+${line}
 LENGUAJE
 ${line}
 
@@ -361,6 +384,7 @@ VALIDACIÓN ANTES DE RESPONDER:
 5. ¿Omitiste videoUrl, totalDia y quickReference?
 6. ¿Generaste los 7 días de la semana (Lun–Dom)?
 7. ¿Cada comida tiene al menos 1 variante en "variantes"?
+8. ¿Indicaste en TODOS los ingredientes de comidas y variantes los gramos exactos junto a su medida casera relativa entre paréntesis?
 
 Generá el plan nutricional AHORA. Profesional. Argentino. Adaptado al atleta.`;
 
