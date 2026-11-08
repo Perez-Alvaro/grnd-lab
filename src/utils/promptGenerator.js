@@ -1,3 +1,5 @@
+import { OBJECTIVE_MAPPING, toDBObjective } from '../constants/objectives.js';
+
 /**
  * Generador de Prompt Maestro para IAs
  * Genera un prompt perfecto basado en los metadatos de la rutina
@@ -24,6 +26,14 @@ export function generateAIPrompt(metadata) {
     author = 'Coach'
   } = metadata;
 
+  const dbGoal = toDBObjective(objective);
+  const displayObjective = OBJECTIVE_MAPPING[dbGoal] || objective || 'Fitness general';
+
+  const isVolumen = dbGoal === 'muscle_gain' || objective === 'Volumen muscular' || /volumen|hipertrofia/i.test(objective);
+  const isFuerza = dbGoal === 'strength' || objective === 'Fuerza' || /fuerza/i.test(objective);
+  const isGrasa = dbGoal === 'fat_loss' || objective === 'Pérdida de grasa' || /grasa|pérdida/i.test(objective);
+  const isResistencia = dbGoal === 'endurance' || objective === 'Resistencia' || /resistencia|aeróbica/i.test(objective);
+
   const semanas = parseInt(durationWeeks, 10) || 4;
   const esMesociclo = semanas > 1;
   // Calcula dónde va cada deload según el tipo de mesociclo:
@@ -47,7 +57,7 @@ Las notas de cada ejercicio deben reflejar excelencia técnica COMBINADA con un 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 👤 Género: ${gender}
-🎯 Objetivo principal: ${objective}
+🎯 Objetivo principal: ${displayObjective}
 📊 Nivel: ${level}
 📅 Frecuencia: ${frequency} días/semana
 ⏱️ Duración: ${durationWeeks} semanas
@@ -64,7 +74,7 @@ Las notas de cada ejercicio deben reflejar excelencia técnica COMBINADA con un 
   "metadata": {
     "author": "${author}",
     "gender": "${gender}",
-    "objective": "${objective}",
+    "objective": "${displayObjective}",
     "level": "${level}",
     "frequency": "${frequency}",
     "durationWeeks": "${durationWeeks}",
@@ -230,28 +240,28 @@ INSTRUCCIÓN: Elige la MEJOR forma de entrenamiento basada en:
 
 SELECCIONA según OBJETIVO:
 
-${objective === 'Volumen muscular' ? `
+${isVolumen ? `
 📈 VOLUMEN MUSCULAR → Usa: PPL (mejor) o Body Part Split o Upper/Lower
    Razón: Alto volumen es crítico. Los grupos musculares necesitan 12-20 sets/semana
    Rango de sets: 15-20 por grupo muscular
    Frecuencia: 2x/semana por grupo
 ` : ''}
 
-${objective === 'Fuerza' ? `
+${isFuerza ? `
 💪 FUERZA MÁXIMA → Usa: Conjugate (mejor) o Periodización Lineal o Full Body
    Razón: Requiere baja rep, alta intensidad, frecuencia 2x/semana por patrón
    Rango de sets: 6-12 sets de movimientos principales
    Frecuencia: 2x/semana por patrón de movimiento
 ` : ''}
 
-${objective === 'Pérdida de grasa' ? `
+${isGrasa ? `
 🔥 PÉRDIDA DE GRASA → Usa: Circuit Training (mejor) o Upper/Lower o Full Body
    Razón: Volumen moderado, densidad alta, poco descanso = gasto calórico
    Rango de sets: 10-15 sets con 30-45s rest
    Frecuencia: 3-4 días/semana, alta densidad
 ` : ''}
 
-${objective === 'Resistencia' ? `
+${isResistencia ? `
 🏃 RESISTENCIA/CONDITIONING → Usa: Circuit Training o Periodización Ondulante
    Razón: Estímulo constante, no permite recuperación = adaptación cardiovascular
    Rango de sets: 15-20 sets con 30s rest máximo
@@ -478,7 +488,7 @@ ${esMesociclo ? `
    SEMANAS DE DELOAD (reducir ~40% el volumen total, RIR 3-4): ${deloadTexto}
    SEMANAS DE CARGA: todas las demás — cada una más exigente que la anterior.
 
-   ${mesocicloObjetivo === 'Fuerza' || objective === 'Fuerza' ? `
+   ${mesocicloObjetivo === 'Fuerza' || (!mesocicloObjetivo && isFuerza) ? `
    💪 MESOCICLO DE FUERZA (${durationWeeks} semanas):
    • Reps primarias: 3–6 (fuerza pura, 80–95% 1RM)
    • Cada semana de carga: +2.5–5% de peso O −1 rep con mismo peso
@@ -493,7 +503,7 @@ ${esMesociclo ? `
    S4+: Reinicia ciclo más alto. Cada bloque de 3 semanas supera al anterior.
    ` : ''}
 
-   ${mesocicloObjetivo === 'Hipertrofia' || (!mesocicloObjetivo && objective === 'Volumen muscular') || (!mesocicloObjetivo && !objective) ? `
+   ${mesocicloObjetivo === 'Hipertrofia' || (!mesocicloObjetivo && (isVolumen || (!isFuerza && !isGrasa && !isResistencia))) ? `
    📈 MESOCICLO DE HIPERTROFIA (${durationWeeks} semanas):
    • Reps primarias: 6–12 (rango de hipertrofia pura)
    • Cada semana de carga: +1 serie por ejercicio O +1–2 reps con mismo peso
@@ -509,7 +519,7 @@ ${esMesociclo ? `
    S5+: Reinicia con base más alta. Cada bloque de 4 semanas supera al anterior.
    ` : ''}
 
-   ${mesocicloObjetivo === 'Pérdida de grasa' || (!mesocicloObjetivo && objective === 'Pérdida de grasa') ? `
+   ${mesocicloObjetivo === 'Pérdida de grasa' || (!mesocicloObjetivo && isGrasa) ? `
    🔥 MESOCICLO DE PÉRDIDA DE GRASA (${durationWeeks} semanas):
    • Reps primarias: 12–15 (volumen metabólico)
    • Cada semana de carga: densidad creciente (menos descanso O más reps con mismo peso)

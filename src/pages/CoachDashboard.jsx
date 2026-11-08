@@ -15,15 +15,32 @@ import SubscriptionSection from '../components/Dashboard/SubscriptionSection.jsx
 import FeedbackSection from '../components/Dashboard/FeedbackSection.jsx';
 import BrandSettingsModal from '../components/Dashboard/BrandSettingsModal.jsx';
 import { toast } from '../utils/toast.js';
+import { TRAINING_GOALS, TRAINING_GOAL_LABELS, toDBObjective } from '../constants/objectives.js';
 
 /** "0 rutinas" / "1 rutina" / "3 rutinas" — el `2 rut · 1 nutri` anterior era críptico. */
 const countLabel = (n, singular, plural) => `${n} ${n === 1 ? singular : plural}`;
 
+const normalizeLevel = (val) => {
+  if (!val) return '';
+  const lower = String(val).toLowerCase().trim();
+  if (lower === 'inicial' || lower === 'principiante') return 'Principiante';
+  if (lower === 'intermedio') return 'Intermedio';
+  if (lower === 'avanzado') return 'Avanzado';
+  if (lower.includes('todos')) return 'Todos los niveles';
+  return val;
+};
+
 const LEVELS = [
   { value: '', label: 'Sin especificar' },
-  { value: 'inicial', label: 'Inicial' },
-  { value: 'intermedio', label: 'Intermedio' },
-  { value: 'avanzado', label: 'Avanzado' },
+  { value: 'Principiante', label: 'Principiante' },
+  { value: 'Intermedio', label: 'Intermedio' },
+  { value: 'Avanzado', label: 'Avanzado' },
+  { value: 'Todos los niveles', label: 'Todos los niveles' },
+];
+
+const GOAL_OPTIONS = [
+  { value: '', label: 'Sin especificar' },
+  ...TRAINING_GOALS.map((g) => ({ value: g.value, label: g.label })),
 ];
 
 export default function CoachDashboard() {
@@ -167,8 +184,8 @@ export default function CoachDashboard() {
                       <div className="min-w-0">
                         <p className="text-text-primary font-medium truncate">{a.name}</p>
                         <div className="flex items-center gap-2 mt-1 flex-wrap">
-                          {a.goal && <Badge>{a.goal}</Badge>}
-                          {a.level && <Badge variant="secondary">{a.level}</Badge>}
+                          {a.goal && <Badge>{TRAINING_GOAL_LABELS[a.goal] || a.goal}</Badge>}
+                          {a.level && <Badge variant="secondary">{normalizeLevel(a.level)}</Badge>}
                           <span className="text-xs text-text-muted">{countLabel(routinesOf(a.id).length, 'rutina', 'rutinas')} · {countLabel(nutritionOf(a.id).length, 'plan', 'planes')}</span>
                         </div>
                       </div>
@@ -197,8 +214,8 @@ export default function CoachDashboard() {
                     <h2 className="text-xl font-bold text-text-primary font-display">{selected.name}</h2>
                     {selected.email && <p className="text-sm text-text-muted">{selected.email}</p>}
                     <div className="flex items-center gap-2 mt-2 flex-wrap">
-                      {selected.goal && <Badge><IconTarget stroke={1.75} className="h-3 w-3" /> {selected.goal}</Badge>}
-                      {selected.level && <Badge variant="secondary">{selected.level}</Badge>}
+                      {selected.goal && <Badge><IconTarget stroke={1.75} className="h-3 w-3" /> {TRAINING_GOAL_LABELS[selected.goal] || selected.goal}</Badge>}
+                      {selected.level && <Badge variant="secondary">{normalizeLevel(selected.level)}</Badge>}
                     </div>
                     {selected.notes && <p className="text-sm text-text-secondary mt-3">{selected.notes}</p>}
                   </div>
@@ -353,7 +370,13 @@ function AthleteModal({ open, athlete, onClose, onSaved }) {
   useEffect(() => {
     if (open) {
       setForm(athlete
-        ? { name: athlete.name || '', email: athlete.email || '', goal: athlete.goal || '', level: athlete.level || '', notes: athlete.notes || '' }
+        ? {
+            name: athlete.name || '',
+            email: athlete.email || '',
+            goal: athlete.goal ? toDBObjective(athlete.goal) : '',
+            level: normalizeLevel(athlete.level),
+            notes: athlete.notes || '',
+          }
         : { name: '', email: '', goal: '', level: '', notes: '' });
     }
   }, [open, athlete]);
@@ -377,7 +400,11 @@ function AthleteModal({ open, athlete, onClose, onSaved }) {
       <div className="space-y-4">
         <Input label="Nombre *" value={form.name} onChange={set('name')} placeholder="Nombre del atleta" />
         <Input label="Email" type="email" value={form.email} onChange={set('email')} placeholder="opcional" />
-        <Input label="Objetivo" value={form.goal} onChange={set('goal')} placeholder="Ej: hipertrofia, pérdida de grasa" />
+        <Select label="Objetivo" value={form.goal} onChange={set('goal')}>
+          {GOAL_OPTIONS.map((g) => (
+            <option key={g.value} value={g.value}>{g.label}</option>
+          ))}
+        </Select>
         <Select label="Nivel" value={form.level} onChange={set('level')}>
           {LEVELS.map((l) => (
             <option key={l.value} value={l.value}>{l.label}</option>

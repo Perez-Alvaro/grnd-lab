@@ -326,11 +326,12 @@ function Navbar({ onScrollTo }) {
 function HeroSection({ onScrollTo, onSignup }) {
     return (
         <section className="relative overflow-hidden border-b border-border bg-primary-bg">
-            <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
+            {/* Grilla interactiva de puntos en tono más visible */}
+            <div className="absolute inset-0 z-0 opacity-50 pointer-events-none">
                 <DotGrid
                     dotSize={5} gap={22}
-                    baseColor="var(--c-border-muted)" activeColor="var(--c-border-strong)"
-                    proximity={100} shockRadius={200} shockStrength={4}
+                    baseColor="var(--c-border-strong)" activeColor="var(--c-accent)"
+                    proximity={120} shockRadius={220} shockStrength={4}
                     resistance={800} returnDuration={1.2}
                 />
             </div>
@@ -636,56 +637,64 @@ function ServicesSection() {
     return (
         <section
             id="servicios"
-            className="mx-auto max-w-7xl px-6 lg:px-8 border-b border-border bg-primary-bg"
+            className="relative overflow-hidden border-b border-border bg-primary-bg"
             style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}
         >
-            <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center max-w-6xl mx-auto">
-                {/* Izquierda: Mockup transparente sin fondo */}
-                <div className="lg:col-span-5 flex items-center justify-center scroll-reveal">
-                    <div className="relative w-full max-w-[340px] sm:max-w-[400px]">
-                        <img
-                            src="/assets/paso-2.png"
-                            alt="Mockup de planes de entrenamiento y nutrición unificados"
-                            loading="lazy"
-                            className="w-full h-auto object-contain drop-shadow-2xl"
-                        />
+            {/* Fondo ilustrado herobg.png — tenue para máxima legibilidad */}
+            <div
+                className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none opacity-25"
+                style={{ backgroundImage: 'url(/assets/herobg.png)' }}
+            />
+
+            <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
+                <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center max-w-6xl mx-auto">
+                    {/* Izquierda: Mockup transparente sin fondo */}
+                    <div className="lg:col-span-5 flex items-center justify-center scroll-reveal">
+                        <div className="relative w-full max-w-[340px] sm:max-w-[400px]">
+                            <img
+                                src="/assets/paso-2.png"
+                                alt="Mockup de planes de entrenamiento y nutrición unificados"
+                                loading="lazy"
+                                className="w-full h-auto object-contain drop-shadow-2xl"
+                            />
+                        </div>
                     </div>
-                </div>
 
-                {/* Derecha: 3 Bullets de Valor para Entrenadores */}
-                <div className="lg:col-span-7 scroll-reveal">
-                    <p className="text-xs font-bold uppercase tracking-widest text-text-tertiary mb-3">
-                        La solución
-                    </p>
-                    <h2
-                        className="font-bold tracking-tight text-text-primary font-display text-balance text-3xl sm:text-4xl"
-                        style={{ lineHeight: '1.15' }}
-                    >
-                        Planes de entrenamiento y nutrición en un solo lugar
-                    </h2>
-                    <p className="mt-3 text-base text-text-secondary leading-relaxed">
-                        Dejá de usar herramientas separadas. Mock genera la base completa del entrenamiento y la alimentación de cada atleta, bajo el mismo criterio técnico.
-                    </p>
+                    {/* Derecha: 3 Bullets de Valor para Entrenadores */}
+                    <div className="lg:col-span-7 scroll-reveal">
+                        <p className="text-xs font-bold uppercase tracking-widest text-text-tertiary mb-3">
+                            La solución
+                        </p>
+                        <h2
+                            className="font-bold tracking-tight text-text-primary font-display text-balance text-3xl sm:text-4xl"
+                            style={{ lineHeight: '1.15' }}
+                        >
+                            Planes de entrenamiento y nutrición en un solo lugar
+                        </h2>
+                        <p className="mt-3 text-base text-text-secondary leading-relaxed">
+                            Dejá de usar herramientas separadas. Mock genera la base completa del entrenamiento y la alimentación de cada atleta, bajo el mismo criterio técnico.
+                        </p>
 
-                    <div className="mt-7 space-y-4">
-                        {SOLUTION_POINTS.map((item, idx) => {
-                            const IconComponent = item.icon;
-                            return (
-                                <div key={idx} className="rounded-xl border border-border bg-primary-surface p-4 flex items-start gap-3.5">
-                                    <div className="h-9 w-9 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center text-accent flex-shrink-0 mt-0.5">
-                                        <IconComponent stroke={1.75} className="h-4 w-4" />
+                        <div className="mt-7 space-y-4">
+                            {SOLUTION_POINTS.map((item, idx) => {
+                                const IconComponent = item.icon;
+                                return (
+                                    <div key={idx} className="rounded-xl border border-border bg-primary-surface/95 backdrop-blur-sm p-4 flex items-start gap-3.5 shadow-sm">
+                                        <div className="h-9 w-9 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center text-accent flex-shrink-0 mt-0.5">
+                                            <IconComponent stroke={1.75} className="h-4 w-4" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-sm font-bold text-text-primary mb-1">
+                                                {item.title}
+                                            </h3>
+                                            <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
+                                                {item.description}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3 className="text-sm font-bold text-text-primary mb-1">
-                                            {item.title}
-                                        </h3>
-                                        <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
-                                            {item.description}
-                                        </p>
-                                    </div>
-                                </div>
-                            );
-                        })}
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -877,93 +886,95 @@ function PricingSection({ onSelectPlan, onSignup }) {
                         return (
                             <div
                                 key={tier.id}
-                                className={`relative rounded-2xl p-6 sm:p-7 flex flex-col justify-between transition-all ${
+                                className={`relative rounded-2xl flex flex-col justify-between transition-all overflow-hidden ${
                                     tier.highlight
                                         ? 'border-2 border-accent bg-primary-surface shadow-xl'
                                         : 'border border-border bg-primary-surface'
                                 }`}
                             >
                                 {tier.highlight && (
-                                    <div className="w-full bg-accent text-primary-bg text-center py-1.5 text-xs font-bold tracking-wider uppercase rounded-t-xl -mt-6 sm:-mt-7 -mx-6 sm:-mx-7 mb-6 self-center px-4">
+                                    <div className="w-full bg-accent text-white text-center py-2.5 px-4 text-xs font-bold tracking-wider uppercase">
                                         {tier.badge}
                                     </div>
                                 )}
 
-                                <div>
-                                    <h3 className="text-xl font-bold text-text-primary font-display">
-                                        {tier.name}
-                                    </h3>
-                                    <p className="text-sm text-text-secondary mt-1.5 min-h-[40px] leading-relaxed">
-                                        {tier.description}
-                                    </p>
-
-                                    {/* Price Container */}
-                                    <div className="mt-5 pb-5 border-b border-border">
-                                        <div className="flex items-baseline gap-2">
-                                            <span
-                                                className={`font-black font-display tracking-tight tabular-nums ${
-                                                    tier.highlight ? 'text-accent' : 'text-text-primary'
-                                                }`}
-                                                style={{ fontSize: 'clamp(32px, 4vw, 40px)', lineHeight: 1 }}
-                                            >
-                                                {tier.price}
-                                            </span>
-                                            <span className="text-text-secondary text-sm font-semibold">
-                                                {tier.period}
-                                            </span>
-                                        </div>
-                                        {tier.equivalent && (
-                                            <p className="text-xs font-semibold text-accent mt-2">
-                                                {tier.equivalent}
-                                            </p>
-                                        )}
-                                        <p className="text-xs text-text-tertiary mt-1.5 leading-normal">
-                                            {tier.billedAs}
+                                <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <h3 className="text-xl font-bold text-text-primary font-display">
+                                            {tier.name}
+                                        </h3>
+                                        <p className="text-sm text-text-secondary mt-1.5 min-h-[40px] leading-relaxed">
+                                            {tier.description}
                                         </p>
+
+                                        {/* Price Container */}
+                                        <div className="mt-5 pb-5 border-b border-border">
+                                            <div className="flex items-baseline gap-2">
+                                                <span
+                                                    className={`font-black font-display tracking-tight tabular-nums ${
+                                                        tier.highlight ? 'text-accent' : 'text-text-primary'
+                                                    }`}
+                                                    style={{ fontSize: 'clamp(32px, 4vw, 40px)', lineHeight: 1 }}
+                                                >
+                                                    {tier.price}
+                                                </span>
+                                                <span className="text-text-secondary text-sm font-semibold">
+                                                    {tier.period}
+                                                </span>
+                                            </div>
+                                            {tier.equivalent && (
+                                                <p className="text-xs font-semibold text-accent mt-2">
+                                                    {tier.equivalent}
+                                                </p>
+                                            )}
+                                            <p className="text-xs text-text-tertiary mt-1.5 leading-normal">
+                                                {tier.billedAs}
+                                            </p>
+                                        </div>
+
+                                        {/* Features List */}
+                                        <ul className="space-y-3 text-sm text-text-primary my-6">
+                                            {tier.features.map((feat, i) => (
+                                                <li key={i} className="flex items-start gap-2.5">
+                                                    <IconCircleCheck stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
+                                                    <span className="leading-snug">{feat}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
                                     </div>
 
-                                    {/* Features List */}
-                                    <ul className="space-y-3 text-sm text-text-primary my-6">
-                                        {tier.features.map((feat, i) => (
-                                            <li key={i} className="flex items-start gap-2.5">
-                                                <IconCircleCheck stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
-                                                <span className="leading-snug">{feat}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                {/* Action Button */}
-                                <div className="pt-2">
-                                    {isFreemium ? (
-                                        <Button
-                                            variant="outline"
-                                            size="lg"
-                                            onClick={onSignup}
-                                            className="w-full rounded-lg font-semibold border-border hover:border-text-primary"
-                                        >
-                                            {tier.cta}
-                                        </Button>
-                                    ) : isAnnual ? (
-                                        <Button
-                                            variant="accent"
-                                            size="lg"
-                                            onClick={() => onSelectPlan(tier.id)}
-                                            className="w-full rounded-lg font-bold shadow-md shadow-accent/25"
-                                        >
-                                            <span>{tier.cta}</span>
-                                            <IconArrowRight stroke={1.75} className="ml-1.5 h-4 w-4" />
-                                        </Button>
-                                    ) : (
-                                        <Button
-                                            variant="outline"
-                                            size="lg"
-                                            onClick={() => onSelectPlan(tier.id)}
-                                            className="w-full rounded-lg font-bold border-accent text-accent hover:bg-accent/10"
-                                        >
-                                            {tier.cta}
-                                        </Button>
-                                    )}
+                                    {/* Action Button */}
+                                    <div className="pt-2">
+                                        {isFreemium ? (
+                                            <Button
+                                                variant="outline"
+                                                size="lg"
+                                                onClick={onSignup}
+                                                className="w-full rounded-lg font-semibold border-border hover:border-text-primary"
+                                            >
+                                                {tier.cta}
+                                            </Button>
+                                        ) : isAnnual ? (
+                                            <Button
+                                                variant="accent"
+                                                size="lg"
+                                                onClick={() => onSelectPlan(tier.id)}
+                                                className="w-full rounded-lg font-bold shadow-md shadow-accent/25"
+                                            >
+                                                <span>{tier.cta}</span>
+                                                <IconArrowRight stroke={1.75} className="ml-1.5 h-4 w-4" />
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                variant="outline"
+                                                size="lg"
+                                                onClick={() => onSelectPlan(tier.id)}
+                                                className="w-full rounded-lg font-bold border-accent text-accent hover:bg-accent/10"
+                                            >
+                                                {tier.cta}
+                                            </Button>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         );
@@ -1037,13 +1048,17 @@ function FinalCTASection({ onSignup }) {
                         <span>Crear mi primer plan gratis</span>
                         <IconArrowRight stroke={1.75} className="h-4 w-4 flex-shrink-0" />
                     </button>
-                    <a
-                        href="mailto:perezalvaroraul26@gmail.com"
+                    <button
+                        type="button"
+                        onClick={() => {
+                            const email = atob('cGVyZXphbHZhcm9yYXVsMjZAZ21haWwuY29t');
+                            window.location.href = `mailto:${email}`;
+                        }}
                         className="inline-flex items-center justify-center gap-2 h-12 px-7 rounded-lg border border-border bg-primary-bg text-text-secondary hover:text-text-primary hover:border-border-strong font-medium text-base transition-colors w-full sm:w-auto"
                     >
                         <IconMail stroke={1.75} className="h-4 w-4 flex-shrink-0 text-accent" />
                         <span>Contacto por email</span>
-                    </a>
+                    </button>
                 </div>
 
                 <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-text-secondary scroll-reveal">
@@ -1068,6 +1083,55 @@ function FinalCTASection({ onSignup }) {
 /* ─────────────────────────────────────────────
    FOOTER
 ───────────────────────────────────────────── */
+
+function FooterEmailButton() {
+    const [revealed, setRevealed] = useState(false);
+    const [copied, setCopied] = useState(false);
+
+    const getEmail = () => atob('cGVyZXphbHZhcm9yYXVsMjZAZ21haWwuY29t');
+
+    if (!revealed) {
+        return (
+            <button
+                type="button"
+                onClick={() => setRevealed(true)}
+                className="text-sm text-text-secondary hover:text-text-primary transition-colors inline-flex items-center gap-2 text-left group"
+                title="Mostrar email de contacto"
+            >
+                <IconMail stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0" />
+                <span className="underline decoration-dotted underline-offset-4">Ver email de contacto</span>
+            </button>
+        );
+    }
+
+    const email = getEmail();
+    const handleCopy = (e) => {
+        e.preventDefault();
+        navigator.clipboard.writeText(email);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    return (
+        <div className="flex flex-col gap-1.5">
+            <a
+                href={`mailto:${email}`}
+                className="text-sm text-accent hover:underline inline-flex items-center gap-2 font-mono break-all"
+            >
+                <IconMail stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0" />
+                <span>{email}</span>
+            </a>
+            <button
+                type="button"
+                onClick={handleCopy}
+                className="text-[11px] text-text-tertiary hover:text-text-primary text-left inline-flex items-center gap-1"
+            >
+                <IconCopy stroke={1.75} className="h-3 w-3" />
+                <span>{copied ? '¡Copiado!' : 'Copiar email'}</span>
+            </button>
+        </div>
+    );
+}
 
 function Footer({ onScrollTo, onOpenPrivacy }) {
     return (
@@ -1112,13 +1176,7 @@ function Footer({ onScrollTo, onOpenPrivacy }) {
                         <h4 className="text-sm font-semibold text-text-primary mb-3">Contacto</h4>
                         <ul className="space-y-2.5">
                             <li>
-                                <a
-                                    href="mailto:perezalvaroraul26@gmail.com"
-                                    className="text-sm text-text-secondary hover:text-text-primary transition-colors inline-flex items-center gap-2"
-                                >
-                                    <IconMail stroke={1.75} className="h-4 w-4 text-accent" />
-                                    <span>perezalvaroraul26@gmail.com</span>
-                                </a>
+                                <FooterEmailButton />
                             </li>
                             <li>
                                 <button

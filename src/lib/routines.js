@@ -32,9 +32,11 @@ export async function getRoutine(id) {
  */
 export async function saveRoutine({ id, title, data, athlete_id = null }) {
   if (id) {
+    const updatePayload = { title, data };
+    if (athlete_id !== undefined) updatePayload.athlete_id = athlete_id;
     const { data: updated, error } = await supabase
       .from('routines')
-      .update({ title, data, athlete_id })
+      .update(updatePayload)
       .eq('id', id)
       .select()
       .single();
@@ -43,6 +45,7 @@ export async function saveRoutine({ id, title, data, athlete_id = null }) {
   }
   const { data: userData } = await supabase.auth.getUser();
   const user_id = userData?.user?.id;
+  if (!user_id) throw new Error("Usuario no autenticado");
   const { data: created, error } = await supabase
     .from('routines')
     .insert({ user_id, title, data, athlete_id })

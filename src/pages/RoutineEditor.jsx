@@ -6,7 +6,7 @@
  * (hoja, preview, steps, prompt, persistencia) viene de src/config/planTypes.js.
  */
 
-import React, { useMemo, useCallback, useState, useEffect } from "react";
+import React, { useMemo, useCallback, useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { IconArrowLeft, IconFileDownload, IconDotsVertical, IconCopy, IconCode, IconJson, IconDownload, IconDeviceFloppy, IconPencil, IconEye, IconSparkles, IconAdjustments } from '@tabler/icons-react';
 import { PlanProvider } from "../context/PlanContext.jsx";
@@ -24,6 +24,18 @@ import { Button } from "../components/ui";
 import JSONEditor from "../components/Editor/JSONEditor.jsx";
 import { useSnackbar, TUTORIAL_SNACKBARS } from "../components/Tutorial/Snackbar.jsx";
 import { trackEvent } from "../lib/usage.js";
+import { getAthlete } from "../lib/athletes.js";
+import { toDBObjective, TRAINING_GOAL_LABELS } from "../constants/objectives.js";
+
+const normalizeLevel = (val) => {
+  if (!val) return "";
+  const lower = String(val).toLowerCase().trim();
+  if (lower === "inicial" || lower === "principiante") return "Principiante";
+  if (lower === "intermedio") return "Intermedio";
+  if (lower === "avanzado") return "Avanzado";
+  if (lower.includes("todos")) return "Todos los niveles";
+  return val;
+};
 import { SAMPLE_WORKOUT_ROUTINE } from "../constants/sampleWorkoutRoutine.js";
 import { SAMPLE_NUTRITION_PLAN } from "../constants/sampleNutritionPlan.js";
 
@@ -136,27 +148,63 @@ export default function RoutineEditorPage() {
   const [planId, setPlanId] = useState(
     searchParams.get("planId") || searchParams.get("routineId") || null,
   );
-  const [athleteId] = useState(searchParams.get("athleteId") || null);
+  const [athleteId, setAthleteId] = useState(searchParams.get("athleteId") || null);
   const [saving, setSaving] = useState(false);
+
+  const { plan, metadata, markAsSaved } = planEditor;
+  const athleteLoadedRef = useRef(false);
 
   useEffect(() => {
     const pid = searchParams.get("planId") || searchParams.get("routineId");
-    if (!pid) return;
-    (async () => {
-      try {
-        const r = await config.lib.get(pid);
-        planEditor.loadPlan(r.data, { markDirty: false });
-        markAsSaved();
-        setPlanId(r.id);
-      } catch (error) {
-        console.error("Error cargando el plan:", error);
-        snackbar.error("No se pudo cargar el plan");
-      }
-    })();
+    if (pid) {
+      (async () => {
+        try {
+          const r = await config.lib.get(pid);
+          planEditor.loadPlan(r.data, { markDirty: false });
+          markAsSaved();
+          setPlanId(r.id);
+          if (r.athlete_id) setAthleteId(r.athlete_id);
+        } catch (error) {
+          console.error("Error cargando el plan:", error);
+          snackbar.error("No se pudo cargar el plan");
+        }
+      })();
+      return;
+    }
+
+    // Pre-cargar datos del atleta si se crea una nueva rutina/plan para él
+    const aid = searchParams.get("athleteId");
+    if (aid && !athleteLoadedRef.current) {
+      athleteLoadedRef.current = true;
+      (async () => {
+        try {
+          const ath = await getAthlete(aid);
+          if (ath) {
+            const updates = {};
+            if (ath.goal) {
+              const mapped = toDBObjective(ath.goal);
+              updates.objective = mapped;
+              updates.objetivo = TRAINING_GOAL_LABELS[mapped] || ath.goal;
+            }
+            if (ath.level) {
+              updates.level = normalizeLevel(ath.level);
+            }
+            if (ath.notes) {
+              updates.notes = ath.notes;
+            }
+            if (!planEditor.metadata.name && ath.name) {
+              updates.name = isWorkout ? `Rutina · ${ath.name}` : `Plan nutricional · ${ath.name}`;
+            }
+            planEditor.updateMetadata(updates);
+            markAsSaved();
+          }
+        } catch (error) {
+          console.error("Error precargando datos del atleta:", error);
+        }
+      })();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const { plan, metadata, markAsSaved } = planEditor;
 
   const handleSave = useCallback(async () => {
     setSaving(true);
@@ -186,9 +234,26 @@ export default function RoutineEditorPage() {
   }, [config, planId, athleteId, metadata.name, plan, markAsSaved, searchParams, setSearchParams, snackbar]);
 
   const handleBack = useCallback(() => {
+    if (saving) {
+      if (!window.confirm("Se está guardando la rutina en la base de datos. Si salís ahora la transacción se interrumpirá y podrías perder la rutina. ¿Deseás salir igualmente?")) {
+        return;
+      }
+    }
     if (planEditor.dirty && !window.confirm("Hay cambios sin guardar. ¿Desea salir igualmente?")) return;
     navigate("/dashboard");
-  }, [navigate, planEditor.dirty]);
+  }, [navigate, planEditor.dirty, saving]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (saving || planEditor.dirty) {
+        e.preventDefault();
+        e.returnValue = "";
+        return "";
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [saving, planEditor.dirty]);
 
   const handleExportPdf = useCallback(async () => {
     if (config.pdfExport) {
@@ -216,22 +281,51 @@ export default function RoutineEditorPage() {
     }
   }, [exportPDF, planEditor.planForPdf, snackbar, config.id]);
 
-  const handleImport = useCallback((importedData) => {
-    try {
-      // expandToDuration: en nutrición, replica el bloque modelo por mes según
-      // la duración elegida en la encuesta (el round-trip de carga NO lo hace).
-      planEditor.loadPlan(importedData, { expandToDuration: true });
-      // El cuestionario cumplió: pasamos al editor a mano con todo cargado.
-      // Al recargar, draftHasGeneratedPlan() mantiene este modo.
-      setEditorMode("manual");
-      snackbar.success(TUTORIAL_SNACKBARS.jsonLoaded);
-      setShowImportModal(false);
-      setMobileView("preview"); // tras importar, mostramos el resultado en mobile
-    } catch (error) {
-      console.error("Import error:", error);
-      snackbar.error(TUTORIAL_SNACKBARS.jsonError);
-    }
-  }, [planEditor, snackbar]);
+  const handleImport = useCallback(
+    async (importedData) => {
+      try {
+        const loadedPlan = planEditor.loadPlan(importedData, { expandToDuration: true });
+        setEditorMode("manual");
+        setShowImportModal(false);
+        setMobileView("preview");
+
+        // Safepoint: guardado automático inmediato en la base de datos
+        if (loadedPlan) {
+          setSaving(true);
+          try {
+            const title = loadedPlan.metadata?.name || metadata.name || config.labels.untitled;
+            const saved = await config.lib.save({
+              id: planId,
+              title,
+              data: loadedPlan,
+              athlete_id: athleteId,
+            });
+            if (saved?.id) {
+              setPlanId(saved.id);
+              const paramKey = config.id === "nutrition" ? "planId" : "routineId";
+              const nextParams = new URLSearchParams(searchParams);
+              nextParams.set(paramKey, saved.id);
+              setSearchParams(nextParams, { replace: true });
+            }
+            markAsSaved();
+            trackEvent("plan_saved_safepoint", config.id);
+            snackbar.success("Plan cargado y guardado automáticamente (Safepoint)");
+          } catch (saveError) {
+            console.error("Error en safepoint save:", saveError);
+            snackbar.warning("Plan cargado localmente. Hacé clic en 'Guardar' para subirlo a la nube.");
+          } finally {
+            setSaving(false);
+          }
+        } else {
+          snackbar.success(TUTORIAL_SNACKBARS.jsonLoaded);
+        }
+      } catch (error) {
+        console.error("Import error:", error);
+        snackbar.error(TUTORIAL_SNACKBARS.jsonError);
+      }
+    },
+    [config, planId, athleteId, metadata.name, planEditor, markAsSaved, searchParams, setSearchParams, snackbar],
+  );
 
   const handleCopyPrompt = useCallback(async () => {
     try {
@@ -244,15 +338,42 @@ export default function RoutineEditorPage() {
     }
   }, [config, planEditor.metadata, snackbar]);
 
-  const handleJSONEditorChange = useCallback((parsedJSON) => {
-    try {
-      planEditor.loadPlan(parsedJSON);
-      snackbar.success(TUTORIAL_SNACKBARS.jsonLoaded);
-    } catch (error) {
-      console.error("Error al aplicar JSON:", error);
-      snackbar.error(TUTORIAL_SNACKBARS.jsonError);
-    }
-  }, [planEditor, snackbar]);
+  const handleJSONEditorChange = useCallback(
+    async (parsedJSON) => {
+      try {
+        const loadedPlan = planEditor.loadPlan(parsedJSON);
+        snackbar.success(TUTORIAL_SNACKBARS.jsonLoaded);
+        if (loadedPlan) {
+          setSaving(true);
+          try {
+            const title = loadedPlan.metadata?.name || metadata.name || config.labels.untitled;
+            const saved = await config.lib.save({
+              id: planId,
+              title,
+              data: loadedPlan,
+              athlete_id: athleteId,
+            });
+            if (saved?.id) {
+              setPlanId(saved.id);
+              const paramKey = config.id === "nutrition" ? "planId" : "routineId";
+              const nextParams = new URLSearchParams(searchParams);
+              nextParams.set(paramKey, saved.id);
+              setSearchParams(nextParams, { replace: true });
+            }
+            markAsSaved();
+          } catch (saveError) {
+            console.error("Error en safepoint JSON editor:", saveError);
+          } finally {
+            setSaving(false);
+          }
+        }
+      } catch (error) {
+        console.error("Error al aplicar JSON:", error);
+        snackbar.error(TUTORIAL_SNACKBARS.jsonError);
+      }
+    },
+    [config, planId, athleteId, metadata.name, planEditor, markAsSaved, searchParams, setSearchParams, snackbar],
+  );
 
   const goToPreview = useCallback(() => setMobileView("preview"), []);
   const goToEditor = useCallback(() => setMobileView("editor"), []);
@@ -289,7 +410,7 @@ export default function RoutineEditorPage() {
         <header className="flex-shrink-0 border-b border-border bg-primary-surface">
           <div className="flex items-center justify-between gap-2 px-4 sm:px-6 py-3">
             <div className="flex items-center gap-2 min-w-0">
-              <Button variant="ghost" size="sm" onClick={handleBack} aria-label="Volver al panel">
+              <Button variant="ghost" size="sm" onClick={handleBack} disabled={saving} aria-label="Volver al panel">
                 <IconArrowLeft stroke={1.75} className="h-4 w-4" />
                 <span className="hidden sm:inline">Volver</span>
               </Button>
