@@ -46,7 +46,7 @@ function AppContent() {
     document.documentElement.setAttribute('data-theme', 'light');
   }, []);
   return (
-    <div className="min-h-screen bg-primary-bg text-text-primary font-sans">
+    <div className="min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-primary-bg text-text-primary font-sans">
       <ToastInitializer />
 
       {/* Global login modal — always mounted, controlled via authStore */}

@@ -80,9 +80,10 @@ export default function UserMenu() {
       {/* Trigger */}
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 rounded-xl border border-border px-3 py-1.5 text-sm font-medium text-text-secondary hover:border-accent/40 hover:text-text-primary transition-colors"
+        className="flex items-center gap-2 rounded-xl border border-border px-3 py-1.5 min-h-[44px] text-sm font-medium text-text-secondary hover:border-accent/40 hover:text-text-primary transition-colors"
         aria-haspopup="true"
         aria-expanded={open}
+        aria-label="Menú de usuario"
       >
         <Avatar name={user.name} />
         <span className="hidden sm:block max-w-[120px] truncate">{user.name}</span>
@@ -106,19 +107,19 @@ export default function UserMenu() {
             <p className="text-xs text-text-quaternary truncate">{user.email}</p>
           </div>
 
-          {/* Mi cuenta (placeholder) */}
+          {/* Mi cuenta -> /dashboard */}
           <button
-            className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:bg-text-primary/5 hover:text-text-primary transition-colors"
+            className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:bg-text-primary/5 hover:text-text-primary transition-colors min-h-[44px]"
             role="menuitem"
-            onClick={() => setOpen(false)}
+            onClick={handleNavigateToDashboard}
           >
             <IconUser stroke={1.75} className="h-4 w-4 flex-shrink-0" />
             Mi cuenta
           </button>
 
-          {/* Panel */}
+          {/* Panel -> /dashboard */}
           <button
-            className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:bg-text-primary/5 hover:text-text-primary transition-colors"
+            className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:bg-text-primary/5 hover:text-text-primary transition-colors min-h-[44px]"
             role="menuitem"
             onClick={handleNavigateToDashboard}
           >
@@ -131,7 +132,7 @@ export default function UserMenu() {
 
           {/* Cerrar sesión */}
           <button
-            className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors"
+            className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors min-h-[44px]"
             role="menuitem"
             onClick={handleLogout}
           >

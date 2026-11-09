@@ -44,6 +44,15 @@ function resolveRgb(color) {
     return { r: 0, g: 0, b: 0 };
 }
 
+const checkDisabled = () => {
+    if (typeof window === 'undefined') return true;
+    const isMobile = window.innerWidth < 768;
+    const prefersReducedMotion = Boolean(
+        window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    );
+    return isMobile || prefersReducedMotion;
+};
+
 const DotGrid = ({
     dotSize = 16,
     gap = 32,
@@ -72,6 +81,31 @@ const DotGrid = ({
         lastX: 0,
         lastY: 0
     });
+
+    // Kill-switch: desactiva canvas en mobile (< 768px) o con prefers-reduced-motion
+    const [isDisabled, setIsDisabled] = useState(checkDisabled);
+
+    useEffect(() => {
+        const updateDisabled = () => {
+            setIsDisabled(checkDisabled());
+        };
+        updateDisabled();
+        window.addEventListener('resize', updateDisabled);
+        const mql = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+        if (mql?.addEventListener) {
+            mql.addEventListener('change', updateDisabled);
+        } else if (mql?.addListener) {
+            mql.addListener(updateDisabled);
+        }
+        return () => {
+            window.removeEventListener('resize', updateDisabled);
+            if (mql?.removeEventListener) {
+                mql.removeEventListener('change', updateDisabled);
+            } else if (mql?.removeListener) {
+                mql.removeListener(updateDisabled);
+            }
+        };
+    }, []);
 
     // Se re-resuelven los tokens cuando cambia data-theme en <html>
     const [themeVersion, setThemeVersion] = useState(0);
@@ -135,7 +169,13 @@ const DotGrid = ({
     }, [dotSize, gap]);
 
     useEffect(() => {
-        if (!circlePath) return;
+        if (isDisabled || !circlePath) {
+            if (canvasRef.current) {
+                const ctx = canvasRef.current.getContext('2d');
+                if (ctx) ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+            }
+            return;
+        }
 
         let rafId;
         const proxSq = proximity * proximity;
@@ -156,19 +196,19 @@ const DotGrid = ({
                 const dy = dot.cy - py;
                 const dsq = dx * dx + dy * dy;
 
-                let style = `rgb(${baseRgb.r},${baseRgb.g},${baseRgb.b})`;
+                let dotColor = `rgb(${baseRgb.r},${baseRgb.g},${baseRgb.b})`;
                 if (dsq <= proxSq) {
                     const dist = Math.sqrt(dsq);
                     const t = 1 - dist / proximity;
                     const r = Math.round(baseRgb.r + (activeRgb.r - baseRgb.r) * t);
                     const g = Math.round(baseRgb.g + (activeRgb.g - baseRgb.g) * t);
                     const b = Math.round(baseRgb.b + (activeRgb.b - baseRgb.b) * t);
-                    style = `rgb(${r},${g},${b})`;
+                    dotColor = `rgb(${r},${g},${b})`;
                 }
 
                 ctx.save();
                 ctx.translate(ox, oy);
-                ctx.fillStyle = style;
+                ctx.fillStyle = dotColor;
                 ctx.fill(circlePath);
                 ctx.restore();
             }
@@ -177,10 +217,15 @@ const DotGrid = ({
         };
 
         draw();
-        return () => cancelAnimationFrame(rafId);
-    }, [proximity, baseColor, activeRgb, baseRgb, circlePath]);
+        return () => {
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+            }
+        };
+    }, [isDisabled, proximity, baseColor, activeRgb, baseRgb, circlePath]);
 
     useEffect(() => {
+        if (isDisabled) return;
         buildGrid();
         let ro = null;
         if ('ResizeObserver' in window) {
@@ -193,9 +238,11 @@ const DotGrid = ({
             if (ro) ro.disconnect();
             else window.removeEventListener('resize', buildGrid);
         };
-    }, [buildGrid]);
+    }, [isDisabled, buildGrid]);
 
     useEffect(() => {
+        if (isDisabled) return;
+
         const onMove = e => {
             const now = performance.now();
             const pr = pointerRef.current;
@@ -280,8 +327,9 @@ const DotGrid = ({
         return () => {
             window.removeEventListener('mousemove', throttledMove);
             window.removeEventListener('click', onClick);
+            dotsRef.current.forEach(dot => gsap.killTweensOf(dot));
         };
-    }, [maxSpeed, speedTrigger, proximity, resistance, returnDuration, shockRadius, shockStrength]);
+    }, [isDisabled, maxSpeed, speedTrigger, proximity, resistance, returnDuration, shockRadius, shockStrength]);
 
     return (
         <section className={`dot-grid ${className}`} style={style}>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/mz-logo-mark.PNG" />
     <link rel="apple-touch-icon" href="/mz-logo-mark.PNG" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="color-scheme" content="light" />
     <!-- Tema claro forzado: estampa data-theme="light" antes del primer paint y bloquea modo oscuro -->
     <script>
@@ -17,12 +17,21 @@
     </script>
     <meta name="description" content="Mock te ayuda a hacer planes completos: la rutina y la nutrición de cada cliente en una sola herramienta. Vos ponés el criterio, la IA hace el trabajo pesado." />
     <title>Mock — Planes de entrenamiento y nutrición para coaches</title>
+    <link rel="preload" as="image" href="/assets/editor.png" fetchpriority="high" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
       rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      />
+    </noscript>
   </head>
   <body>
     <div id="root"></div>

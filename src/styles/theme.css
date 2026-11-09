@@ -21,8 +21,9 @@
 
   --c-text-primary: 17 20 24;
   --c-text-secondary: 71 78 87;
-  --c-text-tertiary: 110 117 127;
-  --c-text-quaternary: 150 157 166;
+  --c-text-tertiary: 82 88 102;        /* #525866 — WCAG AA compliant (6.7:1 vs #f7f8fa, 7.1:1 vs #fff) */
+  --c-text-muted: 82 88 102;           /* alias para texto muted accesible */
+  --c-text-quaternary: 110 117 127;
 
   --c-accent: 47 125 118;          /* teal profundo para contraste sobre blanco */
   --c-accent-light: 40 110 104;
@@ -43,6 +44,7 @@
   --color-text-secondary: rgb(var(--c-text-secondary));
   --color-text-tertiary: rgb(var(--c-text-tertiary));
   --color-text-quaternary: rgb(var(--c-text-quaternary));
+  --color-text-muted: rgb(var(--c-text-muted));
   --color-accent: rgb(var(--c-accent));
   --color-accent-strong: rgb(var(--c-accent-light));
   --color-accent-muted: rgb(var(--c-accent-dark));
@@ -56,7 +58,7 @@
   --color-info: #3B82F6;
 
   --color-text: var(--color-text-primary);
-  --color-muted: var(--color-text-tertiary);
+  --color-muted: var(--color-text-muted);
 }
 
 @media (prefers-color-scheme: dark) {

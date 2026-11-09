@@ -8,11 +8,11 @@ function Stepper({ value, onChange, ariaLabel }) {
   const match = String(value ?? "").match(/-?\d+/);
   const num = match ? parseInt(match[0], 10) : NaN;
   const step = (delta) => onChange(String(Math.max(0, (isNaN(num) ? 0 : num) + delta)));
-  const btn = "flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-border text-text-primary transition-colors hover:border-accent hover:text-accent active:scale-95";
+  const btn = "flex h-8 w-8 sm:h-11 sm:w-11 flex-shrink-0 items-center justify-center rounded-full border border-border text-text-primary transition-colors hover:border-accent hover:text-accent active:scale-95";
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1 sm:gap-2">
       <button type="button" onClick={() => step(-1)} aria-label={`${ariaLabel}: restar`} className={btn}>
-        <IconMinus stroke={1.75} className="h-4 w-4" />
+        <IconMinus stroke={1.75} className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
       </button>
       <input
         type="text"
@@ -20,10 +20,10 @@ function Stepper({ value, onChange, ariaLabel }) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         aria-label={ariaLabel}
-        className="h-11 min-w-0 flex-1 rounded-lg border border-border bg-primary-bg text-center text-lg font-bold text-text-primary transition-colors focus:border-accent focus:outline-none"
+        className="h-9 sm:h-11 min-w-[32px] flex-1 rounded-lg border border-border bg-primary-bg text-center text-base sm:text-lg font-bold text-text-primary transition-colors focus:border-accent focus:outline-none"
       />
       <button type="button" onClick={() => step(1)} aria-label={`${ariaLabel}: sumar`} className={btn}>
-        <IconPlus stroke={1.75} className="h-4 w-4" />
+        <IconPlus stroke={1.75} className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
       </button>
     </div>
   );
@@ -125,8 +125,8 @@ const ExerciseEditor = memo(({ weekId, dayId, item, exercise: exerciseProp, onAc
         </div>
       </div>
 
-      {/* RIR / Descanso / Cadencia (texto) */}
-      <div className="grid grid-cols-3 gap-3">
+      {/* RIR / Descanso / Cadencia (texto) — responsive 2 columnas en mobile */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
         <div className="flex flex-col gap-2">
           <label className={labelCls}>RIR</label>
           <input type="text" value={exercise.rir} onChange={handleChange("rir")} placeholder="ej: 2" className={`${inputCls} ${errors.rir ? "border-red-500" : ""}`} />
@@ -137,7 +137,7 @@ const ExerciseEditor = memo(({ weekId, dayId, item, exercise: exerciseProp, onAc
           <input type="text" value={exercise.rest} onChange={handleChange("rest")} placeholder="ej: 90s" className={`${inputCls} ${errors.rest ? "border-red-500" : ""}`} />
           {err("rest")}
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="col-span-2 sm:col-span-1 flex flex-col gap-2">
           <label className={labelCls}>Cadencia</label>
           <input type="text" value={exercise.tempo} onChange={handleChange("tempo")} placeholder="2-0-2" className={`${inputCls} ${errors.tempo ? "border-red-500" : ""}`} />
           {err("tempo")}

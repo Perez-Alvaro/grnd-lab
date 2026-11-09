@@ -163,8 +163,8 @@ export default function LoginModal() {
           {!isLoading && (
             <button
               onClick={closeLoginModal}
-              className="absolute top-4 right-4 p-2 rounded-lg text-text-quaternary hover:text-text-primary hover:bg-text-primary/5 transition-colors"
-              aria-label="Cerrar"
+              className="absolute top-4 right-4 p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-text-quaternary hover:text-text-primary hover:bg-text-primary/5 transition-colors"
+              aria-label="Cerrar modal"
             >
               <IconX stroke={1.75} className="h-4 w-4" />
             </button>
@@ -176,6 +176,10 @@ export default function LoginModal() {
                 <img
                   src="/mz-logo-mark.PNG"
                   alt="Mock"
+                  width={176}
+                  height={44}
+                  loading="lazy"
+                  decoding="async"
                   className="h-11 w-auto object-contain mix-blend-multiply"
                 />
               </div>
@@ -260,7 +264,7 @@ export default function LoginModal() {
                         type="button"
                         onClick={() => setShowPassword((v) => !v)}
                         tabIndex={-1}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-text-quaternary hover:text-text-secondary transition-colors"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-text-quaternary hover:text-text-secondary transition-colors"
                         aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                       >
                         {showPassword ? <IconEyeOff stroke={1.75} className="h-4 w-4" /> : <IconEye stroke={1.75} className="h-4 w-4" />}

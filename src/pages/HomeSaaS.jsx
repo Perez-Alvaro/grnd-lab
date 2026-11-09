@@ -70,24 +70,27 @@ const SOLUTION_POINTS = [
 const EDITOR_STEPS = [
     {
         number: '01',
+        shortTitle: 'Preguntas',
         icon: IconUsers,
         title: 'Respondé las preguntas',
-        description: 'Indicá edad, nivel de experiencia, lesiones, objetivo y disponibilidad semanal en un asistente ágil sin formularios eternos.',
-        chips: ['Edad y nivel', 'Historial clínico', 'Objetivo principal', 'Días semanales'],
+        description: 'Indicá edad, nivel, objetivo y disponibilidad semanal en un asistente ágil sin formularios eternos.',
+        chips: ['Edad y nivel', 'Objetivo claro', 'Días semanales'],
     },
     {
         number: '02',
+        shortTitle: 'Copiar prompt',
         icon: IconCopy,
         title: 'Copiá y pegá en la IA que quieras',
-        description: 'Con un solo clic copiás el prompt estructurado de Mock y lo pegás en ChatGPT, Claude o Gemini gratuitos. No necesitás pagar APIs ni suscripciones caras.',
+        description: 'Copiás el prompt estructurado en un clic y lo pegás en ChatGPT, Claude o Gemini gratuitos. Sin pagar APIs.',
         chips: ['ChatGPT', 'Claude', 'Gemini', '1 Clic para copiar'],
     },
     {
         number: '03',
+        shortTitle: 'Pegar y listo',
         icon: IconSparkles,
-        title: 'Volvé y pegá lo que te respondió tu IA y listo',
-        description: 'Pegás la respuesta en Mock y tu plan se carga automáticamente en el editor interactivo: ajustás series, comidas y cargas con tu criterio y exportás el PDF con tu marca.',
-        chips: ['Editor en vivo', 'Ajuste de cargas y gramos', 'PDF listo para WhatsApp'],
+        title: 'Volvé, pegá la respuesta y listo',
+        description: 'Pegás la respuesta en Mock, ajustás con tu criterio técnico y exportás el PDF con tu marca para WhatsApp.',
+        chips: ['Editor interactivo', 'Tu criterio técnico', 'PDF para WhatsApp'],
     },
 ];
 
@@ -180,17 +183,17 @@ const FAQ_ITEMS = [
    SHARED UI COMPONENTS
 ───────────────────────────────────────────── */
 
-function SectionHeader({ headline, subline }) {
+function SectionHeader({ headline, subline, className = '' }) {
     return (
-        <div className="mx-auto max-w-2xl text-center mb-14 sm:mb-16 scroll-reveal">
+        <div className={`mx-auto max-w-2xl text-center mb-8 sm:mb-12 lg:mb-16 scroll-reveal ${className}`}>
             <h2
-                className="font-bold tracking-tight text-text-primary font-display text-balance text-3xl sm:text-4xl"
+                className="font-bold tracking-tight text-text-primary font-display text-balance text-2xl sm:text-3xl lg:text-4xl"
                 style={{ lineHeight: '1.15' }}
             >
                 {headline}
             </h2>
             {subline && (
-                <p className="mt-4 text-base sm:text-lg text-text-secondary text-balance leading-relaxed">
+                <p className="mt-3 sm:mt-4 text-sm sm:text-base lg:text-lg text-text-secondary text-balance leading-relaxed">
                     {subline}
                 </p>
             )}
@@ -202,10 +205,11 @@ function SectionHeader({ headline, subline }) {
    NAVBAR
 ───────────────────────────────────────────── */
 
-function Navbar({ onScrollTo }) {
+function Navbar({ onScrollTo, onSignup }) {
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
-    const { user, openLoginModal } = useAuth();
+    const { user, openLoginModal, logout } = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handler = () => setScrolled(window.scrollY > 20);
@@ -213,11 +217,26 @@ function Navbar({ onScrollTo }) {
         return () => window.removeEventListener('scroll', handler);
     }, []);
 
+    const goToDashboard = () => {
+        const dest = user?.role === 'admin' ? '/admin' : '/dashboard';
+        navigate(dest);
+    };
+
+    const handleSignupAction = () => {
+        if (user) {
+            goToDashboard();
+        } else if (onSignup) {
+            onSignup();
+        } else {
+            openLoginModal('signup');
+        }
+    };
+
     return (
         <nav
             className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
-                scrolled
-                    ? 'bg-primary-bg/95 backdrop-blur-md border-b border-border shadow-sm'
+                scrolled || mobileOpen
+                    ? 'bg-primary-surface border-b border-border shadow-sm'
                     : 'bg-transparent'
             }`}
         >
@@ -225,13 +244,17 @@ function Navbar({ onScrollTo }) {
                 <div className="flex items-center justify-between h-16">
                     <button
                         type="button"
-                        className="flex items-center cursor-pointer text-left focus:outline-none"
+                        className="flex items-center cursor-pointer text-left focus:outline-none min-h-[44px] min-w-[44px]"
                         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                         aria-label="Mock - Inicio"
                     >
                         <img
                             src="/mz-logo-mark.PNG"
                             alt="Mock"
+                            width={144}
+                            height={36}
+                            loading="eager"
+                            decoding="async"
                             className="h-8 sm:h-9 w-auto object-contain mix-blend-multiply"
                         />
                     </button>
@@ -241,7 +264,7 @@ function Navbar({ onScrollTo }) {
                             <button
                                 key={link.id}
                                 onClick={() => onScrollTo(link.id)}
-                                className="text-sm text-text-secondary hover:text-text-primary transition-colors font-medium"
+                                className="text-sm text-text-secondary hover:text-text-primary transition-colors font-medium min-h-[44px] flex items-center px-2"
                             >
                                 {link.label}
                             </button>
@@ -255,14 +278,14 @@ function Navbar({ onScrollTo }) {
                             <>
                                 <button
                                     onClick={() => openLoginModal('login')}
-                                    className="text-sm text-text-secondary hover:text-text-primary transition-colors font-medium px-3 py-1.5"
+                                    className="text-sm text-text-secondary hover:text-text-primary transition-colors font-medium px-3 py-1.5 min-h-[44px] flex items-center"
                                 >
                                     Iniciar sesión
                                 </button>
                                 <Button
                                     size="sm"
                                     onClick={() => openLoginModal('signup')}
-                                    className="text-sm rounded-lg"
+                                    className="text-sm rounded-lg min-h-[44px]"
                                 >
                                     Crear cuenta
                                 </Button>
@@ -270,45 +293,78 @@ function Navbar({ onScrollTo }) {
                         )}
                     </div>
 
-                    <button
-                        className="md:hidden p-2 text-text-secondary hover:text-text-primary transition-colors"
-                        onClick={() => setMobileOpen(!mobileOpen)}
-                        aria-label="Abrir menú"
-                    >
-                        {mobileOpen ? <IconX stroke={1.75} className="h-5 w-5" /> : <IconMenu2 stroke={1.75} className="h-5 w-5" />}
-                    </button>
+                    <div className="flex items-center gap-2 md:hidden">
+                        {user ? (
+                            <button
+                                onClick={goToDashboard}
+                                className="h-10 min-h-[44px] min-w-[44px] flex items-center justify-center px-3 rounded-md bg-accent text-primary-bg text-xs font-bold shadow-sm active:scale-95 transition-transform"
+                            >
+                                Mi cuenta
+                            </button>
+                        ) : (
+                            <button
+                                onClick={handleSignupAction}
+                                className="h-10 min-h-[44px] min-w-[44px] flex items-center justify-center px-3 rounded-md bg-accent text-primary-bg text-xs font-bold shadow-sm active:scale-95 transition-transform"
+                            >
+                                Probar gratis
+                            </button>
+                        )}
+
+                        <button
+                            className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors"
+                            onClick={() => setMobileOpen(!mobileOpen)}
+                            aria-label={mobileOpen ? "Cerrar menú" : "Abrir menú"}
+                        >
+                            {mobileOpen ? <IconX stroke={1.75} className="h-5 w-5" /> : <IconMenu2 stroke={1.75} className="h-5 w-5" />}
+                        </button>
+                    </div>
                 </div>
             </div>
 
             {mobileOpen && (
-                <div className="md:hidden bg-primary-bg/98 backdrop-blur-md border-b border-border">
-                    <div className="px-6 py-4 space-y-3">
+                <div className="md:hidden bg-primary-surface border-b border-border shadow-lg">
+                    <div className="px-6 py-4 space-y-1">
                         {NAV_LINKS.map(link => (
                             <button
                                 key={link.id}
                                 onClick={() => { onScrollTo(link.id); setMobileOpen(false); }}
-                                className="block w-full text-left text-sm text-text-secondary hover:text-text-primary transition-colors py-2"
+                                className="py-3.5 px-4 text-base font-semibold text-text-primary border-b border-border/50 block w-full text-left"
                             >
                                 {link.label}
                             </button>
                         ))}
-                        <div className="pt-2 border-t border-border space-y-2">
+                        <div className="pt-3 border-t border-border space-y-2">
                             {user ? (
-                                <div className="text-sm text-text-secondary font-medium py-1">
-                                    Sesión activa como <span className="text-text-primary font-semibold">{user.name}</span>
-                                </div>
+                                <>
+                                    <div className="text-sm text-text-secondary font-medium py-1.5 px-4">
+                                        Sesión activa como <span className="text-text-primary font-semibold">{user.name}</span>
+                                    </div>
+                                    <Button
+                                        size="sm"
+                                        onClick={() => { setMobileOpen(false); goToDashboard(); }}
+                                        className="w-full text-sm rounded-lg min-h-[44px]"
+                                    >
+                                        Ir a mi cuenta
+                                    </Button>
+                                    <button
+                                        onClick={() => { setMobileOpen(false); logout(); navigate('/'); }}
+                                        className="block w-full text-center text-sm font-medium text-red-500 hover:text-red-600 transition-colors py-2.5 min-h-[44px] flex items-center justify-center"
+                                    >
+                                        Cerrar sesión
+                                    </button>
+                                </>
                             ) : (
                                 <>
                                     <Button
                                         size="sm"
                                         onClick={() => { openLoginModal('signup'); setMobileOpen(false); }}
-                                        className="w-full text-sm rounded-lg"
+                                        className="w-full text-sm rounded-lg min-h-[44px]"
                                     >
                                         Crear cuenta
                                     </Button>
                                     <button
                                         onClick={() => { openLoginModal('login'); setMobileOpen(false); }}
-                                        className="block w-full text-center text-sm text-text-secondary hover:text-text-primary transition-colors py-2"
+                                        className="block w-full text-center text-sm font-medium text-text-secondary hover:text-text-primary transition-colors py-2.5 min-h-[44px] flex items-center justify-center"
                                     >
                                         Iniciar sesión
                                     </button>
@@ -331,7 +387,18 @@ function HeroSection({ onScrollTo, onSignup }) {
         <section className="relative overflow-hidden border-b border-border bg-primary-bg">
             {/* Grilla interactiva de puntos en tono más visible */}
             <div className="absolute inset-0 z-0 opacity-50 pointer-events-none">
+                {/* Mobile static CSS dot pattern (0% CPU/GPU, 0ms TBT) */}
+                <div
+                    className="block md:hidden absolute inset-0"
+                    style={{
+                        backgroundImage: 'radial-gradient(rgb(var(--c-border-strong)) 1.2px, transparent 1.2px)',
+                        backgroundSize: '20px 20px',
+                    }}
+                    aria-hidden="true"
+                />
+                {/* Desktop interactive DotGrid */}
                 <DotGrid
+                    className="hidden md:block"
                     dotSize={5} gap={22}
                     baseColor="var(--c-border-strong)" activeColor="var(--c-accent)"
                     proximity={120} shockRadius={220} shockStrength={4}
@@ -339,36 +406,70 @@ function HeroSection({ onScrollTo, onSignup }) {
                 />
             </div>
 
-            <div
-                className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8"
-                style={{ paddingTop: 'clamp(90px, 11vw, 130px)', paddingBottom: 'clamp(60px, 8vw, 90px)' }}
-            >
-                {/* 1. hero_title (Centrado superior) */}
-                <div className="max-w-4xl mx-auto text-center scroll-reveal">
-                    <p className="text-xs font-bold uppercase tracking-widest text-text-tertiary mb-3.5">
+            <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8 pt-20 pb-8 sm:pt-28 sm:pb-16 lg:pt-32 lg:pb-24 flex flex-col items-center">
+                {/* 1. hero_title (Centrado superior: order-1 en mobile y desktop) */}
+                <div className="order-1 lg:order-1 max-w-4xl mx-auto text-center scroll-reveal is-visible">
+                    <p className="text-xs font-bold uppercase tracking-widest text-text-tertiary mb-3">
                         Software para entrenadores personales y coaches online
                     </p>
 
+                    {/* Responsive title scaling: text-3xl sm:text-5xl lg:text-6xl optimized for mobile fold */}
                     <h1
-                        className="text-text-primary font-display font-extrabold tracking-tight text-balance text-4xl sm:text-5xl lg:text-6xl"
-                        style={{ lineHeight: '1.08' }}
+                        className="text-text-primary font-display font-extrabold tracking-tight text-balance text-2xl sm:text-4xl lg:text-6xl"
+                        style={{ lineHeight: '1.1' }}
                     >
                         Armá rutinas y dietas profesionales en{' '}
                         <span className="text-accent">minutos, no horas</span>.
                     </h1>
                 </div>
 
-                {/* 2. editor (Visual central en el medio) */}
-                <div className="mt-8 sm:mt-10 max-w-4xl mx-auto relative flex items-center justify-center scroll-reveal">
+                {/* 2. Subtitle: conciso (max 2 líneas), order-2 en mobile, lg:order-3 en desktop */}
+                <div className="order-2 lg:order-3 mt-4 sm:mt-6 lg:mt-8 max-w-2xl mx-auto text-center scroll-reveal is-visible">
+                    <p className="text-sm sm:text-base lg:text-lg text-text-secondary leading-relaxed text-balance">
+                        La IA arma la base; vos ajustás con tu criterio y exportás un PDF impecable con tu marca para WhatsApp.
+                    </p>
+                </div>
+
+                {/* 3. Primary CTA: visible 100% ABOVE THE FOLD en 320x568 y 360x640, order-3 en mobile, lg:order-4 en desktop */}
+                <div className="order-3 lg:order-4 mt-5 sm:mt-7 flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full sm:w-auto scroll-reveal is-visible">
+                    <button
+                        onClick={onSignup}
+                        className="h-12 w-full sm:w-auto px-7 rounded-lg bg-accent text-primary-bg font-bold shadow-md shadow-accent/20 active:scale-[0.98] transition-all text-base inline-flex items-center justify-center gap-2 hover:bg-accent-light"
+                    >
+                        <span>Probar gratis 3 rutinas</span>
+                        <IconArrowRight stroke={1.75} className="h-4 w-4 flex-shrink-0" />
+                    </button>
+                    <button
+                        onClick={() => onScrollTo('how-it-works')}
+                        className="hidden sm:inline-flex items-center justify-center h-12 px-6 rounded-lg border border-border bg-primary-surface text-text-secondary hover:text-text-primary hover:border-border-strong font-medium text-base transition-colors w-full sm:w-auto"
+                    >
+                        Ver cómo funciona
+                    </button>
+                </div>
+
+                {/* 4. Micro-garantía: order-4 en mobile, lg:order-5 en desktop */}
+                <div className="order-4 lg:order-5 mt-2.5 sm:mt-3 text-center scroll-reveal is-visible">
+                    <p className="text-xs text-text-tertiary font-medium">
+                        ⚡ 3 rutinas gratis · Sin tarjeta · En pesos ARS
+                    </p>
+                </div>
+
+                {/* 5. Editor Mockup: inmediatamente debajo de micro-garantía en mobile (order-5), en desktop entre título y subtítulo (lg:order-2) */}
+                <div className="order-5 lg:order-2 mt-5 sm:mt-8 lg:mt-10 max-w-4xl mx-auto relative flex flex-col items-center justify-center w-full scroll-reveal is-visible">
                     <div className="relative w-full flex items-center justify-center">
                         <img
                             src="/assets/editor.png"
                             alt="Editor interactivo de rutinas y planes nutricionales en Mock"
-                            className="w-auto max-w-full max-h-[440px] sm:max-h-[500px] object-contain rounded-xl border border-border shadow-2xl"
+                            width={1919}
+                            height={910}
+                            className="w-full h-auto block rounded-xl border border-border shadow-2xl aspect-[1919/910]"
                             loading="eager"
+                            fetchPriority="high"
+                            decoding="async"
+                            /* fetchpriority="high" */
                         />
 
-                        {/* Marco flotante: PDF listo para exportar y enviar por WhatsApp */}
+                        {/* Marco flotante desktop: PDF listo para exportar y enviar por WhatsApp */}
                         <div className="hidden sm:flex absolute -bottom-4 sm:bottom-4 -left-2 sm:left-4 items-center gap-3 bg-primary-surface/95 backdrop-blur-sm border border-border rounded-xl p-3 shadow-xl max-w-[270px]">
                             <div className="h-10 w-10 flex-shrink-0 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
                                 <IconFileText stroke={1.75} className="h-5 w-5" />
@@ -379,34 +480,21 @@ function HeroSection({ onScrollTo, onSignup }) {
                             </div>
                         </div>
                     </div>
+
+                    {/* Badge mobile debajo del editor para que nunca se pierda en teléfonos */}
+                    <div className="sm:hidden mt-3 flex items-center justify-center gap-2.5 bg-primary-surface border border-border rounded-lg px-3 py-2 shadow-sm w-full max-w-xs mx-auto">
+                        <div className="h-7 w-7 flex-shrink-0 rounded-md bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
+                            <IconFileText stroke={1.75} className="h-4 w-4" />
+                        </div>
+                        <div className="text-left">
+                            <p className="text-xs font-bold text-text-primary leading-tight">PDF listo para exportar</p>
+                            <p className="text-[10px] text-text-secondary leading-tight">Listo para enviar por WhatsApp</p>
+                        </div>
+                    </div>
                 </div>
 
-                {/* 3. texto (Centrado debajo del editor) */}
-                <div className="mt-8 max-w-2xl mx-auto text-center scroll-reveal">
-                    <p className="text-base sm:text-lg text-text-secondary leading-relaxed">
-                        Dejá de perder tardes enteras en planillas de Excel y audios de WhatsApp. Mock genera la base completa del entrenamiento y la alimentación de cada atleta; vos revisás con tu criterio técnico y entregás un PDF impecable con tu marca.
-                    </p>
-                </div>
-
-                {/* 4. [CTA] [btn] (Centrados) */}
-                <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3.5 scroll-reveal">
-                    <button
-                        onClick={onSignup}
-                        className="inline-flex items-center justify-center gap-2 h-12 px-7 rounded-lg bg-accent text-primary-bg font-bold text-base w-full sm:w-auto shadow-md shadow-accent/25 hover:bg-accent-light active:scale-[0.99] transition-all"
-                    >
-                        <span>Probar gratis 3 rutinas</span>
-                        <IconArrowRight stroke={1.75} className="h-4 w-4 flex-shrink-0" />
-                    </button>
-                    <button
-                        onClick={() => onScrollTo('how-it-works')}
-                        className="inline-flex items-center justify-center h-12 px-6 rounded-lg border border-border bg-primary-surface text-text-secondary hover:text-text-primary hover:border-border-strong font-medium text-base transition-colors w-full sm:w-auto"
-                    >
-                        Ver cómo funciona
-                    </button>
-                </div>
-
-                {/* Trust indicators */}
-                <div className="mt-8 pt-6 border-t border-border flex flex-wrap items-center justify-center gap-5 sm:gap-8 text-xs text-text-secondary scroll-reveal">
+                {/* 6. Trust indicators: order-6 en mobile y desktop */}
+                <div className="order-6 lg:order-6 mt-5 sm:mt-8 pt-4 sm:pt-6 border-t border-border flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-xs text-text-secondary w-full scroll-reveal is-visible">
                     <div className="flex items-center gap-1.5">
                         <IconCircleCheck stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0" />
                         <span>Sin tarjeta de crédito requerida</span>
@@ -431,10 +519,10 @@ function HeroSection({ onScrollTo, onSignup }) {
 
 function MessyExcelMockup() {
     return (
-        <div className="relative rounded-2xl overflow-hidden border border-border shadow-xl bg-white text-slate-800 select-none">
+        <div className="relative rounded-2xl overflow-hidden border border-border shadow-xl bg-white text-slate-800 select-none max-w-full">
             {/* Barra superior estilo Excel */}
-            <div className="bg-[#107c41] text-white px-3.5 py-2 flex items-center justify-between">
-                <div className="flex items-center gap-2 truncate">
+            <div className="bg-[#107c41] text-white px-3.5 py-2 flex items-center justify-between gap-2 min-w-0">
+                <div className="flex items-center gap-2 min-w-0 flex-1">
                     <IconFileSpreadsheet stroke={1.75} className="h-4 w-4 flex-shrink-0 text-white" />
                     <span className="font-semibold text-xs truncate">
                         rutina_juan_martinez_FINAL_v3_revisada (1).xlsx
@@ -447,34 +535,38 @@ function MessyExcelMockup() {
             </div>
 
             {/* Barra de fórmulas */}
-            <div className="bg-slate-100 border-b border-slate-200 px-3 py-1.5 flex items-center gap-2 text-[11px] font-mono text-slate-600">
-                <span className="bg-white border border-slate-300 rounded px-1.5 py-0.5 text-slate-700 font-semibold text-[10px]">
+            <div className="bg-slate-100 border-b border-slate-200 px-3 py-1.5 flex items-center gap-2 text-[11px] font-mono text-slate-600 min-w-0">
+                <span className="bg-white border border-slate-300 rounded px-1.5 py-0.5 text-slate-700 font-semibold text-[10px] flex-shrink-0">
                     C5
                 </span>
-                <span className="text-slate-400 font-bold">fx</span>
-                <span className="truncate text-slate-700">
+                <span className="text-slate-400 font-bold flex-shrink-0">fx</span>
+                <span className="truncate text-slate-700 min-w-0 flex-1">
                     =BUSCARV(B5, 'Dieta_2024'!$A$2:$E$50, 4, FALSO) + #¡REF!
                 </span>
             </div>
 
-            {/* Grilla de la planilla */}
-            <div className="overflow-x-auto">
-                <table className="w-full min-w-[460px] border-collapse font-sans text-[11px]">
+            {/* Grilla de la planilla con indicador táctil de scroll en mobile */}
+            <div className="relative overflow-x-auto w-full max-w-full">
+                <div className="sm:hidden px-3 py-1 bg-amber-50 text-[10px] text-amber-800 border-b border-amber-200 flex items-center justify-between font-medium">
+                    <span>Planilla compleja y desordenada</span>
+                    <span>Deslizá para ver más →</span>
+                </div>
+                <table className="w-full sm:min-w-[460px] border-collapse font-sans text-[10px] sm:text-[11px]">
                     <thead>
                         <tr className="bg-slate-100 text-slate-500 font-medium border-b border-slate-200 text-center">
-                            <th className="w-7 py-1 border-r border-slate-200 bg-slate-200/60 font-mono text-[10px]">#</th>
-                            <th className="py-1 px-2 border-r border-slate-200 text-left">A (Ejercicio)</th>
-                            <th className="py-1 px-2 border-r border-slate-200">B (Series)</th>
-                            <th className="py-1 px-2 border-r border-slate-200">C (Reps)</th>
-                            <th className="py-1 px-2 border-r border-slate-200">D (Carga)</th>
-                            <th className="py-1 px-2 text-left">E (Notas / WhatsApp)</th>
+                            <th className="w-6 sm:w-7 py-1 border-r border-slate-200 bg-slate-200/60 font-mono text-[10px]">#</th>
+                            <th className="py-1 px-1.5 sm:px-2 border-r border-slate-200 text-left">A (Ejercicio)</th>
+                            <th className="py-1 px-1 sm:px-2 border-r border-slate-200">B (Series)</th>
+                            <th className="py-1 px-1 sm:px-2 border-r border-slate-200">C (Reps)</th>
+                            <th className="py-1 px-1 sm:px-2 border-r border-slate-200">D (Carga)</th>
+                            <th className="hidden sm:table-cell py-1 px-2 text-left">E (Notas / WhatsApp)</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200">
                         {/* Fila 1: Título manual desordenado */}
                         <tr className="bg-amber-100/70 font-semibold text-amber-950">
                             <td className="text-center bg-slate-100 border-r border-slate-200 font-mono text-[10px] text-slate-400 py-1">1</td>
-                            <td colSpan={5} className="px-2 py-1 text-[11px]">
+                            <td colSpan={5} className="px-1.5 sm:px-2 py-1 text-[10px] sm:text-[11px]">
                                 RUTINA HIPERTROFIA Y FUERZA — NO TOCAR FORMULAS
                             </td>
                         </tr>
@@ -482,21 +574,21 @@ function MessyExcelMockup() {
                         {/* Fila 2 */}
                         <tr>
                             <td className="text-center bg-slate-100 border-r border-slate-200 font-mono text-[10px] text-slate-400 py-1">2</td>
-                            <td className="px-2 py-1 font-medium border-r border-slate-200">Press banca plano</td>
-                            <td className="px-2 py-1 text-center border-r border-slate-200">4</td>
-                            <td className="px-2 py-1 text-center border-r border-slate-200">8-10</td>
-                            <td className="px-2 py-1 text-center border-r border-slate-200 font-semibold">80 kg</td>
-                            <td className="px-2 py-1 text-slate-500 text-[10px]">calentar manguito rotador</td>
+                            <td className="px-1.5 sm:px-2 py-1 font-medium border-r border-slate-200">Press banca plano</td>
+                            <td className="px-1 sm:px-2 py-1 text-center border-r border-slate-200">4</td>
+                            <td className="px-1 sm:px-2 py-1 text-center border-r border-slate-200">8-10</td>
+                            <td className="px-1 sm:px-2 py-1 text-center border-r border-slate-200 font-semibold">80 kg</td>
+                            <td className="hidden sm:table-cell px-2 py-1 text-slate-500 text-[10px]">calentar manguito rotador</td>
                         </tr>
 
                         {/* Fila 3 */}
                         <tr>
                             <td className="text-center bg-slate-100 border-r border-slate-200 font-mono text-[10px] text-slate-400 py-1">3</td>
-                            <td className="px-2 py-1 font-medium border-r border-slate-200">Sentadilla libre</td>
-                            <td className="px-2 py-1 text-center border-r border-slate-200">5</td>
-                            <td className="px-2 py-1 text-center border-r border-slate-200">5</td>
-                            <td className="px-2 py-1 text-center border-r border-slate-200 font-semibold">115 kg</td>
-                            <td className="px-2 py-1">
+                            <td className="px-1.5 sm:px-2 py-1 font-medium border-r border-slate-200">Sentadilla libre</td>
+                            <td className="px-1 sm:px-2 py-1 text-center border-r border-slate-200">5</td>
+                            <td className="px-1 sm:px-2 py-1 text-center border-r border-slate-200">5</td>
+                            <td className="px-1 sm:px-2 py-1 text-center border-r border-slate-200 font-semibold">115 kg</td>
+                            <td className="hidden sm:table-cell px-2 py-1">
                                 <span className="bg-amber-200 text-amber-900 px-1 py-0.5 rounded text-[10px] font-semibold">
                                     ojo rodilla izquierda!
                                 </span>
@@ -506,35 +598,35 @@ function MessyExcelMockup() {
                         {/* Fila 4: Error #¡REF! */}
                         <tr className="bg-red-50/50">
                             <td className="text-center bg-slate-100 border-r border-slate-200 font-mono text-[10px] text-slate-400 py-1">4</td>
-                            <td className="px-2 py-1 font-medium border-r border-slate-200">Remo con barra</td>
-                            <td className="px-2 py-1 text-center border-r border-slate-200">4</td>
-                            <td className="px-2 py-1 text-center border-r border-slate-200">10</td>
-                            <td className="px-2 py-1 text-center border-r border-slate-200 font-mono font-bold text-red-600 bg-red-100/70">
+                            <td className="px-1.5 sm:px-2 py-1 font-medium border-r border-slate-200">Remo con barra</td>
+                            <td className="px-1 sm:px-2 py-1 text-center border-r border-slate-200">4</td>
+                            <td className="px-1 sm:px-2 py-1 text-center border-r border-slate-200">10</td>
+                            <td className="px-1 sm:px-2 py-1 text-center border-r border-slate-200 font-mono font-bold text-red-600 bg-red-100/70">
                                 #¡REF!
                             </td>
-                            <td className="px-2 py-1 text-slate-500 text-[10px]">falta confirmar carga</td>
+                            <td className="hidden sm:table-cell px-2 py-1 text-slate-500 text-[10px]">falta confirmar carga</td>
                         </tr>
 
                         {/* Fila 5 */}
                         <tr>
                             <td className="text-center bg-slate-100 border-r border-slate-200 font-mono text-[10px] text-slate-400 py-1">5</td>
-                            <td className="px-2 py-1 font-medium border-r border-slate-200">Press militar manc.</td>
-                            <td className="px-2 py-1 text-center border-r border-slate-200">3</td>
-                            <td className="px-2 py-1 text-center border-r border-slate-200">12</td>
-                            <td className="px-2 py-1 text-center border-r border-slate-200 font-semibold">24 kg</td>
-                            <td className="px-2 py-1 text-slate-500 text-[10px]">audio wsp 14/04 (¿subir a 26?)</td>
+                            <td className="px-1.5 sm:px-2 py-1 font-medium border-r border-slate-200">Press militar manc.</td>
+                            <td className="px-1 sm:px-2 py-1 text-center border-r border-slate-200">3</td>
+                            <td className="px-1 sm:px-2 py-1 text-center border-r border-slate-200">12</td>
+                            <td className="px-1 sm:px-2 py-1 text-center border-r border-slate-200 font-semibold">24 kg</td>
+                            <td className="hidden sm:table-cell px-2 py-1 text-slate-500 text-[10px]">audio wsp 14/04 (¿subir a 26?)</td>
                         </tr>
 
                         {/* Fila 6: Error #¡VALOR! con dieta pegada a mano */}
                         <tr className="bg-red-50/50">
                             <td className="text-center bg-slate-100 border-r border-slate-200 font-mono text-[10px] text-slate-400 py-1">6</td>
-                            <td className="px-2 py-1 font-medium border-r border-slate-200 text-slate-700">Dieta asociada</td>
-                            <td className="px-2 py-1 text-center border-r border-slate-200 font-mono font-bold text-red-600 bg-red-100/70">
+                            <td className="px-1.5 sm:px-2 py-1 font-medium border-r border-slate-200 text-slate-700">Dieta asociada</td>
+                            <td className="px-1 sm:px-2 py-1 text-center border-r border-slate-200 font-mono font-bold text-red-600 bg-red-100/70">
                                 #¡VALOR!
                             </td>
-                            <td className="px-2 py-1 text-center border-r border-slate-200 text-slate-400">-</td>
-                            <td className="px-2 py-1 text-center border-r border-slate-200 text-slate-400">-</td>
-                            <td className="px-2 py-1">
+                            <td className="px-1 sm:px-2 py-1 text-center border-r border-slate-200 text-slate-400">-</td>
+                            <td className="px-1 sm:px-2 py-1 text-center border-r border-slate-200 text-slate-400">-</td>
+                            <td className="hidden sm:table-cell px-2 py-1">
                                 <span className="bg-red-200 text-red-900 px-1 py-0.5 rounded text-[10px] font-bold">
                                     desactualizado (revisar)
                                 </span>
@@ -544,36 +636,33 @@ function MessyExcelMockup() {
                         {/* Fila 7 */}
                         <tr>
                             <td className="text-center bg-slate-100 border-r border-slate-200 font-mono text-[10px] text-slate-400 py-1">7</td>
-                            <td className="px-2 py-1 font-medium border-r border-slate-200">Cardio cinta</td>
-                            <td className="px-2 py-1 text-center border-r border-slate-200">20 min</td>
-                            <td className="px-2 py-1 text-center border-r border-slate-200">LISS</td>
-                            <td className="px-2 py-1 text-center border-r border-slate-200 text-slate-400">-</td>
-                            <td className="px-2 py-1 text-slate-400 text-[10px]">nunca lo hace...</td>
+                            <td className="px-1.5 sm:px-2 py-1 font-medium border-r border-slate-200">Cardio cinta</td>
+                            <td className="px-1 sm:px-2 py-1 text-center border-r border-slate-200">20 min</td>
+                            <td className="px-1 sm:px-2 py-1 text-center border-r border-slate-200">LISS</td>
+                            <td className="px-1 sm:px-2 py-1 text-center border-r border-slate-200 text-slate-400">-</td>
+                            <td className="hidden sm:table-cell px-2 py-1 text-slate-400 text-[10px]">nunca lo hace...</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             {/* Pestañas inferiores de hojas desordenadas */}
-            <div className="bg-slate-100 border-t border-slate-200 px-2 py-1.5 flex items-center gap-1 overflow-x-auto text-[11px]">
-                <div className="bg-white border border-slate-300 border-b-white rounded-t px-2.5 py-0.5 font-bold text-[#107c41] flex items-center gap-1.5 flex-shrink-0 shadow-sm">
+            <div className="bg-slate-100 border-t border-slate-200 px-2 py-1.5 flex items-center gap-1 overflow-hidden max-w-full text-[10px] sm:text-[11px]">
+                <div className="bg-white border border-slate-300 border-b-white rounded-t px-2 py-0.5 font-bold text-[#107c41] flex items-center gap-1 flex-shrink-0 shadow-sm">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#107c41]" />
                     <span>Rutina Juan</span>
                 </div>
-                <div className="bg-slate-200/70 border border-slate-300 rounded px-2 py-0.5 text-slate-500 flex-shrink-0">
+                <div className="bg-slate-200/70 border border-slate-300 rounded px-2 py-0.5 text-slate-500 truncate min-w-0">
                     Hoja 2 (copia)
                 </div>
-                <div className="bg-slate-200/70 border border-slate-300 rounded px-2 py-0.5 text-slate-500 flex-shrink-0">
+                <div className="bg-slate-200/70 border border-slate-300 rounded px-2 py-0.5 text-slate-500 truncate min-w-0">
                     Dieta_2024_vieja
                 </div>
-                <div className="bg-slate-200/70 border border-slate-300 rounded px-2 py-0.5 text-slate-500 flex-shrink-0">
-                    alumnos_pendientes
-                </div>
-                <span className="text-slate-400 font-bold px-1">+</span>
+                <span className="text-slate-400 font-bold px-1 flex-shrink-0">+</span>
             </div>
 
-            {/* Badge flotante de advertencia */}
-            <div className="hidden sm:flex absolute bottom-3 right-3 items-center gap-2 rounded-lg bg-red-600 text-white px-3 py-1.5 text-xs font-semibold shadow-xl border border-red-500">
+            {/* Badge de advertencia — visible en móvil y desktop */}
+            <div className="sm:absolute sm:bottom-3 sm:right-3 m-2 sm:m-0 flex items-center justify-center gap-2 rounded-lg bg-red-600 text-white px-3 py-1.5 text-xs font-semibold shadow-md sm:shadow-xl border border-red-500">
                 <IconAlertTriangle stroke={2} className="h-4 w-4 flex-shrink-0 text-amber-300" />
                 <span>Imposible de leer en el celular del alumno</span>
             </div>
@@ -582,34 +671,85 @@ function MessyExcelMockup() {
 }
 
 function PainPointsSection() {
+    const [activePainIndex, setActivePainIndex] = useState(0);
+
+    const handlePainScroll = (e) => {
+        const { scrollLeft, offsetWidth } = e.currentTarget;
+        if (offsetWidth > 0) {
+            const index = Math.round(scrollLeft / (offsetWidth * 0.85));
+            setActivePainIndex(Math.min(Math.max(index, 0), PROBLEM_POINTS.length - 1));
+        }
+    };
+
     return (
         <section
             id="problema"
-            className="mx-auto max-w-7xl px-6 lg:px-8 border-b border-border bg-primary-bg"
-            style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}
+            className="scroll-mt-20 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 border-b border-border bg-primary-bg py-10 sm:py-16 lg:py-24 overflow-hidden"
         >
-            <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center max-w-6xl mx-auto">
+            <div className="grid lg:grid-cols-12 gap-8 lg:gap-14 items-center max-w-6xl mx-auto">
                 {/* Izquierda: Mockup de Excel desordenado */}
-                <div className="lg:col-span-6 scroll-reveal">
+                <div className="lg:col-span-6 min-w-0 overflow-hidden w-full scroll-reveal">
                     <MessyExcelMockup />
                 </div>
 
                 {/* Derecha: 3 Bullets de Dolor del Entrenador */}
-                <div className="lg:col-span-6 scroll-reveal">
-                    <p className="text-xs font-bold uppercase tracking-widest text-text-tertiary mb-3">
+                <div className="lg:col-span-6 min-w-0 scroll-reveal">
+                    <p className="text-xs font-bold uppercase tracking-widest text-text-tertiary mb-2 sm:mb-3">
                         El problema
                     </p>
                     <h2
-                        className="font-bold tracking-tight text-text-primary font-display text-balance text-3xl sm:text-4xl"
+                        className="font-bold tracking-tight text-text-primary font-display text-balance text-2xl sm:text-3xl lg:text-4xl"
                         style={{ lineHeight: '1.15' }}
                     >
                         El costo de seguir armando planes a mano
                     </h2>
-                    <p className="mt-3 text-base text-text-secondary leading-relaxed">
+                    <p className="mt-2.5 sm:mt-3 text-sm sm:text-base text-text-secondary leading-relaxed">
                         El cuello de botella operativo que frena a los entrenadores independientes todos los meses.
                     </p>
 
-                    <div className="mt-7 space-y-4">
+                    {/* Mobile view (<lg): Touch-friendly horizontal swipe carousel with dots */}
+                    <div className="lg:hidden mt-6 overflow-hidden">
+                        <div
+                            onScroll={handlePainScroll}
+                            className="snap-x snap-mandatory flex gap-3 overflow-x-auto pb-3 -mx-4 px-4 scrollbar-none"
+                            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                        >
+                            {PROBLEM_POINTS.map((item, idx) => (
+                                <div
+                                    key={idx}
+                                    className="snap-center shrink-0 w-[85%] max-w-[320px] rounded-xl border border-border bg-primary-surface p-4 flex items-start gap-3 shadow-xs"
+                                >
+                                    <div className="h-8 w-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 flex-shrink-0 mt-0.5">
+                                        <IconX stroke={2} className="h-4 w-4" />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <h3 className="text-sm font-bold text-text-primary mb-1">
+                                            {item.title}
+                                        </h3>
+                                        <p className="text-xs text-text-secondary leading-relaxed">
+                                            {item.description}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        {/* Dot indicators */}
+                        <div className="flex items-center justify-center gap-1.5 mt-2">
+                            {PROBLEM_POINTS.map((_, idx) => (
+                                <span
+                                    key={idx}
+                                    role="img"
+                                    className={`h-1.5 rounded-full transition-all duration-200 ${
+                                        activePainIndex === idx ? 'w-4 bg-accent' : 'w-1.5 bg-border-strong'
+                                    }`}
+                                    aria-label={`Punto ${idx + 1}`}
+                                />
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Desktop view (lg:): 3 Stacked Cards */}
+                    <div className="hidden lg:flex lg:flex-col mt-7 space-y-4">
                         {PROBLEM_POINTS.map((item, idx) => (
                             <div key={idx} className="rounded-xl border border-border bg-primary-surface p-4 flex items-start gap-3.5">
                                 <div className="h-9 w-9 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 flex-shrink-0 mt-0.5">
@@ -640,53 +780,64 @@ function ServicesSection() {
     return (
         <section
             id="servicios"
-            className="relative overflow-hidden border-b border-border bg-primary-bg"
-            style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}
+            className="scroll-mt-20 relative overflow-hidden border-b border-border bg-primary-bg py-10 lg:py-20"
         >
+            <div id="benefits" className="scroll-mt-20 absolute -top-20 pointer-events-none" />
             {/* Fondo ilustrado herobg.png — tenue para máxima legibilidad */}
-            <div
-                className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none opacity-25"
-                style={{ backgroundImage: 'url(/assets/herobg.png)' }}
+            <img
+                src="/assets/herobg.png"
+                alt=""
+                role="presentation"
+                width={1920}
+                height={1080}
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 z-0 w-full h-full object-cover object-center pointer-events-none opacity-25"
             />
 
-            <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
-                <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center max-w-6xl mx-auto">
+            <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="grid lg:grid-cols-12 gap-8 lg:gap-14 items-center max-w-6xl mx-auto">
                     {/* Izquierda: Mockup transparente sin fondo */}
                     <div className="lg:col-span-5 flex items-center justify-center scroll-reveal">
-                        <div className="relative w-full max-w-[340px] sm:max-w-[400px]">
+                        <div className="relative w-full max-w-[260px] sm:max-w-[340px] lg:max-w-[400px]">
                             <img
                                 src="/assets/paso-2.png"
                                 alt="Mockup de planes de entrenamiento y nutrición unificados"
+                                width={703}
+                                height={900}
                                 loading="lazy"
-                                className="w-full h-auto object-contain drop-shadow-2xl"
+                                decoding="async"
+                                className="w-full h-auto object-contain drop-shadow-2xl aspect-[703/900]"
                             />
                         </div>
                     </div>
 
                     {/* Derecha: 3 Bullets de Valor para Entrenadores */}
                     <div className="lg:col-span-7 scroll-reveal">
-                        <p className="text-xs font-bold uppercase tracking-widest text-text-tertiary mb-3">
-                            La solución
-                        </p>
-                        <h2
-                            className="font-bold tracking-tight text-text-primary font-display text-balance text-3xl sm:text-4xl"
-                            style={{ lineHeight: '1.15' }}
-                        >
-                            Planes de entrenamiento y nutrición en un solo lugar
-                        </h2>
-                        <p className="mt-3 text-base text-text-secondary leading-relaxed">
-                            Dejá de usar herramientas separadas. Mock genera la base completa del entrenamiento y la alimentación de cada atleta, bajo el mismo criterio técnico.
-                        </p>
+                        <div className="mb-6 lg:mb-12">
+                            <p className="text-xs font-bold uppercase tracking-widest text-text-tertiary mb-2 sm:mb-3">
+                                La solución
+                            </p>
+                            <h2
+                                className="font-bold tracking-tight text-text-primary font-display text-balance text-2xl sm:text-3xl lg:text-4xl"
+                                style={{ lineHeight: '1.15' }}
+                            >
+                                Planes de entrenamiento y nutrición en un solo lugar
+                            </h2>
+                            <p className="mt-2.5 sm:mt-3 text-sm sm:text-base text-text-secondary leading-relaxed">
+                                Dejá de usar herramientas separadas. Mock genera la base completa del entrenamiento y la alimentación de cada atleta, bajo el mismo criterio técnico.
+                            </p>
+                        </div>
 
-                        <div className="mt-7 space-y-4">
+                        <div className="space-y-3 sm:space-y-4">
                             {SOLUTION_POINTS.map((item, idx) => {
                                 const IconComponent = item.icon;
                                 return (
-                                    <div key={idx} className="rounded-xl border border-border bg-primary-surface/95 backdrop-blur-sm p-4 flex items-start gap-3.5 shadow-sm">
+                                    <div key={idx} className="rounded-xl border border-border bg-primary-surface/95 backdrop-blur-sm p-4 flex items-start gap-3.5 shadow-xs">
                                         <div className="h-9 w-9 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center text-accent flex-shrink-0 mt-0.5">
                                             <IconComponent stroke={1.75} className="h-4 w-4" />
                                         </div>
-                                        <div>
+                                        <div className="min-w-0 flex-1">
                                             <h3 className="text-sm font-bold text-text-primary mb-1">
                                                 {item.title}
                                             </h3>
@@ -761,10 +912,10 @@ function StepMockup({ number }) {
                         Gemini
                     </div>
                 </div>
-                <div className="rounded-lg border border-dashed border-accent/30 bg-accent/5 p-3 flex items-center justify-between">
-                    <div className="truncate pr-2">
+                <div className="rounded-lg border border-dashed border-accent/30 bg-accent/5 p-3 flex items-center justify-between gap-2 min-w-0">
+                    <div className="min-w-0 flex-1 pr-1">
                         <p className="text-xs font-mono text-text-primary truncate">Prompt estructurado listo...</p>
-                        <p className="text-[11px] text-text-secondary">Incluye reglas de gramos, series y periodización</p>
+                        <p className="text-[11px] text-text-secondary leading-snug">Incluye reglas de gramos, series y periodización</p>
                     </div>
                     <span className="inline-flex items-center gap-1.5 rounded-md bg-accent text-primary-bg font-bold text-xs px-2.5 py-1.5 flex-shrink-0">
                         <IconCopy stroke={2} className="h-3.5 w-3.5" />
@@ -781,7 +932,7 @@ function StepMockup({ number }) {
                 <span className="text-xs font-bold text-text-primary">Plan cargado en el editor interactivo</span>
                 <span className="text-xs text-accent font-semibold tabular-nums">4 semanas</span>
             </div>
-            <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 <div className="rounded-md border border-border bg-primary-bg p-2.5">
                     <p className="font-semibold text-text-primary mb-1">Entrenamiento</p>
                     <p className="text-[11px] text-text-secondary">Empuje / Tracción / Piernas</p>
@@ -803,32 +954,47 @@ function EditorStepsSection() {
     return (
         <section
             id="how-it-works"
-            className="mx-auto max-w-7xl px-6 lg:px-8 border-b border-border bg-primary-bg"
-            style={{ paddingTop: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}
+            className="scroll-mt-20 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 border-b border-border bg-primary-bg py-10 sm:py-16 lg:py-24 overflow-hidden"
         >
             <SectionHeader
                 headline="De la consulta al PDF en 3 pasos directos"
                 subline="Mock arma la base técnica, tu IA favorita genera la propuesta y vos ajustás todo con tu criterio profesional."
+                className="mb-6 sm:mb-10 lg:mb-14"
             />
 
-            <div className="mx-auto max-w-5xl space-y-12 sm:space-y-16">
+            {/* Mobile visual 1 → 2 → 3 progress stepper pills */}
+            <div className="lg:hidden flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mb-8 px-1">
+                {EDITOR_STEPS.map((s, idx) => (
+                    <div key={s.number} className="flex items-center gap-1 sm:gap-2">
+                        <div className="flex items-center gap-1 sm:gap-1.5 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full border border-border bg-primary-surface text-[11px] sm:text-xs font-semibold text-text-primary shadow-xs">
+                            <span className="font-bold text-accent font-mono">0{idx + 1}</span>
+                            <span className="text-text-secondary">{s.shortTitle}</span>
+                        </div>
+                        {idx < EDITOR_STEPS.length - 1 && (
+                            <span className="text-text-tertiary text-xs">→</span>
+                        )}
+                    </div>
+                ))}
+            </div>
+
+            <div className="mx-auto max-w-5xl space-y-8 sm:space-y-12 lg:space-y-16">
                 {EDITOR_STEPS.map((step, index) => {
                     const isEven = index % 2 === 0;
 
                     return (
                         <div
                             key={step.number}
-                            className={`grid items-center gap-8 lg:grid-cols-12 lg:gap-14 scroll-reveal ${
+                            className={`grid items-center gap-6 sm:gap-8 lg:grid-cols-12 lg:gap-14 scroll-reveal min-w-0 ${
                                 !isEven ? 'lg:grid-flow-dense' : ''
                             }`}
                         >
                             {/* Visual Mockup */}
-                            <div className={`lg:col-span-6 ${!isEven ? 'lg:col-start-7' : ''}`}>
-                                <div className="rounded-xl border border-border bg-primary-surface p-4 shadow-sm">
-                                    <div className="flex items-center justify-between pb-3 mb-3 border-b border-border text-xs text-text-tertiary">
+                            <div className={`min-w-0 lg:col-span-6 ${!isEven ? 'lg:col-start-7' : ''}`}>
+                                <div className="rounded-xl border border-border bg-primary-surface p-3.5 sm:p-4 shadow-xs min-w-0 overflow-hidden">
+                                    <div className="flex items-center justify-between pb-2.5 mb-2.5 sm:pb-3 sm:mb-3 border-b border-border text-xs text-text-tertiary">
                                         <div className="flex items-center gap-2">
-                                            <span className="font-bold text-accent tabular-nums text-sm">Paso {step.number}</span>
-                                            <span className="text-text-primary font-medium">· Editor Mock</span>
+                                            <span className="font-bold text-accent tabular-nums text-xs sm:text-sm">Paso {step.number}</span>
+                                            <span className="text-text-primary font-medium text-xs sm:text-sm">· Editor Mock</span>
                                         </div>
                                         <step.icon stroke={1.75} className="h-4 w-4 text-text-secondary" />
                                     </div>
@@ -837,22 +1003,22 @@ function EditorStepsSection() {
                             </div>
 
                             {/* Text Description */}
-                            <div className={`lg:col-span-6 ${!isEven ? 'lg:col-start-1' : ''}`}>
-                                <div className="flex items-center gap-2 text-accent font-bold text-sm mb-2 tabular-nums">
+                            <div className={`min-w-0 lg:col-span-6 ${!isEven ? 'lg:col-start-1' : ''}`}>
+                                <div className="flex items-center gap-2 text-accent font-bold text-xs sm:text-sm mb-1.5 sm:mb-2 tabular-nums">
                                     <span>0{index + 1}</span>
                                     <span>/ 03</span>
                                 </div>
-                                <h3 className="text-xl sm:text-2xl font-bold text-text-primary font-display text-balance mb-3">
+                                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-text-primary font-display text-balance mb-2 sm:mb-3">
                                     {step.title}
                                 </h3>
-                                <p className="text-base text-text-secondary leading-relaxed mb-5">
+                                <p className="text-sm sm:text-base text-text-secondary leading-relaxed mb-3.5 sm:mb-5">
                                     {step.description}
                                 </p>
-                                <div className="flex flex-wrap gap-2">
+                                <div className="flex flex-wrap gap-1.5 sm:gap-2">
                                     {step.chips.map((chip, i) => (
                                         <span
                                             key={i}
-                                            className="text-xs px-2.5 py-1 rounded-md bg-primary-surface border border-border text-text-secondary font-medium"
+                                            className="text-[11px] sm:text-xs px-2.5 py-1 rounded-md bg-primary-surface border border-border text-text-secondary font-medium"
                                         >
                                             {chip}
                                         </span>
@@ -873,15 +1039,213 @@ function EditorStepsSection() {
 ───────────────────────────────────────────── */
 
 function PricingSection({ onSelectPlan, onSignup }) {
+    const [billingCycle, setBillingCycle] = useState('annual');
+
     return (
-        <section id="pricing" className="border-b border-border bg-primary-bg" style={{ padding: 'var(--space-section) 0' }}>
-            <div className="mx-auto max-w-6xl px-6 lg:px-8">
+        <section
+            id="pricing"
+            className="scroll-mt-20 border-b border-border bg-primary-bg"
+            style={{ padding: 'var(--space-section) 0' }}
+        >
+            <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
                 <SectionHeader
                     headline="Elegí el plan para tu volumen de atletas"
                     subline="Empezá gratis con 3 rutinas completas. Pasate a Pro cuando necesites planificar sin límites."
                 />
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch scroll-reveal">
+                {/* MOBILE VIEW (<md): Interactive Toggle + Active Pro on top + Compact Free Tier Banner */}
+                <div className="md:hidden max-w-md mx-auto scroll-reveal">
+                    {/* Segmented Control Toggle */}
+                    <div className="flex items-center justify-center mb-6">
+                        <div className="grid grid-cols-2 p-1 rounded-xl bg-primary-surface border border-border shadow-xs w-full">
+                            <button
+                                type="button"
+                                onClick={() => setBillingCycle('monthly')}
+                                className={`py-2.5 px-3 rounded-lg text-xs font-bold transition-all text-center min-h-[44px] flex items-center justify-center ${
+                                    billingCycle === 'monthly'
+                                        ? 'bg-accent text-primary-bg shadow-sm'
+                                        : 'text-text-secondary hover:text-text-primary'
+                                }`}
+                            >
+                                Mensual
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setBillingCycle('annual')}
+                                className={`py-2.5 px-3 rounded-lg text-xs font-bold transition-all text-center min-h-[44px] flex items-center justify-center gap-1.5 ${
+                                    billingCycle === 'annual'
+                                        ? 'bg-accent text-primary-bg shadow-sm'
+                                        : 'text-text-secondary hover:text-text-primary'
+                                }`}
+                            >
+                                <span>Anual</span>
+                                <span
+                                    className={`text-[10px] px-1.5 py-0.5 rounded-full font-semibold ${
+                                        billingCycle === 'annual'
+                                            ? 'bg-primary-bg/25 text-primary-bg'
+                                            : 'bg-accent/15 text-accent'
+                                    }`}
+                                >
+                                    Ahorrás 33%
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Active Pro Card */}
+                    {billingCycle === 'annual' ? (
+                        <div className="rounded-2xl border-2 border-accent bg-primary-surface shadow-xl overflow-hidden flex flex-col">
+                            <div className="w-full bg-accent text-primary-bg text-center py-2 px-4 text-xs font-bold tracking-wider uppercase">
+                                Más elegido · Ahorrás 33%
+                            </div>
+                            <div className="p-5 flex-1 flex flex-col justify-between">
+                                <div>
+                                    <h3 className="text-xl font-bold text-text-primary font-display">
+                                        Pro Anual
+                                    </h3>
+                                    <p className="text-xs text-text-secondary mt-1 leading-relaxed">
+                                        La opción más conveniente para consolidar y profesionalizar tu negocio todo el año.
+                                    </p>
+
+                                    <div className="mt-4 pb-4 border-b border-border">
+                                        <div className="flex items-baseline gap-2">
+                                            <span className="text-3xl font-black font-display tracking-tight text-accent tabular-nums">
+                                                $120.000
+                                            </span>
+                                            <span className="text-xs text-text-secondary font-semibold">
+                                                ARS / año
+                                            </span>
+                                        </div>
+                                        <p className="text-xs font-semibold text-accent mt-1.5">
+                                            Equivale a $10.000 ARS/mes (4 meses gratis)
+                                        </p>
+                                        <p className="text-[11px] text-text-tertiary mt-1 leading-normal">
+                                            Un único pago anual por transferencia o MP · Ahorrás $60.000 ARS
+                                        </p>
+                                    </div>
+
+                                    {/* 4 key compact bullets */}
+                                    <ul className="space-y-2.5 text-xs text-text-primary my-5">
+                                        <li className="flex items-start gap-2">
+                                            <IconCircleCheck stroke={2} className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
+                                            <span>Rutinas y nutrición ilimitadas para Argentina</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <IconCircleCheck stroke={2} className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
+                                            <span>Atletas y alumnos ilimitados sin restricciones</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <IconCircleCheck stroke={2} className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
+                                            <span>Tu marca personal en portada y encabezados (PDFs)</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <IconCircleCheck stroke={2} className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
+                                            <span>Precio congelado por 12 meses + Soporte prioritario</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <Button
+                                    variant="accent"
+                                    size="lg"
+                                    onClick={() => onSelectPlan('pro_annual')}
+                                    className="w-full rounded-lg font-bold shadow-md shadow-accent/25 min-h-[44px]"
+                                >
+                                    <span>Elegir Pro Anual</span>
+                                    <IconArrowRight stroke={2} className="ml-1.5 h-4 w-4" />
+                                </Button>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="rounded-2xl border border-border bg-primary-surface shadow-md overflow-hidden flex flex-col">
+                            <div className="p-5 flex-1 flex flex-col justify-between">
+                                <div>
+                                    <h3 className="text-xl font-bold text-text-primary font-display">
+                                        Pro Mensual
+                                    </h3>
+                                    <p className="text-xs text-text-secondary mt-1 leading-relaxed">
+                                        Para entrenadores activos que necesitan programar sin límites de clientes.
+                                    </p>
+
+                                    <div className="mt-4 pb-4 border-b border-border">
+                                        <div className="flex items-baseline gap-2">
+                                            <span className="text-3xl font-black font-display tracking-tight text-text-primary tabular-nums">
+                                                $15.000
+                                            </span>
+                                            <span className="text-xs text-text-secondary font-semibold">
+                                                ARS / mes
+                                            </span>
+                                        </div>
+                                        <p className="text-[11px] text-text-tertiary mt-1.5 leading-normal">
+                                            Pago mensual por transferencia o MP · Sin renovación automática
+                                        </p>
+                                    </div>
+
+                                    {/* 4 key compact bullets */}
+                                    <ul className="space-y-2.5 text-xs text-text-primary my-5">
+                                        <li className="flex items-start gap-2">
+                                            <IconCircleCheck stroke={2} className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
+                                            <span>Rutinas y nutrición ilimitadas para Argentina</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <IconCircleCheck stroke={2} className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
+                                            <span>Atletas y alumnos ilimitados sin restricciones</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <IconCircleCheck stroke={2} className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
+                                            <span>Tu marca personal en portada y encabezados (PDFs)</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <IconCircleCheck stroke={2} className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
+                                            <span>Lista de compras y guías de meal prep automáticas</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <Button
+                                    variant="outline"
+                                    size="lg"
+                                    onClick={() => onSelectPlan('pro_monthly')}
+                                    className="w-full rounded-lg font-bold border-accent text-accent hover:bg-accent/10 min-h-[44px]"
+                                >
+                                    <span>Elegir Pro Mensual</span>
+                                    <IconArrowRight stroke={2} className="ml-1.5 h-4 w-4" />
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Compact Banner for Plan Inicial */}
+                    <div className="mt-4 rounded-xl border border-border bg-primary-surface/90 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+                        <div className="text-left">
+                            <p className="text-xs font-bold text-text-primary">¿Querés empezar sin costo?</p>
+                            <p className="text-xs text-text-secondary mt-0.5">Plan Inicial: 3 rutinas gratis sin tarjeta.</p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={onSignup}
+                            className="inline-flex items-center gap-1.5 text-xs font-bold text-accent hover:underline py-1 px-2 min-h-[44px]"
+                        >
+                            <span>Crear cuenta gratis</span>
+                            <IconArrowRight stroke={2} className="h-3.5 w-3.5" />
+                        </button>
+                    </div>
+
+                    {/* Argentina Trust Badges (Mobile) */}
+                    <div className="mt-5 space-y-2.5 text-xs text-text-secondary text-left px-1">
+                        <div className="flex items-center gap-2">
+                            <IconBuildingBank stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0" />
+                            <span>Cobro en pesos (ARS) por transferencia bancaria (CBU/CVU) o Mercado Pago</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <IconCircleCheck stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0" />
+                            <span>Sin débitos automáticos sorpresa ni impuestos al dólar</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* DESKTOP VIEW (md:): 3 Side-by-Side Columns intact with zero regression */}
+                <div className="hidden md:grid md:grid-cols-3 gap-6 lg:gap-8 items-stretch scroll-reveal">
                     {PRICING_TIERS.map((tier) => {
                         const isAnnual = tier.id === 'pro_annual';
                         const isFreemium = tier.id === 'freemium';
@@ -953,7 +1317,7 @@ function PricingSection({ onSelectPlan, onSignup }) {
                                                 variant="outline"
                                                 size="lg"
                                                 onClick={onSignup}
-                                                className="w-full rounded-lg font-semibold border-border hover:border-text-primary"
+                                                className="w-full rounded-lg font-semibold border-border hover:border-text-primary min-h-[44px]"
                                             >
                                                 {tier.cta}
                                             </Button>
@@ -962,7 +1326,7 @@ function PricingSection({ onSelectPlan, onSignup }) {
                                                 variant="accent"
                                                 size="lg"
                                                 onClick={() => onSelectPlan(tier.id)}
-                                                className="w-full rounded-lg font-bold shadow-md shadow-accent/25"
+                                                className="w-full rounded-lg font-bold shadow-md shadow-accent/25 min-h-[44px]"
                                             >
                                                 <span>{tier.cta}</span>
                                                 <IconArrowRight stroke={1.75} className="ml-1.5 h-4 w-4" />
@@ -972,7 +1336,7 @@ function PricingSection({ onSelectPlan, onSignup }) {
                                                 variant="outline"
                                                 size="lg"
                                                 onClick={() => onSelectPlan(tier.id)}
-                                                className="w-full rounded-lg font-bold border-accent text-accent hover:bg-accent/10"
+                                                className="w-full rounded-lg font-bold border-accent text-accent hover:bg-accent/10 min-h-[44px]"
                                             >
                                                 {tier.cta}
                                             </Button>
@@ -984,8 +1348,8 @@ function PricingSection({ onSelectPlan, onSignup }) {
                     })}
                 </div>
 
-                {/* Trust Badges */}
-                <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-xs text-text-secondary scroll-reveal">
+                {/* Trust Badges (Desktop) */}
+                <div className="hidden md:flex mt-12 flex-wrap items-center justify-center gap-6 text-xs text-text-secondary scroll-reveal">
                     <div className="flex items-center gap-1.5">
                         <IconCircleCheck stroke={1.75} className="h-4 w-4 text-accent" />
                         <span>Sin tarjeta para empezar</span>
@@ -993,12 +1357,12 @@ function PricingSection({ onSelectPlan, onSignup }) {
                     <span>•</span>
                     <div className="flex items-center gap-1.5">
                         <IconBuildingBank stroke={1.75} className="h-4 w-4 text-accent" />
-                        <span>Cobro en pesos (ARS) por transferencia bancaria</span>
+                        <span>Cobro en pesos (ARS) por transferencia bancaria (CBU/CVU) o Mercado Pago</span>
                     </div>
                     <span>•</span>
                     <div className="flex items-center gap-1.5">
                         <IconHeadset stroke={1.75} className="h-4 w-4 text-accent" />
-                        <span>Sin suscripción automática ni ataduras</span>
+                        <span>Sin débitos automáticos sorpresa ni impuestos al dólar</span>
                     </div>
                 </div>
             </div>
@@ -1012,8 +1376,12 @@ function PricingSection({ onSelectPlan, onSignup }) {
 
 function FAQSection() {
     return (
-        <section id="faq" className="border-b border-border bg-primary-bg" style={{ padding: 'var(--space-section) 0' }}>
-            <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <section
+            id="faq"
+            className="scroll-mt-20 border-b border-border bg-primary-bg"
+            style={{ padding: 'var(--space-section) 0' }}
+        >
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <SectionHeader headline="Preguntas frecuentes" />
                 <div className="mx-auto max-w-3xl scroll-reveal">
                     <FAQ items={FAQ_ITEMS} defaultOpen={0} />
@@ -1029,7 +1397,11 @@ function FAQSection() {
 
 function FinalCTASection({ onSignup }) {
     return (
-        <section className="border-b border-border bg-primary-surface" style={{ padding: 'var(--space-section) 0' }}>
+        <section
+            id="contact"
+            className="scroll-mt-20 border-b border-border bg-primary-surface"
+            style={{ padding: 'var(--space-section) 0' }}
+        >
             <div className="mx-auto max-w-4xl px-6 text-center">
                 <h2
                     className="text-text-primary font-bold tracking-tight font-display text-balance scroll-reveal text-3xl sm:text-4xl lg:text-5xl"
@@ -1098,7 +1470,7 @@ function FooterEmailButton() {
             <button
                 type="button"
                 onClick={() => setRevealed(true)}
-                className="text-sm text-text-secondary hover:text-text-primary transition-colors inline-flex items-center gap-2 text-left group"
+                className="text-sm text-text-secondary hover:text-text-primary transition-colors inline-flex items-center gap-2 text-left group py-2.5 px-2 min-h-[44px]"
                 title="Mostrar email de contacto"
             >
                 <IconMail stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0" />
@@ -1116,10 +1488,10 @@ function FooterEmailButton() {
     };
 
     return (
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1 py-1">
             <a
                 href={`mailto:${email}`}
-                className="text-sm text-accent hover:underline inline-flex items-center gap-2 font-mono break-all"
+                className="text-sm text-accent hover:underline inline-flex items-center gap-2 font-mono break-all py-2.5 px-2 min-h-[44px]"
             >
                 <IconMail stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0" />
                 <span>{email}</span>
@@ -1127,7 +1499,7 @@ function FooterEmailButton() {
             <button
                 type="button"
                 onClick={handleCopy}
-                className="text-[11px] text-text-tertiary hover:text-text-primary text-left inline-flex items-center gap-1"
+                className="text-[11px] text-text-tertiary hover:text-text-primary text-left inline-flex items-center gap-1 py-1 px-2 min-h-[44px]"
             >
                 <IconCopy stroke={1.75} className="h-3 w-3" />
                 <span>{copied ? '¡Copiado!' : 'Copiar email'}</span>
@@ -1138,7 +1510,7 @@ function FooterEmailButton() {
 
 function Footer({ onScrollTo, onOpenPrivacy }) {
     return (
-        <footer className="bg-primary-bg border-t border-border">
+        <footer className="bg-primary-bg border-t border-border pb-24 md:pb-12">
             <div className="mx-auto max-w-7xl px-6 lg:px-8 py-14">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
                     <div className="md:col-span-2">
@@ -1146,6 +1518,10 @@ function Footer({ onScrollTo, onOpenPrivacy }) {
                             <img
                                 src="/mz-logo-mark.PNG"
                                 alt="Mock"
+                                width={144}
+                                height={36}
+                                loading="lazy"
+                                decoding="async"
                                 className="h-8 sm:h-9 w-auto object-contain mix-blend-multiply"
                             />
                         </div>
@@ -1156,8 +1532,8 @@ function Footer({ onScrollTo, onOpenPrivacy }) {
                     </div>
 
                     <div>
-                        <h4 className="text-sm font-semibold text-text-primary mb-3">Navegación</h4>
-                        <ul className="space-y-2.5">
+                        <h3 className="text-sm font-semibold text-text-primary mb-3">Navegación</h3>
+                        <ul className="space-y-1">
                             {[
                                 { label: 'Qué hace', action: () => onScrollTo('servicios') },
                                 { label: 'Cómo funciona', action: () => onScrollTo('how-it-works') },
@@ -1167,7 +1543,7 @@ function Footer({ onScrollTo, onOpenPrivacy }) {
                                 <li key={link.label}>
                                     <button
                                         onClick={link.action}
-                                        className="text-sm text-text-secondary hover:text-text-primary transition-colors text-left"
+                                        className="text-sm text-text-secondary hover:text-text-primary transition-colors text-left inline-flex items-center py-2.5 px-2 min-h-[44px]"
                                     >
                                         {link.label}
                                     </button>
@@ -1177,15 +1553,15 @@ function Footer({ onScrollTo, onOpenPrivacy }) {
                     </div>
 
                     <div>
-                        <h4 className="text-sm font-semibold text-text-primary mb-3">Contacto</h4>
-                        <ul className="space-y-2.5">
+                        <h3 className="text-sm font-semibold text-text-primary mb-3">Contacto</h3>
+                        <ul className="space-y-1">
                             <li>
                                 <FooterEmailButton />
                             </li>
                             <li>
                                 <button
                                     onClick={onOpenPrivacy}
-                                    className="text-sm text-text-secondary hover:text-text-primary transition-colors text-left"
+                                    className="text-sm text-text-secondary hover:text-text-primary transition-colors text-left inline-flex items-center py-2.5 px-2 min-h-[44px]"
                                 >
                                     Privacidad y términos
                                 </button>
@@ -1204,6 +1580,41 @@ function Footer({ onScrollTo, onOpenPrivacy }) {
 }
 
 /* ─────────────────────────────────────────────
+   STICKY MOBILE CTA BAR (Exclusive <md)
+───────────────────────────────────────────── */
+
+function StickyMobileCTA({ onSignup }) {
+    const [visible, setVisible] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setVisible(window.scrollY > 450);
+        };
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    if (!visible) return null;
+
+    return (
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-primary-surface/95 backdrop-blur-md border-t border-border shadow-lg pt-2.5 pb-[max(0.75rem,env(safe-area-inset-bottom))] px-4 flex items-center justify-between">
+            <div className="flex flex-col text-left">
+                <span className="text-xs font-bold text-text-primary">BaseRutina</span>
+                <span className="text-[11px] text-accent font-semibold">3 rutinas gratis · Sin tarjeta</span>
+            </div>
+            <button
+                type="button"
+                onClick={onSignup}
+                className="h-11 min-h-[44px] px-4 rounded-lg bg-accent text-primary-bg font-bold text-sm shadow-sm active:scale-95 transition-transform flex items-center justify-center"
+            >
+                Probar gratis
+            </button>
+        </div>
+    );
+}
+
+/* ─────────────────────────────────────────────
    MAIN PAGE
 ───────────────────────────────────────────── */
 
@@ -1213,13 +1624,22 @@ export default function HomeSaaS() {
     const [privacyOpen, setPrivacyOpen] = useState(false);
 
     const scrollToSection = (id) => {
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        const targetId = id === 'benefits' && !document.getElementById('benefits') ? 'servicios' : id;
+        document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    const handlePrimaryCTA = () => {
+        if (user) {
+            navigate(user.role === 'admin' ? '/admin' : '/dashboard');
+        } else {
+            openLoginModal('signup');
+        }
     };
 
     const handleSelectPlan = (planId) => {
         localStorage.setItem(SELECTED_PLAN_KEY, planId);
         if (user) {
-            navigate('/dashboard');
+            navigate(user.role === 'admin' ? '/admin' : '/dashboard');
         } else {
             openLoginModal('signup');
         }
@@ -1245,16 +1665,17 @@ export default function HomeSaaS() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-primary-bg selection:bg-accent/20 selection:text-text-primary">
-            <Navbar onScrollTo={scrollToSection} />
-            <HeroSection onScrollTo={scrollToSection} onSignup={() => openLoginModal('signup')} />
+        <div className="min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-primary-bg selection:bg-accent/20 selection:text-text-primary">
+            <Navbar onScrollTo={scrollToSection} onSignup={handlePrimaryCTA} />
+            <HeroSection onScrollTo={scrollToSection} onSignup={handlePrimaryCTA} />
             <PainPointsSection />
             <ServicesSection />
             <EditorStepsSection onScrollTo={scrollToSection} />
-            <PricingSection onSelectPlan={handleSelectPlan} onSignup={() => openLoginModal('signup')} />
+            <PricingSection onSelectPlan={handleSelectPlan} onSignup={handlePrimaryCTA} />
             <FAQSection />
-            <FinalCTASection onSignup={() => openLoginModal('signup')} />
+            <FinalCTASection onSignup={handlePrimaryCTA} />
             <Footer onScrollTo={scrollToSection} onOpenPrivacy={() => setPrivacyOpen(true)} />
+            <StickyMobileCTA onSignup={handlePrimaryCTA} />
             <PrivacyModal open={privacyOpen} onClose={() => setPrivacyOpen(false)} />
         </div>
     );

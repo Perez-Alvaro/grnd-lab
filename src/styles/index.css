@@ -23,6 +23,8 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 body {
@@ -33,6 +35,10 @@ body {
   line-height: 1.6;
   font-weight: 400;
   font-feature-settings: "cv05", "cv11";
+  overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
+  position: relative;
 }
 
 /* color-scheme lo define :root según el tema (ver theme.css) */
@@ -103,7 +109,8 @@ code, pre, .font-mono {
   color: rgb(var(--c-text-secondary));
 }
 
-.text-tertiary {
+.text-tertiary,
+.text-muted {
   color: rgb(var(--c-text-tertiary));
 }
 

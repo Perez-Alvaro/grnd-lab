@@ -168,11 +168,11 @@ const MealEditor = memo(({ weekId, dayId, item, onActionError }) => {
                   </button>
                 </div>
                 <textarea rows={2} value={v.ingredientes || ""} onChange={(e) => updateVariante(v.id, "ingredientes", e.target.value)} placeholder="Ingredientes de la variante" className={`${areaCls} min-h-[60px]`} />
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   <input type="text" inputMode="numeric" value={v.kcal ?? ""} onChange={(e) => updateVariante(v.id, "kcal", e.target.value)} placeholder="kcal" className={`${inputCls} h-10 text-center`} />
-                  <input type="text" inputMode="numeric" value={v.proteina_g ?? ""} onChange={(e) => updateVariante(v.id, "proteina_g", e.target.value)} placeholder="P" className={`${inputCls} h-10 text-center`} />
-                  <input type="text" inputMode="numeric" value={v.carbos_g ?? ""} onChange={(e) => updateVariante(v.id, "carbos_g", e.target.value)} placeholder="C" className={`${inputCls} h-10 text-center`} />
-                  <input type="text" inputMode="numeric" value={v.grasas_g ?? ""} onChange={(e) => updateVariante(v.id, "grasas_g", e.target.value)} placeholder="G" className={`${inputCls} h-10 text-center`} />
+                  <input type="text" inputMode="numeric" value={v.proteina_g ?? ""} onChange={(e) => updateVariante(v.id, "proteina_g", e.target.value)} placeholder="Prot (g)" className={`${inputCls} h-10 text-center`} />
+                  <input type="text" inputMode="numeric" value={v.carbos_g ?? ""} onChange={(e) => updateVariante(v.id, "carbos_g", e.target.value)} placeholder="Carb (g)" className={`${inputCls} h-10 text-center`} />
+                  <input type="text" inputMode="numeric" value={v.grasas_g ?? ""} onChange={(e) => updateVariante(v.id, "grasas_g", e.target.value)} placeholder="Gras (g)" className={`${inputCls} h-10 text-center`} />
                 </div>
                 <input type="url" value={v.videoUrl || ""} onChange={(e) => updateVariante(v.id, "videoUrl", e.target.value)} placeholder="Video de la variante (YouTube)" className={`${inputCls} h-10`} />
               </div>

@@ -77,7 +77,7 @@ export default function Modal({
                         {showCloseButton && (
                             <button
                                 onClick={onClose}
-                                className="ml-auto rounded-sm p-2 text-text-muted transition-colors hover:bg-primary-bg hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+                                className="ml-auto rounded-sm p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-text-muted transition-colors hover:bg-primary-bg hover:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent"
                                 aria-label="Cerrar modal"
                             >
                                 <IconX stroke={1.75} className="h-5 w-5" />

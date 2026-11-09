@@ -76,7 +76,7 @@ const DayPreview = ({ day }) => {
                       <IconBrandYoutube stroke={1.75} className="h-5 w-5" />
                     </a>
                   </div>
-                  <div className="mt-2 grid grid-cols-5 gap-2">
+                  <div className="mt-2 grid grid-cols-3 sm:grid-cols-5 gap-2">
                     <Metric label="Series" value={r.sets} />
                     <Metric label="Reps" value={r.reps} />
                     <Metric label="Desc" value={r.rest} />

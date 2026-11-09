@@ -20,39 +20,39 @@ function DayRow({ weekId, day, index, daysCount, reorderDay, onActionError }) {
       transition={{ duration: 0 }}
       dragListener={false}
       dragControls={controls}
-      className="flex items-start gap-2"
+      className="flex items-start gap-1.5 sm:gap-2"
     >
-      <div className="flex flex-col items-center gap-1.5 pt-4 flex-shrink-0">
+      <div className="flex flex-col items-center gap-1 pt-3 sm:pt-4 flex-shrink-0">
         {/* Arrastrar. touch-action:none deja que el gesto lo tome el drag y no el scroll. */}
         <button
           type="button"
           onPointerDown={(e) => controls.start(e)}
           style={{ touchAction: "none" }}
-          className="flex h-11 w-11 cursor-grab items-center justify-center rounded-md border border-border bg-primary-bg text-text-quaternary transition-colors hover:border-accent hover:text-accent active:cursor-grabbing"
+          className="flex h-8 w-8 sm:h-11 sm:w-11 cursor-grab items-center justify-center rounded-md border border-border bg-primary-bg text-text-quaternary transition-colors hover:border-accent hover:text-accent active:cursor-grabbing"
           aria-label={`Arrastrar para reordenar el día ${index + 1}`}
           title="Arrastrar para reordenar"
         >
-          <IconGripVertical stroke={1.75} className="h-4 w-4" />
+          <IconGripVertical stroke={1.75} className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
         </button>
         <button
           type="button"
           disabled={index === 0}
           onClick={() => reorderDay(weekId, index, index - 1)}
-          className="flex h-11 w-11 items-center justify-center rounded-md border border-border bg-primary-bg text-text-quaternary transition-colors hover:border-accent hover:text-accent active:scale-95 disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:border-border disabled:hover:text-text-quaternary"
+          className="flex h-8 w-8 sm:h-11 sm:w-11 items-center justify-center rounded-md border border-border bg-primary-bg text-text-quaternary transition-colors hover:border-accent hover:text-accent active:scale-95 disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:border-border disabled:hover:text-text-quaternary"
           aria-label={`Mover el día ${index + 1} hacia arriba`}
           title="Mover arriba"
         >
-          <IconChevronUp stroke={1.75} className="h-4 w-4" />
+          <IconChevronUp stroke={1.75} className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
         </button>
         <button
           type="button"
           disabled={index === daysCount - 1}
           onClick={() => reorderDay(weekId, index, index + 1)}
-          className="flex h-11 w-11 items-center justify-center rounded-md border border-border bg-primary-bg text-text-quaternary transition-colors hover:border-accent hover:text-accent active:scale-95 disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:border-border disabled:hover:text-text-quaternary"
+          className="flex h-8 w-8 sm:h-11 sm:w-11 items-center justify-center rounded-md border border-border bg-primary-bg text-text-quaternary transition-colors hover:border-accent hover:text-accent active:scale-95 disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:border-border disabled:hover:text-text-quaternary"
           aria-label={`Mover el día ${index + 1} hacia abajo`}
           title="Mover abajo"
         >
-          <IconChevronDown stroke={1.75} className="h-4 w-4" />
+          <IconChevronDown stroke={1.75} className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
         </button>
       </div>
       <div className="flex-1 min-w-0">

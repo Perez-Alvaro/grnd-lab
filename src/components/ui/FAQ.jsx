@@ -13,26 +13,30 @@ export default function FAQ({ items, defaultOpen = 0 }) {
             {items.map((item, index) => (
                 <div
                     key={index}
-                    className="rounded-md border border-border bg-primary-surface overflow-hidden transition-all hover:border-accent/20"
+                    className="rounded-xl border border-border bg-primary-surface overflow-hidden transition-all sm:hover:border-accent/30"
                 >
                     <button
+                        type="button"
                         onClick={() => toggleFAQ(index)}
-                        className="w-full flex items-center justify-between p-5 text-left transition-colors hover:bg-primary-surface/80"
+                        className="w-full min-h-[48px] p-4 sm:p-5 flex items-center justify-between text-left transition-colors sm:hover:bg-primary-surface/80 active:bg-primary-surface/90 cursor-pointer select-none"
                         aria-expanded={openIndex === index}
                     >
-                        <span className="text-base font-semibold text-text-primary pr-4">
+                        <span className="text-sm sm:text-base font-semibold text-text-primary pr-4 leading-snug">
                             {item.question}
                         </span>
-                        <IconChevronDown stroke={1.75}
-                            className={`h-5 w-5 text-accent flex-shrink-0 transition-transform duration-300 ${openIndex === index ? 'rotate-180' : ''
-                                }`}
+                        <IconChevronDown
+                            stroke={1.75}
+                            className={`h-5 w-5 text-accent flex-shrink-0 transition-transform duration-300 ${
+                                openIndex === index ? 'rotate-180' : ''
+                            }`}
                         />
                     </button>
                     <div
-                        className={`overflow-hidden transition-all duration-300 ${openIndex === index ? 'max-h-96' : 'max-h-0'
-                            }`}
+                        className={`overflow-hidden transition-all duration-300 ${
+                            openIndex === index ? 'max-h-96' : 'max-h-0'
+                        }`}
                     >
-                        <div className="px-5 pb-5 text-sm text-text-secondary leading-relaxed">
+                        <div className="px-4 pb-4 sm:px-5 sm:pb-5 text-xs sm:text-sm text-text-secondary leading-relaxed">
                             {item.answer}
                         </div>
                     </div>

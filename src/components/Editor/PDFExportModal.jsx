@@ -25,15 +25,16 @@ export default function PDFExportModal({ open, onClose, onSelectType }) {
             />
 
             {/* Modal */}
-            <div className="relative w-full max-w-md bg-primary-surface rounded-2xl shadow-2xl border border-border p-6 mx-4">
+            <div className="relative w-full max-w-md bg-primary-surface rounded-2xl shadow-2xl border border-border p-5 sm:p-6 mx-4 max-h-[90dvh] overflow-y-auto">
                 {/* Header */}
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center justify-between mb-5 sm:mb-6">
                     <h2 className="text-xl font-bold text-text-primary font-display">
                         Exportar rutina a PDF
                     </h2>
                     <button
                         onClick={onClose}
-                        className="p-1.5 rounded-lg hover:bg-surface-alt transition-colors text-text-tertiary hover:text-text-primary"
+                        aria-label="Cerrar modal"
+                        className="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-surface-alt transition-colors text-text-tertiary hover:text-text-primary"
                     >
                         <IconX stroke={1.75} className="h-5 w-5" />
                     </button>

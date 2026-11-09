@@ -78,7 +78,7 @@ const DayEditor = memo(
         ref={registerDayRef}
         className="overflow-hidden rounded-xl border border-border bg-primary-bg shadow-sm transition-all duration-200 ease-in-out"
       >
-        <div className="flex flex-col gap-4 p-5">
+        <div className="flex flex-col gap-4 p-3.5 sm:p-5">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <button

@@ -408,9 +408,9 @@ export default function RoutineEditorPage() {
       <div className="flex h-dvh flex-col bg-primary-bg overflow-hidden">
         {/* ── Top bar ── */}
         <header className="flex-shrink-0 border-b border-border bg-primary-surface">
-          <div className="flex items-center justify-between gap-2 px-4 sm:px-6 py-3">
+          <div className="flex items-center justify-between gap-2 px-3 sm:px-6 py-2.5 sm:py-3">
             <div className="flex items-center gap-2 min-w-0">
-              <Button variant="ghost" size="sm" onClick={handleBack} disabled={saving} aria-label="Volver al panel">
+              <Button variant="ghost" size="sm" onClick={handleBack} disabled={saving} aria-label="Volver al panel" className="px-2 sm:px-3">
                 <IconArrowLeft stroke={1.75} className="h-4 w-4" />
                 <span className="hidden sm:inline">Volver</span>
               </Button>
@@ -421,7 +421,7 @@ export default function RoutineEditorPage() {
                 className="h-6 w-auto object-contain mix-blend-multiply hidden sm:block flex-shrink-0"
               />
               <div className="min-w-0">
-                <h1 className="text-sm sm:text-base font-semibold text-text-primary font-display truncate max-w-[45vw] sm:max-w-none">
+                <h1 className="text-sm sm:text-base font-semibold text-text-primary font-display truncate max-w-[36vw] xs:max-w-[48vw] sm:max-w-none">
                   {planEditor.metadata.name || config.labels.untitled}
                 </h1>
                 {/* El coach necesita saber si le falta guardar (dirty existía pero no se mostraba). */}
@@ -452,7 +452,7 @@ export default function RoutineEditorPage() {
                 {showToolsMenu && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setShowToolsMenu(false)} aria-hidden="true" />
-                    <div className="absolute right-0 mt-2 w-64 bg-primary-surface border border-border rounded-xl shadow-xl shadow-black/30 z-50 overflow-hidden py-1">
+                    <div className="absolute right-0 mt-2 w-64 max-w-[calc(100vw-1.5rem)] bg-primary-surface border border-border rounded-xl shadow-xl shadow-black/30 z-50 overflow-hidden py-1">
                       <button onClick={() => { handleCopyPrompt(); setShowToolsMenu(false); }} className={menuItem}>
                         <IconCopy stroke={1.75} className="h-4 w-4 flex-shrink-0 text-text-tertiary" /> Copiar el prompt
                       </button>
@@ -491,7 +491,7 @@ export default function RoutineEditorPage() {
             {showJSONEditor ? (
               <JSONEditor value={planEditor.plan} onChange={handleJSONEditorChange} />
             ) : (
-              <div className="p-4 pb-28 sm:p-6 lg:pb-6">
+              <div className="p-3.5 pb-36 sm:p-6 lg:pb-8">
                 {/* Un solo selector: cómo querés armar el plan. */}
                 <div className="mb-6 grid grid-cols-2 gap-1 rounded-xl border border-border bg-primary-bg p-1">
                   <button onClick={() => setEditorMode("ai")} className={segBtn(editorMode === "ai")} aria-pressed={editorMode === "ai"}>
@@ -525,7 +525,7 @@ export default function RoutineEditorPage() {
 
           {/* Preview */}
           <div className={`${mobileView === "preview" ? "block" : "hidden"} lg:block flex-1 overflow-y-auto bg-primary-surface`}>
-            <div className="p-4 pb-28 sm:p-6 lg:pb-6">
+            <div className="p-3.5 pb-36 sm:p-6 lg:pb-8">
               <h3 className="text-lg font-semibold text-text-primary font-display mb-4">Vista previa</h3>
               <Preview onGoToAssistant={() => { setEditorMode("ai"); goToEditor(); }} />
             </div>
@@ -536,8 +536,8 @@ export default function RoutineEditorPage() {
             Las acciones principales viven en la zona del pulgar y cambian
             según dónde está el usuario: en el editor ofrece ver el plan;
             mirando el plan ofrece descargarlo. */}
-        <div className="lg:hidden flex-shrink-0 border-t border-border bg-primary-surface pb-[env(safe-area-inset-bottom)]">
-          <div className="flex items-center gap-3 px-4 py-3">
+        <div className="lg:hidden flex-shrink-0 border-t border-border bg-primary-surface pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
+          <div className="flex items-center gap-2.5 px-3.5 py-2.5">
             {mobileView === "editor" ? (
               <>
                 <Button variant="outline" size="md" onClick={handleSave} loading={saving} className="flex-1">
