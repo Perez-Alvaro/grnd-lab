@@ -22,11 +22,12 @@ export default function PrivacyPolicy() {
             <span>Volver al inicio</span>
           </Link>
 
-          <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent text-primary-bg">
-              <IconBolt stroke={2} className="h-4 w-4" />
-            </div>
-            <span className="font-bold text-base font-display text-text-primary">Mock</span>
+          <Link to="/" className="flex items-center" title="Ir al inicio de Mock">
+            <img
+              src="/mz-logo-mark.PNG"
+              alt="Mock"
+              className="h-8 w-auto object-contain mix-blend-multiply"
+            />
           </Link>
         </div>
       </header>

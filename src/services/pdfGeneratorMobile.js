@@ -108,7 +108,7 @@ export const generateRoutinePDFMobile = (routine) => {
     cleanBrand(routine.metadata?.brandLogo) ||
     cleanBrand(routine.brandLogo) ||
     (typeof window !== 'undefined' && cleanBrand(window?.localStorage?.getItem?.('mock:coach-brand-logo'))) ||
-    null;
+    '/mz-logo-mark.PNG';
 
   // Padding top: 32-40px
   yPos = spacing40;

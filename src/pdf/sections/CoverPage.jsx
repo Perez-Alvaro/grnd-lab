@@ -67,7 +67,7 @@ const CoverPage = ({ plan, styles }) => {
     cleanBrand(plan.logo) ||
     cleanBrand(plan.metadata?.logo) ||
     (typeof window !== "undefined" && cleanBrand(window?.localStorage?.getItem?.("mock:coach-brand-logo"))) ||
-    null;
+    "/mz-logo-mark.PNG";
 
   // Format objective label
   const objectiveLabel = TRAINING_GOAL_LABELS[plan.objective] || plan.objective;

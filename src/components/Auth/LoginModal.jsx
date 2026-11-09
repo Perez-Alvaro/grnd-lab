@@ -172,8 +172,12 @@ export default function LoginModal() {
 
           <div className="p-8">
             <div className="text-center mb-8">
-              <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 border border-accent/20 mb-4">
-                <IconBolt stroke={1.75} className="h-7 w-7 text-accent" />
+              <div className="flex justify-center mb-4">
+                <img
+                  src="/mz-logo-mark.PNG"
+                  alt="Mock"
+                  className="h-11 w-auto object-contain mix-blend-multiply"
+                />
               </div>
               <h2 id="login-modal-title" className="text-2xl font-bold text-text-primary font-display mb-1">
                 {copy.title}

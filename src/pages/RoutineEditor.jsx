@@ -414,6 +414,12 @@ export default function RoutineEditorPage() {
                 <IconArrowLeft stroke={1.75} className="h-4 w-4" />
                 <span className="hidden sm:inline">Volver</span>
               </Button>
+              <div className="h-5 w-px bg-border hidden sm:block" />
+              <img
+                src="/mz-logo-mark.PNG"
+                alt="Mock"
+                className="h-6 w-auto object-contain mix-blend-multiply hidden sm:block flex-shrink-0"
+              />
               <div className="min-w-0">
                 <h1 className="text-sm sm:text-base font-semibold text-text-primary font-display truncate max-w-[45vw] sm:max-w-none">
                   {planEditor.metadata.name || config.labels.untitled}

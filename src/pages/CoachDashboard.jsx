@@ -3,7 +3,7 @@
  * Dashboard del entrenador: gestiona atletas y, dentro de cada uno, sus rutinas.
  */
 import { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { IconUsers, IconPlus, IconBarbell, IconPencil, IconTrash, IconChevronRight, IconChevronLeft, IconLogout, IconBolt, IconTarget, IconSalad, IconShieldLock, IconPalette } from '@tabler/icons-react';
 import { useAuth } from '../store/authStore.jsx';
 import { useProtectedLink } from '../lib/routeObfuscator.js';
@@ -116,9 +116,14 @@ export default function CoachDashboard() {
       <header className="border-b border-border bg-primary-surface">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-primary-bg">
-              <IconBolt stroke={1.75} className="h-4 w-4" />
-            </div>
+            <Link to="/" className="flex-shrink-0" title="Ir al inicio de Mock">
+              <img
+                src="/mz-logo-mark.PNG"
+                alt="Mock"
+                className="h-8 w-auto object-contain mix-blend-multiply"
+              />
+            </Link>
+            <div className="h-6 w-px bg-border hidden sm:block" />
             <div>
               <h1 className="text-lg font-bold text-text-primary font-display leading-tight">Panel del entrenador</h1>
               <p className="text-xs text-text-muted">Hola, {user?.name}</p>

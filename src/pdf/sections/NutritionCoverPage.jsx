@@ -60,7 +60,7 @@ const NutritionCoverPage = ({ plan, styles }) => {
     cleanBrand(plan.logo) ||
     cleanBrand(plan.metadata?.logo) ||
     (typeof window !== "undefined" && cleanBrand(window?.localStorage?.getItem?.("mock:coach-brand-logo"))) ||
-    null;
+    "/mz-logo-mark.PNG";
 
   // Accesos del índice a las secciones del apéndice (evitan scrollear todo el
   // PDF): mismas cards que las semanas para que no pasen desapercibidos.

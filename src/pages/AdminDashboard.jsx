@@ -5,7 +5,7 @@
  * Todo pasa por RLS (is_admin()). Sin emojis; diseno sobrio con tokens tematicos.
  */
 import { useEffect, useState, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   IconUsers,
   IconLogout,
@@ -359,11 +359,16 @@ export default function AdminDashboard() {
             >
               <IconMenu2 stroke={1.75} className="h-5 w-5" />
             </button>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-primary-bg flex-shrink-0">
-              <IconBolt stroke={1.75} className="h-4 w-4" />
-            </div>
+            <Link to="/" className="flex-shrink-0" title="Ir al inicio de Mock">
+              <img
+                src="/mz-logo-mark.PNG"
+                alt="Mock"
+                className="h-8 w-auto object-contain mix-blend-multiply"
+              />
+            </Link>
+            <div className="h-6 w-px bg-border hidden sm:block" />
             <div className="min-w-0">
-              <h1 className="text-lg font-bold text-text-primary font-display leading-tight truncate">Admin · GRND LAB</h1>
+              <h1 className="text-lg font-bold text-text-primary font-display leading-tight truncate">Admin · Mock</h1>
               <p className="text-xs text-text-muted truncate">{user?.name} · Rol Administrador</p>
             </div>
           </div>

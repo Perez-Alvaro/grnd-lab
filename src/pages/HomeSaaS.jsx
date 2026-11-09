@@ -224,13 +224,16 @@ function Navbar({ onScrollTo }) {
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     <button
-                        className="flex items-center gap-2.5 text-left focus:outline-none"
+                        type="button"
+                        className="flex items-center cursor-pointer text-left focus:outline-none"
                         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                        aria-label="Mock - Inicio"
                     >
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-primary-bg">
-                            <IconBolt stroke={1.75} className="h-4 w-4" />
-                        </div>
-                        <span className="text-text-primary font-bold text-lg tracking-tight font-display">Mock</span>
+                        <img
+                            src="/mz-logo-mark.PNG"
+                            alt="Mock"
+                            className="h-8 sm:h-9 w-auto object-contain mix-blend-multiply"
+                        />
                     </button>
 
                     <div className="hidden md:flex items-center gap-8">
@@ -1139,11 +1142,12 @@ function Footer({ onScrollTo, onOpenPrivacy }) {
             <div className="mx-auto max-w-7xl px-6 lg:px-8 py-14">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
                     <div className="md:col-span-2">
-                        <div className="flex items-center gap-2.5 mb-3">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-primary-bg">
-                                <IconBolt stroke={1.75} className="h-4 w-4" />
-                            </div>
-                            <span className="text-text-primary font-bold text-lg font-display">Mock</span>
+                        <div className="flex items-center mb-4">
+                            <img
+                                src="/mz-logo-mark.PNG"
+                                alt="Mock"
+                                className="h-8 sm:h-9 w-auto object-contain mix-blend-multiply"
+                            />
                         </div>
                         <p className="text-sm text-text-secondary leading-relaxed max-w-sm">
                             Planes de entrenamiento y nutrición en una sola herramienta. La base la hace la IA; el criterio lo ponés vos.

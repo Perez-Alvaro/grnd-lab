@@ -201,7 +201,7 @@ export const resolveBrandLogo = (planData) => {
     }
   }
 
-  return null;
+  return "/mz-logo-mark.PNG";
 };
 
 export const normalizePlanData = async (planData) => {
