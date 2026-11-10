@@ -517,6 +517,40 @@ export default function RoutineEditorPage() {
                       <StepsMetadataForm steps={config.steps} onCopyPrompt={handleCopyPrompt} />
                     )}
                     <WeekEditor />
+
+                    {/* Acciones de IA también al final de Editar a mano */}
+                    <div className="rounded-2xl border border-border bg-primary-surface p-4 sm:p-6 shadow-sm">
+                      <div className="mb-4">
+                        <h3 className="text-base font-bold text-text-primary tracking-tight">
+                          ¿Querés sincronizar o regenerar con IA?
+                        </h3>
+                        <p className="mt-1 text-xs sm:text-sm text-text-tertiary">
+                          Copiá el prompt actualizado con estos cambios o pegá una nueva respuesta que te haya dado tu IA.
+                        </p>
+                      </div>
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                        <Button
+                          type="button"
+                          variant="accent"
+                          size="md"
+                          onClick={handleCopyPrompt}
+                          className="min-h-[44px] justify-center"
+                        >
+                          <IconCopy stroke={1.75} className="h-4 w-4" />
+                          <span>1. Copiar el prompt</span>
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="md"
+                          onClick={() => setShowImportModal(true)}
+                          className="min-h-[44px] justify-center"
+                        >
+                          <IconJson stroke={1.75} className="h-4 w-4" />
+                          <span>2. Pegar respuesta de tu IA</span>
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>

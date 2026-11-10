@@ -8,10 +8,42 @@
  * Genérico: sirve para rutina (WORKOUT_STEPS) y nutrición (NUTRITION_STEPS)
  * porque ambos comparten el shape { id, section, field, kind, q, options, showIf }.
  */
-import { memo, useMemo } from "react";
-import { IconCopy, IconAdjustments } from '@tabler/icons-react';
+import { memo, useMemo, useState } from "react";
+import { IconCopy, IconAdjustments, IconInfoCircle } from '@tabler/icons-react';
 import { Button } from "../../ui";
 import { usePlanContext } from "../../../context/PlanContext.jsx";
+
+const HelperTooltip = ({ children }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative inline-flex items-center ml-1.5 align-middle">
+      <button
+        type="button"
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setOpen(false)}
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((prev) => !prev);
+        }}
+        aria-label="Más información"
+        className="text-text-tertiary hover:text-accent focus:text-accent focus:outline-none p-0.5 rounded transition-colors"
+      >
+        <IconInfoCircle stroke={1.75} className="h-4 w-4" />
+      </button>
+      {open && (
+        <div
+          role="tooltip"
+          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 max-w-[85vw] p-2.5 bg-primary-surface border border-border rounded-xl shadow-xl z-50 text-xs text-text-secondary leading-relaxed pointer-events-none animate-in fade-in zoom-in-95 duration-150"
+        >
+          {children}
+          <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-primary-surface" />
+        </div>
+      )}
+    </div>
+  );
+};
 
 const inputCls =
   "w-full rounded-lg border border-border bg-primary-bg px-4 py-3 text-base sm:text-sm text-text-primary transition-colors focus:border-accent focus:outline-none focus:ring-0";
@@ -60,8 +92,8 @@ const StepsMetadataForm = memo(({ steps = [], onCopyPrompt }) => {
                 <div key={step.id || step.field} className="flex flex-col gap-2">
                   <label className="text-sm font-medium text-text-secondary">
                     {step.q}{step.required ? " *" : ""}
+                    {step.sub && <HelperTooltip>{step.sub}</HelperTooltip>}
                   </label>
-                  {step.sub && <p className="-mt-1 text-xs text-text-tertiary">{step.sub}</p>}
 
                   {step.kind === "chips" ? (
                     <div className="flex flex-wrap gap-2">

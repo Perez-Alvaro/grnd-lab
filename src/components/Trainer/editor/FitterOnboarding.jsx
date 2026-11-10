@@ -327,114 +327,166 @@ const FitterOnboarding = ({
 
                     {/* Paso final: generar */}
                     {step.kind === "completion" && !ok && (
-                        <div className="space-y-4">
-                            {/* Tranquiliza: podés salir a la IA y volver sin perder nada */}
-                            <div className="flex items-start gap-2.5 rounded-xl bg-accent/10 border border-accent/25 px-4 py-3">
-                                <IconCheck stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
-                                <p className="text-xs text-text-secondary leading-relaxed">
-                                    <strong className="text-text-primary">Tu progreso queda guardado.</strong> Podés ir a la IA,
-                                    copiar la respuesta y volver acá para pegarla. Si se cierra la app, al volver seguís en este paso.
-                                </p>
-                            </div>
-
-                            {/* 1. Abrir IA con el prompt copiado */}
-                            <div className="rounded-2xl border border-border bg-primary-bg p-5">
-                                <div className="flex items-start gap-3 mb-4">
-                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent/15 text-accent flex items-center justify-center text-sm font-bold">1</div>
-                                    <div>
-                                        <h4 className="text-sm font-semibold text-text-primary">Abrí tu IA con el prompt listo</h4>
-                                        <p className="text-xs text-text-tertiary leading-relaxed mt-0.5">
-                                            Tocá una → <strong className="text-text-primary">copiamos el prompt y abrimos la IA</strong>. Solo pegás con Ctrl/Cmd+V.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-3 gap-2.5">
-                                    {AI_PLATFORMS.map((pl) => {
-                                        const c = copied === pl.id;
-                                        return (
-                                            <button
-                                                key={pl.id} onClick={() => openAI(pl)}
-                                                className={`group relative flex flex-col items-center gap-2 min-h-[88px] p-3 rounded-xl border transition-colors ${
-                                                    c ? "border-accent/50 bg-accent/10" : "border-border bg-primary-surface hover:border-accent/40"
-                                                }`}
-                                            >
-                                                <span className={`w-9 h-9 rounded-lg flex items-center justify-center ${c ? "bg-accent/20 text-accent" : "bg-primary-bg text-text-secondary"}`}>
-                                                    {c ? <IconCheck stroke={1.75} className="w-5 h-5" /> : pl.icon}
-                                                </span>
-                                                <span className="text-xs font-semibold text-text-primary">{pl.name}</span>
-                                                {!c && <IconExternalLink stroke={1.75} className="absolute top-2 right-2 w-3 h-3 text-text-quaternary" />}
-                                            </button>
-                                        );
-                                    })}
-                                </div>
-                                {copied && (
-                                    <div className="mt-3 flex items-center gap-2 p-2.5 rounded-lg bg-accent/10 border border-accent/25">
-                                        <IconCheck stroke={1.75} className="w-4 h-4 text-accent flex-shrink-0" />
-                                        <p className="text-xs text-text-secondary">Prompt copiado y IA abierta. Pegá con <strong className="text-text-primary">Ctrl/Cmd+V</strong> y enviá.</p>
-                                    </div>
-                                )}
-                                <button onClick={onCopyPrompt} className="mt-3 w-full text-xs text-text-tertiary hover:text-text-primary transition-colors inline-flex items-center justify-center gap-1.5">
-                                    <IconCopy stroke={1.75} className="w-3.5 h-3.5" /> o copiar el prompt manualmente
-                                </button>
-                            </div>
-
-                            {/* 2. Pegar lo que dio la IA — botón grande */}
-                            <div className="rounded-2xl border-2 border-accent/40 bg-primary-bg p-5">
-                                <div className="flex items-start gap-3 mb-4">
-                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent text-primary-bg flex items-center justify-center text-sm font-bold">2</div>
-                                    <div>
-                                        <h4 className="text-sm font-semibold text-text-primary">Traé la respuesta de la IA</h4>
-                                        <p className="text-xs text-text-tertiary leading-relaxed mt-0.5">Copiá lo que te respondió la IA y tocá el botón.</p>
-                                    </div>
-                                </div>
-
-                                {!showTextarea ? (
-                                    <Button variant="accent" size="lg" onClick={smartPaste} className="w-full h-14 text-base">
-                                        <IconClipboardText stroke={1.75} className="h-5 w-5" /> Pegá lo que te dio la IA
-                                    </Button>
-                                ) : (
-                                    <div className="space-y-3">
-                                        <textarea
-                                            value={jsonInput} onChange={(e) => setJsonInput(e.target.value)}
-                                            placeholder="Pegá acá todo lo que te respondió la IA (desde la primera { hasta la última })…"
-                                            className={`${inputCls} min-h-[160px] resize-none font-mono text-xs`} rows={8} autoFocus
-                                        />
-                                        <Button variant="accent" size="lg" onClick={() => importFromText(jsonInput)} disabled={!jsonInput.trim()} className="w-full">
-                                            <IconClipboardText stroke={1.75} className="h-4 w-4" /> Cargar {planNoun}
-                                        </Button>
-                                    </div>
-                                )}
-
-                                {jsonError && (
-                                    <div className="mt-3 flex items-start gap-2 p-3 bg-red-500/10 border border-red-500/25 rounded-lg">
-                                        <IconAlertCircle stroke={1.75} className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
-                                        <p className="text-xs text-red-300">{jsonError}</p>
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Opción rápida: Cargar plan de ejemplo en paso final */}
-                            <div className="rounded-2xl border border-dashed border-accent/40 bg-accent/5 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                                <div>
-                                    <h4 className="text-sm font-semibold text-text-primary">¿Preferís saltar la IA y ver un ejemplo real?</h4>
-                                    <p className="text-xs text-text-tertiary leading-relaxed mt-0.5">
-                                        {planTypeId === "nutrition"
-                                            ? "Cargá directamente un plan nutricional modelo de 7 días con comidas en gramos y medidas relativas, variantes y lista de compras ya configuradas."
-                                            : "Cargá directamente una rutina modelo de 4 semanas con ejercicios, series, descanso y cadencia ya configurados."
-                                        }
+                        <div className="space-y-6">
+                            {/* Card principal simplificada: 3 pasos claros y 2 botones de acción */}
+                            <div className="rounded-2xl border border-border bg-primary-surface p-5 sm:p-6 shadow-sm">
+                                <div className="mb-6">
+                                    <h3 className="text-base sm:text-lg font-bold text-text-primary tracking-tight">
+                                        ¡Listo! Ahora generá tu plan en 3 pasos:
+                                    </h3>
+                                    <p className="mt-1 text-xs sm:text-sm text-text-tertiary">
+                                        Seguí el flujo paso a paso con tu IA preferida.
                                     </p>
                                 </div>
-                                <Button
+
+                                {/* Flujo visual 1 - 2 - 3 con espaciados y negritas */}
+                                <div className="space-y-4">
+                                    {/* Paso 1 */}
+                                    <div className="flex items-start gap-3.5">
+                                        <div className="flex-shrink-0 w-7 h-7 rounded-full bg-accent/15 text-accent font-bold text-xs flex items-center justify-center mt-0.5">
+                                            1
+                                        </div>
+                                        <div className="min-w-0 flex-1 pt-0.5">
+                                            <p className="text-sm text-text-secondary leading-snug">
+                                                <strong className="text-text-primary font-bold">1 - Copiá el prompt</strong> generado a partir de tus respuestas.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Botón 1 de acción principal */}
+                                    <div className="pl-10">
+                                        <Button
+                                            type="button"
+                                            variant={copied ? "secondary" : "accent"}
+                                            size="lg"
+                                            onClick={async () => {
+                                                const prompt = generatePrompt(metadata);
+                                                try { await navigator.clipboard.writeText(prompt); }
+                                                catch {
+                                                    const ta = document.createElement("textarea");
+                                                    ta.value = prompt; ta.style.position = "fixed"; ta.style.left = "-9999px";
+                                                    document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta);
+                                                }
+                                                setCopied("manual");
+                                                setTimeout(() => setCopied(null), 4000);
+                                                if (onCopyPrompt) onCopyPrompt();
+                                            }}
+                                            className="w-full sm:w-auto min-h-[48px] px-6 text-sm font-semibold shadow-md shadow-accent/20"
+                                        >
+                                            {copied ? (
+                                                <>
+                                                    <IconCheck stroke={2} className="h-4 w-4 text-accent" />
+                                                    <span>¡Prompt copiado al portapapeles!</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <IconCopy stroke={1.75} className="h-4 w-4" />
+                                                    <span>Copiar el prompt</span>
+                                                </>
+                                            )}
+                                        </Button>
+                                    </div>
+
+                                    {/* Paso 2 */}
+                                    <div className="flex items-start gap-3.5 pt-2">
+                                        <div className="flex-shrink-0 w-7 h-7 rounded-full bg-accent/15 text-accent font-bold text-xs flex items-center justify-center mt-0.5">
+                                            2
+                                        </div>
+                                        <div className="min-w-0 flex-1 pt-0.5">
+                                            <p className="text-sm text-text-secondary leading-snug">
+                                                <strong className="text-text-primary font-bold">2 - Pegalo en tu IA preferida</strong> y esperá su respuesta.
+                                            </p>
+                                            {/* Accesos rápidos discretos a IAs en una fila limpia */}
+                                            <div className="flex flex-wrap items-center gap-2 mt-2.5">
+                                                {AI_PLATFORMS.map((pl) => (
+                                                    <a
+                                                        key={pl.id}
+                                                        href={pl.url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        onClick={() => openAI(pl)}
+                                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-primary-bg hover:border-accent hover:text-accent text-xs font-medium text-text-secondary transition-colors"
+                                                    >
+                                                        <span className="w-4 h-4 flex items-center justify-center">{pl.icon}</span>
+                                                        <span>{pl.name}</span>
+                                                        <IconExternalLink stroke={1.5} className="w-3 h-3 text-text-quaternary" />
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Paso 3 */}
+                                    <div className="flex items-start gap-3.5 pt-2">
+                                        <div className="flex-shrink-0 w-7 h-7 rounded-full bg-accent text-primary-bg font-bold text-xs flex items-center justify-center mt-0.5 shadow-sm">
+                                            3
+                                        </div>
+                                        <div className="min-w-0 flex-1 pt-0.5">
+                                            <p className="text-sm text-text-secondary leading-snug">
+                                                <strong className="text-text-primary font-bold">3 - Copiá y pegá lo que te devolvió acá</strong> para armar el plan al instante.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Botón 2 de acción principal */}
+                                    <div className="pl-10">
+                                        {!showTextarea ? (
+                                            <Button
+                                                variant="accent"
+                                                size="lg"
+                                                onClick={smartPaste}
+                                                className="w-full sm:w-auto min-h-[50px] px-7 text-base font-bold shadow-md shadow-accent/20"
+                                            >
+                                                <IconClipboardText stroke={1.75} className="h-5 w-5" />
+                                                <span>Pegar lo que te devolvió la IA</span>
+                                            </Button>
+                                        ) : (
+                                            <div className="space-y-3 max-w-xl">
+                                                <textarea
+                                                    value={jsonInput}
+                                                    onChange={(e) => setJsonInput(e.target.value)}
+                                                    placeholder="Pegá acá la respuesta de la IA (desde la primera { hasta la última })…"
+                                                    className={`${inputCls} min-h-[140px] resize-none font-mono text-xs`}
+                                                    rows={6}
+                                                    autoFocus
+                                                />
+                                                <Button
+                                                    variant="accent"
+                                                    size="lg"
+                                                    onClick={() => importFromText(jsonInput)}
+                                                    disabled={!jsonInput.trim()}
+                                                    className="w-full sm:w-auto min-h-[48px] px-6 text-sm font-bold"
+                                                >
+                                                    <IconClipboardText stroke={1.75} className="h-4 w-4" />
+                                                    <span>Cargar {planNoun} ahora</span>
+                                                </Button>
+                                            </div>
+                                        )}
+
+                                        {jsonError && (
+                                            <div className="mt-3 flex items-start gap-2 p-3 bg-red-500/10 border border-red-500/25 rounded-lg max-w-xl">
+                                                <IconAlertCircle stroke={1.75} className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
+                                                <p className="text-xs text-red-300">{jsonError}</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Cargar rutina de ejemplo opcional (discreto, 1 sola línea) */}
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-4 py-3 rounded-xl border border-dashed border-border bg-primary-bg text-xs">
+                                <span className="text-text-secondary">
+                                    ¿Preferís saltar este paso y probar con un ejemplo real ya cargado?
+                                </span>
+                                <button
                                     type="button"
-                                    variant="outline"
-                                    size="lg"
                                     onClick={handleLoadSample}
                                     data-testid="load-sample-routine-step10"
-                                    className="w-full sm:w-auto border-accent/40 text-accent hover:bg-accent hover:text-primary-bg flex-shrink-0"
+                                    className="font-semibold text-accent hover:underline flex items-center gap-1.5 flex-shrink-0"
                                 >
-                                    <IconSparkles stroke={1.75} className="h-4 w-4" />
-                                    <span>{planTypeId === "nutrition" ? "Cargar plan nutricional de ejemplo" : "Cargar rutina de ejemplo"}</span>
-                                </Button>
+                                    <IconSparkles stroke={1.75} className="h-3.5 w-3.5" />
+                                    <span>Cargar ejemplo modelo</span>
+                                </button>
                             </div>
                         </div>
                     )}

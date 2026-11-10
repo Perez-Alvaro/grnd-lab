@@ -6,13 +6,38 @@ import { Button } from "../../ui";
 import { usePlanContext } from "../../../context/PlanContext.jsx";
 import { TRAINING_GOALS } from "../../../constants/objectives.js";
 
-// Componente Helper Text reutilizable
-const HelperText = ({ children }) => (
-  <div className="mt-1.5 flex items-start gap-2 text-xs text-text-tertiary">
-    <IconInfoCircle stroke={1.75} className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-accent/70" />
-    <p className="leading-relaxed">{children}</p>
-  </div>
-);
+// Componente Helper Text reutilizable con icono de información e interactividad hover / focus / tap
+const HelperTooltip = ({ children }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative inline-flex items-center ml-1.5 align-middle">
+      <button
+        type="button"
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setOpen(false)}
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((prev) => !prev);
+        }}
+        aria-label="Más información"
+        className="text-text-tertiary hover:text-accent focus:text-accent focus:outline-none p-0.5 rounded transition-colors"
+      >
+        <IconInfoCircle stroke={1.75} className="h-4 w-4" />
+      </button>
+      {open && (
+        <div
+          role="tooltip"
+          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 max-w-[85vw] p-2.5 bg-primary-surface border border-border rounded-xl shadow-xl z-50 text-xs text-text-secondary leading-relaxed pointer-events-none animate-in fade-in zoom-in-95 duration-150"
+        >
+          {children}
+          <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-primary-surface" />
+        </div>
+      )}
+    </div>
+  );
+};
 
 const PlanMetadataForm = memo(({ onCopyPrompt }) => {
   const { metadata, updateMetadata } = usePlanContext();
@@ -93,8 +118,8 @@ const PlanMetadataForm = memo(({ onCopyPrompt }) => {
 
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <label className={labelClasses}>Nombre de la plantilla</label>
-          <input
+          <label className={labelClasses}>Nombre de la plantilla <HelperTooltip>Es el nombre con el que el cliente reconocerá este plan. Debe describir claramente el <strong>objetivo</strong>, el <strong>estilo de entrenamiento</strong> y la <strong>frecuencia</strong>. Este nombre se usa como identidad principal del plan en el sistema.</HelperTooltip></label>
+<input
             data-testid="plan-name-input"
             type="text"
             value={metadata.name}
@@ -102,14 +127,11 @@ const PlanMetadataForm = memo(({ onCopyPrompt }) => {
             placeholder='Ej: "Masculino Volumen FST-7 · 4 días por semana"'
             className={`${inputClasses} max-w-[600px]`}
           />
-          <HelperText>
-            Es el nombre con el que el cliente reconocerá este plan. Debe describir claramente el <strong>objetivo</strong>, el <strong>estilo de entrenamiento</strong> y la <strong>frecuencia</strong>. Este nombre se usa como identidad principal del plan en el sistema.
-          </HelperText>
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className={labelClasses}>Descripción breve</label>
-          <textarea
+          <label className={labelClasses}>Descripción breve <HelperTooltip>Breve resumen del plan que verá el cliente antes de comprar o iniciar. Explicá <strong>qué va a lograr</strong> y <strong>cómo se entrena</strong>. Esta descripción se utiliza para contextualizar el enfoque general en el Prompt Maestro.</HelperTooltip></label>
+<textarea
             data-testid="plan-description-input"
             rows={3}
             value={metadata.description}
@@ -117,15 +139,12 @@ const PlanMetadataForm = memo(({ onCopyPrompt }) => {
             placeholder='Ej: "Plan enfocado en ganar masa muscular combinando fuerza y técnicas FST-7, ideal para intermedios y avanzados"'
             className={`${inputClasses} min-h-[100px] resize-none`}
           />
-          <HelperText>
-            Breve resumen del plan que verá el cliente antes de comprar o iniciar. Explicá <strong>qué va a lograr</strong> y <strong>cómo se entrena</strong>. Esta descripción se utiliza para contextualizar el enfoque general en el Prompt Maestro.
-          </HelperText>
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="flex flex-col gap-2">
-            <label className={labelClasses}>Género</label>
-            <select
+            <label className={labelClasses}>Género <HelperTooltip>Define el enfoque general del plan según <strong>características fisiológicas</strong> y preferencias de entrenamiento. Ajusta la selección de ejercicios, volumen y enfoque metabólico.</HelperTooltip></label>
+<select
               data-testid="plan-gender-select"
               value={metadata.gender}
               onChange={handleChange("gender")}
@@ -135,13 +154,10 @@ const PlanMetadataForm = memo(({ onCopyPrompt }) => {
               <option value="Masculino">Masculino</option>
               <option value="Femenino">Femenino</option>
             </select>
-            <HelperText>
-              Define el enfoque general del plan según <strong>características fisiológicas</strong> y preferencias de entrenamiento. Ajusta la selección de ejercicios, volumen y enfoque metabólico.
-            </HelperText>
           </div>
           <div className="flex flex-col gap-2">
-            <label className={labelClasses}>Frecuencia (días/semana)</label>
-            <select
+            <label className={labelClasses}>Frecuencia (días/semana) <HelperTooltip>Cantidad de días que el cliente entrenará por semana. Define cómo se reparten los grupos musculares: <strong>3 días</strong> → Full body o torso/pierna · <strong>5 días</strong> → División por grupos musculares.</HelperTooltip></label>
+<select
               data-testid="plan-frequency-input"
               value={metadata.frequency}
               onChange={handleChange("frequency")}
@@ -154,13 +170,10 @@ const PlanMetadataForm = memo(({ onCopyPrompt }) => {
                 </option>
               ))}
             </select>
-            <HelperText>
-              Cantidad de días que el cliente entrenará por semana. Define cómo se reparten los grupos musculares: <strong>3 días</strong> → Full body o torso/pierna · <strong>5 días</strong> → División por grupos musculares.
-            </HelperText>
           </div>
           <div className="flex flex-col gap-2">
-            <label className={labelClasses}>Objetivo</label>
-            <select
+            <label className={labelClasses}>Objetivo <HelperTooltip>Objetivo principal del plan. Es uno de los pilares del algoritmo de generación: define <strong>tipo de estímulo</strong>, <strong>volumen</strong>, <strong>descansos</strong> y <strong>progresión</strong>.</HelperTooltip></label>
+<select
               data-testid="plan-objective-select"
               value={metadata.objective}
               onChange={handleChange("objective")}
@@ -173,16 +186,13 @@ const PlanMetadataForm = memo(({ onCopyPrompt }) => {
                 </option>
               ))}
             </select>
-            <HelperText>
-              Objetivo principal del plan. Es uno de los pilares del algoritmo de generación: define <strong>tipo de estímulo</strong>, <strong>volumen</strong>, <strong>descansos</strong> y <strong>progresión</strong>.
-            </HelperText>
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="flex flex-col gap-2">
-            <label className={labelClasses}>Duración (semanas)</label>
-            <select
+            <label className={labelClasses}>Duración (semanas) <HelperTooltip>Cantidad total de semanas que dura el plan. Se usa para estructurar mesociclos y progresiones: <strong>4 semanas</strong> → bloque corto · <strong>8–12 semanas</strong> → mesociclo completo.</HelperTooltip></label>
+<select
               data-testid="plan-duration-input"
               value={metadata.durationWeeks}
               onChange={handleChange("durationWeeks")}
@@ -195,13 +205,10 @@ const PlanMetadataForm = memo(({ onCopyPrompt }) => {
                 </option>
               ))}
             </select>
-            <HelperText>
-              Cantidad total de semanas que dura el plan. Se usa para estructurar mesociclos y progresiones: <strong>4 semanas</strong> → bloque corto · <strong>8–12 semanas</strong> → mesociclo completo.
-            </HelperText>
           </div>
           <div className="flex flex-col gap-2">
-            <label className={labelClasses}>Autor / Coach</label>
-            <input
+            <label className={labelClasses}>Autor / Coach <HelperTooltip>Nombre del entrenador o referente del plan. Aparece en la presentación al cliente y se utiliza como referencia de <strong>estilo y branding</strong> en el prompt.</HelperTooltip></label>
+<input
               data-testid="plan-author-input"
               type="text"
               value={metadata.author}
@@ -209,13 +216,10 @@ const PlanMetadataForm = memo(({ onCopyPrompt }) => {
               placeholder='Ej: "Nick Bare" o "Coach MZ"'
               className={inputClasses}
             />
-            <HelperText>
-              Nombre del entrenador o referente del plan. Aparece en la presentación al cliente y se utiliza como referencia de <strong>estilo y branding</strong> en el prompt.
-            </HelperText>
           </div>
           <div className="flex flex-col gap-2">
-            <label className={labelClasses}>Nivel</label>
-            <select
+            <label className={labelClasses}>Nivel <HelperTooltip>Nivel del plan según la experiencia del cliente. Ajusta <strong>complejidad</strong>, <strong>volumen</strong> y <strong>selección de ejercicios</strong>: Principiante → ejercicios básicos · Avanzado → técnicas intensivas (FST-7, superseries).</HelperTooltip></label>
+<select
               data-testid="plan-level-input"
               value={metadata.level}
               onChange={handleChange("level")}
@@ -227,15 +231,12 @@ const PlanMetadataForm = memo(({ onCopyPrompt }) => {
                 </option>
               ))}
             </select>
-            <HelperText>
-              Nivel del plan según la experiencia del cliente. Ajusta <strong>complejidad</strong>, <strong>volumen</strong> y <strong>selección de ejercicios</strong>: Principiante → ejercicios básicos · Avanzado → técnicas intensivas (FST-7, superseries).
-            </HelperText>
           </div>
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className={labelClasses}>Tags</label>
-          <input
+          <label className={labelClasses}>Tags <HelperTooltip>Palabras clave que describen el <strong>estilo del plan</strong>. Se usan para búsqueda y categorización. Podés incluir técnicas, metodologías o enfoques específicos.</HelperTooltip></label>
+<input
             data-testid="plan-tags-input"
             type="text"
             value={metadata.tags}
@@ -243,9 +244,6 @@ const PlanMetadataForm = memo(({ onCopyPrompt }) => {
             placeholder='Ej: "hipertrofia, fuerza, funcional, fst-7, superseries"'
             className={inputClasses}
           />
-          <HelperText>
-            Palabras clave que describen el <strong>estilo del plan</strong>. Se usan para búsqueda y categorización. Podés incluir técnicas, metodologías o enfoques específicos.
-          </HelperText>
         </div>
 
         {/* Sección de Marca y Logo en PDF */}
@@ -270,8 +268,8 @@ const PlanMetadataForm = memo(({ onCopyPrompt }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
             <div className="flex flex-col gap-2">
-              <label className={labelClasses}>Nombre de Marca / Coach en Portada</label>
-              <input
+              <label className={labelClasses}>Nombre de Marca / Coach en Portada <HelperTooltip>Aparece destacado en la carátula, en el encabezado de cada semana y en el pie de página de los PDFs.</HelperTooltip></label>
+<input
                 data-testid="plan-brand-name-input"
                 type="text"
                 value={activeBrandName}
@@ -282,14 +280,11 @@ const PlanMetadataForm = memo(({ onCopyPrompt }) => {
                 placeholder='Ej: "Power & Iron Coaching" o "Coach Lucas"'
                 className={inputClasses}
               />
-              <HelperText>
-                Aparece destacado en la carátula, en el encabezado de cada semana y en el pie de página de los PDFs.
-              </HelperText>
             </div>
 
             <div className="flex flex-col gap-2">
-              <label className={labelClasses}>Logo Comercial de la Portada</label>
-              <input
+              <label className={labelClasses}>Logo Comercial de la Portada <HelperTooltip>Se imprime centrado sobre el nombre de marca en la primera página de la rutina y del plan nutricional.</HelperTooltip></label>
+<input
                 ref={fileInputRef}
                 type="file"
                 accept="image/png,image/jpeg,image/webp,image/svg+xml"
@@ -362,16 +357,13 @@ const PlanMetadataForm = memo(({ onCopyPrompt }) => {
                   </Button>
                 </div>
               )}
-              <HelperText>
-                Se imprime centrado sobre el nombre de marca en la primera página de la rutina y del plan nutricional.
-              </HelperText>
             </div>
           </div>
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className={labelClasses}>Notas e instrucciones</label>
-          <textarea
+          <label className={labelClasses}>Notas e instrucciones <HelperTooltip>Instrucciones especiales para el sistema o el cliente. Acá podés aclarar el <strong>estilo</strong>, <strong>técnicas específicas</strong>, <strong>recomendaciones clave</strong> o cualquier detalle que personalice la generación de la rutina.</HelperTooltip></label>
+<textarea
             data-testid="plan-notes-input"
             rows={3}
             value={metadata.notes}
@@ -379,9 +371,6 @@ const PlanMetadataForm = memo(({ onCopyPrompt }) => {
             placeholder='Ej: "Rutina estilo Hany Rambod con foco en congestión y control del tempo. Incluir variaciones unilaterales para corrección de asimetrías"'
             className={`${inputClasses} min-h-[120px] resize-none`}
           />
-          <HelperText>
-            Instrucciones especiales para el sistema o el cliente. Acá podés aclarar el <strong>estilo</strong>, <strong>técnicas específicas</strong>, <strong>recomendaciones clave</strong> o cualquier detalle que personalice la generación de la rutina.
-          </HelperText>
         </div>
 
         {/* Botón para copiar prompt - Solo en modo no asistido */}

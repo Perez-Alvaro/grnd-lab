@@ -46,7 +46,7 @@ export const WORKOUT_STEPS = [
     sub: 'Lesiones, ejercicios a evitar, preferencias. Opcional.',
     placeholder: 'Ej: molestia en hombro derecho, evitar press militar' },
   { id: 'complete', kind: 'completion',
-    q: '¡Listo! Generá la rutina', sub: 'Abrí tu IA con el prompt y traé el resultado.' },
+    q: '¡Listo! Generá tu rutina con IA', sub: 'Copiá el prompt, pegalo en tu IA preferida y volvé a pegar la respuesta acá.' },
 ];
 
 export default WORKOUT_STEPS;

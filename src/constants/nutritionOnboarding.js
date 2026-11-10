@@ -157,7 +157,7 @@ export const NUTRITION_STEPS = [
 
   // ── Cierre ──────────────────────────────────────────────────
   { id: 'complete', kind: 'completion',
-    q: '¡Listo! Generá el plan', sub: 'Abrí tu IA con el prompt y traé el JSON.' },
+    q: '¡Listo! Generá tu plan con IA', sub: 'Copiá el prompt, pegalo en tu IA preferida y volvé a pegar la respuesta acá.' },
 ];
 
 export default NUTRITION_STEPS;
