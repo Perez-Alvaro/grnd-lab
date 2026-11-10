@@ -8,7 +8,7 @@
 
 import React, { useMemo, useCallback, useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { IconArrowLeft, IconFileDownload, IconDotsVertical, IconCopy, IconCode, IconJson, IconDownload, IconDeviceFloppy, IconPencil, IconEye, IconSparkles, IconAdjustments } from '@tabler/icons-react';
+import { IconArrowLeft, IconFileDownload, IconDotsVertical, IconCopy, IconCode, IconJson, IconDownload, IconDeviceFloppy, IconPencil, IconEye, IconSparkles, IconAdjustments, IconClipboardText } from '@tabler/icons-react';
 import { PlanProvider } from "../context/PlanContext.jsx";
 import useRoutineEditor from "../hooks/useRoutineEditor.js";
 import { getPlanTypeConfig } from "../config/planTypes.js";
@@ -17,6 +17,7 @@ import PlanMetadataForm from "../components/Trainer/editor/PlanMetadataForm.jsx"
 import StepsMetadataForm from "../components/Trainer/editor/StepsMetadataForm.jsx";
 import FitterOnboarding from "../components/Trainer/editor/FitterOnboarding.jsx";
 import ImportModal from "../components/Editor/ImportModal.jsx";
+import PasteAIResponseModal from "../components/Editor/PasteAIResponseModal.jsx";
 import ExportModal from "../components/Editor/ExportModal.jsx";
 import PDFExportModal from "../components/Editor/PDFExportModal.jsx";
 import WeekEditor from "../components/Trainer/editor/WeekEditor.jsx";
@@ -110,6 +111,7 @@ export default function RoutineEditorPage() {
   const isWorkout = config.id === "workout";
 
   const [showImportModal, setShowImportModal] = useState(false);
+  const [showPasteModal, setShowPasteModal] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
   const [showPDFExportModal, setShowPDFExportModal] = useState(false);
   const [showJSONEditor, setShowJSONEditor] = useState(false);
@@ -456,8 +458,8 @@ export default function RoutineEditorPage() {
                       <button onClick={() => { handleCopyPrompt(); setShowToolsMenu(false); }} className={menuItem}>
                         <IconCopy stroke={1.75} className="h-4 w-4 flex-shrink-0 text-text-tertiary" /> Copiar el prompt
                       </button>
-                      <button onClick={() => { setShowImportModal(true); setShowToolsMenu(false); }} className={menuItem}>
-                        <IconJson stroke={1.75} className="h-4 w-4 flex-shrink-0 text-text-tertiary" /> Pegar respuesta de la IA
+                      <button onClick={() => { setShowPasteModal(true); setShowToolsMenu(false); }} className={menuItem}>
+                        <IconClipboardText stroke={1.75} className="h-4 w-4 flex-shrink-0 text-text-tertiary" /> Pegar respuesta de la IA
                       </button>
                       {isWorkout ? (
                         <button onClick={() => { handleImport(SAMPLE_WORKOUT_ROUTINE); setShowToolsMenu(false); }} className={menuItem}>
@@ -542,10 +544,10 @@ export default function RoutineEditorPage() {
                           type="button"
                           variant="secondary"
                           size="md"
-                          onClick={() => setShowImportModal(true)}
+                          onClick={() => setShowPasteModal(true)}
                           className="min-h-[44px] justify-center text-xs sm:text-sm font-semibold"
                         >
-                          <IconJson stroke={1.75} className="h-4 w-4" />
+                          <IconClipboardText stroke={1.75} className="h-4 w-4" />
                           <span>2. Pegar respuesta de tu IA</span>
                         </Button>
                       </div>
@@ -598,6 +600,12 @@ export default function RoutineEditorPage() {
         </div>
       </div>
 
+      <PasteAIResponseModal
+        open={showPasteModal}
+        onClose={() => setShowPasteModal(false)}
+        onImport={handleImport}
+        planNoun={config.labels.singular}
+      />
       <ImportModal open={showImportModal} onClose={() => setShowImportModal(false)} onImport={handleImport} />
       <ExportModal open={showExportModal} onClose={() => setShowExportModal(false)} planData={planEditor.plan} />
       {isWorkout && (
