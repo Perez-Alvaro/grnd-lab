@@ -140,17 +140,6 @@ const StepsMetadataForm = memo(({ steps = [], onCopyPrompt }) => {
           </div>
         </div>
       ))}
-
-      {onCopyPrompt && (
-        <div className="border-t border-border pt-4">
-          <Button onClick={onCopyPrompt} variant="accent" className="w-full sm:w-auto">
-            <IconCopy stroke={1.75} className="h-4 w-4" /> Copiar el prompt para la IA
-          </Button>
-          <p className="mt-3 text-xs text-text-tertiary leading-relaxed">
-            Cambiá lo que necesites y volvé a copiar el prompt para regenerar con la IA, o editá el plan a mano abajo.
-          </p>
-        </div>
-      )}
     </section>
   );
 });

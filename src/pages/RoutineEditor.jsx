@@ -509,32 +509,31 @@ export default function RoutineEditorPage() {
                 ) : (
                   <div className="space-y-6">
                     {config.hasManualForm ? (
-                      <PlanMetadataForm onCopyPrompt={handleCopyPrompt} />
+                      <PlanMetadataForm />
                     ) : (
                       // Nutrición (y cualquier editor sin form propio): metadata
                       // editable a partir de los mismos pasos del onboarding, para
                       // poder cambiar el título y demás al reeditar un plan.
-                      <StepsMetadataForm steps={config.steps} onCopyPrompt={handleCopyPrompt} />
+                      <StepsMetadataForm steps={config.steps} />
                     )}
-                    <WeekEditor />
 
-                    {/* Acciones de IA también al final de Editar a mano */}
-                    <div className="rounded-2xl border border-border bg-primary-surface p-4 sm:p-6 shadow-sm">
-                      <div className="mb-4">
-                        <h3 className="text-base font-bold text-text-primary tracking-tight">
+                    {/* Acciones de IA directamente debajo del formulario de datos */}
+                    <div className="rounded-2xl border border-border bg-primary-surface p-4 sm:p-5 shadow-sm">
+                      <div className="mb-3">
+                        <h3 className="text-sm sm:text-base font-bold text-text-primary tracking-tight">
                           ¿Querés sincronizar o regenerar con IA?
                         </h3>
-                        <p className="mt-1 text-xs sm:text-sm text-text-tertiary">
-                          Copiá el prompt actualizado con estos cambios o pegá una nueva respuesta que te haya dado tu IA.
+                        <p className="mt-0.5 text-xs text-text-tertiary">
+                          Copiá el prompt actualizado con estos datos o pegá una nueva respuesta que te haya devuelto tu IA.
                         </p>
                       </div>
-                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
                         <Button
                           type="button"
                           variant="accent"
                           size="md"
                           onClick={handleCopyPrompt}
-                          className="min-h-[44px] justify-center"
+                          className="min-h-[44px] justify-center text-xs sm:text-sm font-semibold"
                         >
                           <IconCopy stroke={1.75} className="h-4 w-4" />
                           <span>1. Copiar el prompt</span>
@@ -544,13 +543,15 @@ export default function RoutineEditorPage() {
                           variant="secondary"
                           size="md"
                           onClick={() => setShowImportModal(true)}
-                          className="min-h-[44px] justify-center"
+                          className="min-h-[44px] justify-center text-xs sm:text-sm font-semibold"
                         >
                           <IconJson stroke={1.75} className="h-4 w-4" />
                           <span>2. Pegar respuesta de tu IA</span>
                         </Button>
                       </div>
                     </div>
+
+                    <WeekEditor />
                   </div>
                 )}
               </div>

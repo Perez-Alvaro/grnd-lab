@@ -372,23 +372,6 @@ const PlanMetadataForm = memo(({ onCopyPrompt }) => {
             className={`${inputClasses} min-h-[120px] resize-none`}
           />
         </div>
-
-        {/* Botón para copiar prompt - Solo en modo no asistido */}
-        {onCopyPrompt && (
-          <div className="pt-4 border-t border-border">
-            <Button
-              onClick={onCopyPrompt}
-              variant="accent"
-              className="w-full sm:w-auto"
-            >
-              <IconCopy stroke={1.75} className="h-4 w-4" />
-              Copiar Prompt para IA
-            </Button>
-            <p className="text-xs text-text-tertiary mt-3 leading-relaxed">
-              Una vez completada la plantilla, copia el prompt y pégalo en <strong>ChatGPT, Claude o Gemini</strong> para generar automáticamente tu rutina completa con ejercicios, series, repeticiones y notas técnicas.
-            </p>
-          </div>
-        )}
       </div>
     </section>
   );
