@@ -24,7 +24,7 @@ const COPY = {
 export default function LoginModal() {
   const {
     isModalOpen, authModalMode, setAuthModalMode, isLoading, error,
-    login, signup, resetPassword, closeLoginModal, user,
+    login, signup, resendConfirmation, resetPassword, closeLoginModal, user,
   } = useAuth();
   const navigate = useNavigate();
 
@@ -35,6 +35,8 @@ export default function LoginModal() {
   const [showPassword, setShowPassword] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
   const [notice, setNotice] = useState(null); // mensaje de éxito (confirmá email / revisá tu correo)
+  const [pendingConfirmEmail, setPendingConfirmEmail] = useState(null);
+  const [resentOk, setResentOk] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false); // sin marcar por defecto: el consentimiento tiene que ser un acto del usuario
   const [termsOpen, setTermsOpen] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
@@ -52,6 +54,8 @@ export default function LoginModal() {
       setShowPassword(false);
       setFieldErrors({});
       setNotice(null);
+      setPendingConfirmEmail(null);
+      setResentOk(false);
       setTimeout(() => firstFocusRef.current?.focus(), 50);
     }
   }, [isModalOpen, authModalMode]);
@@ -88,6 +92,8 @@ export default function LoginModal() {
     setAuthModalMode(next);
     setFieldErrors({});
     setNotice(null);
+    setPendingConfirmEmail(null);
+    setResentOk(false);
   };
 
   const handleSubmit = useCallback(
@@ -111,6 +117,9 @@ export default function LoginModal() {
         const result = await login(cleanEmail, password);
         if (result.success) {
           navigate(result.user?.role === 'admin' ? '/admin' : '/dashboard');
+        } else if (result.error?.toLowerCase().includes('confirmá tu email')) {
+          setPendingConfirmEmail(cleanEmail);
+          setResentOk(false);
         }
       } else if (mode === 'signup') {
         const result = await signup(name.trim(), cleanEmail, password);
@@ -121,7 +130,9 @@ export default function LoginModal() {
           try { await acceptTerms(); } catch { /* lo resuelve TermsGate */ }
         }
         if (result.success && result.needsConfirmation) {
-          setNotice('Te enviamos un email para confirmar tu cuenta. Revisá tu bandeja.');
+          setPendingConfirmEmail(cleanEmail);
+          setResentOk(false);
+          setNotice('Te enviamos un email para confirmar tu cuenta. Revisá tu bandeja (y spam).');
         } else if (result.success) {
           navigate('/dashboard');
         }
@@ -191,17 +202,47 @@ export default function LoginModal() {
 
             {/* Éxito (confirmación / reset) */}
             {notice && (
-              <div className="mb-5 flex items-start gap-3 rounded-xl border border-accent/30 bg-accent/10 px-4 py-3">
-                <IconCircleCheck stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-text-secondary">{notice}</p>
+              <div className="mb-5 flex flex-col gap-2.5 rounded-xl border border-accent/30 bg-accent/10 px-4 py-3">
+                <div className="flex items-start gap-3">
+                  <IconCircleCheck stroke={1.75} className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-text-secondary">{notice}</p>
+                </div>
+                {pendingConfirmEmail && (
+                  <button
+                    type="button"
+                    disabled={isLoading || resentOk}
+                    onClick={async () => {
+                      const res = await resendConfirmation(pendingConfirmEmail);
+                      if (res.success) setResentOk(true);
+                    }}
+                    className="self-start pl-7 text-xs font-semibold text-accent hover:underline disabled:opacity-60 disabled:no-underline"
+                  >
+                    {resentOk ? '✓ Email de confirmación reenviado' : '¿No te llegó? Reenviar email de confirmación'}
+                  </button>
+                )}
               </div>
             )}
 
             {/* Error global */}
             {error && !notice && (
-              <div className="mb-5 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3">
-                <IconAlertCircle stroke={1.75} className="h-4 w-4 text-red-400 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-red-300">{error}</p>
+              <div className="mb-5 flex flex-col gap-2 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3">
+                <div className="flex items-start gap-3">
+                  <IconAlertCircle stroke={1.75} className="h-4 w-4 text-red-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-red-300">{error}</p>
+                </div>
+                {pendingConfirmEmail && (
+                  <button
+                    type="button"
+                    disabled={isLoading || resentOk}
+                    onClick={async () => {
+                      const res = await resendConfirmation(pendingConfirmEmail);
+                      if (res.success) setResentOk(true);
+                    }}
+                    className="self-start pl-7 text-xs font-semibold text-accent hover:underline disabled:opacity-60 disabled:no-underline"
+                  >
+                    {resentOk ? '✓ Email de confirmación reenviado' : 'Reenviar email de confirmación'}
+                  </button>
+                )}
               </div>
             )}
 
