@@ -186,6 +186,44 @@ test('HomeSaaS.jsx footer has pb-24 md:pb-12 and min 44px link touch targets', (
   assert.ok(content.includes('cGVyZXphbHZhcm9yYXVsMjZAZ21haWwuY29t'), 'Footer email must be perezalvaroraul26@gmail.com');
 });
 
+// 22. RoutinePreview Mobile Week Tabs & Collapsible Header
+test('RoutinePreview.jsx has mobile week tabs slider, compact collapsible header, and desktop index', () => {
+  const content = fs.readFileSync('src/components/Trainer/preview/RoutinePreview.jsx', 'utf8');
+  assert.ok(content.includes('activeWeekFilter'), 'Must manage activeWeekFilter state');
+  assert.ok(content.includes('isHeaderOpen'), 'Must manage isHeaderOpen state for collapsible header');
+  assert.ok(content.includes('block lg:hidden space-y-2.5'), 'Mobile header must be scoped to <lg');
+  assert.ok(content.includes('min-h-[44px] min-w-[44px]'), 'Mobile header toggle button must have min 44x44px hitbox');
+  assert.ok(content.includes('aria-expanded={isHeaderOpen}'), 'Header toggle must provide aria-expanded');
+  assert.ok(content.includes('nav className="block lg:hidden" aria-label="Navegación de semanas"'), 'Must render mobile week navigation nav on <lg');
+  assert.ok(content.includes('role="tablist"'), 'Mobile week navigation must have role="tablist"');
+  assert.ok(content.includes('Ver todo'), 'Mobile week navigation must feature "Ver todo" pill');
+  assert.ok(content.includes('min-h-[44px] px-4 py-2'), 'Mobile week pills must have min-h-[44px]');
+  assert.ok(content.includes('hidden lg:block space-y-4 text-center'), 'Desktop header must remain full on lg+');
+  assert.ok(content.includes('hidden lg:block space-y-3'), 'Desktop index must be preserved on lg+');
+});
+
+// 23. WeekPreview Mobile Day Selector Sub-Navigation
+test('WeekPreview.jsx has mobile day selector tabs (<md) with 44px touch targets', () => {
+  const content = fs.readFileSync('src/components/Trainer/preview/WeekPreview.jsx', 'utf8');
+  assert.ok(content.includes('selectedDayId'), 'Must manage selectedDayId state for day filtering');
+  assert.ok(content.includes('className="md:hidden"'), 'Day selector sub-navigation must be md:hidden');
+  assert.ok(content.includes('role="tablist"'), 'Day selector must have role="tablist"');
+  assert.ok(content.includes('Toda la semana'), 'Day selector must include "Toda la semana" tab');
+  assert.ok(content.includes('min-h-[44px] px-3.5 py-2'), 'Day selector buttons must satisfy min-h-[44px]');
+  assert.ok(content.includes('isHiddenOnMobile ? "hidden md:block" : "block"'), 'Filtered days must hide on mobile while staying visible on desktop');
+});
+
+// 24. WeekPreview Mobile Exercise Cards Visual Hierarchy & Touch Targets
+test('WeekPreview.jsx mobile exercise cards have number badge, bold title, 44px YouTube button, and metric pills', () => {
+  const content = fs.readFileSync('src/components/Trainer/preview/WeekPreview.jsx', 'utf8');
+  assert.ok(content.includes('rounded-full bg-primary-surface-alt border border-border text-[11px] font-bold text-accent'), 'Exercise cards must have numbered badge');
+  assert.ok(content.includes('text-sm font-bold text-text-primary text-natural-wrap truncate'), 'Exercise cards must have bold title');
+  assert.ok(content.includes('min-h-[44px] min-w-[44px] h-11 w-11'), 'YouTube button must guarantee min 44x44px hitbox');
+  assert.ok(content.includes('grid grid-cols-3 sm:grid-cols-5 gap-2'), 'Metrics must use responsive 3 to 5 column grid');
+  assert.ok(content.includes('hidden md:block overflow-x-auto'), 'Desktop table must be preserved for md+');
+  assert.ok(content.includes('min-w-[720px] w-full border-collapse'), 'Desktop table must keep min-w-[720px]');
+});
+
 console.log('\n====================================================');
 console.log(`Total tests:  ${passed + failed}`);
 console.log(`Passed tests: ${passed}`);

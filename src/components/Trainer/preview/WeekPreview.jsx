@@ -1,4 +1,4 @@
-import { Fragment, memo } from "react";
+import { Fragment, memo, useState } from "react";
 import { IconChevronDown, IconChevronRight, IconBrandYoutube } from '@tabler/icons-react';
 import { buildExerciseVideoUrl } from "../../../lib/recipeSearch.js";
 
@@ -19,12 +19,11 @@ const toRow = (exercise) => {
   };
 };
 
-
-/** Dato suelto de la tarjeta mobile (label arriba, valor en mono abajo). */
+/** Dato suelto de la tarjeta mobile (pill micro-card con label arriba, valor mono abajo). */
 const Metric = ({ label, value }) => (
-  <div className="min-w-0">
-    <p className="text-[10px] uppercase tracking-wide text-text-tertiary">{label}</p>
-    <p className="font-mono text-sm font-semibold text-text-primary truncate">{value}</p>
+  <div className="min-w-0 rounded-lg border border-border/80 bg-primary-surface-alt/70 px-2 py-1.5 text-center">
+    <p className="text-[10px] uppercase font-medium tracking-wide text-text-tertiary">{label}</p>
+    <p className="font-mono text-sm font-bold text-text-primary truncate mt-0.5">{value}</p>
   </div>
 );
 
@@ -53,38 +52,46 @@ const DayPreview = ({ day }) => {
 
       {!isRest && (
         <div className="space-y-3">
-          {/* Mobile: tarjetas. La tabla medía 720 px de ancho mínimo y obligaba
-              a hacer scroll lateral en un teléfono de 375 px. */}
-          <div className="space-y-2 md:hidden">
+          {/* Mobile: tarjetas con clara jerarquía visual y botón YouTube accesible (min 44x44px hitbox). */}
+          <div className="space-y-2.5 md:hidden">
             {(day.exercises || []).map((exercise, i) => {
               const r = toRow(exercise);
               return (
                 <div
                   key={exercise.id || i}
-                  className="rounded-md border border-border bg-primary-surface p-3"
+                  className="rounded-xl border border-border bg-primary-surface p-3.5 shadow-xs"
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-semibold text-text-primary">{r.name}</p>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-surface-alt border border-border text-[11px] font-bold text-accent">
+                        {i + 1}
+                      </span>
+                      <p className="text-sm font-bold text-text-primary text-natural-wrap truncate">
+                        {r.name}
+                      </p>
+                    </div>
                     <a
                       href={r.video}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`Ver video de ${r.name} en YouTube`}
-                      className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
+                      className="flex min-h-[44px] min-w-[44px] h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <IconBrandYoutube stroke={1.75} className="h-5 w-5" />
+                      <IconBrandYoutube stroke={1.75} className="h-6 w-6" />
                     </a>
                   </div>
-                  <div className="mt-2 grid grid-cols-3 sm:grid-cols-5 gap-2">
+
+                  <div className="mt-2.5 grid grid-cols-3 sm:grid-cols-5 gap-2">
                     <Metric label="Series" value={r.sets} />
                     <Metric label="Reps" value={r.reps} />
                     <Metric label="Desc" value={r.rest} />
                     <Metric label="RIR" value={r.rir} />
                     <Metric label="Cad" value={r.tempo} />
                   </div>
+
                   {r.note && (
-                    <p className="mt-2 border-t border-border pt-2 text-xs leading-relaxed text-text-secondary whitespace-pre-line">
+                    <p className="mt-2.5 border-t border-border pt-2 text-xs leading-relaxed text-text-secondary whitespace-pre-line text-natural-wrap">
                       {r.note}
                     </p>
                   )}
@@ -191,6 +198,8 @@ const DayPreview = ({ day }) => {
 };
 
 const WeekPreview = memo(({ week, index, collapsed, onToggle }) => {
+  const [selectedDayId, setSelectedDayId] = useState("all");
+
   return (
     <div
       id={`semana${index + 1}`}
@@ -200,7 +209,7 @@ const WeekPreview = memo(({ week, index, collapsed, onToggle }) => {
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center justify-between gap-2 border-b border-border px-5 py-4 text-left"
+        className="flex min-h-[44px] w-full items-center justify-between gap-2 border-b border-border px-4 py-3.5 sm:px-5 sm:py-4 text-left"
       >
         <div>
           <p className="text-xs uppercase tracking-wide text-text-tertiary text-natural-wrap">
@@ -223,7 +232,7 @@ const WeekPreview = memo(({ week, index, collapsed, onToggle }) => {
       </button>
 
       {!collapsed && (
-        <div className="space-y-5 px-5 pb-5 pt-4">
+        <div className="space-y-5 px-4 pb-5 pt-4 sm:px-5">
           {week.notes && (
             <div className="rounded-xl border border-border bg-primary-surface-alt p-4 text-natural-wrap">
               <h4 className="text-xs uppercase tracking-wide text-text-tertiary mb-1 text-natural-wrap">
@@ -235,10 +244,65 @@ const WeekPreview = memo(({ week, index, collapsed, onToggle }) => {
             </div>
           )}
 
+          {/* Sub-navegación selector de día en mobile (<md) */}
+          {week.days && week.days.length > 1 && (
+            <nav
+              className="md:hidden"
+              aria-label={`Selector de días para ${week.title || `Semana ${index + 1}`}`}
+            >
+              <div
+                className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none -mx-1 px-1"
+                role="tablist"
+              >
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={selectedDayId === "all"}
+                  onClick={() => setSelectedDayId("all")}
+                  className={`min-h-[44px] px-3.5 py-2 text-xs font-medium rounded-xl whitespace-nowrap transition-colors flex items-center justify-center shrink-0 ${
+                    selectedDayId === "all"
+                      ? "bg-accent text-primary-surface font-semibold shadow-xs"
+                      : "border border-border bg-primary-surface-alt text-text-secondary hover:text-text-primary"
+                  }`}
+                >
+                  Toda la semana
+                </button>
+                {week.days.map((day, dIdx) => {
+                  const isSelected = selectedDayId === day.id;
+                  return (
+                    <button
+                      key={day.id || dIdx}
+                      type="button"
+                      role="tab"
+                      aria-selected={isSelected}
+                      onClick={() => setSelectedDayId(day.id)}
+                      className={`min-h-[44px] px-3.5 py-2 text-xs font-medium rounded-xl whitespace-nowrap transition-colors flex items-center justify-center shrink-0 ${
+                        isSelected
+                          ? "bg-accent text-primary-surface font-semibold shadow-xs"
+                          : "border border-border bg-primary-surface-alt text-text-secondary hover:text-text-primary"
+                      }`}
+                    >
+                      {day.name || `Día ${dIdx + 1}`}
+                    </button>
+                  );
+                })}
+              </div>
+            </nav>
+          )}
+
           <div className="space-y-4">
-            {week.days.map((day) => (
-              <DayPreview key={day.id} day={day} />
-            ))}
+            {week.days.map((day) => {
+              const isHiddenOnMobile =
+                selectedDayId !== "all" && selectedDayId !== day.id;
+              return (
+                <div
+                  key={day.id}
+                  className={isHiddenOnMobile ? "hidden md:block" : "block"}
+                >
+                  <DayPreview day={day} />
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
