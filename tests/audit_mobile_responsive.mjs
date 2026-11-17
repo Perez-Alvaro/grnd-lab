@@ -224,6 +224,32 @@ test('WeekPreview.jsx mobile exercise cards have number badge, bold title, 44px 
   assert.ok(content.includes('min-w-[720px] w-full border-collapse'), 'Desktop table must keep min-w-[720px]');
 });
 
+// 25. RoutineEditor Full-Bleed Mobile Preview & Gesture Navigation
+test('RoutineEditor.jsx provides edge-to-edge mobile preview without header clutter and with swipe gesture support', () => {
+  const content = fs.readFileSync('src/pages/RoutineEditor.jsx', 'utf8');
+  assert.ok(content.includes('mobileView === "preview" ? "hidden lg:block" : "block"'), 'Header must be hidden on mobile during preview mode');
+  assert.ok(content.includes('onTouchStart={handleTouchStart}'), 'Preview container must handle onTouchStart');
+  assert.ok(content.includes('onTouchMove={handleTouchMove}'), 'Preview container must handle onTouchMove');
+  assert.ok(content.includes('onTouchEnd={handleTouchEnd}'), 'Preview container must handle onTouchEnd');
+  assert.ok(content.includes('goToEditor()'), 'Touch gesture must trigger goToEditor() on horizontal swipe');
+  assert.ok(content.includes('p-0 pb-28 sm:p-6 lg:pb-8 w-full min-h-full'), 'Preview container must have p-0 on mobile for edge-to-edge layout');
+  assert.ok(content.includes('Deslizá para editar'), 'Bottom bar must provide swipe affordance');
+});
+
+// 26. RoutinePreview & WeekPreview Edge-to-Edge Width
+test('RoutinePreview.jsx and WeekPreview.jsx eliminate nested padding/borders on mobile for edge-to-edge width', () => {
+  const routinePreview = fs.readFileSync('src/components/Trainer/preview/RoutinePreview.jsx', 'utf8');
+  assert.ok(routinePreview.includes('rounded-none border-0 bg-primary-bg lg:rounded-2xl lg:border lg:border-border'), 'RoutinePreview must be borderless and full width on mobile');
+  
+  const weekPreview = fs.readFileSync('src/components/Trainer/preview/WeekPreview.jsx', 'utf8');
+  assert.ok(weekPreview.includes('rounded-none sm:rounded-2xl border-x-0 sm:border'), 'WeekPreview must remove horizontal borders and rounded corners on mobile');
+  assert.ok(weekPreview.includes('rounded-lg sm:rounded-xl border border-border bg-primary-surface-alt p-2.5 sm:p-4'), 'DayPreview must use compact p-2.5 padding on mobile');
+  assert.ok(weekPreview.includes('rounded-lg sm:rounded-xl border border-border bg-primary-surface p-2.5 sm:p-3.5 shadow-xs'), 'Exercise card must use compact p-2.5 padding on mobile');
+
+  const indexHtml = fs.readFileSync('index.html', 'utf8');
+  assert.ok(indexHtml.includes('apple-mobile-web-app-capable'), 'index.html must have apple-mobile-web-app-capable for standalone webapp');
+});
+
 console.log('\n====================================================');
 console.log(`Total tests:  ${passed + failed}`);
 console.log(`Passed tests: ${passed}`);

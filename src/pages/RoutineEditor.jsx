@@ -126,6 +126,45 @@ export default function RoutineEditorPage() {
     return editingExisting || draftHasGeneratedPlan(config.leaf.key) ? "manual" : "ai";
   }); // 'ai' | 'manual'
   const [mobileView, setMobileView] = useState("editor"); // 'editor' | 'preview' (solo mobile)
+  const touchStartRef = useRef({ x: 0, y: 0, time: 0 });
+  const [swipeOffset, setSwipeOffset] = useState(0);
+
+  const handleTouchStart = (e) => {
+    if (mobileView !== "preview") return;
+    const touch = e.touches[0];
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
+    setSwipeOffset(0);
+  };
+
+  const handleTouchMove = (e) => {
+    if (mobileView !== "preview") return;
+    const touch = e.touches[0];
+    const deltaX = touch.clientX - touchStartRef.current.x;
+    const deltaY = touch.clientY - touchStartRef.current.y;
+
+    // Gesture swipe intent: horizontal rightward swipe
+    if (deltaX > 0 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+      setSwipeOffset(Math.min(deltaX * 0.35, 75));
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    if (mobileView !== "preview") return;
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - touchStartRef.current.x;
+    const deltaY = touch.clientY - touchStartRef.current.y;
+    const deltaTime = Date.now() - touchStartRef.current.time;
+
+    setSwipeOffset(0);
+
+    // Fast flick (>40px in <250ms) or deliberate drag (>65px)
+    const isFlick = deltaX > 40 && deltaTime < 250 && Math.abs(deltaX) > Math.abs(deltaY);
+    const isDrag = deltaX > 65 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2;
+
+    if (isFlick || isDrag) {
+      goToEditor();
+    }
+  };
 
   // Uso por editor (workout vs nutrition) para el dashboard del admin
   useEffect(() => {
@@ -409,7 +448,7 @@ export default function RoutineEditorPage() {
     <PlanProvider value={planContextValue}>
       <div className="flex h-dvh flex-col bg-primary-bg overflow-hidden">
         {/* ── Top bar ── */}
-        <header className="flex-shrink-0 border-b border-border bg-primary-surface">
+        <header className={`flex-shrink-0 border-b border-border bg-primary-surface ${mobileView === "preview" ? "hidden lg:block" : "block"}`}>
           <div className="flex items-center justify-between gap-2 px-3 sm:px-6 py-2.5 sm:py-3">
             <div className="flex items-center gap-2 min-w-0">
               <Button variant="ghost" size="sm" onClick={handleBack} disabled={saving} aria-label="Volver al panel" className="px-2 sm:px-3">
@@ -561,9 +600,15 @@ export default function RoutineEditorPage() {
           </div>
 
           {/* Preview */}
-          <div className={`${mobileView === "preview" ? "block" : "hidden"} lg:block flex-1 overflow-y-auto bg-primary-surface`}>
-            <div className="p-3.5 pb-36 sm:p-6 lg:pb-8">
-              <h3 className="text-lg font-semibold text-text-primary font-display mb-4">Vista previa</h3>
+          <div
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            className={`${mobileView === "preview" ? "block" : "hidden"} lg:block flex-1 overflow-y-auto bg-primary-bg transition-transform duration-100 ease-out`}
+            style={swipeOffset > 0 ? { transform: `translateX(${swipeOffset}px)` } : undefined}
+          >
+            <div className="p-0 pb-28 sm:p-6 lg:pb-8 w-full min-h-full">
+              <h3 className="hidden lg:block text-lg font-semibold text-text-primary font-display mb-4">Vista previa</h3>
               <Preview onGoToAssistant={() => { setEditorMode("ai"); goToEditor(); }} />
             </div>
           </div>
@@ -585,16 +630,22 @@ export default function RoutineEditorPage() {
                 </Button>
               </>
             ) : (
-              <>
-                <Button variant="outline" size="md" onClick={goToEditor} className="flex-1">
-                  <IconPencil stroke={1.75} className="h-4 w-4" /> Editar
-                </Button>
+              <div className="flex w-full items-center justify-between gap-2.5">
+                <button
+                  type="button"
+                  onClick={goToEditor}
+                  className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-text-secondary hover:text-text-primary bg-primary-surface-alt rounded-xl border border-border min-h-[44px] transition-colors shadow-xs"
+                  aria-label="Volver a editar (o deslizá hacia la derecha)"
+                >
+                  <IconArrowLeft stroke={2} className="h-4 w-4 text-accent" />
+                  <span>Deslizá para editar</span>
+                </button>
                 {canExportPdf && (
                   <Button variant="accent" size="md" onClick={handleExportPdf} disabled={!hasContent} className="flex-1">
                     <IconFileDownload stroke={1.75} className="h-4 w-4" /> Descargar PDF
                   </Button>
                 )}
-              </>
+              </div>
             )}
           </div>
         </div>

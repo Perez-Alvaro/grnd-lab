@@ -21,9 +21,9 @@ const toRow = (exercise) => {
 
 /** Dato suelto de la tarjeta mobile (pill micro-card con label arriba, valor mono abajo). */
 const Metric = ({ label, value }) => (
-  <div className="min-w-0 rounded-lg border border-border/80 bg-primary-surface-alt/70 px-2 py-1.5 text-center">
+  <div className="min-w-0 rounded-lg border border-border/80 bg-primary-surface-alt/70 px-1.5 py-1.5 text-center">
     <p className="text-[10px] uppercase font-medium tracking-wide text-text-tertiary">{label}</p>
-    <p className="font-mono text-sm font-bold text-text-primary truncate mt-0.5">{value}</p>
+    <p className="font-mono text-xs sm:text-sm font-bold text-text-primary truncate mt-0.5" title={value}>{value}</p>
   </div>
 );
 
@@ -31,12 +31,12 @@ const DayPreview = ({ day }) => {
   const isRest = day.type === "DESCANSO";
 
   return (
-    <div className="rounded-xl border border-border bg-primary-surface-alt p-4 space-y-3 text-natural-wrap">
+    <div className="rounded-lg sm:rounded-xl border border-border bg-primary-surface-alt p-2.5 sm:p-4 space-y-2.5 sm:space-y-3 text-natural-wrap">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h4 className="text-lg font-semibold text-text-primary text-natural-wrap">{day.name}</h4>
+          <h4 className="text-base sm:text-lg font-semibold text-text-primary text-natural-wrap">{day.name}</h4>
           {isRest && day.recoveryNote && (
-            <p className="text-sm text-text-tertiary text-natural-wrap">{day.recoveryNote}</p>
+            <p className="text-xs sm:text-sm text-text-tertiary text-natural-wrap">{day.recoveryNote}</p>
           )}
         </div>
         <span
@@ -59,7 +59,7 @@ const DayPreview = ({ day }) => {
               return (
                 <div
                   key={exercise.id || i}
-                  className="rounded-xl border border-border bg-primary-surface p-3.5 shadow-xs"
+                  className="rounded-lg sm:rounded-xl border border-border bg-primary-surface p-2.5 sm:p-3.5 shadow-xs"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2.5 min-w-0">
@@ -203,13 +203,13 @@ const WeekPreview = memo(({ week, index, collapsed, onToggle }) => {
   return (
     <div
       id={`semana${index + 1}`}
-      className="rounded-2xl border border-border bg-primary-surface-elevated"
+      className="rounded-none sm:rounded-2xl border-x-0 sm:border border-y border-border bg-primary-surface-elevated"
       data-testid="week-preview"
     >
       <button
         type="button"
         onClick={onToggle}
-        className="flex min-h-[44px] w-full items-center justify-between gap-2 border-b border-border px-4 py-3.5 sm:px-5 sm:py-4 text-left"
+        className="flex min-h-[44px] w-full items-center justify-between gap-2 border-b border-border px-3 py-3 sm:px-5 sm:py-4 text-left"
       >
         <div>
           <p className="text-xs uppercase tracking-wide text-text-tertiary text-natural-wrap">
@@ -232,7 +232,7 @@ const WeekPreview = memo(({ week, index, collapsed, onToggle }) => {
       </button>
 
       {!collapsed && (
-        <div className="space-y-5 px-4 pb-5 pt-4 sm:px-5">
+        <div className="space-y-4 px-2 pb-4 pt-3 sm:space-y-5 sm:px-5 sm:pb-5 sm:pt-4">
           {week.notes && (
             <div className="rounded-xl border border-border bg-primary-surface-alt p-4 text-natural-wrap">
               <h4 className="text-xs uppercase tracking-wide text-text-tertiary mb-1 text-natural-wrap">

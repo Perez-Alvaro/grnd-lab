@@ -41,11 +41,11 @@ const RoutinePreview = memo(({ onGoToAssistant }) => {
 
   return (
     <aside
-      className="flex h-full flex-col rounded-2xl border border-border bg-primary-surface-elevated text-natural-wrap"
+      className="flex h-full flex-col rounded-none border-0 bg-primary-bg lg:rounded-2xl lg:border lg:border-border lg:bg-primary-surface-elevated text-natural-wrap w-full"
       data-testid="routine-preview"
     >
       {/* Top Metadata Header */}
-      <div className="border-b border-border px-4 py-3 sm:px-6 sm:py-5">
+      <div className="border-b border-border bg-primary-surface px-3 py-3 sm:px-6 sm:py-5">
         {/* Mobile Header: Compact & Collapsible (<lg) */}
         <div className="block lg:hidden space-y-2.5">
           <div className="flex items-center justify-between gap-3">
@@ -184,11 +184,11 @@ const RoutinePreview = memo(({ onGoToAssistant }) => {
         </div>
       </div>
 
-      <div className="flex-1 space-y-6 overflow-y-auto px-4 py-4 sm:px-6 sm:py-6">
+      <div className="flex-1 space-y-4 sm:space-y-6 overflow-y-auto px-1.5 py-3 sm:px-6 sm:py-6">
         {/* Mobile Horizontal Pill Slider / Segmented Tabs (<lg) */}
         <nav className="block lg:hidden" aria-label="Navegación de semanas">
           <div
-            className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none -mx-1 px-1"
+            className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none px-1"
             role="tablist"
           >
             <button

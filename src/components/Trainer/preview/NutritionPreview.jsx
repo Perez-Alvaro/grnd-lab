@@ -164,9 +164,9 @@ const NutritionPreview = memo(({ onGoToAssistant }) => {
   }
 
   return (
-    <aside className="flex h-full flex-col rounded-2xl border border-border bg-primary-bg" data-testid="nutrition-preview">
+    <aside className="flex h-full flex-col rounded-none border-0 bg-primary-bg lg:rounded-2xl lg:border lg:border-border lg:bg-primary-bg text-natural-wrap w-full" data-testid="nutrition-preview">
       {/* Encabezado */}
-      <div className="border-b border-border px-5 py-5">
+      <div className="border-b border-border bg-primary-surface px-3 py-4 sm:px-5 sm:py-5">
         <div className="space-y-4 text-center">
           <h2 className="text-3xl font-bold text-accent">{meta.name || "Plan sin título"}</h2>
           {chips.length > 0 && (
@@ -186,7 +186,7 @@ const NutritionPreview = memo(({ onGoToAssistant }) => {
         </div>
       </div>
 
-      <div className="flex-1 space-y-5 overflow-y-auto px-4 py-5 sm:px-5">
+      <div className="flex-1 space-y-4 sm:space-y-5 overflow-y-auto px-2 py-4 sm:px-5">
         {/* Aviso de derivación */}
         {pm.requiereDerivacion && (
           <div className="flex items-start gap-3 rounded-xl border border-amber-500/40 bg-amber-500/10 p-4">
